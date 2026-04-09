@@ -1,122 +1,222 @@
-import "dart:async";
 import "package:flutter/material.dart";
-import "package:lucide_icons/lucide_icons.dart";
+import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
-import "package:kinoapay_app/features/welcome/domain/welcome_slide.dart";
+import "package:kinoapay_app/core/navigation/kinoa_router.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_actions.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_background.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_dots.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_slider.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_trust_label.dart";
 
-/// Point d'entrée de la fonctionnalité Welcome orchestrant le carrousel de marque.
-class WelcomeView extends StatefulWidget {
+/// Une page d'accueil immersive inspirée du design "Burt" avec cards imbriquées.
+class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
-
-  @override
-  State<WelcomeView> createState() => _WelcomeViewState();
-}
-
-class _WelcomeViewState extends State<WelcomeView> {
-  static const List<WelcomeSlide> _slides = [
-    WelcomeSlide(
-      icon: LucideIcons.zap,
-      title: KinoaStrings.welcomeSlide1Title,
-      desc: KinoaStrings.welcomeSlide1Desc,
-    ),
-    WelcomeSlide(
-      icon: LucideIcons.layers,
-      title: KinoaStrings.welcomeSlide2Title,
-      desc: KinoaStrings.welcomeSlide2Desc,
-    ),
-    WelcomeSlide(
-      icon: LucideIcons.lock,
-      title: KinoaStrings.welcomeSlide3Title,
-      desc: KinoaStrings.welcomeSlide3Desc,
-    ),
-    WelcomeSlide(
-      icon: LucideIcons.shieldCheck,
-      title: KinoaStrings.welcomeSlide4Title,
-      desc: KinoaStrings.welcomeSlide4Desc,
-    ),
-  ];
-
-  final PageController _pageController = PageController();
-  int _activePage = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  /// Initialise et gère le défilement automatique des diapositives.
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (_pageController.hasClients) {
-        int next = (_activePage + 1) % _slides.length;
-        _pageController.animateToPage(
-          next,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
-
-  /// Met à jour l'index de la page active lors d'un changement de diapositive.
-  void _onPageChanged(int index) {
-    setState(() {
-      _activePage = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          const WelcomeBackground(),
+          // Arrière-plan dégradé pastel
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFE2D1F9), // Violet pastel
+                    Color(0xFFFEE1C7), // Orange pastel
+                    Color(0xFFD1F2F9), // Cyan pastel
+                  ],
+                ),
+              ),
+            ),
+          ),
+          
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header avec Logo Kinoa
                   const KinoaBrand(
                     size: BrandSize.lg,
-                    color: Colors.white,
-                    iconColor: Colors.white,
+                    color: KinoaColors.stone900,
+                    iconColor: KinoaColors.stone900,
+                    alignment: MainAxisAlignment.start,
                   ),
+                  const SizedBox(height: 56),
+                  
+                  // Titre et Sous-titre
+                  const Text(
+                    KinoaStrings.welcomeHeroTitle,
+                    style: TextStyle(
+                      color: KinoaColors.stone900,
+                      fontSize: 42,
+                      fontWeight: FontWeight.w900,
+                      height: 1.0,
+                      letterSpacing: -2,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    KinoaStrings.welcomeHeroSubtitle,
+                    style: TextStyle(
+                      color: KinoaColors.stone900.withValues(alpha: 0.7),
+                      fontSize: 16,
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  
                   const Spacer(),
-                  WelcomeSlider(
-                    controller: _pageController,
-                    slides: _slides,
-                    onPageChanged: _onPageChanged,
+                  
+                  // Illustration par Cards imbriquées (Utilisation des nouvelles images welcome-2 et welcome-3)
+                  Center(
+                    child: SizedBox(
+                      height: 260,
+                      width: 280,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // Card Centrale (Fond) - Image principale
+                          Align(
+                            alignment: Alignment.center,
+                            child: _PromoCard(
+                              width: 200,
+                              height: 160,
+                              image: "assets/images/welcome.jpg",
+                              elevation: 6,
+                            ),
+                          ),
+                          // Card Petite 1 (Top Gauche) - Nouvelle image 2
+                          Positioned(
+                            left: 0,
+                            top: 10,
+                            child: _PromoCard(
+                              width: 100,
+                              height: 120,
+                              image: "assets/images/welcome-2.jpg",
+                              elevation: 15,
+                            ),
+                          ),
+                          // Card Petite 2 (Bottom Droite) - Nouvelle image 3
+                          Positioned(
+                            right: 0,
+                            bottom: 10,
+                            child: _PromoCard(
+                              width: 110,
+                              height: 90,
+                              image: "assets/images/welcome-3.jpg",
+                              elevation: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  WelcomeDots(
-                    activeIndex: _activePage,
-                    slides: _slides,
+                  
+                  const Spacer(),
+                  
+                  // Action Button (Étendu sur toute la largeur)
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(context, KinoaRouter.signup),
+                    child: Container(
+                      width: double.infinity,
+                      height: 64,
+                      decoration: const BoxDecoration(
+                        color: KinoaColors.stone900,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.zero,
+                          bottomLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                          bottomRight: Radius.circular(24),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        KinoaStrings.welcomeSignupBtn,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 60),
-                  const WelcomeActions(),
-                  const SizedBox(height: 32),
-                  const WelcomeTrustLabel(),
+                  const SizedBox(height: 16),
+                  
+                  // Lien Se connecter
+                  Center(
+                    child: TextButton(
+                      onPressed: () => Navigator.pushNamed(context, KinoaRouter.signin),
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                      child: Text.rich(
+                        TextSpan(
+                          text: "${KinoaStrings.signupHaveAccount} ",
+                          style: TextStyle(
+                            color: KinoaColors.stone900.withValues(alpha: 0.6),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          children: const [
+                            TextSpan(
+                              text: KinoaStrings.signupSigninLink,
+                              style: TextStyle(color: KinoaColors.stone900, fontWeight: FontWeight.w800),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PromoCard extends StatelessWidget {
+  final double width;
+  final double height;
+  final String image;
+  final double elevation;
+
+  const _PromoCard({
+    required this.width,
+    required this.height,
+    required this.image,
+    this.elevation = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.only(
+      topLeft: Radius.zero, // Coin supérieur gauche carré
+      topRight: Radius.circular(24),
+      bottomLeft: Radius.circular(24),
+      bottomRight: Radius.circular(24),
+    );
+
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: elevation,
+            offset: Offset(0, elevation / 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: Image.asset(
+          image,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

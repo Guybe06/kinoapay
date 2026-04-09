@@ -1,39 +1,41 @@
 import "package:flutter/material.dart";
 
-/// Définit l'ambiance visuelle avec une image positionnée en haut et un fondu vers le blanc.
+/// Définit un arrière-plan en dégradé multi-tons inspiré du style minimaliste moderne.
 class WelcomeBackground extends StatelessWidget {
   const WelcomeBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-
     return Stack(
       children: [
-        Positioned(
-          top: -60,
-          left: 0,
-          right: 0,
-          child: Image.asset(
-            "assets/images/welcome.jpg",
-            fit: BoxFit.cover,
-            alignment: const Alignment(0, -1.0),
-            cacheWidth: 1080,
+        Positioned.fill(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFE0C3FC), // Mauve doux
+                  Color(0xFFFEE1C7), // Orange/Pêche
+                  Color(0xFFE2F3F5), // Bleu/Cyan très clair
+                ],
+                stops: [0.0, 0.5, 1.0],
+              ),
+            ),
           ),
         ),
+        // Overlay pour adoucir le contraste avec le texte
         Positioned.fill(
-          child: DecoratedBox(
+          child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white.withValues(alpha: 0.0),
-                  Colors.white.withValues(alpha: 0.0),
-                  Colors.white.withValues(alpha: 1),
-                  Colors.white,
+                  Colors.white.withValues(alpha: 0.2),
+                  Colors.transparent,
+                  Colors.white.withValues(alpha: 0.4),
                 ],
-                stops: const [0.0, 0.2, 0.6, 0.8],
               ),
             ),
           ),

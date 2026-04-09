@@ -1,19 +1,10 @@
 /// Centralise les chaînes de caractères utilisées pour l'internationalisation et l'interface.
 class KinoaStrings {
   static const String appName = "KinoaPay";
-  static const String welcomeSlide1Title = "Envoyez en quelques secondes";
-  static const String welcomeSlide1Desc =
-      "Peu importe l'opérateur. Vos fonds arrivent immédiatement.";
-  static const String welcomeSlide2Title = "Choisissez votre canal";
-  static const String welcomeSlide2Desc =
-      "Banque, mobile, carte, KinoaPay connecte tous les canaux sans friction.";
-  static const String welcomeSlide3Title =
-      "La sécurité du crypto, sans la complexité";
-  static const String welcomeSlide3Desc =
-      "Un registre infalsifiable derrière chaque transfert. Simple et vérifiable.";
-  static const String welcomeSlide4Title = "Vos transferts sont protégés";
-  static const String welcomeSlide4Desc =
-      "Chiffrement de bout en bout, conformité COBAC. Votre portefeuille en sécurité.";
+  static const String welcomeHeroTitle = "Votre argent,\nsans frontières.";
+  static const String welcomeHeroSubtitle =
+      "Envoyez vos fonds instantanément d'un compte Mobile vers une Banque, ou d'une Carte vers un Portefeuille mobile. Un pont universel pour tous vos transferts.";
+  static const String welcomePromoLabel = "L'interopérabilité totale enfin à votre portée";
   static const String welcomeSignupBtn = "Créer un compte";
   static const String welcomeSigninBtn = "Se connecter";
   static const String welcomeTrustLabel = "Sécurisé · Chiffré de bout en bout";
