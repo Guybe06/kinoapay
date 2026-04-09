@@ -1,0 +1,29 @@
+name: kinoapay_app
+description: "KINOPAY P2P mobile money client app"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.0
+  equatable: ^2.0.7
+  google_fonts: ^8.0.2
+  lucide_icons: ^0.257.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/welcome.jpg
+    - assets/images/logo.png

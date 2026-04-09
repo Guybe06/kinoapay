@@ -1,0 +1,33 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android
+.gradle/
+local.properties
+*.keystore
+*.jks
+*.quiet
+*.apk
+*.aab
+
+# iOS
+.generated/
+Flutter/Flutter.podspec
+Flutter/Generated.xcconfig
+Flutter/flutter_export_environment.sh
+ServiceDefinitions.json
+Runner/GeneratedConfig.xcconfig
+Runner/GeneratedConfig.pb.h
+Runner/GeneratedConfig.pb.m
+Pods/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
