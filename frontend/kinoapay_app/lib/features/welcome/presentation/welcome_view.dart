@@ -84,30 +84,35 @@ class _WelcomeViewState extends State<WelcomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-          child: Column(
-            children: [
-              const KinoaBrand(size: BrandSize.lg),
-              const Spacer(),
-              WelcomeSlider(
-                controller: _pageController,
-                slides: _slides,
-                onPageChanged: _onPageChanged,
+      body: Stack(
+        children: [
+          const WelcomeBackground(),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+              child: Column(
+                children: [
+                  const KinoaBrand(size: BrandSize.lg),
+                  const Spacer(flex: 2),
+                  WelcomeSlider(
+                    controller: _pageController,
+                    slides: _slides,
+                    onPageChanged: _onPageChanged,
+                  ),
+                  const SizedBox(height: 40),
+                  WelcomeDots(
+                    activeIndex: _activePage,
+                    slides: _slides,
+                  ),
+                  const Spacer(),
+                  const WelcomeActions(),
+                  const SizedBox(height: 24),
+                  const WelcomeTrustLabel(),
+                ],
               ),
-              const SizedBox(height: 40),
-              WelcomeDots(
-                activeIndex: _activePage,
-                slides: _slides,
-              ),
-              const Spacer(),
-              const WelcomeActions(),
-              const SizedBox(height: 24),
-              const WelcomeTrustLabel(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

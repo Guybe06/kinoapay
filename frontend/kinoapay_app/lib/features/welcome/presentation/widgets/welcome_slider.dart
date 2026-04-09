@@ -18,36 +18,47 @@ class WelcomeSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 160,
+      height: 240, // Plus haut pour l'icône imposante
       child: PageView(
         controller: controller,
         onPageChanged: onPageChanged,
         children: slides.map((slide) => Column(
           children: [
-            Icon(
-              slide.icon,
-              color: KinoaColors.primary,
-              size: 28,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: KinoaColors.stone50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                slide.icon,
+                color: KinoaColors.primary,
+                size: 48, // Icône beaucoup plus grande
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             Text(
               slide.title,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: KinoaColors.background,
-                fontSize: 18,
+                color: KinoaColors.stone900,
+                fontSize: 22, // Titre plus fort
                 fontWeight: FontWeight.w800,
-                letterSpacing: -0.5,
+                letterSpacing: -0.8,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              slide.desc,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: KinoaColors.background.withValues(alpha: 0.6),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                slide.desc,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: KinoaColors.stone500,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                ),
               ),
             ),
           ],
