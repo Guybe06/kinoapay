@@ -56,19 +56,35 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: const KinoaBrand(
-              size: BrandSize.lg,
-              color: KinoaColors.stone900,
-              iconColor: KinoaColors.stone900,
+      body: Stack(
+        children: [
+          // Arrière-plan dégradé pastel
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: KinoaColors.burtGradient,
+                ),
+              ),
             ),
           ),
-        ),
+          
+          Center(
+            child: FadeTransition(
+              opacity: _opacityAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: const KinoaBrand(
+                  size: BrandSize.lg,
+                  color: KinoaColors.stone900,
+                  iconColor: KinoaColors.stone900,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

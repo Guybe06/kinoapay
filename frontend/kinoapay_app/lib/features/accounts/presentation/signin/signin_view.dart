@@ -1,6 +1,8 @@
+import "dart:ui";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons/lucide_icons.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/navigation/kinoa_router.dart";
@@ -36,177 +38,315 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft, color: KinoaColors.stone900),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is Authenticated) {
-            Navigator.pushReplacementNamed(context, KinoaRouter.home);
-          } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
-        },
-        builder: (context, state) {
-          return SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 40),
-                      const KinoaBrand(size: BrandSize.md),
-                      const SizedBox(height: 80),
-                      const Text(
-                        KinoaStrings.signinTitle,
-                        style: TextStyle(
-                          color: KinoaColors.stone900,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        KinoaStrings.signinSubtitle,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: KinoaColors.stone500,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-                      AuthTextField(
-                        controller: _emailController,
-                        label: KinoaStrings.authEmailLabel,
-                        hintText: "Email ou numéro mobile",
-                        keyboardType: TextInputType.emailAddress,
-                        validator: AuthValidator.validateEmailOrPhone,
-                      ),
-                      const SizedBox(height: 24), // Espacement plus généreux
-                      AuthTextField(
-                        controller: _passwordController,
-                        label: KinoaStrings.authPasswordLabel,
-                        hintText: "Mot de passe",
-                        obscureText: true,
-                        validator: AuthValidator.validatePassword,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Transform.scale(
-                                scale: 0.75, // Plus petit, plus discret
-                                child: Switch(
-                                  value: _rememberMe,
-                                  onChanged: (value) => setState(() => _rememberMe = value),
-                                  activeColor: Colors.white,
-                                  activeTrackColor: KinoaColors.primary,
-                                  inactiveThumbColor: Colors.white,
-                                  inactiveTrackColor: KinoaColors.stone100, // Plus clair
-                                  trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-                                    if (states.contains(WidgetState.selected)) return KinoaColors.primary;
-                                    return KinoaColors.stone200;
-                                  }),
-                                  splashRadius: 0,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              const Text(
-                                "Rester connecté",
-                                style: TextStyle(
-                                  color: KinoaColors.stone500, // Plus doux
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              splashFactory: NoSplash.splashFactory, // Pas de splash ici aussi
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: const Text(
-                              KinoaStrings.signinForgotPass,
-                              style: TextStyle(
-                                color: KinoaColors.primary,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 48), // Grand espace avant le bouton
-                      AuthButton(
-                        text: KinoaStrings.authSubmitBtn,
-                        isLoading: state is AuthLoading,
-                        onPressed: _submitForm,
-                      ),
-                      const SizedBox(height: 32),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Expanded(child: Divider(color: KinoaColors.stone100)),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text("OU", style: TextStyle(color: KinoaColors.stone300, fontSize: 12, fontWeight: FontWeight.w600)),
-                          ),
-                          const Expanded(child: Divider(color: KinoaColors.stone100)),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _SocialButton(icon: LucideIcons.github, onPressed: () {}), // Remplacer par Google plus tard
-                          const SizedBox(width: 20),
-                          _SocialButton(icon: LucideIcons.apple, onPressed: () {}),
-                        ],
-                      ),
-                      const SizedBox(height: 48),
-                      TextButton(
-                        onPressed: () => Navigator.pushReplacementNamed(context, KinoaRouter.signup),
-                        child: Text.rich(
-                          TextSpan(
-                            text: "Pas encore de compte ? ",
-                            style: const TextStyle(color: KinoaColors.stone500, fontSize: 14),
-                            children: [
-                              TextSpan(
-                                text: "S'inscrire",
-                                style: const TextStyle(color: KinoaColors.primary, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+      body: Stack(
+        children: [
+          // Arrière-plan dégradé pastel (Identique au WelcomeView)
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFE2D1F9), // Violet pastel
+                    Color(0xFFFEE1C7), // Orange pastel
+                    Color(0xFFD1F2F9), // Cyan pastel
+                  ],
                 ),
               ),
             ),
-          );
-        },
+          ),
+          
+          SafeArea(
+            child: BlocConsumer<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is Authenticated) {
+                  // Affichage du message de succès en mode Glass
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      behavior: SnackBarBehavior.floating,
+                      margin: const EdgeInsets.all(16),
+                      duration: const Duration(seconds: 2),
+                      content: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade900.withValues(alpha: 0.6),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, color: Colors.white),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    "Connexion réussie ! Bienvenue.",
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                  
+                  // Redirection vers la route précédente ou Home
+                  Future.delayed(const Duration(milliseconds: 1500), () {
+                    if (mounted) {
+                      Navigator.pushReplacementNamed(
+                        context, 
+                        KinoaRouter.previousRoute ?? KinoaRouter.home,
+                      );
+                    }
+                  });
+                } else if (state is AuthError) {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      behavior: SnackBarBehavior.floating,
+                      margin: const EdgeInsets.all(16),
+                      duration: const Duration(seconds: 3),
+                      content: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: KinoaColors.error.withValues(alpha: 0.6),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.error_outline, color: Colors.white),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    state.message,
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    // Header avec bouton retour
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(LucideIcons.arrowLeft, color: KinoaColors.stone900),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          const Spacer(),
+                          const KinoaBrand(size: BrandSize.sm),
+                          const Spacer(flex: 2),
+                        ],
+                      ),
+                    ),
+                    
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 32),
+                              const Text(
+                                KinoaStrings.signinTitle,
+                                style: TextStyle(
+                                  color: KinoaColors.stone900,
+                                  fontSize: 42,
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.0,
+                                  letterSpacing: -2,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                KinoaStrings.signinSubtitle,
+                                style: TextStyle(
+                                  color: KinoaColors.stone900.withValues(alpha: 0.7),
+                                  fontSize: 16,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              
+                              const SizedBox(height: 48),
+                              AuthTextField(
+                                controller: _emailController,
+                                label: KinoaStrings.authEmailLabel,
+                                hintText: "Email ou numéro mobile",
+                                keyboardType: TextInputType.emailAddress,
+                                validator: AuthValidator.validateEmailOrPhone,
+                              ),
+                              const SizedBox(height: 24),
+                              AuthTextField(
+                                controller: _passwordController,
+                                label: KinoaStrings.authPasswordLabel,
+                                hintText: "Mot de passe",
+                                obscureText: true,
+                                validator: AuthValidator.validatePassword,
+                              ),
+                              
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Transform.scale(
+                                        scale: 0.8,
+                                        child: Switch(
+                                          value: _rememberMe,
+                                          onChanged: (value) => setState(() => _rememberMe = value),
+                                          activeColor: Colors.white,
+                                          activeTrackColor: KinoaColors.stone900,
+                                          inactiveThumbColor: Colors.white,
+                                          inactiveTrackColor: KinoaColors.stone900.withValues(alpha: 0.1),
+                                          trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+                                            if (states.contains(WidgetState.selected)) return KinoaColors.stone900;
+                                            return KinoaColors.stone900.withValues(alpha: 0.1);
+                                          }),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "Rester connecté",
+                                        style: TextStyle(
+                                          color: KinoaColors.stone900.withValues(alpha: 0.6),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: const Text(
+                                      KinoaStrings.signinForgotPass,
+                                      style: TextStyle(
+                                        color: KinoaColors.stone900,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              
+                              const SizedBox(height: 48),
+                              AuthButton(
+                                text: KinoaStrings.authSubmitBtn,
+                                isLoading: state is AuthLoading,
+                                onPressed: _submitForm,
+                              ),
+                              
+                              const SizedBox(height: 32),
+                              Center(
+                                child: Text(
+                                  "OU CONTINUER AVEC",
+                                  style: TextStyle(
+                                    color: KinoaColors.stone900.withValues(alpha: 0.4),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _SocialButton(
+                                      icon: FontAwesomeIcons.google, 
+                                      label: "Google",
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _SocialButton(
+                                      icon: FontAwesomeIcons.apple, 
+                                      label: "Apple",
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              
+                              const SizedBox(height: 48),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () => Navigator.pushReplacementNamed(context, KinoaRouter.signup),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: "Pas encore de compte ? ",
+                                      style: TextStyle(
+                                        color: KinoaColors.stone900.withValues(alpha: 0.6),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      children: const [
+                                        TextSpan(
+                                          text: "S'inscrire",
+                                          style: TextStyle(color: KinoaColors.stone900, fontWeight: FontWeight.w800),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 40),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -233,15 +373,45 @@ class _SignInViewState extends State<SignInView> {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            firstError,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-          ),
-          backgroundColor: KinoaColors.error,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           margin: const EdgeInsets.all(16),
           duration: const Duration(seconds: 3),
+          content: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: KinoaColors.error.withValues(alpha: 0.6),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.warning_amber_rounded, color: Colors.white),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        firstError,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -250,22 +420,49 @@ class _SignInViewState extends State<SignInView> {
 
 class _SocialButton extends StatelessWidget {
   final IconData icon;
+  final String label;
   final VoidCallback onPressed;
 
-  const _SocialButton({required this.icon, required this.onPressed});
+  const _SocialButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.only(
+      topLeft: Radius.zero,
+      topRight: Radius.circular(20),
+      bottomLeft: Radius.circular(20),
+      bottomRight: Radius.circular(20),
+    );
+
     return InkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: borderRadius,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: KinoaColors.stone200),
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white.withValues(alpha: 0.5),
+          border: Border.all(color: KinoaColors.stone900.withValues(alpha: 0.1)),
+          borderRadius: borderRadius,
         ),
-        child: Icon(icon, color: KinoaColors.stone900, size: 24),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FaIcon(icon, color: KinoaColors.stone900, size: 20),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: const TextStyle(
+                color: KinoaColors.stone900,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

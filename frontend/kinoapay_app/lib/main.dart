@@ -55,6 +55,7 @@ class KinoaPayApp extends StatelessWidget {
       ),
       initialRoute: KinoaRouter.splash,
       onGenerateRoute: KinoaRouter.generateRoute,
+      navigatorObservers: [KinoaRouter.observer],
     );
   }
 }

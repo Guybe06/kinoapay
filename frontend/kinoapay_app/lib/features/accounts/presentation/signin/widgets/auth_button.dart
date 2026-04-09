@@ -18,28 +18,36 @@ class AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.only(
+      topLeft: Radius.zero,
+      topRight: Radius.circular(24),
+      bottomLeft: Radius.circular(24),
+      bottomRight: Radius.circular(24),
+    );
+
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 64, // Augmenté pour correspondre au WelcomeView
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSecondary ? Colors.white : KinoaColors.primary,
-          foregroundColor: isSecondary ? KinoaColors.primary : Colors.white,
+          backgroundColor: isSecondary ? Colors.white : KinoaColors.stone900,
+          foregroundColor: isSecondary ? KinoaColors.stone900 : Colors.white,
           elevation: 0,
           splashFactory: NoSplash.splashFactory,
           overlayColor: Colors.transparent,
-          shape: StadiumBorder(
-            side: isSecondary 
-              ? const BorderSide(color: KinoaColors.primary, width: 1.5)
-              : BorderSide.none,
+          shape: const RoundedRectangleBorder(
+            borderRadius: borderRadius,
           ),
-          disabledBackgroundColor: KinoaColors.primary.withValues(alpha: 0.5),
+          side: isSecondary 
+              ? const BorderSide(color: KinoaColors.stone900, width: 2)
+              : BorderSide.none,
+          disabledBackgroundColor: KinoaColors.stone900.withValues(alpha: 0.5),
         ),
         child: isLoading
             ? const SizedBox(
-                height: 20,
-                width: 20,
+                height: 24,
+                width: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
@@ -48,9 +56,8 @@ class AuthButton extends StatelessWidget {
             : Text(
                 text,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 0.2,
                 ),
               ),
       ),

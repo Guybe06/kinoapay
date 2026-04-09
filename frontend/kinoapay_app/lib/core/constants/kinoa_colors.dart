@@ -19,6 +19,17 @@ class KinoaColors {
   static const Color stone900 = Color(0xFF1C1917);
   static const Color stone950 = Color(0xFF0C0A09);
 
+  // Burt Pastel Gradient
+  static const Color burtViolet = Color(0xFFE2D1F9);
+  static const Color burtOrange = Color(0xFFFEE1C7);
+  static const Color burtCyan = Color(0xFFD1F2F9);
+
+  static const List<Color> burtGradient = [
+    burtViolet,
+    burtOrange,
+    burtCyan,
+  ];
+
   // Alias sémantiques
   static const Color background = stone950;
   static const Color textMain = stone900;
