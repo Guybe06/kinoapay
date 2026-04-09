@@ -36,7 +36,10 @@ class KinoaPayApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory,
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        textTheme: GoogleFonts.googleSansTextTheme(ThemeData.light().textTheme),
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.light().textTheme).apply(
+          bodyColor: KinoaColors.stone900,
+          displayColor: KinoaColors.stone900,
+        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: KinoaColors.primary,
           brightness: Brightness.light,

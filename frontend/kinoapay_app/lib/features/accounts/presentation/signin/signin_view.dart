@@ -162,42 +162,44 @@ class _SignInViewState extends State<SignInView> {
                         isLoading: state is AuthLoading,
                         onPressed: _submitForm,
                       ),
-                      const SizedBox(height: 48),
+                      const SizedBox(height: 32),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Expanded(
-                            child: Divider(
-                              thickness: 0.5, // Ultra fin
-                              color: KinoaColors.stone100,
-                            ),
+                          const Expanded(child: Divider(color: KinoaColors.stone100)),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Text("OU", style: TextStyle(color: KinoaColors.stone300, fontSize: 12, fontWeight: FontWeight.w600)),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: Text(
-                              "OU",
-                              style: TextStyle(
-                                color: KinoaColors.stone300,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2, // Style très "Design"
-                              ),
-                            ),
-                          ),
-                          const Expanded(
-                            child: Divider(
-                              thickness: 0.5,
-                              color: KinoaColors.stone100,
-                            ),
-                          ),
+                          const Expanded(child: Divider(color: KinoaColors.stone100)),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _SocialButton(icon: LucideIcons.github, onPressed: () {}), // Remplacer par Google plus tard
+                          const SizedBox(width: 20),
+                          _SocialButton(icon: LucideIcons.apple, onPressed: () {}),
                         ],
                       ),
                       const SizedBox(height: 48),
-                      AuthButton(
-                        text: KinoaStrings.signinSignupLink,
-                        isSecondary: true,
+                      TextButton(
                         onPressed: () => Navigator.pushReplacementNamed(context, KinoaRouter.signup),
+                        child: Text.rich(
+                          TextSpan(
+                            text: "Pas encore de compte ? ",
+                            style: const TextStyle(color: KinoaColors.stone500, fontSize: 14),
+                            children: [
+                              TextSpan(
+                                text: "S'inscrire",
+                                style: const TextStyle(color: KinoaColors.primary, fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -218,7 +220,6 @@ class _SignInViewState extends State<SignInView> {
         ),
       );
     } else {
-      // Récupère la première erreur et l'affiche en Toast (Google Pay Style)
       _showFirstValidationError();
     }
   }
@@ -244,5 +245,28 @@ class _SignInViewState extends State<SignInView> {
         ),
       );
     }
+  }
+}
+
+class _SocialButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _SocialButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: KinoaColors.stone200),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Icon(icon, color: KinoaColors.stone900, size: 24),
+      ),
+    );
   }
 }

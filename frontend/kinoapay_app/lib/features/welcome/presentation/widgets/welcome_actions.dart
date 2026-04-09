@@ -20,7 +20,7 @@ class WelcomeActions extends StatelessWidget {
               Navigator.pushNamed(context, KinoaRouter.signup);
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           _WelcomeButton(
             text: KinoaStrings.welcomeSigninBtn,
             isPrimary: false,

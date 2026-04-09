@@ -83,7 +83,6 @@ class _WelcomeViewState extends State<WelcomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
           const WelcomeBackground(),
@@ -91,22 +90,27 @@ class _WelcomeViewState extends State<WelcomeView> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const KinoaBrand(size: BrandSize.lg),
-                  const Spacer(flex: 2),
+                  const KinoaBrand(
+                    size: BrandSize.lg,
+                    color: Colors.white,
+                    iconColor: Colors.white,
+                  ),
+                  const Spacer(),
                   WelcomeSlider(
                     controller: _pageController,
                     slides: _slides,
                     onPageChanged: _onPageChanged,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   WelcomeDots(
                     activeIndex: _activePage,
                     slides: _slides,
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 60),
                   const WelcomeActions(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
                   const WelcomeTrustLabel(),
                 ],
               ),
