@@ -2,16 +2,19 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_view.dart";
 import "package:kinoapay_app/features/home/presentation/home_view.dart";
+import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
 /// Gère la configuration centralisée des routes et la logique de navigation de l'application.
 class KinoaRouter {
-  static const String welcome = "/";
+  static const String splash = "/";
+  static const String welcome = "/welcome";
   static const String signin = "/signin";
   static const String signup = "/signup";
   static const String home = "/home";
 
   static Map<String, WidgetBuilder> get routes => {
+    splash: (context) => const SplashView(),
     welcome: (context) => const WelcomeView(),
     signin: (context) => const SignInView(),
     signup: (context) => const SignUpView(),
