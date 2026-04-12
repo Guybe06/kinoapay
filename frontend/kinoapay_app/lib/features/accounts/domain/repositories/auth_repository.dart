@@ -16,6 +16,12 @@ abstract class AuthRepository {
     required String birthDate,
   });
 
+  /// Envoie un code OTP au numéro fourni.
+  Future<void> sendOtp(String phone, String countryCode);
+
+  /// Vérifie le code OTP saisi, lève une exception si incorrect ou expiré.
+  Future<void> verifyOtp(String phone, String countryCode, String code);
+
   /// Met fin à la session utilisateur active sans valeur de retour.
   Future<void> signOut();
 

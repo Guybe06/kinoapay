@@ -16,6 +16,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(AuthInitial()) {
     on<SignInRequested>(_onSignInRequested);
     on<SignUpRequested>(_onSignUpRequested);
+    on<SendOtpRequested>(_onSendOtpRequested);
+    on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<SignOutRequested>(_onSignOutRequested);
   }
 
@@ -44,6 +46,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       await _storage.markFirstOpenApp();
       emit(Authenticated(user));
+    } catch (e) {
+      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+    }
+  }
+
+  Future<void> _onSendOtpRequested(SendOtpRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      await _repository.sendOtp(event.phone, event.countryCode);
+      emit(OtpSent());
+    } catch (e) {
+      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+    }
+  }
+
+  Future<void> _onVerifyOtpRequested(VerifyOtpRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      await _repository.verifyOtp(event.phone, event.countryCode, event.code);
+      emit(OtpVerified());
     } catch (e) {
       emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
     }

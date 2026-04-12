@@ -5,6 +5,7 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/kyc_awareness_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step2_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
@@ -38,6 +39,9 @@ class KinoaRouter {
 
       case KinoaRoutes.signup:
         return _heroRoute(const SignUpStep1View(), settings);
+
+      case KinoaRoutes.signupOtp:
+        return _heroRoute(const SignupOtpView(), settings);
 
       case KinoaRoutes.signupCredentials:
         return _heroRoute(const SignUpStep2View(), settings);

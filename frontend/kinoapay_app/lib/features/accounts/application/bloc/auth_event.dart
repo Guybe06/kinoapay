@@ -42,4 +42,25 @@ class SignUpRequested extends AuthEvent {
   List<Object> get props => [firstName, lastName, phone, countryCode, birthDate, email, password];
 }
 
+class SendOtpRequested extends AuthEvent {
+  final String phone;
+  final String countryCode;
+
+  const SendOtpRequested({required this.phone, required this.countryCode});
+
+  @override
+  List<Object> get props => [phone, countryCode];
+}
+
+class VerifyOtpRequested extends AuthEvent {
+  final String phone;
+  final String countryCode;
+  final String code;
+
+  const VerifyOtpRequested({required this.phone, required this.countryCode, required this.code});
+
+  @override
+  List<Object> get props => [phone, countryCode, code];
+}
+
 class SignOutRequested extends AuthEvent {}

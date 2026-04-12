@@ -32,15 +32,22 @@ class AuthStrings {
   static const String signupHaveAccount = "Déjà un compte ?";
   static const String signupSigninLink = "Se connecter";
   static const String signupTerms = "En continuant, vous acceptez nos conditions d'utilisation.";
+  // Vérification OTP
+  static const String otpTitle = "Vérifiez votre numéro";
+  static const String otpBody = "Entrez le code à 6 chiffres envoyé au";
+  static const String otpResend = "Renvoyer le code";
+  static const String otpResendIn = "Renvoyer dans";
+  static const String otpInvalid = "Code incorrect. Vérifiez et réessayez.";
+  static const String otpExpired = "Code expiré. Demandez un nouveau code.";
   // Onboarding post-inscription
   static const String celebrationTitle = "Votre compte est créé";
   static const String celebrationSubtitlePrefix = "Bienvenue,";
   static const String celebrationBody = "Vous pouvez maintenant envoyer et recevoir de l'argent en toute simplicité.";
   static const String kycTitle = "Vérifiez votre identité";
   static const String kycSubtitle = "Quelques minutes suffisent pour débloquer toutes vos fonctionnalités";
-  static const String kycBenefitTransfer = "Transferts P2P jusqu'à 500 000 FCFA";
-  static const String kycBenefitMobile = "Retrait mobile money MTN et Airtel";
-  static const String kycBenefitSecurity = "Compte protégé et conforme";
+  static const String kycBenefitTransfer = "Envoyez de l'argent en quelques secondes";
+  static const String kycBenefitMobile = "Recevez des paiements de n'importe où";
+  static const String kycBenefitSecurity = "Votre compte est vérifié et sécurisé";
   static const String kycVerifyNow = "Vérifier maintenant";
   static const String kycLater = "Plus tard";
   static const String kycLaterNote = "Certaines fonctionnalités resteront limitées.";

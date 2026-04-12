@@ -68,6 +68,30 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> sendOtp(String phone, String countryCode) async {
+    try {
+      await _dioClient.dio.post("/auth/otp/send", data: {"phone": phone, "countryCode": countryCode});
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    } catch (_) {
+      throw KinoaException.unknown();
+    }
+  }
+
+  @override
+  Future<void> verifyOtp(String phone, String countryCode, String code) async {
+    try {
+      await _dioClient.dio.post("/auth/otp/verify", data: {"phone": phone, "countryCode": countryCode, "code": code});
+    } on KinoaException {
+      rethrow;
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    } catch (_) {
+      throw KinoaException.unknown();
+    }
+  }
+
+  @override
   Future<void> signOut() => _secureStorage.clearSession();
 
   @override

@@ -70,7 +70,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
     }
     Navigator.pushNamed(
       context,
-      KinoaRoutes.signupCredentials,
+      KinoaRoutes.signupOtp,
       arguments: SignupStep1Args(
         firstName: _firstNameCtrl.text.trim(),
         lastName: _lastNameCtrl.text.trim(),

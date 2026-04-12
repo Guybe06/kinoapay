@@ -25,6 +25,10 @@ class Authenticated extends AuthState {
 
 class Unauthenticated extends AuthState {}
 
+class OtpSent extends AuthState {}
+
+class OtpVerified extends AuthState {}
+
 class AuthError extends AuthState {
   final KinoaException exception;
 

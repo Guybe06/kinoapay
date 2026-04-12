@@ -74,6 +74,27 @@ class MockAuthRepository implements AuthRepository {
     return account;
   }
 
+  // Code OTP fixe en environnement mock.
+  static const String _mockOtpCode = "123456";
+
+  @override
+  Future<void> sendOtp(String phone, String countryCode) async {
+    await Future.delayed(const Duration(milliseconds: 1200));
+    // Mock : le code est toujours 123456, aucun SMS réel envoyé.
+  }
+
+  @override
+  Future<void> verifyOtp(String phone, String countryCode, String code) async {
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (code != _mockOtpCode) {
+      throw KinoaException(
+        message: AuthStrings.otpInvalid,
+        code: AuthErrorCodes.otpInvalid,
+        statusCode: 422,
+      );
+    }
+  }
+
   @override
   Future<void> signOut() async {
     await Future.delayed(const Duration(milliseconds: 300));

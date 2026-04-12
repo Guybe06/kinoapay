@@ -6,6 +6,7 @@ class KinoaRoutes {
   // Authentification
   static const String signin = "/signin";
   static const String signup = "/signup";
+  static const String signupOtp = "/signup-otp";
   static const String signupCredentials = "/signup-credentials";
   static const String forgotPassword = "/forgot-password";
   // Onboarding post-inscription
