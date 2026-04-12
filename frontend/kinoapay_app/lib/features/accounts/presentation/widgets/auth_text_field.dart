@@ -104,7 +104,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 )
               : null,
           filled: true,
-          fillColor: KinoaColors.white.withValues(alpha: 0.6),
+          fillColor: _hasFocus ? KinoaColors.white : KinoaColors.white.withValues(alpha: 0.65),
           enabledBorder: OutlineInputBorder(
             borderRadius: borderRadius,
             borderSide: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.12), width: 1),

@@ -2,9 +2,7 @@ import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 
 /// Fournit les services de validation pour les données d'authentification utilisateur.
 class AuthValidator {
-  /// Valide le format de l'adresse email ou du numéro mobile.
-  /// 
-  /// Retourne un message d'erreur si invalide, sinon null.
+  /// Valide le format de l'adresse email ou du numéro mobile, retourne null si valide.
   static String? validateEmailOrPhone(String? value) {
     if (value == null || value.isEmpty) {
       return KinoaStrings.errorFieldRequired;
@@ -20,9 +18,7 @@ class AuthValidator {
     return null;
   }
 
-  /// Valide la conformité du mot de passe.
-  /// 
-  /// Retourne un message d'erreur si la longueur est insuffisante (< 8), sinon null.
+  /// Valide la conformité du mot de passe, retourne null si valide (longueur ≥ 8).
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return KinoaStrings.errorFieldRequired;
