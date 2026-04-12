@@ -1,45 +1,23 @@
+import "dart:ui";
 import "package:flutter/material.dart";
+import "package:lucide_icons/lucide_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 
 class _NavTab {
   final IconData icon;
-  final IconData activeIcon;
   final String label;
-
-  const _NavTab({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-  });
+  const _NavTab({required this.icon, required this.label});
 }
 
-/// Onglets du shell dans l'ordre des index [KinoaRoutes.tabDashboard] à [tabProfile].
 const List<_NavTab> _tabs = [
-  _NavTab(
-    icon: Icons.home_outlined,
-    activeIcon: Icons.home_rounded,
-    label: KinoaStrings.navDashboard,
-  ),
-  _NavTab(
-    icon: Icons.send_outlined,
-    activeIcon: Icons.send_rounded,
-    label: KinoaStrings.navTransfer,
-  ),
-  _NavTab(
-    icon: Icons.receipt_long_outlined,
-    activeIcon: Icons.receipt_long_rounded,
-    label: KinoaStrings.navHistory,
-  ),
-  _NavTab(
-    icon: Icons.person_outline_rounded,
-    activeIcon: Icons.person_rounded,
-    label: KinoaStrings.navProfile,
-  ),
+  _NavTab(icon: LucideIcons.home, label: KinoaStrings.navDashboard),
+  _NavTab(icon: LucideIcons.send, label: KinoaStrings.navTransfer),
+  _NavTab(icon: LucideIcons.clock, label: KinoaStrings.navHistory),
+  _NavTab(icon: LucideIcons.user, label: KinoaStrings.navProfile),
 ];
 
-/// Barre de navigation inférieure persistante du shell KinoaPay.
+/// Navigation flottante glassmorphisme — positionnée en overlay dans le shell.
 class KinoaBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
@@ -52,16 +30,29 @@ class KinoaBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: KinoaColors.navBackground,
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 60,
-          child: Row(
-            children: List.generate(
-              _tabs.length,
-              (index) => _buildTab(index),
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, bottomInset + 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            height: 64,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.12),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: List.generate(
+                _tabs.length,
+                (i) => _buildItem(i),
+              ),
             ),
           ),
         ),
@@ -69,8 +60,8 @@ class KinoaBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildTab(int index) {
-    final bool isActive = index == currentIndex;
+  Widget _buildItem(int index) {
+    final bool active = index == currentIndex;
     final tab = _tabs[index];
 
     return Expanded(
@@ -80,22 +71,26 @@ class KinoaBottomNav extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedSwitcher(
+            AnimatedContainer(
               duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: active ? KinoaColors.accent.withValues(alpha: 0.15) : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Icon(
-                isActive ? tab.activeIcon : tab.icon,
-                key: ValueKey(isActive),
-                size: 22,
-                color: isActive ? KinoaColors.navActive : KinoaColors.navInactive,
+                tab.icon,
+                size: 20,
+                color: active ? KinoaColors.accent : KinoaColors.stone500,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
                 fontSize: 10,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                color: isActive ? KinoaColors.navActive : KinoaColors.navInactive,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+                color: active ? KinoaColors.accent : KinoaColors.stone500,
               ),
               child: Text(tab.label),
             ),

@@ -1,8 +1,6 @@
-import "dart:ui";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/navigation/kinoa_router.dart";
 
 class DashboardQuickActions extends StatelessWidget {
   const DashboardQuickActions({super.key});
@@ -36,7 +34,7 @@ class DashboardQuickActions extends StatelessWidget {
               _ActionItem(
                 icon: CupertinoIcons.paperplane,
                 label: "Envoyer",
-                onTap: () => Navigator.pushNamed(context, KinoaRouter.send),
+                onTap: () {},
                 color: KinoaColors.stone800,
               ),
               _ActionItem(

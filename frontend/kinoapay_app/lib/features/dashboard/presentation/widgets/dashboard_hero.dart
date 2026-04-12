@@ -27,8 +27,9 @@ class DashboardHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 100, 20, 20),
+      padding: EdgeInsets.fromLTRB(20, topInset + 20, 20, 20),
       decoration: const BoxDecoration(
         color: KinoaColors.stone950,
       ),

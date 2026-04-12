@@ -90,7 +90,10 @@ class _DashboardViewState extends State<DashboardView> {
           displacement: 100,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 120), // Espace pour la bottom nav
+            // Espace pour la nav flottante (64) + bottom inset + marges
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom + 64 + 12 + 20,
+            ),
             child: Column(
               children: [
                 // DashboardHero (Passage des mêmes props que le JS)
