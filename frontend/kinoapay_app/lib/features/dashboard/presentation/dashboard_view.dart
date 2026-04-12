@@ -90,9 +90,9 @@ class _DashboardViewState extends State<DashboardView> {
           displacement: 100,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            // Espace pour nav flottante (64) + marges (24) + safe area + brume (120)
+            // Espace pour nav flottante (64) + marges + safe area + brume (72)
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom + 64 + 24 + 120,
+              bottom: MediaQuery.of(context).padding.bottom + 64 + 24 + 72,
             ),
             child: Column(
               children: [

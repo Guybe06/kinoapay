@@ -61,7 +61,7 @@ class _KinoaShellState extends State<KinoaShell> {
     const double navMarginBottom = 12;
     final double navTotalHeight = navCapsuleHeight + navMarginBottom + bottomInset + 12;
     // La brume se positionne juste au-dessus de la nav et remonte vers le contenu
-    const double mistHeight = 120;
+    const double mistHeight = 72;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
