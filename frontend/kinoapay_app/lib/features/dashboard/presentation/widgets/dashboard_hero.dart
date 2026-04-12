@@ -1,4 +1,3 @@
-import "dart:ui";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
@@ -28,8 +27,9 @@ class DashboardHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topInset = MediaQuery.of(context).padding.top;
+    // 56 = hauteur du KinoaHeader (extendBodyBehindAppBar: true → le body passe derrière)
     return Container(
-      padding: EdgeInsets.fromLTRB(20, topInset + 20, 20, 20),
+      padding: EdgeInsets.fromLTRB(20, topInset + 56 + 16, 20, 20),
       decoration: const BoxDecoration(
         color: KinoaColors.stone950,
       ),
@@ -58,13 +58,21 @@ class DashboardHero extends StatelessWidget {
           ),
           const SizedBox(height: 32),
 
-          // Main Balance Card (Inspirée de l'image 3)
+          // Carte de solde — fond quinoaDark chaud, chiffres en blanc, label XAF en or
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: KinoaColors.accent,
-              borderRadius: BorderRadius.circular(32),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF3A2E1E), Color(0xFF1E180E)],
+              ),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: KinoaColors.quinoaGold.withValues(alpha: 0.18),
+                width: 1,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,20 +80,28 @@ class DashboardHero extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       "Solde actuel",
-                      style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 14),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                      ),
                     ),
                     _GlassChipSmall(
                       onTap: onPeriodClick,
                       child: Text(
                         DateFormat("MMMM", "fr_FR").format(DateTime.now()),
-                        style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: KinoaColors.quinoaGold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -93,20 +109,24 @@ class DashboardHero extends StatelessWidget {
                     Text(
                       NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR").format(totalReceived).trim(),
                       style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 42,
+                        color: Colors.white,
+                        fontSize: 44,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: -1,
+                        letterSpacing: -1.5,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 6),
                     const Text(
                       "XAF",
-                      style: TextStyle(color: Colors.black54, fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: KinoaColors.quinoaGold,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 22),
                 Row(
                   children: [
                     _ActionButton(
@@ -146,18 +166,23 @@ class _ActionButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.white.withValues(alpha: 0.07),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 16, color: Colors.black),
+              Icon(icon, size: 15, color: KinoaColors.quinoaGold),
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w800),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),
@@ -179,73 +204,11 @@ class _GlassChipSmall extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.05),
+          color: KinoaColors.quinoaGold.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: Colors.black12),
+          border: Border.all(color: KinoaColors.quinoaGold.withValues(alpha: 0.2)),
         ),
         child: child,
-      ),
-    );
-  }
-}
-
-class _HeroCurvePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF2D241C), Color(0xFF1A140F)],
-      ).createShader(Offset.zero & size);
-
-    final path = Path();
-    path.lineTo(0, size.height - 80);
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height,
-      size.width,
-      size.height - 80,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-
-    canvas.drawPath(path, paint);
-    
-    // Ajout d'un éclat subtil (Anode style)
-    final glowPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.03)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 40);
-    canvas.drawCircle(Offset(size.width * 0.8, 100), 120, glowPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _GlassChip extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onTap;
-  const _GlassChip({required this.child, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(100),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: child,
-          ),
-        ),
       ),
     );
   }
@@ -277,50 +240,6 @@ class _ProfileAvatar extends StatelessWidget {
       child: Text(
         initials,
         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
-      ),
-    );
-  }
-}
-
-class _MiniStat extends StatelessWidget {
-  final String label;
-  final double amount;
-  final IconData icon;
-  final Color color;
-  final bool isCount;
-
-  const _MiniStat({
-    required this.label,
-    required this.amount,
-    required this.icon,
-    required this.color,
-    this.isCount = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 16, color: Colors.white70),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            isCount ? "${amount.toInt()} actifs" : "${NumberFormat.compact().format(amount)} FCFA",
-            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
-          ),
-        ],
       ),
     );
   }

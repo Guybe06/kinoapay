@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:lucide_icons/lucide_icons.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
@@ -46,11 +46,11 @@ class KycAwarenessView extends StatelessWidget {
                   style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.5),
                 ),
                 const SizedBox(height: 36),
-                _buildBenefit(icon: LucideIcons.send, text: AuthStrings.kycBenefitTransfer),
+                _buildBenefit(icon: SolarIconsOutline.sendSquare, text: AuthStrings.kycBenefitTransfer),
                 const SizedBox(height: 16),
-                _buildBenefit(icon: LucideIcons.layers, text: AuthStrings.kycBenefitMobile),
+                _buildBenefit(icon: SolarIconsOutline.layersMinimalistic, text: AuthStrings.kycBenefitMobile),
                 const SizedBox(height: 16),
-                _buildBenefit(icon: LucideIcons.zap, text: AuthStrings.kycBenefitSecurity),
+                _buildBenefit(icon: SolarIconsOutline.bolt, text: AuthStrings.kycBenefitSecurity),
                 const Spacer(flex: 3),
                 KinoaPrimaryButton(text: AuthStrings.kycVerifyNow, onPressed: () => _goNext(context)),
                 const SizedBox(height: 12),
@@ -85,7 +85,7 @@ class KycAwarenessView extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(LucideIcons.userCheck, color: KinoaColors.quinoaGold, size: 16),
+          const Icon(SolarIconsOutline.userCheck, color: KinoaColors.quinoaGold, size: 16),
           const SizedBox(width: 8),
           const Text(
             "Vérification d'identité",

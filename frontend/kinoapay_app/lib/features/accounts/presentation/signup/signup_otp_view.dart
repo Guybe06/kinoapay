@@ -2,7 +2,7 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:lucide_icons/lucide_icons.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
@@ -169,7 +169,7 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(LucideIcons.arrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),

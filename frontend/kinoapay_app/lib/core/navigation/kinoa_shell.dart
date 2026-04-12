@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/widgets/kinoa_bottom_nav.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_bottom_nav.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
@@ -55,12 +56,12 @@ class _KinoaShellState extends State<KinoaShell> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
-    // Hauteur totale de la zone nav (64 capsule + bottom safe area + 12 marge + 12 extra)
+    // Hauteur totale occupée par la zone nav (capsule + marges + safe area)
     const double navCapsuleHeight = 64;
     const double navMarginBottom = 12;
     final double navTotalHeight = navCapsuleHeight + navMarginBottom + bottomInset + 12;
-    // Hauteur de la brume : juste au-dessus du nav
-    const double mistHeight = 90;
+    // La brume se positionne juste au-dessus de la nav et remonte vers le contenu
+    const double mistHeight = 120;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -71,8 +72,12 @@ class _KinoaShellState extends State<KinoaShell> {
       ),
       child: Scaffold(
         backgroundColor: KinoaColors.surfaceDark,
+        appBar: KinoaHeader(
+          withHero: widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
+        ),
         extendBodyBehindAppBar: true,
         body: Stack(
+// ... rest of the build method
           children: [
             // ── Pages ──
             IndexedStack(
@@ -80,11 +85,12 @@ class _KinoaShellState extends State<KinoaShell> {
               children: _buildPages(),
             ),
 
-            // ── Brume de dégradé (IgnorePointer : ne capte aucun tap) ──
+            // ── Brume de dégradé : couvre la zone nav + remonte dans le contenu ──
+            // bottom = navTotalHeight → la base de la brume s'appuie sur le dessus de la nav
             Positioned(
               left: 0,
               right: 0,
-              bottom: navTotalHeight - mistHeight,
+              bottom: navTotalHeight,
               height: mistHeight,
               child: IgnorePointer(
                 child: Container(
@@ -94,13 +100,23 @@ class _KinoaShellState extends State<KinoaShell> {
                       end: Alignment.bottomCenter,
                       colors: [
                         KinoaColors.surfaceDark.withValues(alpha: 0),
-                        KinoaColors.surfaceDark.withValues(alpha: 0.85),
+                        KinoaColors.surfaceDark.withValues(alpha: 0.7),
                         KinoaColors.surfaceDark,
                       ],
-                      stops: const [0.0, 0.65, 1.0],
+                      stops: const [0.0, 0.55, 1.0],
                     ),
                   ),
                 ),
+              ),
+            ),
+            // ── Fond solide derrière la nav (empêche tout contenu de transparaître) ──
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: navTotalHeight,
+              child: IgnorePointer(
+                child: Container(color: KinoaColors.surfaceDark),
               ),
             ),
 

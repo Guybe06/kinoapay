@@ -2,7 +2,7 @@ import "dart:ui";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:lucide_icons/lucide_icons.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
@@ -169,10 +169,10 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: KinoaColors.accent.withValues(alpha: 0.12),
+            color: KinoaColors.quinoaGold.withValues(alpha: 0.10),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(LucideIcons.smartphone, color: KinoaColors.accent, size: 22),
+          child: const Icon(SolarIconsOutline.phone, color: KinoaColors.quinoaGold, size: 22),
         ),
         const SizedBox(height: 20),
         const Text(
@@ -297,7 +297,7 @@ class _ChannelCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(LucideIcons.check, size: 13, color: KinoaColors.success),
+                  const Icon(SolarIconsBold.checkCircle, size: 13, color: KinoaColors.success),
                   const SizedBox(width: 4),
                   Text(
                     AuthStrings.paymentSetupLinked,

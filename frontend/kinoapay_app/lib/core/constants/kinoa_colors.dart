@@ -69,7 +69,7 @@ class KinoaColors {
   static const Color pendingLowOpacity = Color(0x206366F1);
   // Navigation
   static const Color navBackground = stone950;
-  static const Color navActive = accent;
+  static const Color navActive = quinoaGold;
   static const Color navInactive = stone500;
   // Utilitaires
   static const Color white = Color(0xFFFFFFFF);
