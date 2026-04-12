@@ -82,12 +82,35 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
                   _animated(_anim.button, _buildActions(context), slide: 40),
                   const SizedBox(height: 16),
                   _animated(_anim.link, _buildSigninLink(context), slide: 20),
+                  const SizedBox(height: 12),
+                  _animated(_anim.link, _buildTrustLabel(), slide: 10),
                   const SizedBox(height: 28),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTrustLabel() {
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(CupertinoIcons.checkmark_shield_fill, color: KinoaColors.quinoaGold, size: 14),
+          const SizedBox(width: 8),
+          Text(
+            WelcomeStrings.trustLabel,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.4),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
       ),
     );
   }
