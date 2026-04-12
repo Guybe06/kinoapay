@@ -30,4 +30,9 @@ class SecureStorageService {
   // Persiste entre les sessions pour router directement vers signin plutôt que welcome.
   Future<void> markFirstOpenApp() => write(_firstOpenAppKey, "true");
   Future<bool> isFirstOpenApp() async => (await read(_firstOpenAppKey)) != "true";
+
+  // Comptes de paiement : true si l'utilisateur a configuré ou ignoré l'étape setup.
+  static const String _channelsSetupKey = "channels_setup_done";
+  Future<bool> isChannelsSetupDone() async => (await read(_channelsSetupKey)) == "true";
+  Future<void> markChannelsSetupDone() => write(_channelsSetupKey, "true");
 }

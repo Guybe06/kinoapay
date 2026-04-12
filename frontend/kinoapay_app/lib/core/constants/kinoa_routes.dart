@@ -12,6 +12,7 @@ class KinoaRoutes {
   // Onboarding post-inscription
   static const String celebration = "/celebration";
   static const String kycAwareness = "/kyc-awareness";
+  static const String paymentSetup = "/payment-setup";
   // Shell principal (avec header et bottom nav)
   static const String shell = "/app";
   // Onglets du shell (index pour IndexedStack)

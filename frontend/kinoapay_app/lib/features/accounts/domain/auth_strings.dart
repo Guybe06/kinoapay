@@ -45,10 +45,19 @@ class AuthStrings {
   static const String celebrationBody = "Vous pouvez maintenant envoyer et recevoir de l'argent en toute simplicité.";
   static const String kycTitle = "Vérifiez votre identité";
   static const String kycSubtitle = "Quelques minutes suffisent pour débloquer toutes vos fonctionnalités";
-  static const String kycBenefitTransfer = "Envoyez de l'argent en quelques secondes";
-  static const String kycBenefitMobile = "Recevez des paiements de n'importe où";
-  static const String kycBenefitSecurity = "Votre compte est vérifié et sécurisé";
+  static const String kycBenefitTransfer = "Envoyez de l'argent sans limite";
+  static const String kycBenefitMobile = "Tous les moyens de paiement, unifiés";
+  static const String kycBenefitSecurity = "Simple, rapide, sécurisé";
   static const String kycVerifyNow = "Vérifier maintenant";
   static const String kycLater = "Plus tard";
   static const String kycLaterNote = "Certaines fonctionnalités resteront limitées.";
+  // Configuration des comptes de paiement
+  static const String paymentSetupTitle = "Vos comptes mobile money";
+  static const String paymentSetupSubtitle = "Liez vos numéros MTN et Airtel pour envoyer et recevoir de l'argent.";
+  static const String paymentSetupAdd = "Ajouter";
+  static const String paymentSetupLinked = "Configuré";
+  static const String paymentSetupConfirm = "Confirmer ce numéro";
+  static const String paymentSetupSkip = "Ignorer pour l'instant";
+  static const String paymentSetupSkipNote = "Vous pourrez ajouter vos comptes plus tard depuis votre profil.";
+  static const String paymentSetupContinue = "Continuer";
 }

@@ -11,8 +11,8 @@ import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 class KycAwarenessView extends StatelessWidget {
   const KycAwarenessView({super.key});
 
-  void _goToShell(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.shell, (_) => false);
+  void _goNext(BuildContext context) {
+    Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.paymentSetup, (_) => false);
   }
 
   @override
@@ -48,16 +48,16 @@ class KycAwarenessView extends StatelessWidget {
                 const SizedBox(height: 36),
                 _buildBenefit(icon: LucideIcons.send, text: AuthStrings.kycBenefitTransfer),
                 const SizedBox(height: 16),
-                _buildBenefit(icon: LucideIcons.wallet, text: AuthStrings.kycBenefitMobile),
+                _buildBenefit(icon: LucideIcons.layers, text: AuthStrings.kycBenefitMobile),
                 const SizedBox(height: 16),
-                _buildBenefit(icon: LucideIcons.shieldCheck, text: AuthStrings.kycBenefitSecurity),
+                _buildBenefit(icon: LucideIcons.zap, text: AuthStrings.kycBenefitSecurity),
                 const Spacer(flex: 3),
-                KinoaPrimaryButton(text: AuthStrings.kycVerifyNow, onPressed: () => _goToShell(context)),
+                KinoaPrimaryButton(text: AuthStrings.kycVerifyNow, onPressed: () => _goNext(context)),
                 const SizedBox(height: 12),
                 KinoaPrimaryButton(
                   text: AuthStrings.kycLater,
                   isSecondary: true,
-                  onPressed: () => _goToShell(context),
+                  onPressed: () => _goNext(context),
                 ),
                 const SizedBox(height: 12),
                 Center(

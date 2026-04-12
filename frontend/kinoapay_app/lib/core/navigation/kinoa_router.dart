@@ -4,6 +4,7 @@ import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/kyc_awareness_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/onboarding/payment_setup_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
@@ -17,7 +18,10 @@ class KinoaRouter {
   /// token présent → shell, first_open_app sans token → signin, jamais ouvert → welcome.
   static Future<String> resolveInitialRoute(SecureStorageService storage) async {
     final token = await storage.getToken();
-    if (token != null && token.isNotEmpty) return KinoaRoutes.shell;
+    if (token != null && token.isNotEmpty) {
+      if (!await storage.isChannelsSetupDone()) return KinoaRoutes.paymentSetup;
+      return KinoaRoutes.shell;
+    }
     if (!await storage.isFirstOpenApp()) return KinoaRoutes.signin;
     return KinoaRoutes.welcome;
   }
@@ -51,6 +55,9 @@ class KinoaRouter {
 
       case KinoaRoutes.kycAwareness:
         return _heroRoute(const KycAwarenessView(), settings);
+
+      case KinoaRoutes.paymentSetup:
+        return _heroRoute(const PaymentSetupView(), settings);
 
       case KinoaRoutes.shell:
         final sArgs = args is ShellArgs ? args : const ShellArgs();

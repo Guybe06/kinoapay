@@ -9,7 +9,9 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/theme/kinoa_theme.dart";
 import "package:kinoapay_app/core/theme/theme_notifier.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/payment_setup_bloc.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_auth_repository.dart";
+import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_payment_channel_repository.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock_dashboard_repository.dart";
 
@@ -37,6 +39,11 @@ void main() async {
         ),
         BlocProvider<DashboardBloc>(
           create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
+        ),
+        BlocProvider<PaymentSetupBloc>(
+          create: (_) => PaymentSetupBloc(
+            repo: MockPaymentChannelRepository(storage: storage),
+          ),
         ),
       ],
       child: const KinoaPayApp(),
