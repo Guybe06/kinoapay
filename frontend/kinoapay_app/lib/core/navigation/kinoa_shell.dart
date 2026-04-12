@@ -1,4 +1,3 @@
-import "dart:ui";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
@@ -56,14 +55,6 @@ class _KinoaShellState extends State<KinoaShell> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    // Hauteur totale occupée par la zone nav (capsule + marges + safe area)
-    const double navCapsuleHeight = 64;
-    const double navMarginBottom = 12;
-    final double navTotalHeight = navCapsuleHeight + navMarginBottom + bottomInset + 12;
-    // La brume se positionne juste au-dessus de la nav et remonte vers le contenu
-    const double mistHeight = 72;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -77,6 +68,7 @@ class _KinoaShellState extends State<KinoaShell> {
           withHero: widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
         ),
         extendBodyBehindAppBar: true,
+        extendBody: true,
         body: Stack(
 // ... rest of the build method
           children: [
@@ -86,38 +78,6 @@ class _KinoaShellState extends State<KinoaShell> {
               children: _buildPages(),
             ),
 
-            // ── Zone glass : blur + gradient overlay sur toute la zone nav + brume ──
-            // ClipRect obligatoire pour que BackdropFilter ne sorte pas de sa zone.
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: navTotalHeight + mistHeight,
-              child: IgnorePointer(
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                    // Gradient overlay : transparent en haut (blur visible),
-                    // surfaceDark opaque en bas (fond solide sous la nav).
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            KinoaColors.surfaceDark.withValues(alpha: 0),
-                            KinoaColors.surfaceDark.withValues(alpha: 0.55),
-                            KinoaColors.surfaceDark.withValues(alpha: 0.88),
-                            KinoaColors.surfaceDark,
-                          ],
-                          stops: const [0.0, 0.35, 0.65, 1.0],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
 
             // ── Navigation flottante glass ──
             Positioned(
