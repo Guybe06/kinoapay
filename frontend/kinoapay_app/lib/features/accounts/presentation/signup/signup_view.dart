@@ -11,7 +11,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart"
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/core/legal/legal_bottom_sheet.dart";
-import "package:kinoapay_app/features/accounts/presentation/widgets/auth_button.dart";
+import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
@@ -129,7 +129,7 @@ class _SignUpViewState extends State<SignUpView> {
               validator: AuthValidator.validatePassword,
             ),
             const SizedBox(height: 40),
-            AuthButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
+            KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
             const SizedBox(height: 32),
             const AuthSocialDivider(),
             const SizedBox(height: 20),
@@ -148,7 +148,7 @@ class _SignUpViewState extends State<SignUpView> {
   Widget _buildSigninLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, KinoaRoutes.signin),
+        onPressed: () => Navigator.pushNamed(context, KinoaRoutes.signin),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",

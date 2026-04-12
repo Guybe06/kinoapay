@@ -1,6 +1,9 @@
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_state.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/domain/repositories/dashboard_repository.dart";
 
 /// Gère la logique métier et les états du tableau de bord utilisateur.
@@ -25,9 +28,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       ]);
 
       emit(DashboardLoadSuccess(
-        stats: results[0] as dynamic,
-        transactions: results[1] as List<dynamic>,
-        channels: results[2] as List<dynamic>,
+        stats: results[0] as DashboardStats,
+        transactions: List<Transaction>.from(results[1] as Iterable),
+        channels: List<PaymentChannel>.from(results[2] as Iterable),
       ));
     } catch (e) {
       emit(const DashboardLoadFailure("Impossible de charger les données du tableau de bord"));
@@ -44,9 +47,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       ]);
 
       emit(DashboardLoadSuccess(
-        stats: results[0] as dynamic,
-        transactions: results[1] as List<dynamic>,
-        channels: results[2] as List<dynamic>,
+        stats: results[0] as DashboardStats,
+        transactions: List<Transaction>.from(results[1] as Iterable),
+        channels: List<PaymentChannel>.from(results[2] as Iterable),
       ));
     } catch (e) {
       emit(const DashboardLoadFailure("Échec du rafraîchissement des données"));

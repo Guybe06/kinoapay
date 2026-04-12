@@ -1,25 +1,26 @@
+import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/features/accounts/domain/auth_error_codes.dart";
+import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 import "package:kinoapay_app/features/accounts/domain/repositories/auth_repository.dart";
 
-/// Implémentation simulée du dépôt d'authentification pour les phases de test et de développement.
+/// Implémentation simulée du dépôt d'authentification pour le développement et les tests.
 class MockAuthRepository implements AuthRepository {
-  /// Simule une authentification par email et retourne un compte utilisateur factice ou lève une exception.
   @override
-  Future<UserAccount> signIn(String email, String password) async {
+  Future<UserAccount> signIn(String email, String password, {bool rememberMe = true}) async {
     await Future.delayed(const Duration(seconds: 2));
 
     if (email == "test@kinoapay.com" && password == "password123") {
-      return const UserAccount(
-        id: "1",
-        email: "test@kinoapay.com",
-        fullName: "Utilisateur Test",
-      );
-    } else {
-      throw Exception("Identifiants invalides");
+      return const UserAccount(id: "1", email: "test@kinoapay.com", fullName: "Utilisateur Test");
     }
+
+    throw KinoaException(
+      message: AuthStrings.errorInvalidCredentials,
+      code: AuthErrorCodes.invalidCredentials,
+      statusCode: 401,
+    );
   }
 
-  /// Simule la création d'un nouveau compte utilisateur et retourne l'entité UserAccount générée.
   @override
   Future<UserAccount> signUp(String email, String password) async {
     await Future.delayed(const Duration(seconds: 2));
@@ -31,15 +32,9 @@ class MockAuthRepository implements AuthRepository {
     );
   }
 
-  /// Simule la déconnexion de l'utilisateur avec un délai de latence artificielle sans retour de valeur.
   @override
-  Future<void> signOut() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-  }
+  Future<void> signOut() async => Future.delayed(const Duration(milliseconds: 300));
 
-  /// Simule la vérification de session et retourne null pour indiquer l'absence d'utilisateur connecté.
   @override
-  Future<UserAccount?> getCurrentUser() async {
-    return null;
-  }
+  Future<UserAccount?> getCurrentUser() async => null;
 }

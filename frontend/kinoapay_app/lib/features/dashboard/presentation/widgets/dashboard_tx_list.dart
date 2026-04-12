@@ -1,64 +1,30 @@
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:intl/intl.dart";
-import "package:lucide_icons/lucide_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row.dart";
 
-/// Liste des transactions récentes groupées par date.
+/// Liste des transactions groupées (Traduction de dashboard-tx-list.tsx)
 class DashboardTxList extends StatelessWidget {
-  final List<Transaction> transactions;
+  final Map<String, List<Transaction>> groups;
   final bool isLoading;
 
   const DashboardTxList({
     super.key,
-    required this.transactions,
+    required this.groups,
     this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const _LoadingSkeleton();
-    }
-
-    if (transactions.isEmpty) {
-      return const _EmptyState();
-    }
-
-    final groups = _groupByDay(transactions);
+    if (isLoading) return const _LoadingSkeleton();
+    if (groups.isEmpty) return const _EmptyState();
 
     return Column(
       children: groups.entries.map((entry) {
         return _TxGroup(label: entry.key, items: entry.value);
       }).toList(),
     );
-  }
-
-  Map<String, List<Transaction>> _groupByDay(List<Transaction> txs) {
-    final Map<String, List<Transaction>> groups = {};
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-
-    for (final tx in txs) {
-      final date = DateTime(tx.startedAt.year, tx.startedAt.month, tx.startedAt.day);
-      String label;
-
-      if (date == today) {
-        label = "Aujourd'hui";
-      } else if (date == yesterday) {
-        label = "Hier";
-      } else {
-        label = DateFormat("dd MMMM", "fr_FR").format(date);
-      }
-
-      if (!groups.containsKey(label)) {
-        groups[label] = [];
-      }
-      groups[label]!.add(tx);
-    }
-    return groups;
   }
 }
 
@@ -74,30 +40,18 @@ class _TxGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            children: [
-              Text(
-                label.toUpperCase(),
-                style: const TextStyle(
-                  color: KinoaColors.stone500,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Expanded(child: Divider(color: KinoaColors.stone200, thickness: 1)),
-            ],
+          padding: const EdgeInsets.only(top: 8, bottom: 16),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.3),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (context, index) => DashboardTxRow(tx: items[index]),
-        ),
+        ...items.map((tx) => DashboardTxRow(tx: tx)),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -110,12 +64,13 @@ class _LoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: List.generate(3, (index) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: 12),
         child: Container(
           height: 80,
           decoration: BoxDecoration(
-            color: KinoaColors.stone100,
-            borderRadius: BorderRadius.circular(20),
+            color: KinoaColors.stone900,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
         ),
       )),
@@ -131,17 +86,13 @@ class _EmptyState extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 48),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: KinoaColors.stone200, style: BorderStyle.solid),
-      ),
       child: Column(
         children: [
-          Icon(LucideIcons.clock, size: 28, color: KinoaColors.stone300),
-          const SizedBox(height: 12),
+          Icon(CupertinoIcons.time, size: 32, color: KinoaColors.stone300),
+          const SizedBox(height: 16),
           const Text(
-            "Aucune transaction ce mois",
-            style: TextStyle(color: KinoaColors.stone500, fontSize: 14),
+            "Aucune transaction récente",
+            style: TextStyle(color: KinoaColors.stone400, fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ],
       ),

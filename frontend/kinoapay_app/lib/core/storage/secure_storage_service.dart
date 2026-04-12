@@ -1,10 +1,11 @@
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
-/// Gère le stockage sécurisé et persistant des données sensibles (tokens, identifiants).
+/// Gère le stockage sécurisé et persistant des données sensibles (tokens, identifiants, préférences app).
 class SecureStorageService {
   final FlutterSecureStorage _storage;
 
   static const String _tokenKey = "auth_token";
+  static const String _firstOpenAppKey = "first_open_app";
 
   const SecureStorageService({
     FlutterSecureStorage storage = const FlutterSecureStorage(
@@ -12,21 +13,21 @@ class SecureStorageService {
     ),
   }) : _storage = storage;
 
-  Future<void> write(String key, String value) async =>
-      await _storage.write(key: key, value: value);
-
-  /// @return  Valeur stockée, ou null si absente
-  Future<String?> read(String key) async => await _storage.read(key: key);
-
-  Future<void> delete(String key) async => await _storage.delete(key: key);
-
-  Future<void> clearAll() async => await _storage.deleteAll();
+  Future<void> write(String key, String value) => _storage.write(key: key, value: value);
+  Future<String?> read(String key) => _storage.read(key: key);
+  Future<void> delete(String key) => _storage.delete(key: key);
+  Future<void> clearAll() => _storage.deleteAll();
 
   // Helpers token JWT
-  Future<void> saveToken(String token) async => await write(_tokenKey, token);
+  Future<void> saveToken(String token) => write(_tokenKey, token);
+  Future<String?> getToken() => read(_tokenKey);
+  Future<void> deleteToken() => delete(_tokenKey);
 
-  /// @return  Token JWT, ou null si aucune session active
-  Future<String?> getToken() async => await read(_tokenKey);
+  // Supprime uniquement la session (token), conserve first_open_app et autres préférences.
+  Future<void> clearSession() => deleteToken();
 
-  Future<void> deleteToken() async => await delete(_tokenKey);
+  // first_open_app : true après le premier signin ou signup réussi.
+  // Persiste entre les sessions pour router directement vers signin plutôt que welcome.
+  Future<void> markFirstOpenApp() => write(_firstOpenAppKey, "true");
+  Future<bool> isFirstOpenApp() async => (await read(_firstOpenAppKey)) != "true";
 }

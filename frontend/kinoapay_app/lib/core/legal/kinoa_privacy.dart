@@ -3,7 +3,7 @@
 abstract final class KinoaPrivacy {
   // En-tête
   static const String title = "Politique de Confidentialité";
-  static const String version = "Version 1.0 — Avril 2026";
+  static const String version = "Version 1.0, Avril 2026";
   static const String controller = "Responsable du traitement : Winsa Ltd, Brazzaville, République du Congo";
 
   // Article 1

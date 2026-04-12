@@ -11,7 +11,7 @@ class SendView extends StatefulWidget {
 }
 
 class _SendViewState extends State<SendView> {
-  final TextEditingController _amountController = TextEditingController(text: "0");
+  final TextEditingController _amountController = TextEditingController(text: "5000");
 
   @override
   Widget build(BuildContext context) {
@@ -19,198 +19,372 @@ class _SendViewState extends State<SendView> {
       backgroundColor: const Color(0xFFF9F7F2), // Stone 100
       body: Stack(
         children: [
-          // Fond avec un gradient subtil ou une forme organique
+          // Éléments de design en arrière-plan (glows)
           Positioned(
-            top: -100,
-            right: -50,
+            top: -50,
+            left: -50,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 250,
+              height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFC8964A).withValues(alpha: 0.05),
+                color: const Color(0xFFC8964A).withValues(alpha: 0.08),
               ),
             ),
           ),
           
           CustomScrollView(
             slivers: [
-              const CupertinoSliverNavigationBar(
-                largeTitle: Text("Envoyer"),
+              SliverAppBar(
                 backgroundColor: Colors.transparent,
-                border: null,
-                stretch: true,
+                elevation: 0,
+                leadingWidth: 70,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: _GlassIconButton(
+                    icon: CupertinoIcons.chevron_left,
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: _GlassIconButton(
+                      icon: CupertinoIcons.search,
+                      onTap: () {},
+                    ),
+                  ),
+                ],
               ),
               
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Destinataire - Block "Glass"
-                      const Text(
-                        "Destinataire",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: KinoaColors.stone500,
-                        ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const Text(
+                      "Envoyer\nde l'argent",
+                      style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w800,
+                        color: KinoaColors.stone900,
+                        height: 1.1,
+                        letterSpacing: -1,
                       ),
-                      const SizedBox(height: 12),
-                      _GlassCard(
-                        child: Row(
-                          children: [
-                            const _Avatar(initials: "JD", color: Color(0xFF2D241C)),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Jean Dupont",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: KinoaColors.stone900,
-                                    ),
-                                  ),
-                                  Text(
-                                    "+225 07 00 00 00 00",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: KinoaColors.stone500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(CupertinoIcons.chevron_right, size: 16),
-                              color: KinoaColors.stone400,
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 32),
-                      
-                      // Montant - Gros Block
-                      const Text(
-                        "Montant à envoyer",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: KinoaColors.stone500,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2D241C), // Deep Brown
-                          borderRadius: BorderRadius.circular(32),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF2D241C).withValues(alpha: 0.2),
-                              blurRadius: 30,
-                              offset: const Offset(0, 15),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
+                    ),
+                    const SizedBox(height: 32),
+                    
+                    // SECTION : DESTINATAIRE (Glass Card)
+                    const _SectionLabel(label: "DESTINATAIRE"),
+                    const SizedBox(height: 12),
+                    _GlassCard(
+                      child: Row(
+                        children: [
+                          _AvatarWithStatus(initials: "JD", color: const Color(0xFFC8964A)),
+                          const SizedBox(width: 16),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IntrinsicWidth(
-                                  child: TextField(
-                                    controller: _amountController,
-                                    keyboardType: TextInputType.number,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 56,
-                                      fontWeight: FontWeight.w200,
-                                      letterSpacing: -2,
-                                    ),
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
+                                Text(
+                                  "Jean Dupont",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w800,
+                                    color: KinoaColors.stone900,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                const Text(
-                                  "FCFA",
+                                Text(
+                                  "Orange Money • +225 07...",
                                   style: TextStyle(
-                                    color: Color(0xFFC8964A),
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                    color: KinoaColors.stone500,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              "Aucun frais appliqué",
+                          ),
+                          const Icon(CupertinoIcons.chevron_down, size: 14, color: KinoaColors.stone400),
+                        ],
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 32),
+                    
+                    // SECTION : MONTANT (Gros bloc sombre inspiré par tes images)
+                    const _SectionLabel(label: "MONTANT"),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A140F), // Ultra Dark
+                        borderRadius: BorderRadius.circular(40),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF1A140F).withValues(alpha: 0.15),
+                            blurRadius: 40,
+                            offset: const Offset(0, 20),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              IntrinsicWidth(
+                                child: TextField(
+                                  controller: _amountController,
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 64,
+                                    fontWeight: FontWeight.w200,
+                                    letterSpacing: -3,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                    isDense: true,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                "FCFA",
+                                style: TextStyle(
+                                  color: Color(0xFFC8964A),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: const Text(
+                              "Frais : 0 FCFA (Kinoa Transfert)",
                               style: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
+                                color: Colors.white60,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      
-                      const SizedBox(height: 32),
-                      
-                      // Canal de paiement
-                      const Text(
-                        "Canal de paiement",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: KinoaColors.stone500,
-                        ),
+                    ),
+                    
+                    const SizedBox(height: 32),
+
+                    // SECTION : CANAL (Horizontal Glass Selection)
+                    const _SectionLabel(label: "CANAL DE PAIEMENT"),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 100,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.zero,
+                        children: [
+                          _ChannelCard(
+                            name: "Wave",
+                            balance: "45k",
+                            icon: CupertinoIcons.wind,
+                            color: Colors.blue.shade400,
+                            isSelected: true,
+                          ),
+                          const SizedBox(width: 12),
+                          _ChannelCard(
+                            name: "OM",
+                            balance: "120k",
+                            icon: CupertinoIcons.flame_fill,
+                            color: Colors.orange.shade700,
+                            isSelected: false,
+                          ),
+                          const SizedBox(width: 12),
+                          _ChannelCard(
+                            name: "MoMo",
+                            balance: "8k",
+                            icon: CupertinoIcons.creditcard_fill,
+                            color: Colors.yellow.shade700,
+                            isSelected: false,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      _PaymentChannelItem(
-                        title: "Orange Money",
-                        subtitle: "Solde: 250,000 FCFA",
-                        iconPath: "assets/icons/orange.png", // À remplacer par un widget image ou icône
-                        isSelected: true,
-                        color: Colors.orange.shade800,
-                      ),
-                      const SizedBox(height: 12),
-                      _PaymentChannelItem(
-                        title: "MTN MoMo",
-                        subtitle: "Solde: 12,500 FCFA",
-                        iconPath: "assets/icons/mtn.png",
-                        isSelected: false,
-                        color: Colors.yellow.shade700,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 120), // Espace pour le bouton
+                  ]),
                 ),
               ),
             ],
           ),
           
-          // Bouton flottant Glass à la Jony Ive
+          // BOUTON DE CONFIRMATION (Liquid Glass Design)
           Positioned(
             bottom: 40,
             left: 20,
             right: 20,
-            child: _GlassButton(
+            child: _ActionConfirmButton(
               onTap: () {},
               label: "Confirmer l'envoi",
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+  const _SectionLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w900,
+        color: KinoaColors.stone400,
+        letterSpacing: 1.5,
+      ),
+    );
+  }
+}
+
+class _GlassIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  const _GlassIconButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.8),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 0.5),
+        ),
+        child: Icon(icon, size: 20, color: KinoaColors.stone900),
+      ),
+    );
+  }
+}
+
+class _AvatarWithStatus extends StatelessWidget {
+  final String initials;
+  final Color color;
+  const _AvatarWithStatus({required this.initials, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            initials,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChannelCard extends StatelessWidget {
+  final String name;
+  final String balance;
+  final IconData icon;
+  final Color color;
+  final bool isSelected;
+
+  const _ChannelCard({
+    required this.name,
+    required this.balance,
+    required this.icon,
+    required this.color,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 110,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xFF1A140F) : Colors.white.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isSelected ? Colors.transparent : Colors.white,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(icon, color: isSelected ? const Color(0xFFC8964A) : color, size: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : KinoaColors.stone900,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              Text(
+                balance,
+                style: TextStyle(
+                  color: isSelected ? Colors.white54 : KinoaColors.stone500,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -225,15 +399,15 @@ class _GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(28),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 0.5),
+            color: Colors.white.withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: Colors.white, width: 1),
           ),
           child: child,
         ),
@@ -242,126 +416,41 @@ class _GlassCard extends StatelessWidget {
   }
 }
 
-class _Avatar extends StatelessWidget {
-  final String initials;
-  final Color color;
-  const _Avatar({required this.initials, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        initials,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-}
-
-class _PaymentChannelItem extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String iconPath;
-  final bool isSelected;
-  final Color color;
-
-  const _PaymentChannelItem({
-    required this.title,
-    required this.subtitle,
-    required this.iconPath,
-    required this.isSelected,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isSelected ? const Color(0xFFC8964A) : Colors.transparent,
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(CupertinoIcons.creditcard, color: color, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(color: KinoaColors.stone500, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          if (isSelected)
-            const Icon(CupertinoIcons.check_mark_circle_fill, color: Color(0xFFC8964A)),
-        ],
-      ),
-    );
-  }
-}
-
-class _GlassButton extends StatelessWidget {
+class _ActionConfirmButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _GlassButton({required this.label, required this.onTap});
+  const _ActionConfirmButton({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return Container(
+      height: 72,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFC8964A).withValues(alpha: 0.25),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            height: 64,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2D241C).withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+        borderRadius: BorderRadius.circular(30),
+        child: Material(
+          color: const Color(0xFFC8964A),
+          child: InkWell(
+            onTap: onTap,
+            child: Center(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.2,
                 ),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
               ),
             ),
           ),

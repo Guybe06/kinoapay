@@ -3,7 +3,7 @@
 abstract final class KinoaCgu {
   // En-tête
   static const String title = "Conditions Générales d'Utilisation";
-  static const String version = "Version 1.0 — Avril 2026";
+  static const String version = "Version 1.0, Avril 2026";
   static const String editor = "Éditeur : Winsa Ltd, Brazzaville, République du Congo";
 
   // Article 1

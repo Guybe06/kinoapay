@@ -11,6 +11,11 @@ class AuthStrings {
   static const String signinForgotPass = "Mot de passe oublié ?";
   static const String signinNoAccount = "Pas encore de compte ?";
   static const String signinSignupLink = "S'inscrire";
+  // Erreurs
+  static const String errorInvalidCredentials = "Email ou mot de passe incorrect.";
+  static const String errorEmailAlreadyExists = "Cette adresse email est déjà utilisée.";
+  static const String errorAccountDisabled = "Ce compte a été suspendu. Contactez le support.";
+  static const String errorTooManyAttempts = "Trop de tentatives. Réessayez dans quelques minutes.";
   // Retours
   static const String signinSuccess = "Connexion réussie !";
   static const String signupSuccess = "Compte créé avec succès !";

@@ -1,9 +1,9 @@
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 
-/// Représente une ligne de transaction individuelle dans la liste du tableau de bord.
 class DashboardTxRow extends StatelessWidget {
   final Transaction tx;
 
@@ -21,54 +21,39 @@ class DashboardTxRow extends StatelessWidget {
         : "?";
 
     final String time = DateFormat("HH:mm", "fr_FR").format(tx.startedAt);
-    final currencyFormatter = NumberFormat.currency(symbol: tx.currency, decimalDigits: 0, locale: "fr_FR");
+    final currencyFormatter = NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR");
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KinoaColors.stone200),
+        color: KinoaColors.stone900,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
-          Stack(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: isReceived
-                      ? KinoaColors.success.withValues(alpha: 0.1)
-                      : KinoaColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  initials,
-                  style: TextStyle(
-                    color: isReceived ? KinoaColors.success : KinoaColors.primary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+          // Avatar
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: KinoaColors.stone800,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              initials,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
               ),
-              Positioned(
-                top: -2,
-                right: -2,
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(tx.status),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
+          
+          // Détails
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,109 +61,63 @@ class DashboardTxRow extends StatelessWidget {
                 Text(
                   name,
                   style: const TextStyle(
-                    color: KinoaColors.stone900,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    _StatusBadge(status: tx.status),
-                    const SizedBox(width: 8),
-                    Text(
-                      time,
-                      style: const TextStyle(
-                        color: KinoaColors.stone500,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                Text(
+                  time,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.4),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          
+          // Montant
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${isReceived ? "+" : "−"}${currencyFormatter.format(tx.amount).replaceAll(tx.currency, "").trim()} ${tx.currency}",
+                "${isReceived ? "+" : "−"} ${currencyFormatter.format(tx.amount).trim()}",
                 style: TextStyle(
-                  color: isReceived ? KinoaColors.success : KinoaColors.stone900,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                  color: isReceived ? KinoaColors.accent : Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
                 ),
               ),
-              if (!isReceived)
-                const Text(
-                  "envoyé",
-                  style: TextStyle(
-                    color: KinoaColors.stone500,
-                    fontSize: 10,
-                  ),
-                ),
+              const SizedBox(height: 4),
+              _CompactStatus(status: tx.status),
             ],
           ),
         ],
       ),
     );
   }
-
-  Color _getStatusColor(String status) {
-    switch (status.toUpperCase()) {
-      case "COMPLETED":
-        return const Color(0xFF16A34A);
-      case "FAILED":
-        return const Color(0xFFDC3545);
-      case "PENDING":
-        return const Color(0xFFD97706);
-      case "ROUTING":
-        return const Color(0xFF3B82F6);
-      default:
-        return const Color(0xFF3B82F6);
-    }
-  }
 }
 
-class _StatusBadge extends StatelessWidget {
+class _CompactStatus extends StatelessWidget {
   final String status;
-
-  const _StatusBadge({required this.status});
+  const _CompactStatus({required this.status});
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> meta = _getStatusMeta(status);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: meta["color"].withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Text(
-        meta["label"],
-        style: TextStyle(
-          color: meta["color"],
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-        ),
+    final bool isCompleted = status.toUpperCase() == "COMPLETED";
+    return Text(
+      isCompleted ? "Réussi" : "En attente",
+      style: TextStyle(
+        color: isCompleted ? Colors.white24 : KinoaColors.accent.withValues(alpha: 0.7),
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.5,
       ),
     );
-  }
-
-  Map<String, dynamic> _getStatusMeta(String status) {
-    switch (status.toUpperCase()) {
-      case "COMPLETED":
-        return {"label": "Complété", "color": const Color(0xFF16A34A)};
-      case "FAILED":
-        return {"label": "Échoué", "color": const Color(0xFFDC3545)};
-      case "PENDING":
-        return {"label": "En attente", "color": const Color(0xFFD97706)};
-      case "ROUTING":
-        return {"label": "En cours", "color": const Color(0xFF3B82F6)};
-      default:
-        return {"label": "En cours", "color": const Color(0xFF3B82F6)};
-    }
   }
 }

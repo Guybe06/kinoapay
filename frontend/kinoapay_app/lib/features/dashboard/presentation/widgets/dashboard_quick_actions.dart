@@ -1,38 +1,57 @@
+import "dart:ui";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:lucide_icons/lucide_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/navigation/kinoa_router.dart";
 
-/// Barre d'actions rapides permettant d'accéder aux fonctionnalités clés.
 class DashboardQuickActions extends StatelessWidget {
   const DashboardQuickActions({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: KinoaColors.stone200, width: 1),
-        ),
-      ),
-      child: Row(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _QuickActionItem(
-            icon: LucideIcons.send,
-            label: "Envoyer",
-            onTap: () {},
+          const Text(
+            "Actions rapides",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
           ),
-          _QuickActionItem(
-            icon: LucideIcons.clock,
-            label: "Activité",
-            onTap: () {},
-            hasLeftBorder: true,
-          ),
-          _QuickActionItem(
-            icon: LucideIcons.shieldCheck,
-            label: "Vérifier",
-            onTap: () {},
-            hasLeftBorder: true,
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _ActionItem(
+                icon: CupertinoIcons.add,
+                label: "Ajouter",
+                onTap: () {},
+                color: KinoaColors.stone800,
+              ),
+              _ActionItem(
+                icon: CupertinoIcons.paperplane,
+                label: "Envoyer",
+                onTap: () => Navigator.pushNamed(context, KinoaRouter.send),
+                color: KinoaColors.stone800,
+              ),
+              _ActionItem(
+                icon: CupertinoIcons.arrow_right_arrow_left,
+                label: "Convertir",
+                onTap: () {},
+                color: KinoaColors.stone800,
+              ),
+              _ActionItem(
+                icon: CupertinoIcons.ellipsis,
+                label: "Plus",
+                onTap: () {},
+                color: KinoaColors.stone800,
+              ),
+            ],
           ),
         ],
       ),
@@ -40,54 +59,45 @@ class DashboardQuickActions extends StatelessWidget {
   }
 }
 
-class _QuickActionItem extends StatelessWidget {
+class _ActionItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final bool hasLeftBorder;
+  final Color color;
 
-  const _QuickActionItem({
+  const _ActionItem({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.hasLeftBorder = false,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            border: hasLeftBorder
-                ? const Border(left: BorderSide(color: KinoaColors.stone200, width: 1))
-                : null,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: const BoxDecoration(
-                  color: KinoaColors.stone100,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 18, color: KinoaColors.stone900),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: (MediaQuery.of(context).size.width - 70) / 4,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 24, color: Colors.white),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: KinoaColors.stone500,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

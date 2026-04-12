@@ -10,9 +10,12 @@ import "package:kinoapay_app/features/accounts/presentation/signup/signup_view.d
 /// Gère la résolution des routes et les transitions de navigation de l'application.
 class KinoaRouter {
   /// Détermine la route initiale après le splash selon l'état d'authentification.
+  /// token présent → shell, first_open_app sans token → signin, jamais ouvert → welcome.
   static Future<String> resolveInitialRoute(SecureStorageService storage) async {
     final token = await storage.getToken();
-    return (token != null && token.isNotEmpty) ? KinoaRoutes.shell : KinoaRoutes.welcome;
+    if (token != null && token.isNotEmpty) return KinoaRoutes.shell;
+    if (!await storage.isFirstOpenApp()) return KinoaRoutes.signin;
+    return KinoaRoutes.welcome;
   }
 
   /// Génère la route et sa transition selon le nom et les arguments fournis.

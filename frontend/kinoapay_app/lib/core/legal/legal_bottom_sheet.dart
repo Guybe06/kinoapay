@@ -116,6 +116,7 @@ class LegalBottomSheet extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             body,
+            textAlign: TextAlign.justify,
             style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.65), fontSize: 13, height: 1.65),
           ),
         ],

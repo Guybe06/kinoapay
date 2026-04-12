@@ -12,7 +12,7 @@ abstract final class AuthSnackBar {
   );
 
   static void showSuccess(BuildContext context, String message) =>
-      _show(context, message, KinoaColors.quinoaGold, Icons.check_circle_outline);
+      _show(context, message, KinoaColors.success, Icons.check_circle_outline);
 
   static void showError(BuildContext context, String message) =>
       _show(context, message, KinoaColors.quinoaRed, Icons.error_outline);

@@ -18,13 +18,13 @@ class HttpAuthRepository implements AuthRepository {
         _secureStorage = secureStorage;
 
   @override
-  Future<UserAccount> signIn(String email, String password) async {
+  Future<UserAccount> signIn(String email, String password, {bool rememberMe = true}) async {
     try {
       final response = await _dioClient.dio.post(
         "/auth/login",
         data: {"email": email, "password": password},
       );
-      return _parseAndPersist(response.data);
+      return _parseAndPersist(response.data, rememberMe: rememberMe);
     } on KinoaException {
       rethrow;
     } on DioException catch (e) {
@@ -52,7 +52,7 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signOut() => _secureStorage.clearAll();
+  Future<void> signOut() => _secureStorage.clearSession();
 
   @override
   Future<UserAccount?> getCurrentUser() async {
@@ -67,11 +67,11 @@ class HttpAuthRepository implements AuthRepository {
     }
   }
 
-  // Persist session and return UserAccount from API response payload.
-  Future<UserAccount> _parseAndPersist(Map<String, dynamic> data) async {
+  // Parse API response, persist user data, save token only if rememberMe is true.
+  Future<UserAccount> _parseAndPersist(Map<String, dynamic> data, {bool rememberMe = true}) async {
     final token = data["token"] as String;
     final userData = data["user"] as Map<String, dynamic>;
-    await _secureStorage.saveToken(token);
+    if (rememberMe) await _secureStorage.saveToken(token);
     await _secureStorage.write("user_data", jsonEncode(userData));
     return UserAccount(id: userData["id"].toString(), email: userData["email"], fullName: userData["fullName"]);
   }

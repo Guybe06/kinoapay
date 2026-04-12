@@ -10,7 +10,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/features/accounts/presentation/widgets/auth_button.dart";
+import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
@@ -51,7 +51,7 @@ class _SignInViewState extends State<SignInView> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()),
+        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim(), rememberMe: _rememberMe),
       );
     }
   }
@@ -131,7 +131,7 @@ class _SignInViewState extends State<SignInView> {
             const SizedBox(height: 16),
             _buildSwitchRow(),
             const SizedBox(height: 40),
-            AuthButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
+            KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
             const SizedBox(height: 32),
             const AuthSocialDivider(),
             const SizedBox(height: 20),
@@ -185,7 +185,7 @@ class _SignInViewState extends State<SignInView> {
   Widget _buildSignupLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, KinoaRoutes.signup),
+        onPressed: () => Navigator.pushNamed(context, KinoaRoutes.signup),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signinNoAccount} ",

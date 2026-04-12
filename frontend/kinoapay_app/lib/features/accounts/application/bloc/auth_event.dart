@@ -11,11 +11,12 @@ abstract class AuthEvent extends Equatable {
 class SignInRequested extends AuthEvent {
   final String email;
   final String password;
+  final bool rememberMe;
 
-  const SignInRequested(this.email, this.password);
+  const SignInRequested(this.email, this.password, {this.rememberMe = true});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, rememberMe];
 }
 
 class SignUpRequested extends AuthEvent {
