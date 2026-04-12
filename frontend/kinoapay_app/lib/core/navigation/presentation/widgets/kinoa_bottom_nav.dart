@@ -5,9 +5,8 @@ import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 
 /// Navigation principale flottante.
-/// Taille dictée par le contenu (IntrinsicHeight).
-/// Onglet actif : pill quinoaGold pleine opacité, texte + icône blancs.
-/// Onglets inactifs : icône seule stone500.
+/// AnimatedContainer par tab — pas d'AnimatedSwitcher (évite les conflits de
+/// contraintes pendant les transitions).
 class KinoaBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
@@ -38,20 +37,16 @@ class KinoaBottomNav extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: List.generate(NavItems.all.length, (i) {
-                  final bool active = i == currentIndex;
-                  return _NavTab(
-                    item: NavItems.all[i],
-                    isActive: active,
-                    flex: active ? 3 : 2,
-                    onTap: () => onTabChanged(i),
-                  );
-                }),
-              ),
+            child: Row(
+              children: List.generate(NavItems.all.length, (i) {
+                final bool active = i == currentIndex;
+                return _NavTab(
+                  item: NavItems.all[i],
+                  isActive: active,
+                  flex: active ? 3 : 2,
+                  onTap: () => onTabChanged(i),
+                );
+              }),
             ),
           ),
         ),
@@ -80,67 +75,44 @@ class _NavTab extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 230),
-            transitionBuilder: (child, anim) => FadeTransition(
-              opacity: anim,
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.85, end: 1.0).animate(anim),
-                child: child,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.all(2),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            color: isActive ? KinoaColors.quinoaGold : Colors.transparent,
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Icon(
+                isActive ? item.activeIcon : item.icon,
+                size: 20,
+                color: isActive ? Colors.white : KinoaColors.stone500,
               ),
-            ),
-            child: isActive
-                ? _ActivePill(key: const ValueKey("active"), item: item)
-                : _InactiveIcon(key: ValueKey("inactive_${item.label}"), item: item),
+              // Le label n'existe que sur l'onglet actif — pas de AnimatedSwitcher
+              if (isActive) ...[
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    item.label,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ActivePill extends StatelessWidget {
-  final NavItem item;
-  const _ActivePill({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        // Fond plein, pas d'opacité réduite
-        color: KinoaColors.quinoaGold,
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(item.activeIcon, size: 18, color: Colors.white),
-          const SizedBox(width: 7),
-          Text(
-            item.label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InactiveIcon extends StatelessWidget {
-  final NavItem item;
-  const _InactiveIcon({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Icon(item.icon, size: 22, color: KinoaColors.stone500),
     );
   }
 }

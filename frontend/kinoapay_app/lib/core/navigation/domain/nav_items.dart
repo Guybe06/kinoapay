@@ -12,8 +12,8 @@ class NavItems {
     ),
     NavItem(
       label: KinoaStrings.navTransfer,
-      icon: SolarIconsOutline.sendSquare,
-      activeIcon: SolarIconsBold.sendSquare,
+      icon: SolarIconsOutline.plain,
+      activeIcon: SolarIconsBold.plain,
     ),
     NavItem(
       label: KinoaStrings.navHistory,
