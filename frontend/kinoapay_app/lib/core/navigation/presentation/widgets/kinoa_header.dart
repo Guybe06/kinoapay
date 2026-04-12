@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
 
-/// En-tête persistant du shell — fond sombre, logo quinoa, raccourcis QR / contacts / notifs.
+/// En-tête light — fond quinoaCream, logo quinoaDark/quinoaGold, icônes discrètes.
 class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool withHero;
   final int unreadNotifications;
@@ -24,8 +24,7 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
     final topInset = MediaQuery.of(context).padding.top;
 
     return Container(
-      // Fond translucide pour que le contenu défilant passe dessous proprement
-      color: KinoaColors.stone950.withValues(alpha: 0.95),
+      color: KinoaColors.quinoaCream,
       padding: EdgeInsets.fromLTRB(20, topInset + 10, 16, 10),
       height: preferredSize.height + topInset,
       child: Row(
@@ -57,7 +56,7 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildLogo() {
     const brand = KinoaBrand(
       size: BrandSize.sm,
-      color: Colors.white,
+      color: KinoaColors.quinoaDark,
       iconColor: KinoaColors.quinoaGold,
     );
     if (withHero) return const Hero(tag: "kinoa_brand", child: brand);
@@ -86,11 +85,13 @@ class _HeaderIconBtn extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(9),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.06),
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+            border: Border.all(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.07),
+            ),
           ),
-          child: Icon(icon, size: 19, color: KinoaColors.stone300),
+          child: Icon(icon, size: 19, color: KinoaColors.quinoaWarmGray),
         ),
       ),
     );
@@ -113,9 +114,11 @@ class _NotificationBtn extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(9),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.06),
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+            border: Border.all(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.07),
+            ),
           ),
           child: Stack(
             clipBehavior: Clip.none,
@@ -123,7 +126,7 @@ class _NotificationBtn extends StatelessWidget {
               Icon(
                 unreadCount > 0 ? SolarIconsBold.bell : SolarIconsOutline.bell,
                 size: 19,
-                color: KinoaColors.stone300,
+                color: KinoaColors.quinoaWarmGray,
               ),
               if (unreadCount > 0)
                 Positioned(
@@ -133,7 +136,6 @@ class _NotificationBtn extends StatelessWidget {
                     width: 7,
                     height: 7,
                     decoration: const BoxDecoration(
-                      // quinoaRed : signal d'alerte discret, pas agressif
                       color: KinoaColors.quinoaRed,
                       shape: BoxShape.circle,
                     ),

@@ -7,21 +7,17 @@ import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.d
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
-/// Arguments de navigation transmis au shell principal.
 class ShellArgs {
   final int initialTab;
   final bool fromSplash;
-
-  /// @param initialTab  Index de l'onglet à afficher à l'ouverture (défaut : Dashboard)
-  /// @param fromSplash  true si la navigation provient du splash (active le Hero du logo)
   const ShellArgs({
     this.initialTab = KinoaRoutes.tabDashboard,
     this.fromSplash = false,
   });
 }
 
-/// Shell principal : fond sombre étendu derrière la status bar,
-/// navigation flottante glass en overlay, dégradé brume au bas du contenu.
+/// Shell principal light — quinoaCream, icônes status bar sombres,
+/// navigation flottante centrée en bas.
 class KinoaShell extends StatefulWidget {
   final ShellArgs args;
   const KinoaShell({super.key, required this.args});
@@ -58,28 +54,25 @@ class _KinoaShellState extends State<KinoaShell> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: KinoaColors.surfaceDark,
-        systemNavigationBarIconBrightness: Brightness.light,
+        // Fond clair → icônes sombres
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: KinoaColors.quinoaCream,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: KinoaColors.surfaceDark,
+        backgroundColor: KinoaColors.quinoaCream,
         appBar: KinoaHeader(
           withHero: widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
         ),
         extendBodyBehindAppBar: true,
         extendBody: true,
         body: Stack(
-// ... rest of the build method
           children: [
-            // ── Pages ──
             IndexedStack(
               index: _currentTab,
               children: _buildPages(),
             ),
-
-
-            // ── Navigation flottante glass ──
             Positioned(
               left: 0,
               right: 0,
@@ -96,21 +89,18 @@ class _KinoaShellState extends State<KinoaShell> {
   }
 }
 
-/// Page provisoire pour les onglets non encore implémentés.
 class _PlaceholderPage extends StatelessWidget {
   final String label;
   const _PlaceholderPage({required this.label});
 
   @override
   Widget build(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
     return Container(
-      color: KinoaColors.surfaceDark,
-      padding: EdgeInsets.only(top: topInset),
+      color: KinoaColors.quinoaCream,
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(color: KinoaColors.stone500, fontSize: 16),
+        style: const TextStyle(color: KinoaColors.quinoaWarmGray, fontSize: 16),
       ),
     );
   }

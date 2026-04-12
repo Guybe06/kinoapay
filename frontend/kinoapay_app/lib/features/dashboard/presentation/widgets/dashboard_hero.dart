@@ -1,6 +1,6 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 
@@ -27,90 +27,101 @@ class DashboardHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topInset = MediaQuery.of(context).padding.top;
-    // 56 = hauteur du KinoaHeader (extendBodyBehindAppBar: true → le body passe derrière)
+    // 56 = KinoaHeader height (extendBodyBehindAppBar: true)
     return Container(
-      padding: EdgeInsets.fromLTRB(20, topInset + 56 + 16, 20, 20),
-      decoration: const BoxDecoration(
-        color: KinoaColors.stone950,
-      ),
+      padding: EdgeInsets.fromLTRB(20, topInset + 56 + 16, 20, 24),
+      color: KinoaColors.quinoaCream,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row
+          // Salutation + avatar
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Bienvenue,",
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 14),
+                    "Bonjour,",
+                    style: TextStyle(
+                      color: KinoaColors.quinoaWarmGray,
+                      fontSize: 14,
+                    ),
                   ),
                   Text(
-                    displayName,
-                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                    displayName.isNotEmpty ? displayName : "—",
+                    style: const TextStyle(
+                      color: KinoaColors.quinoaDark,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
                   ),
                 ],
               ),
               _ProfileAvatar(initials: initials),
             ],
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
 
-          // Carte de solde — fond quinoaDark chaud, chiffres en blanc, label XAF en or
+          // Carte de solde — blanche sur fond quinoaCream, ombre douce
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF3A2E1E), Color(0xFF1E180E)],
-              ),
+              color: KinoaColors.white,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: KinoaColors.quinoaGold.withValues(alpha: 0.18),
-                width: 1,
-              ),
+              boxShadow: [
+                BoxShadow(
+                  color: KinoaColors.quinoaDark.withValues(alpha: 0.07),
+                  blurRadius: 24,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: KinoaColors.quinoaDark.withValues(alpha: 0.03),
+                  blurRadius: 6,
+                  offset: const Offset(0, 1),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Label + sélecteur de période
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "Solde actuel",
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.5),
+                        color: KinoaColors.quinoaWarmGray,
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
                       ),
                     ),
-                    _GlassChipSmall(
+                    _PeriodChip(
+                      label: DateFormat("MMMM", "fr_FR").format(DateTime.now()),
                       onTap: onPeriodClick,
-                      child: Text(
-                        DateFormat("MMMM", "fr_FR").format(DateTime.now()),
-                        style: const TextStyle(
-                          color: KinoaColors.quinoaGold,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
+
+                // Montant principal
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR").format(totalReceived).trim(),
+                      NumberFormat.currency(
+                        symbol: "",
+                        decimalDigits: 0,
+                        locale: "fr_FR",
+                      ).format(totalReceived).trim(),
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 44,
+                        color: KinoaColors.quinoaDark,
+                        fontSize: 42,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -1.5,
                       ),
@@ -120,24 +131,46 @@ class DashboardHero extends StatelessWidget {
                       "XAF",
                       style: TextStyle(
                         color: KinoaColors.quinoaGold,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 22),
+
+                // Mini stats envoyé / reçu
+                const SizedBox(height: 14),
                 Row(
                   children: [
-                    _ActionButton(
-                      label: "ENVOYER",
-                      icon: CupertinoIcons.arrow_up_right,
+                    _MiniStat(
+                      icon: SolarIconsOutline.arrowRightUp,
+                      label: "Envoyé",
+                      amount: totalSent,
+                      color: KinoaColors.quinoaRed,
+                    ),
+                    const SizedBox(width: 20),
+                    _MiniStat(
+                      icon: SolarIconsOutline.arrowLeftDown,
+                      label: "Reçu",
+                      amount: totalReceived,
+                      color: KinoaColors.success,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+                // Boutons d'action
+                Row(
+                  children: [
+                    _ActionBtn(
+                      icon: SolarIconsOutline.plain,
+                      label: "Envoyer",
                       onTap: () {},
                     ),
-                    const SizedBox(width: 12),
-                    _ActionButton(
-                      label: "RECEVOIR",
-                      icon: CupertinoIcons.arrow_down_left,
+                    const SizedBox(width: 10),
+                    _ActionBtn(
+                      icon: SolarIconsOutline.arrowLeftDown,
+                      label: "Recevoir",
                       onTap: () {},
                     ),
                   ],
@@ -151,68 +184,7 @@ class DashboardHero extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ActionButton({required this.label, required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.07),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 15, color: KinoaColors.quinoaGold),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GlassChipSmall extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onTap;
-  const _GlassChipSmall({required this.child, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: KinoaColors.quinoaGold.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: KinoaColors.quinoaGold.withValues(alpha: 0.2)),
-        ),
-        child: child,
-      ),
-    );
-  }
-}
+// ── Widgets internes ──────────────────────────────────────────────────────────
 
 class _ProfileAvatar extends StatelessWidget {
   final String initials;
@@ -221,25 +193,151 @@ class _ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 42,
-      height: 42,
+      width: 44,
+      height: 44,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
-          colors: [Color(0xFFC8964A), Color(0xFF8E6A34)],
-        ),
+        color: KinoaColors.quinoaGold,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFC8964A).withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: KinoaColors.quinoaGold.withValues(alpha: 0.25),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w800,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+}
+
+class _PeriodChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _PeriodChip({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: KinoaColors.quinoaBlank,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: KinoaColors.quinoaSand),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: KinoaColors.quinoaWarmGray,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 4),
+            const Icon(
+              SolarIconsOutline.altArrowDown,
+              size: 12,
+              color: KinoaColors.quinoaWarmGray,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final double amount;
+  final Color color;
+  const _MiniStat({
+    required this.icon,
+    required this.label,
+    required this.amount,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: KinoaColors.quinoaWarmGray,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              "${NumberFormat.compact(locale: "fr_FR").format(amount)} XAF",
+              style: const TextStyle(
+                color: KinoaColors.quinoaDark,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ActionBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const _ActionBtn({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          decoration: BoxDecoration(
+            color: KinoaColors.quinoaBlank,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: KinoaColors.quinoaSand),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 15, color: KinoaColors.quinoaDark),
+              const SizedBox(width: 7),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: KinoaColors.quinoaDark,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
