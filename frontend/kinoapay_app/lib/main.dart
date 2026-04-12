@@ -1,20 +1,41 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:google_fonts/google_fonts.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:intl/date_symbol_data_local.dart";
+import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/navigation/kinoa_router.dart";
+import "package:kinoapay_app/core/network/dio_client.dart";
+import "package:kinoapay_app/core/storage/secure_storage_service.dart";
+import "package:kinoapay_app/core/theme/kinoa_theme.dart";
+import "package:kinoapay_app/core/theme/theme_notifier.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_auth_repository.dart";
+import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
+import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock_dashboard_repository.dart";
 
-/// Point d'entrée principal initialisant les dépendances et l'application KinoaPay.
-void main() {
-  final authRepository = MockAuthRepository();
+/// Notifier global du thème, accessible depuis n'importe quel widget via [themeNotifier].
+final ThemeNotifier themeNotifier = ThemeNotifier();
+
+/// Point d'entrée principal : initialise les dépendances globales et lance l'application.
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting("fr_FR", null);
+
+  const storage = SecureStorageService();
+
+  // ignore: unused_local_variable, sera injecté dans les repositories HTTP lors de la refonte auth.
+  final dioClient = DioClient(
+    baseUrl: "https://api.kinoaPay.com",
+    storage: storage,
+  );
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(authRepository: authRepository),
+          create: (_) => AuthBloc(authRepository: MockAuthRepository()),
+        ),
+        BlocProvider<DashboardBloc>(
+          create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
         ),
       ],
       child: const KinoaPayApp(),
@@ -22,40 +43,25 @@ void main() {
   );
 }
 
-/// Racine de l'application configurant le thème visuel et le système de routage.
+/// Racine de l'application : écoute [ThemeNotifier] et reconstruit le thème à chaque changement.
 class KinoaPayApp extends StatelessWidget {
   const KinoaPayApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "KinoaPay",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        splashFactory: NoSplash.splashFactory,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.light().textTheme).apply(
-          bodyColor: KinoaColors.stone900,
-          displayColor: KinoaColors.stone900,
-        ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: KinoaColors.primary,
-          brightness: Brightness.light,
-        ),
-        scaffoldBackgroundColor: Colors.white,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            splashFactory: NoSplash.splashFactory,
-            overlayColor: Colors.transparent,
-          ),
-        ),
-      ),
-      initialRoute: KinoaRouter.splash,
-      onGenerateRoute: KinoaRouter.generateRoute,
-      navigatorObservers: [KinoaRouter.observer],
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, mode, child) {
+        return MaterialApp(
+          title: "KinoaPay",
+          debugShowCheckedModeBanner: false,
+          theme: KinoaTheme.light(),
+          darkTheme: KinoaTheme.dark(),
+          themeMode: mode,
+          initialRoute: KinoaRoutes.splash,
+          onGenerateRoute: KinoaRouter.generateRoute,
+        );
+      },
     );
   }
 }

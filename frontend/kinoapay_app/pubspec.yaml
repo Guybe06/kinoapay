@@ -16,6 +16,10 @@ dependencies:
   google_fonts: ^8.0.2
   lucide_icons: ^0.257.0
   font_awesome_flutter: ^10.8.0
+  dio: ^5.7.0
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.5
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

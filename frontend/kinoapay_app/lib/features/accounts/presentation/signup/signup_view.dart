@@ -4,8 +4,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons/lucide_icons.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
-import "package:kinoapay_app/core/navigation/kinoa_router.dart";
+import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
+import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -79,8 +79,8 @@ class _SignUpViewState extends State<SignUpView> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                             decoration: BoxDecoration(
-                              color: Colors.green.shade900.withValues(alpha: 0.6),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                              color: Colors.green.shade900.withValues(alpha: 0.3),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 0.5),
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(20),
                                 bottomLeft: Radius.circular(20),
@@ -108,7 +108,7 @@ class _SignUpViewState extends State<SignUpView> {
                   // Redirection différée vers Home
                   Future.delayed(const Duration(milliseconds: 1500), () {
                     if (mounted) {
-                      Navigator.pushReplacementNamed(context, KinoaRouter.home);
+                      Navigator.pushReplacementNamed(context, KinoaRoutes.shell);
                     }
                   });
                 } else if (state is AuthError) {
@@ -131,8 +131,8 @@ class _SignUpViewState extends State<SignUpView> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                             decoration: BoxDecoration(
-                              color: KinoaColors.error.withValues(alpha: 0.6),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                              color: KinoaColors.error.withValues(alpha: 0.3),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 0.5),
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(20),
                                 bottomLeft: Radius.circular(20),
@@ -187,7 +187,7 @@ class _SignUpViewState extends State<SignUpView> {
                             children: [
                               const SizedBox(height: 32),
                               const Text(
-                                KinoaStrings.signupTitle,
+                                AuthStrings.signupTitle,
                                 style: TextStyle(
                                   color: KinoaColors.stone900,
                                   fontSize: 42,
@@ -198,7 +198,7 @@ class _SignUpViewState extends State<SignUpView> {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                KinoaStrings.signupSubtitle,
+                                AuthStrings.signupSubtitle,
                                 style: TextStyle(
                                   color: KinoaColors.stone900.withValues(alpha: 0.7),
                                   fontSize: 16,
@@ -210,7 +210,7 @@ class _SignUpViewState extends State<SignUpView> {
                               const SizedBox(height: 48),
                               AuthTextField(
                                 controller: _emailController,
-                                label: KinoaStrings.authEmailLabel,
+                                label: AuthStrings.emailLabel,
                                 hintText: "exemple@domaine.com",
                                 keyboardType: TextInputType.emailAddress,
                                 validator: AuthValidator.validateEmailOrPhone,
@@ -218,7 +218,7 @@ class _SignUpViewState extends State<SignUpView> {
                               const SizedBox(height: 24),
                               AuthTextField(
                                 controller: _passwordController,
-                                label: KinoaStrings.authPasswordLabel,
+                                label: AuthStrings.passwordLabel,
                                 hintText: "Créer un mot de passe",
                                 obscureText: true,
                                 validator: AuthValidator.validatePassword,
@@ -226,7 +226,7 @@ class _SignUpViewState extends State<SignUpView> {
                               
                               const SizedBox(height: 48),
                               AuthButton(
-                                text: KinoaStrings.authSubmitBtn,
+                                text: AuthStrings.submitBtn,
                                 isLoading: state is AuthLoading,
                                 onPressed: _submitForm,
                               ),
@@ -267,7 +267,7 @@ class _SignUpViewState extends State<SignUpView> {
                               const SizedBox(height: 48),
                               Center(
                                 child: TextButton(
-                                  onPressed: () => Navigator.pushReplacementNamed(context, KinoaRouter.signin),
+                                  onPressed: () => Navigator.pushReplacementNamed(context, KinoaRoutes.signin),
                                   child: Text.rich(
                                     TextSpan(
                                       text: "Déjà un compte ? ",
@@ -290,7 +290,7 @@ class _SignUpViewState extends State<SignUpView> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 24),
                                   child: Text(
-                                    KinoaStrings.signupTerms,
+                                    AuthStrings.signupTerms,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: KinoaColors.stone900.withValues(alpha: 0.4),
@@ -354,8 +354,8 @@ class _SignUpViewState extends State<SignUpView> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
-                  color: KinoaColors.error.withValues(alpha: 0.6),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  color: KinoaColors.error.withValues(alpha: 0.3),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 0.5),
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(20),
                     bottomLeft: Radius.circular(20),

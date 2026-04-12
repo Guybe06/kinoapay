@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 
-/// Définit les tailles standardisées pour le composant Brand.
+/// Tailles standardisées du composant [KinoaBrand].
 enum BrandSize {
   xs(iconSize: 16, fontSize: 14),
   sm(iconSize: 20, fontSize: 18),
@@ -16,12 +16,15 @@ enum BrandSize {
   const BrandSize({required this.iconSize, required this.fontSize});
 }
 
-/// Affiche l'identité visuelle combinée (Logo + Nom) de KinoaPay.
+/// Identité visuelle combinée KinoaPay : logo + nom en typographie de marque.
 class KinoaBrand extends StatelessWidget {
   final BrandSize size;
   final Color? color;
   final Color? iconColor;
   final MainAxisAlignment alignment;
+
+  /// Tag Hero optionnel, activer uniquement si [fromSplash] est true.
+  final String? heroTag;
 
   const KinoaBrand({
     super.key,
@@ -29,11 +32,29 @@ class KinoaBrand extends StatelessWidget {
     this.color,
     this.iconColor,
     this.alignment = MainAxisAlignment.center,
+    this.heroTag,
   });
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? KinoaColors.background;
+    final Widget brand = _buildBrand();
+    if (heroTag != null) {
+      return Hero(
+        tag: heroTag!,
+        flightShuttleBuilder: (_, animation, direction, fromCtx, toCtx) {
+          return Material(
+            type: MaterialType.transparency,
+            child: _buildBrand(),
+          );
+        },
+        child: brand,
+      );
+    }
+    return brand;
+  }
+
+  Widget _buildBrand() {
+    final effectiveColor = color ?? KinoaColors.textLight;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

@@ -1,65 +1,132 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/signup/signup_view.dart";
-import "package:kinoapay_app/features/home/presentation/home_view.dart";
+import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
+import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
-/// Gère la configuration centralisée des routes et la logique de navigation de l'application.
+/// Imports temporaires, seront remplacés par features/auth/ lors de la refonte auth.
+import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_view.dart";
+
+/// Gère la résolution des routes et les transitions de navigation de l'application.
 class KinoaRouter {
-  static const String splash = "/";
-  static const String welcome = "/welcome";
-  static const String signin = "/signin";
-  static const String signup = "/signup";
-  static const String home = "/home";
+  /// Détermine la route initiale à afficher après le splash.
+  /// @param storage  Service de stockage sécurisé pour lire le token
+  /// @return         [KinoaRoutes.shell] si authentifié, [KinoaRoutes.welcome] sinon
+  static Future<String> resolveInitialRoute(
+    SecureStorageService storage,
+  ) async {
+    final token = await storage.getToken();
+    return (token != null && token.isNotEmpty)
+        ? KinoaRoutes.shell
+        : KinoaRoutes.welcome;
+  }
 
-  /// Stocke le nom de la dernière route visitée qui n'est pas une page d'authentification.
-  static String? previousRoute;
-
-  /// Observateur personnalisé pour suivre l'historique de navigation.
-  static final NavigatorObserver observer = _KinoaNavigatorObserver();
-
-  static Map<String, WidgetBuilder> get routes => {
-    splash: (context) => const SplashView(),
-    welcome: (context) => const WelcomeView(),
-    signin: (context) => const SignInView(),
-    signup: (context) => const SignUpView(),
-    home: (context) => const HomeView(),
-  };
-
-  /// Analyse les paramètres de navigation et retourne la route correspondante.
+  /// Génère la route et sa transition selon le nom et les arguments fournis.
+  /// @param settings  Nom de la route et arguments de navigation
+  /// @return          Route avec la transition appropriée, ou route d'erreur si inconnue
   static Route<dynamic>? generateRoute(RouteSettings settings) {
-    final builder = routes[settings.name];
-    if (builder != null) {
-      return MaterialPageRoute(
-        builder: builder,
-        settings: settings,
-      );
+    final args = settings.arguments;
+
+    switch (settings.name) {
+      case KinoaRoutes.splash:
+        return _fadeRoute(const SplashView(), settings);
+
+      case KinoaRoutes.welcome:
+        final wArgs = args is WelcomeArgs ? args : const WelcomeArgs();
+        return _heroRoute(WelcomeView(fromSplash: wArgs.fromSplash), settings);
+
+      case KinoaRoutes.signin:
+        return _heroRoute(const SignInView(), settings);
+
+      case KinoaRoutes.signup:
+        return _heroRoute(const SignUpView(), settings);
+
+      case KinoaRoutes.shell:
+        final sArgs = args is ShellArgs ? args : const ShellArgs();
+        return _heroRoute(KinoaShell(args: sArgs), settings);
+
+      default:
+        return _slideRoute(
+          Scaffold(
+            body: Center(child: Text("Route inconnue : ${settings.name}")),
+          ),
+          settings,
+        );
     }
-    return null;
+  }
+
+  /// Construit une transition fondu simple, réservée au splash.
+  /// @param page      Widget de destination
+  /// @param settings  Paramètres de la route
+  /// @return          PageRouteBuilder avec fondu 300ms
+  static PageRouteBuilder _fadeRoute(Widget page, RouteSettings settings) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (_, a, b) => page,
+      transitionsBuilder: (_, animation, b, child) => FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeIn),
+        child: child,
+      ),
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
+
+  /// Construit une transition fondu longue, utilisée pour les routes depuis le splash.
+  /// @param page      Widget de destination
+  /// @param settings  Paramètres de la route
+  /// @return          PageRouteBuilder avec fondu 500ms (laisse le Hero s'animer)
+  static PageRouteBuilder _heroRoute(Widget page, RouteSettings settings) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (_, a, b) => page,
+      transitionsBuilder: (_, animation, b, child) => FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        child: child,
+      ),
+      transitionDuration: const Duration(milliseconds: 500),
+    );
+  }
+
+  /// Construit une transition glissement vertical bas vers haut, utilisée pour les routes internes.
+  /// @param page      Widget de destination
+  /// @param settings  Paramètres de la route
+  /// @return          PageRouteBuilder avec fondu + slide 350ms
+  static PageRouteBuilder _slideRoute(Widget page, RouteSettings settings) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (_, a, b) => page,
+      transitionsBuilder: (_, animation, b, child) {
+        final slide =
+            Tween<Offset>(
+              begin: const Offset(0, 0.06),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
+        return FadeTransition(
+          opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+          child: SlideTransition(position: slide, child: child),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 350),
+    );
   }
 }
 
-/// Observateur privé pour mettre à jour la route précédente.
-class _KinoaNavigatorObserver extends NavigatorObserver {
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    _updatePrevious(previousRoute);
-  }
+/// Arguments transmis à [WelcomeView] lors de la navigation depuis le splash.
+class WelcomeArgs {
+  final bool fromSplash;
 
-  @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    _updatePrevious(oldRoute);
-  }
+  /// @param fromSplash  true si la navigation provient du splash (active le Hero)
+  const WelcomeArgs({this.fromSplash = false});
+}
 
-  void _updatePrevious(Route<dynamic>? route) {
-    final name = route?.settings.name;
-    // On n'enregistre pas les pages d'auth ou splash comme "précédentes" pour le retour post-login
-    if (name != null && 
-        name != KinoaRouter.signin && 
-        name != KinoaRouter.signup && 
-        name != KinoaRouter.splash) {
-      KinoaRouter.previousRoute = name;
-    }
-  }
+/// Arguments transmis aux pages d'authentification lors de la navigation depuis le splash.
+class AuthArgs {
+  final bool fromSplash;
+
+  /// @param fromSplash  true si la navigation provient du splash (active le Hero)
+  const AuthArgs({this.fromSplash = false});
 }
