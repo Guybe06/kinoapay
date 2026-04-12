@@ -4,9 +4,10 @@ import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 
-/// Navigation principale flottante — capsule glassmorphisme ancrée en bas de page.
-/// Onglet actif : pill icon + label alignés horizontalement.
-/// Onglets inactifs : icône seule, centré.
+/// Navigation principale flottante.
+/// Taille dictée par le contenu (IntrinsicHeight).
+/// Onglet actif : pill quinoaGold pleine opacité, texte + icône blancs.
+/// Onglets inactifs : icône seule stone500.
 class KinoaBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
@@ -24,30 +25,33 @@ class KinoaBottomNav extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, bottomInset + 12),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
           child: Container(
-            height: 64,
             decoration: BoxDecoration(
               color: KinoaColors.stone900.withValues(alpha: 0.92),
-              borderRadius: BorderRadius.circular(26),
+              borderRadius: BorderRadius.circular(28),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.07),
                 width: 1,
               ),
             ),
-            child: Row(
-              children: List.generate(NavItems.all.length, (i) {
-                final bool active = i == currentIndex;
-                return _NavTab(
-                  item: NavItems.all[i],
-                  isActive: active,
-                  // L'onglet actif prend plus de place pour accueillir le label
-                  flex: active ? 3 : 2,
-                  onTap: () => onTabChanged(i),
-                );
-              }),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: List.generate(NavItems.all.length, (i) {
+                  final bool active = i == currentIndex;
+                  return _NavTab(
+                    item: NavItems.all[i],
+                    isActive: active,
+                    flex: active ? 3 : 2,
+                    onTap: () => onTabChanged(i),
+                  );
+                }),
+              ),
             ),
           ),
         ),
@@ -78,12 +82,17 @@ class _NavTab extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: Center(
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            transitionBuilder: (child, animation) => FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(scale: animation, child: child),
+            duration: const Duration(milliseconds: 230),
+            transitionBuilder: (child, anim) => FadeTransition(
+              opacity: anim,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.85, end: 1.0).animate(anim),
+                child: child,
+              ),
             ),
-            child: isActive ? _ActivePill(item: item) : _InactiveIcon(item: item),
+            child: isActive
+                ? _ActivePill(key: const ValueKey("active"), item: item)
+                : _InactiveIcon(key: ValueKey("inactive_${item.label}"), item: item),
           ),
         ),
       ),
@@ -91,33 +100,28 @@ class _NavTab extends StatelessWidget {
   }
 }
 
-/// Pill dorée avec icône + label côte à côte — affiché uniquement sur l'onglet actif.
 class _ActivePill extends StatelessWidget {
   final NavItem item;
-  const _ActivePill({required this.item});
+  const _ActivePill({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: const ValueKey("active"),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: KinoaColors.quinoaGold.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: KinoaColors.quinoaGold.withValues(alpha: 0.22),
-          width: 1,
-        ),
+        // Fond plein, pas d'opacité réduite
+        color: KinoaColors.quinoaGold,
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(item.activeIcon, size: 18, color: KinoaColors.quinoaGold),
+          Icon(item.activeIcon, size: 18, color: Colors.white),
           const SizedBox(width: 7),
           Text(
             item.label,
             style: const TextStyle(
-              color: KinoaColors.quinoaGold,
+              color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
@@ -128,17 +132,14 @@ class _ActivePill extends StatelessWidget {
   }
 }
 
-/// Icône seule, sans label — pour les onglets inactifs.
 class _InactiveIcon extends StatelessWidget {
   final NavItem item;
-  const _InactiveIcon({required this.item});
+  const _InactiveIcon({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      key: const ValueKey("inactive"),
-      width: 44,
-      height: 44,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Icon(item.icon, size: 22, color: KinoaColors.stone500),
     );
   }
