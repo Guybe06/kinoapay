@@ -10,6 +10,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
+import "package:kinoapay_app/core/legal/legal_bottom_sheet.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
@@ -136,7 +137,7 @@ class _SignUpViewState extends State<SignUpView> {
             const SizedBox(height: 40),
             _buildSigninLink(context),
             const SizedBox(height: 16),
-            _buildTerms(),
+            _buildTerms(context),
             const SizedBox(height: 32),
           ],
         ),
@@ -164,14 +165,28 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget _buildTerms() {
+  Widget _buildTerms(BuildContext context) {
+    final muted = TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12, height: 1.5);
+    final link = TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.6), fontSize: 12, height: 1.5, fontWeight: FontWeight.w700, decoration: TextDecoration.underline, decorationColor: KinoaColors.quinoaDark.withValues(alpha: 0.3));
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Text(
-          AuthStrings.signupTerms,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12, height: 1.5),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            Text("En créant un compte, vous acceptez nos ", style: muted),
+            GestureDetector(
+              onTap: () => LegalBottomSheet.show(context, LegalDocType.cgu),
+              child: Text("Conditions d'utilisation", style: link),
+            ),
+            Text(" et notre ", style: muted),
+            GestureDetector(
+              onTap: () => LegalBottomSheet.show(context, LegalDocType.privacy),
+              child: Text("Politique de confidentialité", style: link),
+            ),
+            Text(".", style: muted),
+          ],
         ),
       ),
     );
