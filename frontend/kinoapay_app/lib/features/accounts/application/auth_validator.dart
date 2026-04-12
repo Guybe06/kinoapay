@@ -14,7 +14,7 @@ class AuthValidator {
   /// Valide la conformité du mot de passe, retourne null si valide (longueur ≥ 8).
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) return KinoaStrings.errorFieldRequired;
-    if (value.length < 8) return KinoaStrings.errorPasswordTooShort;
+    if (value.length < 6) return KinoaStrings.errorPasswordTooShort;
     return null;
   }
 

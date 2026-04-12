@@ -132,7 +132,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
             AuthTextField(
               controller: _emailCtrl,
               label: AuthStrings.emailLabel,
-              hintText: "exemple@domaine.com",
+              hintText: "sofia@exemple.com",
               keyboardType: TextInputType.emailAddress,
               validator: AuthValidator.validateEmailOrPhone,
             ),

@@ -16,14 +16,16 @@ const List<CountryEntry> kinoaCountries = [
   (iso: "AO", flag: "🇦🇴", name: "Angola", dialCode: "+244"),
 ];
 
-/// Formate le numéro de téléphone en groupes de 2 chiffres séparés par des espaces.
+/// Formate le numéro : XX XXX XX XX XX…
+/// Groupes : 2 chiffres, puis 3 chiffres, puis 2 chiffres répétés.
 class _PhoneGroupFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue old, TextEditingValue next) {
     final digits = next.text.replaceAll(RegExp(r"\D"), "");
     final buffer = StringBuffer();
     for (int i = 0; i < digits.length; i++) {
-      if (i > 0 && i % 2 == 0) buffer.write(" ");
+      // Espace avant position 2 (groupe 2→3), position 5 (groupe 3→2), puis toutes les 2.
+      if (i == 2 || i == 5 || (i > 5 && (i - 5) % 2 == 0)) buffer.write(" ");
       buffer.write(digits[i]);
     }
     final formatted = buffer.toString();
@@ -132,7 +134,7 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
         decoration: InputDecoration(
           labelText: "Numéro de téléphone",
           labelStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
-          hintText: "06 00 00 00",
+          hintText: "06 000 00 00",
           hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
           floatingLabelStyle: const TextStyle(color: KinoaColors.quinoaGold, fontWeight: FontWeight.w700),
           contentPadding: const EdgeInsets.only(right: 24, top: 22, bottom: 22),

@@ -29,7 +29,7 @@ class KinoaStrings {
   // Erreurs de validation
   static const String errorFieldRequired = "Ce champ est obligatoire";
   static const String errorInvalidEmail = "L'adresse email n'est pas valide";
-  static const String errorPasswordTooShort = "Le mot de passe doit contenir au moins 8 caractères";
+  static const String errorPasswordTooShort = "Le mot de passe doit contenir au moins 6 caractères";
   static const String errorInvalidPhone = "Le numéro de téléphone n'est pas valide";
   static const String errorInvalidAmount = "Le montant saisi est invalide";
   static const String errorAmountTooLow = "Le montant est trop faible";

@@ -140,14 +140,14 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
             AuthTextField(
               controller: _firstNameCtrl,
               label: AuthStrings.firstNameLabel,
-              hintText: "Jean",
+              hintText: "ex. Sofia",
               validator: AuthValidator.validateName,
             ),
             const SizedBox(height: 20),
             AuthTextField(
               controller: _lastNameCtrl,
               label: AuthStrings.lastNameLabel,
-              hintText: "Kimboula",
+              hintText: "ex. Mendes",
               validator: AuthValidator.validateName,
             ),
             const SizedBox(height: 20),
