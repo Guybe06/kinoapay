@@ -32,7 +32,7 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(authRepository: MockAuthRepository()),
+          create: (_) => AuthBloc(repository: MockAuthRepository(), storage: storage),
         ),
         BlocProvider<DashboardBloc>(
           create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
