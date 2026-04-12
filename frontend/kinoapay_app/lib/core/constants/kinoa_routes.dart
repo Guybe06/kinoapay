@@ -6,7 +6,11 @@ class KinoaRoutes {
   // Authentification
   static const String signin = "/signin";
   static const String signup = "/signup";
+  static const String signupCredentials = "/signup-credentials";
   static const String forgotPassword = "/forgot-password";
+  // Onboarding post-inscription
+  static const String celebration = "/celebration";
+  static const String kycAwareness = "/kyc-awareness";
   // Shell principal (avec header et bottom nav)
   static const String shell = "/app";
   // Onglets du shell (index pour IndexedStack)

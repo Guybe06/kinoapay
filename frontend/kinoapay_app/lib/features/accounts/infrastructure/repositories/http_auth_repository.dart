@@ -35,11 +35,27 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<UserAccount> signUp(String email, String password) async {
+  Future<UserAccount> signUp({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String countryCode,
+    required String birthDate,
+  }) async {
     try {
       final response = await _dioClient.dio.post(
         "/auth/register",
-        data: {"email": email, "password": password},
+        data: {
+          "email": email,
+          "password": password,
+          "firstName": firstName,
+          "lastName": lastName,
+          "phone": phone,
+          "countryCode": countryCode,
+          "birthDate": birthDate,
+        },
       );
       return _parseAndPersist(response.data);
     } on KinoaException {
@@ -60,8 +76,7 @@ class HttpAuthRepository implements AuthRepository {
     final raw = await _secureStorage.read("user_data");
     if (token == null || raw == null) return null;
     try {
-      final data = jsonDecode(raw);
-      return UserAccount(id: data["id"].toString(), email: data["email"], fullName: data["fullName"]);
+      return _userFromMap(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }
@@ -73,8 +88,20 @@ class HttpAuthRepository implements AuthRepository {
     final userData = data["user"] as Map<String, dynamic>;
     if (rememberMe) await _secureStorage.saveToken(token);
     await _secureStorage.write("user_data", jsonEncode(userData));
-    return UserAccount(id: userData["id"].toString(), email: userData["email"], fullName: userData["fullName"]);
+    return _userFromMap(userData);
   }
+
+  UserAccount _userFromMap(Map<String, dynamic> d) => UserAccount(
+    id: d["id"].toString(),
+    email: d["email"] as String,
+    fullName: d["fullName"] as String?,
+    firstName: d["firstName"] as String?,
+    lastName: d["lastName"] as String?,
+    phone: d["phone"] as String?,
+    countryCode: d["countryCode"] as String?,
+    birthDate: d["birthDate"] as String?,
+    kycVerified: (d["kycVerified"] as bool?) ?? false,
+  );
 
   // Map DioException status codes to typed KinoaException.
   KinoaException _fromDio(DioException e) {

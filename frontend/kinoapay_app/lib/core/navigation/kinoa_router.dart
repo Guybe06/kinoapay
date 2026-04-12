@@ -2,10 +2,13 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
+import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/onboarding/kyc_awareness_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_step2_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/signup/signup_view.dart";
 
 /// Gère la résolution des routes et les transitions de navigation de l'application.
 class KinoaRouter {
@@ -34,7 +37,16 @@ class KinoaRouter {
         return _heroRoute(const SignInView(), settings);
 
       case KinoaRoutes.signup:
-        return _heroRoute(const SignUpView(), settings);
+        return _heroRoute(const SignUpStep1View(), settings);
+
+      case KinoaRoutes.signupCredentials:
+        return _heroRoute(const SignUpStep2View(), settings);
+
+      case KinoaRoutes.celebration:
+        return _heroRoute(const CelebrationView(), settings);
+
+      case KinoaRoutes.kycAwareness:
+        return _heroRoute(const KycAwarenessView(), settings);
 
       case KinoaRoutes.shell:
         final sArgs = args is ShellArgs ? args : const ShellArgs();

@@ -37,7 +37,15 @@ class MockAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<UserAccount> signUp(String email, String password) async {
+  Future<UserAccount> signUp({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String countryCode,
+    required String birthDate,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 1200));
 
     final key = email.trim().toLowerCase();
@@ -53,7 +61,12 @@ class MockAuthRepository implements AuthRepository {
     final account = UserAccount(
       id: "mock_${DateTime.now().millisecondsSinceEpoch}",
       email: key,
-      fullName: "Utilisateur KinoaPay",
+      fullName: "$firstName $lastName",
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      countryCode: countryCode,
+      birthDate: birthDate,
     );
 
     _store[key] = _MockCredentials(password: password, account: account);

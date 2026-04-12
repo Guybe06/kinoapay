@@ -33,7 +33,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onSignUpRequested(SignUpRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final user = await _repository.signUp(event.email, event.password);
+      final user = await _repository.signUp(
+        email: event.email,
+        password: event.password,
+        firstName: event.firstName,
+        lastName: event.lastName,
+        phone: event.phone,
+        countryCode: event.countryCode,
+        birthDate: event.birthDate,
+      );
       await _storage.markFirstOpenApp();
       emit(Authenticated(user));
     } catch (e) {

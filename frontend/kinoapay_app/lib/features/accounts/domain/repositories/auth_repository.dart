@@ -5,8 +5,16 @@ abstract class AuthRepository {
   /// Authentifie l'utilisateur et retourne son compte ou lève une exception en cas d'échec.
   Future<UserAccount> signIn(String email, String password, {bool rememberMe = true});
 
-  /// Inscrit un nouvel utilisateur et retourne le compte créé.
-  Future<UserAccount> signUp(String email, String password);
+  /// Inscrit un nouvel utilisateur avec ses informations personnelles et retourne le compte créé.
+  Future<UserAccount> signUp({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String countryCode,
+    required String birthDate,
+  });
 
   /// Met fin à la session utilisateur active sans valeur de retour.
   Future<void> signOut();

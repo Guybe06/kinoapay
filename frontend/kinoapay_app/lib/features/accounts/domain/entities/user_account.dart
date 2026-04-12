@@ -5,13 +5,25 @@ class UserAccount extends Equatable {
   final String id;
   final String email;
   final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  final String? phone;
+  final String? countryCode;
+  final String? birthDate;
+  final bool kycVerified;
 
   const UserAccount({
     required this.id,
     required this.email,
     this.fullName,
+    this.firstName,
+    this.lastName,
+    this.phone,
+    this.countryCode,
+    this.birthDate,
+    this.kycVerified = false,
   });
 
   @override
-  List<Object?> get props => [id, email, fullName];
+  List<Object?> get props => [id, email, fullName, firstName, lastName, phone, countryCode, birthDate, kycVerified];
 }

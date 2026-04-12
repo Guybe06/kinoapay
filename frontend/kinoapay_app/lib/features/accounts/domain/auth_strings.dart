@@ -19,10 +19,29 @@ class AuthStrings {
   // Retours
   static const String signinSuccess = "Connexion réussie !";
   static const String signupSuccess = "Compte créé avec succès !";
-  // Inscription
-  static const String signupTitle = "Créer un compte";
-  static const String signupSubtitle = "Commencez à envoyer et recevoir dès maintenant";
-  static const String signupTerms = "En continuant, vous acceptez nos conditions d'utilisation.";
+  // Inscription — étape 1 (identité)
+  static const String signupStep1Title = "Votre identité";
+  static const String signupStep1Subtitle = "Ces informations nous permettent de sécuriser votre compte";
+  static const String firstNameLabel = "Prénom";
+  static const String lastNameLabel = "Nom";
+  static const String birthDateLabel = "Date de naissance";
+  static const String birthDateHint = "JJ/MM/AAAA";
+  // Inscription — étape 2 (identifiants)
+  static const String signupStep2Title = "Vos identifiants";
+  static const String signupStep2Subtitle = "Vous utiliserez ceci pour vous connecter";
   static const String signupHaveAccount = "Déjà un compte ?";
   static const String signupSigninLink = "Se connecter";
+  static const String signupTerms = "En continuant, vous acceptez nos conditions d'utilisation.";
+  // Onboarding post-inscription
+  static const String celebrationTitle = "Votre compte est créé";
+  static const String celebrationSubtitlePrefix = "Bienvenue,";
+  static const String celebrationBody = "Vous pouvez maintenant envoyer et recevoir de l'argent en toute simplicité.";
+  static const String kycTitle = "Vérifiez votre identité";
+  static const String kycSubtitle = "Quelques minutes suffisent pour débloquer toutes vos fonctionnalités";
+  static const String kycBenefitTransfer = "Transferts P2P jusqu'à 500 000 FCFA";
+  static const String kycBenefitMobile = "Retrait mobile money MTN et Airtel";
+  static const String kycBenefitSecurity = "Compte protégé et conforme";
+  static const String kycVerifyNow = "Vérifier maintenant";
+  static const String kycLater = "Plus tard";
+  static const String kycLaterNote = "Certaines fonctionnalités resteront limitées.";
 }

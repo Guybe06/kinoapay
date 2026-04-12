@@ -4,27 +4,27 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:lucide_icons/lucide_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/legal/legal_bottom_sheet.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
+import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/core/legal/legal_bottom_sheet.dart";
-import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
-import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
 
-/// Permet aux nouveaux utilisateurs de créer un compte.
-class SignUpView extends StatefulWidget {
-  const SignUpView({super.key});
+/// Étape 2 de l'inscription : adresse email et mot de passe, puis soumission.
+class SignUpStep2View extends StatefulWidget {
+  const SignUpStep2View({super.key});
 
   @override
-  State<SignUpView> createState() => _SignUpViewState();
+  State<SignUpStep2View> createState() => _SignUpStep2ViewState();
 }
 
-class _SignUpViewState extends State<SignUpView> {
+class _SignUpStep2ViewState extends State<SignUpStep2View> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -36,24 +36,35 @@ class _SignUpViewState extends State<SignUpView> {
     super.dispose();
   }
 
+  SignupStep1Args _step1Args(BuildContext context) =>
+      ModalRoute.of(context)!.settings.arguments as SignupStep1Args;
+
   void _onState(BuildContext listenerCtx, AuthState state) {
     if (state is Authenticated) {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signupSuccess);
-      Future.delayed(const Duration(milliseconds: 1500), () {
+      Future.delayed(const Duration(milliseconds: 800), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.shell, (_) => false);
+        Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.celebration, (_) => false,
+            arguments: state.user.firstName ?? "");
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
     }
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(
-        SignUpRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()),
-      );
-    }
+  void _submit(SignupStep1Args step1) {
+    if (!_formKey.currentState!.validate()) return;
+    context.read<AuthBloc>().add(
+      SignUpRequested(
+        firstName: step1.firstName,
+        lastName: step1.lastName,
+        phone: step1.phone,
+        countryCode: step1.countryCode,
+        birthDate: step1.birthDate,
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+      ),
+    );
   }
 
   @override
@@ -65,12 +76,15 @@ class _SignUpViewState extends State<SignUpView> {
         body: SafeArea(
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: _onState,
-            builder: (context, state) => Column(
-              children: [
-                _buildHeader(context),
-                Expanded(child: _buildBody(context, state)),
-              ],
-            ),
+            builder: (context, state) {
+              final step1 = _step1Args(context);
+              return Column(
+                children: [
+                  _buildHeader(context),
+                  Expanded(child: _buildBody(context, state, step1)),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -94,7 +108,7 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget _buildBody(BuildContext context, AuthState state) {
+  Widget _buildBody(BuildContext context, AuthState state, SignupStep1Args step1) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Form(
@@ -103,13 +117,15 @@ class _SignUpViewState extends State<SignUpView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
+            _buildStepIndicator(),
+            const SizedBox(height: 24),
             const Text(
-              AuthStrings.signupTitle,
+              AuthStrings.signupStep2Title,
               style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
             ),
             const SizedBox(height: 12),
             Text(
-              AuthStrings.signupSubtitle,
+              AuthStrings.signupStep2Subtitle,
               style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
             ),
             const SizedBox(height: 40),
@@ -129,18 +145,45 @@ class _SignUpViewState extends State<SignUpView> {
               validator: AuthValidator.validatePassword,
             ),
             const SizedBox(height: 40),
-            KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
+            KinoaPrimaryButton(
+              text: AuthStrings.submitBtn,
+              isLoading: state is AuthLoading,
+              onPressed: () => _submit(step1),
+            ),
             const SizedBox(height: 32),
-            const AuthSocialDivider(),
-            const SizedBox(height: 20),
-            const AuthSocialRow(),
-            const SizedBox(height: 40),
             _buildSigninLink(context),
             const SizedBox(height: 16),
             _buildTerms(context),
             const SizedBox(height: 32),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildStepIndicator() {
+    return Row(
+      children: [
+        _dot(active: false),
+        const SizedBox(width: 6),
+        _dot(active: true),
+        const SizedBox(width: 10),
+        Text(
+          "Étape 2 sur 2",
+          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
+        ),
+      ],
+    );
+  }
+
+  Widget _dot({required bool active}) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      width: active ? 20 : 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: active ? KinoaColors.quinoaGold : KinoaColors.quinoaDark.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }
