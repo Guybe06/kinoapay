@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
 import "package:intl/date_symbol_data_local.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/navigation/kinoa_router.dart";
@@ -58,6 +59,13 @@ class KinoaPayApp extends StatelessWidget {
           theme: KinoaTheme.light(),
           darkTheme: KinoaTheme.dark(),
           themeMode: mode,
+          locale: const Locale("fr"),
+          supportedLocales: const [Locale("fr"), Locale("en")],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           initialRoute: KinoaRoutes.splash,
           onGenerateRoute: KinoaRouter.generateRoute,
         );

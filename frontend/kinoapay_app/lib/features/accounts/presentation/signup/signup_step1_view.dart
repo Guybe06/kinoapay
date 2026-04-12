@@ -41,7 +41,6 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
       initialDate: DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime.now().subtract(const Duration(days: 365 * 16)),
-      locale: const Locale("fr"),
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
           colorScheme: const ColorScheme.light(
