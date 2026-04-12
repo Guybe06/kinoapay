@@ -11,6 +11,9 @@ class AuthStrings {
   static const String signinForgotPass = "Mot de passe oublié ?";
   static const String signinNoAccount = "Pas encore de compte ?";
   static const String signinSignupLink = "S'inscrire";
+  // Retours
+  static const String signinSuccess = "Connexion réussie !";
+  static const String signupSuccess = "Compte créé avec succès !";
   // Inscription
   static const String signupTitle = "Créer un compte";
   static const String signupSubtitle = "Commencez à envoyer et recevoir dès maintenant";

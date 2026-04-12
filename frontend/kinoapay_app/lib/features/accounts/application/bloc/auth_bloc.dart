@@ -1,4 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:kinoapay_app/core/errors/kinoa_exception.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/repositories/auth_repository.dart";
@@ -15,39 +16,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignOutRequested>(_onSignOutRequested);
   }
 
-  /// Authentifie un utilisateur avec ses identifiants et émet l'état de session résultant.
-  Future<void> _onSignInRequested(
-    SignInRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onSignInRequested(SignInRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       final user = await _authRepository.signIn(event.email, event.password);
       emit(Authenticated(user));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
     }
   }
 
-  /// Inscrit un nouvel utilisateur et émet l'état authentifié ou une erreur en cas d'échec.
-  Future<void> _onSignUpRequested(
-    SignUpRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onSignUpRequested(SignUpRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
       final user = await _authRepository.signUp(event.email, event.password);
       emit(Authenticated(user));
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
     }
   }
 
-  /// Révoque la session active de l'utilisateur et émet l'état non-authentifié.
-  Future<void> _onSignOutRequested(
-    SignOutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onSignOutRequested(SignOutRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     await _authRepository.signOut();
     emit(Unauthenticated());

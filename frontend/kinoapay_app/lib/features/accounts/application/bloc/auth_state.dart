@@ -1,7 +1,8 @@
 import "package:equatable/equatable.dart";
+import "package:kinoapay_app/core/errors/kinoa_exception.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 
-/// Définit les différents états possibles du cycle d'authentification utilisateur.
+/// Définit les états du cycle d'authentification.
 abstract class AuthState extends Equatable {
   const AuthState();
 
@@ -25,10 +26,10 @@ class Authenticated extends AuthState {
 class Unauthenticated extends AuthState {}
 
 class AuthError extends AuthState {
-  final String message;
+  final KinoaException exception;
 
-  const AuthError(this.message);
+  const AuthError(this.exception);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [exception];
 }

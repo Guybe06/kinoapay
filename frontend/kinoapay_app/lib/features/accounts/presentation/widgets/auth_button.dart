@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 
-/// Bouton d'action principal.
+/// Bouton d'action principal des formulaires d'authentification.
 class AuthButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -19,7 +19,6 @@ class AuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.only(
-      topLeft: Radius.zero,
       topRight: Radius.circular(24),
       bottomLeft: Radius.circular(24),
       bottomRight: Radius.circular(24),
@@ -27,39 +26,26 @@ class AuthButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 64, // Augmenté pour correspondre au WelcomeView
+      height: 64,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSecondary ? Colors.white : KinoaColors.stone900,
-          foregroundColor: isSecondary ? KinoaColors.stone900 : Colors.white,
+          backgroundColor: isSecondary ? KinoaColors.white : KinoaColors.quinoaDark,
+          foregroundColor: isSecondary ? KinoaColors.quinoaDark : KinoaColors.white,
           elevation: 0,
           splashFactory: NoSplash.splashFactory,
           overlayColor: Colors.transparent,
-          shape: const RoundedRectangleBorder(
-            borderRadius: borderRadius,
-          ),
-          side: isSecondary 
-              ? const BorderSide(color: KinoaColors.stone900, width: 2)
-              : BorderSide.none,
-          disabledBackgroundColor: KinoaColors.stone900.withValues(alpha: 0.5),
+          shape: const RoundedRectangleBorder(borderRadius: borderRadius),
+          side: isSecondary ? const BorderSide(color: KinoaColors.quinoaDark, width: 2) : BorderSide.none,
+          disabledBackgroundColor: KinoaColors.quinoaDark.withValues(alpha: 0.4),
         ),
         child: isLoading
             ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(strokeWidth: 2, color: KinoaColors.white),
               )
-            : Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+            : Text(text, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
       ),
     );
   }
