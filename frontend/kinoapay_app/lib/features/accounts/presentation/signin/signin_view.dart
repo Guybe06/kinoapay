@@ -48,6 +48,14 @@ class _SignInViewState extends State<SignInView> {
     }
   }
 
+  void _handleBack(BuildContext context) {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacementNamed(context, KinoaRoutes.welcome);
+    }
+  }
+
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
@@ -58,18 +66,22 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
-        body: SafeArea(
-          child: BlocConsumer<AuthBloc, AuthState>(
-            listener: _onState,
-            builder: (context, state) => Column(
-              children: [
-                _buildHeader(context),
-                Expanded(child: _buildBody(context, state)),
-              ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, r) => _handleBack(context),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Scaffold(
+          backgroundColor: KinoaColors.quinoaCream,
+          body: SafeArea(
+            child: BlocConsumer<AuthBloc, AuthState>(
+              listener: _onState,
+              builder: (context, state) => Column(
+                children: [
+                  _buildHeader(context),
+                  Expanded(child: _buildBody(context, state)),
+                ],
+              ),
             ),
           ),
         ),
@@ -84,7 +96,7 @@ class _SignInViewState extends State<SignInView> {
         children: [
           IconButton(
             icon: const Icon(LucideIcons.arrowLeft, color: KinoaColors.quinoaDark),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => _handleBack(context),
           ),
           const Spacer(),
           const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
