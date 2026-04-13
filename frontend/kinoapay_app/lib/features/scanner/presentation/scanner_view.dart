@@ -89,7 +89,7 @@ class _ScannerViewState extends State<ScannerView>
                           gradient: LinearGradient(
                             colors: [
                               Colors.transparent,
-                              KinoaColors.accent.withValues(alpha: 0.9),
+                              KinoaColors.quinoaRed.withValues(alpha: 0.9),
                               Colors.transparent,
                             ],
                           ),
@@ -178,11 +178,11 @@ class _ScannerViewState extends State<ScannerView>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                   decoration: BoxDecoration(
-                    color: KinoaColors.accent,
+                    color: KinoaColors.quinoaRed,
                     borderRadius: BorderRadius.circular(100),
                     boxShadow: [
                       BoxShadow(
-                        color: KinoaColors.accent.withValues(alpha: 0.4),
+                        color: KinoaColors.quinoaRed.withValues(alpha: 0.4),
                         blurRadius: 20,
                         spreadRadius: -2,
                       ),
@@ -249,7 +249,7 @@ class _OverlayPainter extends CustomPainter {
 
     // Coins du cadre
     final cornerPaint = Paint()
-      ..color = KinoaColors.accent
+      ..color = KinoaColors.quinoaRed
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
@@ -320,11 +320,11 @@ class _ScanResultSheet extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: KinoaColors.accentDark.withValues(alpha: 0.10),
+              color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.qr_code_scanner_rounded,
-                size: 28, color: KinoaColors.accentDark),
+                size: 28, color: KinoaColors.quinoaRed),
           ),
           const SizedBox(height: 16),
           Text(
