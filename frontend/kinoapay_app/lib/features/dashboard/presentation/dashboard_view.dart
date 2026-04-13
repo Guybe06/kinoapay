@@ -198,7 +198,7 @@ class _ActionButtons extends StatelessWidget {
         children: [
           Expanded(child: _ActionBtn(label: "ENVOYER",  icon: SolarIconsOutline.arrowRightUp,  onTap: onSend)),
           const SizedBox(width: 12),
-          Expanded(child: _ActionBtn(label: "DEMANDER", icon: SolarIconsOutline.arrowLeftDown, onTap: onRequest)),
+          Expanded(child: _ActionBtn(label: "DEMANDER", icon: SolarIconsOutline.cardReceive, onTap: onRequest)),
         ],
       ),
     );
@@ -376,7 +376,7 @@ class _GreetingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -509,7 +509,7 @@ class _PromoDetailSheet extends StatelessWidget {
                         _InfoSection(
                           icon: SolarIconsOutline.link,
                           title: "Le lien entre tous vos comptes",
-                          description: "KinoaPay fait le pont entre vos comptes actuels (MTN, Airtel, Orange) et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
+                          description: "KinoaPay fait le pont entre vos comptes Mobile Money et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
                         ),
                         const SizedBox(height: 32),
                         _InfoSection(

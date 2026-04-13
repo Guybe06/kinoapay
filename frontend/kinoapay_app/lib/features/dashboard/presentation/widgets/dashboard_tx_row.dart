@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 
@@ -10,7 +11,8 @@ class DashboardTxRow extends StatelessWidget {
   _TxNature get _nature {
     final s = tx.status.toUpperCase();
     if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED") return _TxNature.refused;
-    if (s == "PENDING" || s == "PROCESSING") return _TxNature.pending;
+    if (s == "PROCESSING") return _TxNature.processing;
+    if (s == "PENDING") return _TxNature.pending;
     return tx.direction == "received" ? _TxNature.received : _TxNature.sent;
   }
 
@@ -23,168 +25,254 @@ class DashboardTxRow extends StatelessWidget {
         ? (tx.senderName ?? tx.receiverIdentifier)
         : (tx.receiverName ?? tx.receiverIdentifier);
 
-    final String initials = name.isNotEmpty
-        ? name.split(" ").map((n) => n[0]).take(2).join("").toUpperCase()
-        : "?";
-
     final fmt = NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR");
-    final String canal    = "${tx.sourceChannel} → ${tx.destinationChannel}";
     final String timeLabel = _relativeDate(tx.startedAt);
+    
+    // Chemin des canaux : SOURCE → DESTINATION
+    final String source = tx.sourceChannel.toUpperCase();
+    final String destination = tx.destinationChannel.toUpperCase();
 
-    final Color amountColor   = isReceived ? KinoaColors.accentDark : KinoaColors.quinoaRed;
-    final Color avatarBg      = amountColor.withValues(alpha: 0.10);
-    final Color avatarFg      = amountColor.withValues(alpha: 0.80);
+    final Color amountColor = isReceived ? KinoaColors.accentDark : KinoaColors.quinoaRed;
+    final Color amlColor = (tx.amlScore ?? 0) < 0.35 
+        ? KinoaColors.accentDark 
+        : (tx.amlScore ?? 0) < 0.65 ? KinoaColors.quinoaGold : KinoaColors.quinoaRed;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.07)),
-        boxShadow: [
-          BoxShadow(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return InkWell(
+      onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 13, 14, 12),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
           children: [
-            // ── Zone principale : avatar + nom + montant ──────────────────
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Avatar teinté selon direction
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(color: avatarBg, shape: BoxShape.circle),
-                  alignment: Alignment.center,
-                  child: Text(
-                    initials,
-                    style: TextStyle(
-                      color: avatarFg,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                // Nom
-                Expanded(
-                  child: Text(
-                    name,
+            // Côté gauche : Nom, Identifiant et Heure
+            Expanded(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name.toUpperCase(),
                     style: const TextStyle(
                       color: KinoaColors.quinoaDark,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.3,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-
-                const SizedBox(width: 10),
-
-                // Montant + XAF
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
-                      style: TextStyle(
-                        color: amountColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.6,
-                      ),
+                  const SizedBox(height: 2),
+                  Text(
+                    tx.receiverIdentifier,
+                    style: TextStyle(
+                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.6),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.2,
                     ),
-                    Text(
-                      tx.currency,
-                      style: TextStyle(
-                        color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.40),
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    timeLabel,
+                    style: TextStyle(
+                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.4),
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 10),
-
-            // ── Séparateur ────────────────────────────────────────────────
-            Container(height: 1, color: KinoaColors.quinoaDark.withValues(alpha: 0.05)),
-
-            const SizedBox(height: 9),
-
-            // ── Zone secondaire : canal + numéro | date + statut + AML ───
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Canal + identifiant
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            // Centre : Mini Courbe AML et Flux des canaux
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        canal,
-                        style: TextStyle(
-                          color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.65),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.1,
-                        ),
+                      _ChannelBadge(label: source),
+                      Icon(
+                        SolarIconsOutline.arrowRight,
+                        size: 10,
+                        color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.3),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        tx.receiverIdentifier,
-                        style: TextStyle(
-                          color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.42),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                      _ChannelBadge(label: destination),
                     ],
                   ),
-                ),
-
-                // Date + statut + AML
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      timeLabel,
-                      style: TextStyle(
-                        color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.42),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: 45,
+                    height: 15,
+                    child: CustomPaint(
+                      painter: _WallStreetSparkline(
+                        score: tx.amlScore ?? 0.1,
+                        color: amlColor,
                       ),
                     ),
-                    const SizedBox(width: 7),
-                    _CompactStatus(nature: nature),
-                    if (tx.amlScore != null) ...[
-                      const SizedBox(width: 10),
-                      _AmlSparkline(score: tx.amlScore!),
-                    ],
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "AML ${tx.amlScore?.toStringAsFixed(2) ?? '0.00'}",
+                    style: TextStyle(
+                      color: amlColor.withValues(alpha: 0.7),
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Côté droit : Montant et Statut
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
+                    style: TextStyle(
+                      color: amountColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: nature.color,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      nature.label.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 7.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    tx.currency,
+                    style: TextStyle(
+                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.3),
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+// ── Badge de Canal minimaliste ────────────────────────────────────────────────
+
+class _ChannelBadge extends StatelessWidget {
+  final String label;
+  const _ChannelBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      decoration: BoxDecoration(
+        color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: KinoaColors.quinoaDark.withValues(alpha: 0.5),
+          fontSize: 8,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Wall Street Sparkline (Courbe fluide Bézier) ───────────────────────────
+
+class _WallStreetSparkline extends CustomPainter {
+  final double score;
+  final Color color;
+  const _WallStreetSparkline({required this.score, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final path = Path();
+    
+    // Points stratégiques pour une courbe fluide
+    final p0 = Offset(0, size.height * 0.8);
+    final p1 = Offset(size.width * 0.2, size.height * (0.5 + (score * 0.3)));
+    final p2 = Offset(size.width * 0.5, size.height * (0.7 - (score * 0.5)));
+    final p3 = Offset(size.width * 0.8, size.height * (0.3 + (score * 0.4)));
+    final p4 = Offset(size.width, size.height * (1.0 - score).clamp(0.1, 0.9));
+
+    path.moveTo(p0.dx, p0.dy);
+
+    // Premier segment fluide
+    path.cubicTo(
+      size.width * 0.1, p0.dy, 
+      size.width * 0.1, p1.dy, 
+      p1.dx, p1.dy,
+    );
+
+    // Second segment fluide
+    path.cubicTo(
+      size.width * 0.35, p1.dy, 
+      size.width * 0.35, p2.dy, 
+      p2.dx, p2.dy,
+    );
+
+    // Troisième segment fluide
+    path.cubicTo(
+      size.width * 0.65, p2.dy, 
+      size.width * 0.65, p3.dy, 
+      p3.dx, p3.dy,
+    );
+
+    // Quatrième segment fluide vers la fin
+    path.cubicTo(
+      size.width * 0.9, p3.dy, 
+      size.width * 0.9, p4.dy, 
+      p4.dx, p4.dy,
+    );
+
+    // Ajout d'un léger halo sous la courbe (Glow)
+    canvas.drawPath(path, Paint()
+      ..color = color.withValues(alpha: 0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2));
+
+    canvas.drawPath(path, paint);
+    
+    // Point terminal "Ticker"
+    canvas.drawCircle(p4, 2.5, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(covariant _WallStreetSparkline old) => old.score != score;
 }
 
 // ── Date relative ─────────────────────────────────────────────────────────────
@@ -218,20 +306,23 @@ enum _TxNature {
   sent,
   received,
   pending,
+  processing,
   refused;
 
   Color get color => switch (this) {
-        _TxNature.sent     => KinoaColors.quinoaRed,
-        _TxNature.received => KinoaColors.accentDark,
-        _TxNature.pending  => KinoaColors.warning,
-        _TxNature.refused  => KinoaColors.quinoaRed,
+        _TxNature.sent       => KinoaColors.quinoaDark,
+        _TxNature.received   => KinoaColors.accentDark,
+        _TxNature.pending    => KinoaColors.quinoaGold,
+        _TxNature.processing => const Color(0xFF2979FF),
+        _TxNature.refused    => KinoaColors.quinoaRed,
       };
 
   String get label => switch (this) {
-        _TxNature.sent     => "Envoyé",
-        _TxNature.received => "Reçu",
-        _TxNature.pending  => "En attente",
-        _TxNature.refused  => "Refusé",
+        _TxNature.sent       => "Envoyé",
+        _TxNature.received   => "Reçu",
+        _TxNature.pending    => "En attente",
+        _TxNature.processing => "En traitement",
+        _TxNature.refused    => "Échoué",
       };
 }
 

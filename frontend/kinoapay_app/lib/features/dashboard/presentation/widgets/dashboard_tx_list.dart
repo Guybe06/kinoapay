@@ -19,8 +19,40 @@ class DashboardTxList extends StatelessWidget {
     if (isLoading) return const _LoadingSkeleton();
     if (transactions.isEmpty) return const _EmptyState();
 
-    return Column(
-      children: transactions.map((tx) => DashboardTxRow(tx: tx)).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.05)),
+        boxShadow: [
+          BoxShadow(
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: List.generate(transactions.length, (index) {
+          final tx = transactions[index];
+          final bool isLast = index == transactions.length - 1;
+
+          return Column(
+            children: [
+              DashboardTxRow(tx: tx),
+              if (!isLast)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+                  ),
+                ),
+            ],
+          );
+        }),
+      ),
     );
   }
 }
