@@ -9,7 +9,12 @@ import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.d
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step2_view.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
+import "package:kinoapay_app/features/contacts/infrastructure/repositories/mock_contacts_repository.dart";
 import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
+import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
+import "package:kinoapay_app/features/notifications/infrastructure/repositories/mock_notifications_repository.dart";
 import "package:kinoapay_app/features/notifications/presentation/notifications_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
@@ -67,10 +72,22 @@ class KinoaRouter {
         return _heroRoute(KinoaShell(args: sArgs), settings);
 
       case KinoaRoutes.contacts:
-        return _slideRoute(const ContactsView(), settings);
+        return _slideRoute(
+          BlocProvider(
+            create: (_) => ContactsBloc(repository: MockContactsRepository()),
+            child: const ContactsView(),
+          ),
+          settings,
+        );
 
       case KinoaRoutes.notifications:
-        return _slideRoute(const NotificationsView(), settings);
+        return _slideRoute(
+          BlocProvider(
+            create: (_) => NotificationsBloc(repository: MockNotificationsRepository()),
+            child: const NotificationsView(),
+          ),
+          settings,
+        );
 
       case KinoaRoutes.scanner:
         return _slideRoute(const ScannerView(), settings);
