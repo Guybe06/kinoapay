@@ -14,7 +14,7 @@ class KinoaColors {
   static const Color quinoaCream = Color(0xFFFBF5E9);
   static const Color quinoaWarmGray = Color(0xFF7A6A55);
   // Accent néon (dashboard, CTAs dynamiques)
-  static const Color accent = Color(0xFFD9FF19);
+  static const Color accent = Color(0xFFBBCB64);
   static const Color accentDark = Color(0xFFA6CC00);
   static const Color accentLowOpacity = Color(0x33D9FF19);
   // Palette Stone (neutres froids)

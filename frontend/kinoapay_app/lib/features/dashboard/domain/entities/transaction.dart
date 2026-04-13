@@ -16,6 +16,9 @@ class Transaction extends Equatable {
   final DateTime? completedAt;
   final String direction;
 
+  /// Score de risque AML — 0.0 = très faible, 1.0 = très élevé.
+  final double? amlScore;
+
   const Transaction({
     required this.ktxid,
     required this.status,
@@ -30,6 +33,7 @@ class Transaction extends Equatable {
     required this.startedAt,
     this.completedAt,
     required this.direction,
+    this.amlScore,
   });
 
   @override
@@ -47,6 +51,7 @@ class Transaction extends Equatable {
         startedAt,
         completedAt,
         direction,
+        amlScore,
       ];
 }
 

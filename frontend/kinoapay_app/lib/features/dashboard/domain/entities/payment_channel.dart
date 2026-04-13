@@ -9,6 +9,8 @@ class PaymentChannel extends Equatable {
   final String short;
   final String status;
   final DateTime? lastUsed;
+  /// Nombre de transactions effectuées via ce canal.
+  final int txCount;
 
   const PaymentChannel({
     required this.id,
@@ -18,8 +20,9 @@ class PaymentChannel extends Equatable {
     required this.short,
     required this.status,
     this.lastUsed,
+    this.txCount = 0,
   });
 
   @override
-  List<Object?> get props => [id, type, label, value, short, status, lastUsed];
+  List<Object?> get props => [id, type, label, value, short, status, lastUsed, txCount];
 }

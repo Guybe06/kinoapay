@@ -1,5 +1,5 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 
 class DashboardQuickActions extends StatelessWidget {
@@ -7,48 +7,28 @@ class DashboardQuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             "Actions rapides",
             style: TextStyle(
-              color: Colors.white,
+              color: KinoaColors.quinoaDark,
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
+              letterSpacing: -0.4,
             ),
           ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _ActionItem(
-                icon: CupertinoIcons.add,
-                label: "Ajouter",
-                onTap: () {},
-                color: KinoaColors.stone800,
-              ),
-              _ActionItem(
-                icon: CupertinoIcons.paperplane,
-                label: "Envoyer",
-                onTap: () {},
-                color: KinoaColors.stone800,
-              ),
-              _ActionItem(
-                icon: CupertinoIcons.arrow_right_arrow_left,
-                label: "Convertir",
-                onTap: () {},
-                color: KinoaColors.stone800,
-              ),
-              _ActionItem(
-                icon: CupertinoIcons.ellipsis,
-                label: "Plus",
-                onTap: () {},
-                color: KinoaColors.stone800,
-              ),
+              _ActionSquare(icon: SolarIconsOutline.addCircle, label: "Ajouter"),
+              _ActionSquare(icon: SolarIconsOutline.sendSquare, label: "Envoyer"),
+              _ActionSquare(icon: SolarIconsOutline.transferVertical, label: "Convertir"),
+              _ActionSquare(icon: SolarIconsOutline.menuDots, label: "Plus"),
             ],
           ),
         ],
@@ -57,47 +37,35 @@ class DashboardQuickActions extends StatelessWidget {
   }
 }
 
-class _ActionItem extends StatelessWidget {
+class _ActionSquare extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
-  final Color color;
 
-  const _ActionItem({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    required this.color,
-  });
+  const _ActionSquare({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: (MediaQuery.of(context).size.width - 70) / 4,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+    return Column(
+      children: [
+        Container(
+          width: 76,
+          height: 76,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1C1C1C),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Icon(icon, color: Colors.white, size: 28),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 24, color: Colors.white),
-            const SizedBox(height: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        const SizedBox(height: 10),
+        Text(
+          label,
+          style: TextStyle(
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.7),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

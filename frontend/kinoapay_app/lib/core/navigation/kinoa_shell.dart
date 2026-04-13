@@ -40,9 +40,13 @@ class _KinoaShellState extends State<KinoaShell> {
     setState(() => _currentTab = index);
   }
 
-  List<Widget> _buildPages() {
+  List<Widget> _buildPages(BuildContext context) {
     return [
-      const DashboardView(),
+      DashboardView(
+        onNavigateToSend: () => _onTabChanged(KinoaRoutes.tabTransfer),
+        onNavigateToRequest: () =>
+            Navigator.pushNamed(context, KinoaRoutes.moneyRequest),
+      ),
       const SendView(),
       const _PlaceholderPage(label: "Historique"),
       const _PlaceholderPage(label: "Profil"),
@@ -71,7 +75,7 @@ class _KinoaShellState extends State<KinoaShell> {
           children: [
             IndexedStack(
               index: _currentTab,
-              children: _buildPages(),
+              children: _buildPages(context),
             ),
             Positioned(
               left: 0,

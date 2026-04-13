@@ -8,9 +8,7 @@ class SecureStorageService {
   static const String _firstOpenAppKey = "first_open_app";
 
   const SecureStorageService({
-    FlutterSecureStorage storage = const FlutterSecureStorage(
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    ),
+    FlutterSecureStorage storage = const FlutterSecureStorage(),
   }) : _storage = storage;
 
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);

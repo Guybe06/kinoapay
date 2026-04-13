@@ -2,7 +2,7 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 
-/// Liste des onglets de la navigation principale avec les icônes Solar.
+/// Liste des 4 onglets de la navigation principale.
 class NavItems {
   static const List<NavItem> all = [
     NavItem(
@@ -17,8 +17,8 @@ class NavItems {
     ),
     NavItem(
       label: KinoaStrings.navHistory,
-      icon: SolarIconsOutline.history,
-      activeIcon: SolarIconsBold.history,
+      icon: SolarIconsOutline.transferHorizontal,
+      activeIcon: SolarIconsBold.transferHorizontal,
     ),
     NavItem(
       label: KinoaStrings.navProfile,

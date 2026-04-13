@@ -4,7 +4,7 @@ import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 
 /// Bouton de connexion via un fournisseur externe (Google, Apple…).
 class AuthSocialButton extends StatelessWidget {
-  final IconData icon;
+  final dynamic icon;
   final String label;
   final VoidCallback onPressed;
 
@@ -35,7 +35,8 @@ class AuthSocialButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(icon, color: KinoaColors.quinoaDark, size: 20),
+            if (icon is IconData) Icon(icon, color: KinoaColors.quinoaDark, size: 20),
+            if (icon is FaIconData) FaIcon(icon, color: KinoaColors.quinoaDark, size: 20),
             const SizedBox(width: 12),
             Text(label, style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700, fontSize: 14)),
           ],
