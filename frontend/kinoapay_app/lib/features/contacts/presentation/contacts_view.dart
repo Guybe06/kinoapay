@@ -154,14 +154,14 @@ class _ContactsList extends StatelessWidget {
             label: "Sur KinoaPay",
             count: state.onApp.length,
           ),
-          _ContactGroup(contacts: state.onApp),
+          _ContactGroup(contacts: state.onApp, actionable: true),
         ],
         if (state.others.isNotEmpty) ...[
           _SectionHeader(
             label: "Autres contacts",
             count: state.others.length,
           ),
-          _ContactGroup(contacts: state.others),
+          _ContactGroup(contacts: state.others, actionable: false),
         ],
       ],
     );
@@ -212,7 +212,8 @@ class _SectionHeader extends StatelessWidget {
 
 class _ContactGroup extends StatelessWidget {
   final List<Contact> contacts;
-  const _ContactGroup({required this.contacts});
+  final bool actionable;
+  const _ContactGroup({required this.contacts, required this.actionable});
 
   @override
   Widget build(BuildContext context) {
@@ -225,9 +226,15 @@ class _ContactGroup extends StatelessWidget {
       ),
       child: Column(
         children: List.generate(contacts.length, (i) {
+          final contact = contacts[i];
           return Column(
             children: [
-              ContactTile(contact: contacts[i], onTap: () {}),
+              ContactTile(
+                contact: contact,
+                onTap: actionable
+                    ? () => _showActionSheet(context, contact)
+                    : () => _showInviteSheet(context, contact),
+              ),
               if (i < contacts.length - 1)
                 Divider(
                   height: 1,
@@ -239,6 +246,241 @@ class _ContactGroup extends StatelessWidget {
             ],
           );
         }),
+      ),
+    );
+  }
+
+  void _showActionSheet(BuildContext context, Contact contact) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ContactActionSheet(contact: contact),
+    );
+  }
+
+  void _showInviteSheet(BuildContext context, Contact contact) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ContactInviteSheet(contact: contact),
+    );
+  }
+}
+
+// ── Action sheet contact KinoaPay ────────────────────────────────────────────
+
+class _ContactActionSheet extends StatelessWidget {
+  final Contact contact;
+  const _ContactActionSheet({required this.contact});
+
+  @override
+  Widget build(BuildContext context) {
+    final initials = contact.fullName.trim().split(" ")
+        .map((p) => p.isNotEmpty ? p[0] : "")
+        .take(2)
+        .join()
+        .toUpperCase();
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      decoration: const BoxDecoration(
+        color: KinoaColors.quinoaCream,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            width: 56, height: 56,
+            decoration: BoxDecoration(
+              color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              initials,
+              style: const TextStyle(
+                color: KinoaColors.quinoaRed,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            contact.fullName,
+            style: const TextStyle(
+              color: KinoaColors.quinoaDark,
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.4,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            contact.phone,
+            style: TextStyle(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.4),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 28),
+          Row(
+            children: [
+              Expanded(
+                child: _ActionBtn(
+                  label: "Envoyer",
+                  icon: Icons.arrow_upward_rounded,
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigation vers Send avec contact pré-rempli — à brancher en Phase 1
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _ActionBtn(
+                  label: "Demander",
+                  icon: Icons.arrow_downward_rounded,
+                  secondary: true,
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigation vers Request avec contact pré-rempli — à brancher en Phase 1
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionBtn extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool secondary;
+  final VoidCallback onTap;
+
+  const _ActionBtn({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.secondary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          color: secondary
+              ? KinoaColors.quinoaDark.withValues(alpha: 0.06)
+              : KinoaColors.quinoaDark,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: secondary ? KinoaColors.quinoaDark : Colors.white,
+            ),
+            const SizedBox(width: 7),
+            Text(
+              label,
+              style: TextStyle(
+                color: secondary ? KinoaColors.quinoaDark : Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Invite sheet contact non inscrit ─────────────────────────────────────────
+
+class _ContactInviteSheet extends StatelessWidget {
+  final Contact contact;
+  const _ContactInviteSheet({required this.contact});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      decoration: const BoxDecoration(
+        color: KinoaColors.quinoaCream,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 36, height: 4,
+            decoration: BoxDecoration(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "${contact.fullName} n'est pas encore sur KinoaPay.",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: KinoaColors.quinoaDark,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.3,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Invitez-le à rejoindre l'application pour lui envoyer de l'argent.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.5),
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 28),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              decoration: BoxDecoration(
+                color: KinoaColors.quinoaDark,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                "Inviter",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
