@@ -32,6 +32,7 @@ class KinoaRoutes {
   // Reçu et preuve ledger
   static const String receipt = "/app/receipt";
   static const String ledgerVerify = "/app/verify";
-  // Notifications
+  // Notifications et scanner
   static const String notifications = "/app/notifications";
+  static const String scanner = "/app/scanner";
 }

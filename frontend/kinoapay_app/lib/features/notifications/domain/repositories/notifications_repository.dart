@@ -1,0 +1,12 @@
+import "package:kinoapay_app/features/notifications/domain/entities/kinoa_notification.dart";
+
+/// Contrat d'accès aux notifications utilisateur.
+abstract class NotificationsRepository {
+  Future<List<KinoaNotification>> getNotifications();
+
+  /// Marque une notification comme lue par son identifiant.
+  Future<void> markAsRead(String id);
+
+  /// Marque toutes les notifications comme lues.
+  Future<void> markAllAsRead();
+}

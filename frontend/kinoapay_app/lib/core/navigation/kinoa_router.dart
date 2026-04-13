@@ -9,6 +9,9 @@ import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.d
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step2_view.dart";
+import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
+import "package:kinoapay_app/features/notifications/presentation/notifications_view.dart";
+import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
@@ -62,6 +65,15 @@ class KinoaRouter {
       case KinoaRoutes.shell:
         final sArgs = args is ShellArgs ? args : const ShellArgs();
         return _heroRoute(KinoaShell(args: sArgs), settings);
+
+      case KinoaRoutes.contacts:
+        return _slideRoute(const ContactsView(), settings);
+
+      case KinoaRoutes.notifications:
+        return _slideRoute(const NotificationsView(), settings);
+
+      case KinoaRoutes.scanner:
+        return _slideRoute(const ScannerView(), settings);
 
       default:
         return _slideRoute(

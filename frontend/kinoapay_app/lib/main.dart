@@ -12,8 +12,12 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/payment_setup_bloc.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_auth_repository.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_payment_channel_repository.dart";
+import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
+import "package:kinoapay_app/features/contacts/infrastructure/repositories/mock_contacts_repository.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock_dashboard_repository.dart";
+import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
+import "package:kinoapay_app/features/notifications/infrastructure/repositories/mock_notifications_repository.dart";
 
 /// Notifier global du thème, accessible depuis n'importe quel widget via [themeNotifier].
 final ThemeNotifier themeNotifier = ThemeNotifier();
@@ -44,6 +48,12 @@ void main() async {
           create: (_) => PaymentSetupBloc(
             repo: MockPaymentChannelRepository(storage: storage),
           ),
+        ),
+        BlocProvider<ContactsBloc>(
+          create: (_) => ContactsBloc(repository: MockContactsRepository()),
+        ),
+        BlocProvider<NotificationsBloc>(
+          create: (_) => NotificationsBloc(repository: MockNotificationsRepository()),
         ),
       ],
       child: const KinoaPayApp(),

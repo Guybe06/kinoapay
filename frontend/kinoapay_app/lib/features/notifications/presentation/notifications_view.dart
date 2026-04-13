@@ -1,0 +1,185 @@
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
+import "package:kinoapay_app/features/notifications/application/bloc/notifications_event.dart";
+import "package:kinoapay_app/features/notifications/application/bloc/notifications_state.dart";
+import "package:kinoapay_app/features/notifications/presentation/widgets/notification_tile.dart";
+
+class NotificationsView extends StatefulWidget {
+  const NotificationsView({super.key});
+
+  @override
+  State<NotificationsView> createState() => _NotificationsViewState();
+}
+
+class _NotificationsViewState extends State<NotificationsView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NotificationsBloc>().add(const NotificationsStarted());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      backgroundColor: KinoaColors.quinoaCream,
+      body: Column(
+        children: [
+          _buildHeader(topInset),
+          Expanded(
+            child: BlocBuilder<NotificationsBloc, NotificationsState>(
+              builder: (context, state) {
+                if (state is NotificationsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: KinoaColors.quinoaGold,
+                      strokeWidth: 2,
+                    ),
+                  );
+                }
+                if (state is NotificationsLoadSuccess) {
+                  if (state.notifications.isEmpty) return const _EmptyState();
+                  return _NotificationsList(state: state);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(double topInset) {
+    return Container(
+      color: KinoaColors.quinoaCream,
+      padding: EdgeInsets.fromLTRB(20, topInset + 16, 16, 12),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16,
+                color: KinoaColors.quinoaDark,
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          const Expanded(
+            child: Text(
+              "Notifications",
+              style: TextStyle(
+                color: KinoaColors.quinoaDark,
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ),
+          BlocBuilder<NotificationsBloc, NotificationsState>(
+            builder: (context, state) {
+              if (state is! NotificationsLoadSuccess) return const SizedBox.shrink();
+              if (state.unreadCount == 0) return const SizedBox.shrink();
+              return GestureDetector(
+                onTap: () => context
+                    .read<NotificationsBloc>()
+                    .add(const NotificationsAllMarkedRead()),
+                child: Text(
+                  "Tout lire",
+                  style: TextStyle(
+                    color: KinoaColors.quinoaGold,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Liste ─────────────────────────────────────────────────────────────────────
+
+class _NotificationsList extends StatelessWidget {
+  final NotificationsLoadSuccess state;
+  const _NotificationsList({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          itemCount: state.notifications.length,
+          separatorBuilder: (_, _) => Divider(
+            height: 1,
+            thickness: 1,
+            indent: 74,
+            endIndent: 20,
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+          ),
+          itemBuilder: (context, i) {
+            final n = state.notifications[i];
+            return NotificationTile(
+              notification: n,
+              onTap: () => context
+                  .read<NotificationsBloc>()
+                  .add(NotificationMarkedRead(n.id)),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// ── Etat vide ─────────────────────────────────────────────────────────────────
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.notifications_none_rounded,
+            size: 48,
+            color: KinoaColors.quinoaDark.withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Aucune notification",
+            style: TextStyle(
+              color: KinoaColors.quinoaDark.withValues(alpha: 0.4),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
