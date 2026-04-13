@@ -15,9 +15,7 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_s
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list.dart";
 
 class DashboardView extends StatefulWidget {
-  /// Appelé quand l'utilisateur tape ENVOYER — navigue vers l'onglet Send.
   final VoidCallback? onNavigateToSend;
-  /// Appelé quand l'utilisateur tape DEMANDER — navigue vers la page request.
   final VoidCallback? onNavigateToRequest;
 
   const DashboardView({
@@ -37,6 +35,15 @@ class _DashboardViewState extends State<DashboardView> {
     final now = DateTime.now();
     context.read<DashboardBloc>().add(
       DashboardStarted(month: now.month, year: now.year),
+    );
+  }
+
+  void _showPromoDetail() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const _PromoDetailSheet(),
     );
   }
 
@@ -76,74 +83,96 @@ class _DashboardViewState extends State<DashboardView> {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.only(
-              top: topInset + 56,
+              top: topInset,
               bottom: MediaQuery.of(context).padding.bottom + 64 + 32 + 72,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                // ── 1. Greeting ───────────────────────────────────────────
-                _GreetingSection(firstName: firstName),
-
-                const SizedBox(height: 8),
-
-                // ── 2. Chip période ───────────────────────────────────────
-                DashboardHero(onPeriodTap: () {}),
-
-                const SizedBox(height: 16),
-
-                // ── 3. Stats mensuelles ───────────────────────────────────
-                if (stats != null) ...[
-                  DashboardStatsCard(stats: stats),
-                  const SizedBox(height: 16),
-                ],
-
-                // ── 4. Actions principales ────────────────────────────────
-                _ActionButtons(
-                  onSend: widget.onNavigateToSend ?? () {},
-                  onRequest: widget.onNavigateToRequest ?? () {},
-                ),
-
-                const SizedBox(height: 20),
-
-                // ── 5. Card promo ─────────────────────────────────────────
-                const _PromoCard(),
-
-                const SizedBox(height: 16),
-
-                // ── 6. Contacts fréquents ─────────────────────────────────
-                DashboardRecentContacts(
-                  transactions: transactions,
-                  onAdd: () {},
-                ),
-
-                const SizedBox(height: 28),
-
-                // ── 7. Transactions récentes ──────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Dernières transactions",
-                            style: TextStyle(
-                              color: KinoaColors.quinoaDark.withValues(alpha: 0.85),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.4,
-                            ),
-                          ),
-                          _VoirToutBtn(),
+                // Lumières diffuses en arrière-plan (BOOSTÉES)
+                Positioned(
+                  top: 50,
+                  right: -80,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          KinoaColors.accent.withValues(alpha: 0.25),
+                          Colors.transparent,
                         ],
                       ),
-                      const SizedBox(height: 14),
-                      DashboardTxList(transactions: recent, isLoading: loading),
-                    ],
+                    ),
                   ),
+                ),
+                Positioned(
+                  bottom: 200,
+                  left: -100,
+                  child: Container(
+                    width: 400,
+                    height: 400,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          KinoaColors.accent.withValues(alpha: 0.15),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _GreetingSection(firstName: firstName),
+                    const SizedBox(height: 8),
+                    DashboardHero(onPeriodTap: () {}),
+                    const SizedBox(height: 16),
+                    if (stats != null) ...[
+                      DashboardStatsCard(stats: stats),
+                      const SizedBox(height: 16),
+                    ],
+                    _ActionButtons(
+                      onSend: widget.onNavigateToSend ?? () {},
+                      onRequest: widget.onNavigateToRequest ?? () {},
+                    ),
+                    const SizedBox(height: 20),
+                    _PromoCard(onTap: _showPromoDetail),
+                    const SizedBox(height: 16),
+                    DashboardRecentContacts(
+                      transactions: transactions,
+                      onAdd: () {},
+                    ),
+                    const SizedBox(height: 28),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Dernières transactions",
+                                style: TextStyle(
+                                  color: KinoaColors.quinoaDark.withValues(alpha: 0.85),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.4,
+                                ),
+                              ),
+                              _VoirToutBtn(),
+                            ],
+                          ),
+                          const SizedBox(height: 14),
+                          DashboardTxList(transactions: recent, isLoading: loading),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -217,7 +246,8 @@ class _ActionBtn extends StatelessWidget {
 // ── Promo card ────────────────────────────────────────────────────────────────
 
 class _PromoCard extends StatelessWidget {
-  const _PromoCard();
+  final VoidCallback onTap;
+  const _PromoCard({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -225,54 +255,109 @@ class _PromoCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         width: double.infinity,
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: KinoaColors.accent,
-          borderRadius: BorderRadius.circular(24),
+          color: const Color(0xFF141414),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Positioned(
+              right: -50,
+              top: -50,
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      KinoaColors.accent.withValues(alpha: 0.25),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
                 children: [
-                  Text(
-                    "Transférez partout,\nsans friction",
-                    style: TextStyle(
-                      color: KinoaColors.quinoaDark.withValues(alpha: 0.88),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.4,
-                      height: 1.3,
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Transférez partout,\nsans friction",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.6,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Envoyez et recevez de l'argent en quelques secondes.",
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.4),
+                            fontSize: 12,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        GestureDetector(
+                          onTap: onTap,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: KinoaColors.accent,
+                              borderRadius: BorderRadius.circular(100),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: KinoaColors.accent.withValues(alpha: 0.4),
+                                  blurRadius: 20,
+                                  spreadRadius: -2,
+                                ),
+                              ],
+                            ),
+                            child: const Text(
+                              "En savoir plus",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Envoyez et recevez de l'argent en quelques secondes, où que vous soyez.",
-                    style: TextStyle(
-                      color: KinoaColors.quinoaDark.withValues(alpha: 0.55),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      height: 1.5,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 4,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: KinoaColors.accent.withValues(alpha: 0.06),
+                          border: Border.all(color: KinoaColors.accent.withValues(alpha: 0.1)),
+                        ),
+                        child: const Icon(
+                          SolarIconsOutline.plain,
+                          size: 48,
+                          color: KinoaColors.accent,
+                        ),
+                      ),
                     ),
                   ),
                 ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.10),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                SolarIconsOutline.plain,
-                size: 20,
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.70),
               ),
             ),
           ],
@@ -353,6 +438,164 @@ class _VoirToutBtn extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ── Promo Detail Sheet ────────────────────────────────────────────────────────
+
+class _PromoDetailSheet extends StatelessWidget {
+  const _PromoDetailSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF141414),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -100,
+                right: -50,
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        KinoaColors.accent.withValues(alpha: 0.1),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: ListView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+                      children: [
+                        const Text(
+                          "Transférez partout,\nsans friction",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -1.0,
+                            height: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _InfoSection(
+                          icon: SolarIconsOutline.link,
+                          title: "Le lien entre tous vos comptes",
+                          description: "KinoaPay fait le pont entre vos comptes actuels (MTN, Airtel, Orange) et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
+                        ),
+                        const SizedBox(height: 32),
+                        _InfoSection(
+                          icon: SolarIconsOutline.userId,
+                          title: "Une identité unique pour tout recevoir",
+                          description: "Avec votre KinoaID, recevoir de l'argent devient un jeu d'enfant. Ne donnez plus vos numéros de téléphone ou vos coordonnées bancaires à tout le monde. Un seul identifiant suffit pour recevoir vos fonds directement là où vous le souhaitez.",
+                        ),
+                        const SizedBox(height: 32),
+                        _InfoSection(
+                          icon: SolarIconsOutline.safeCircle,
+                          title: "Un reçu numérique qui ne ment jamais",
+                          description: "Chaque transaction est protégée par une preuve numérique infalsifiable. C'est une garantie que personne ne peut contester : votre argent est suivi à la trace et arrive toujours à bon port, avec une transparence totale.",
+                        ),
+                        const SizedBox(height: 32),
+                        _InfoSection(
+                          icon: SolarIconsOutline.bolt,
+                          title: "L'intelligence qui évite les attentes",
+                          description: "Notre système surveille la santé des réseaux en temps réel. Si un opérateur ralentit ou tombe en panne, KinoaPay le voit instantanément et trouve automatiquement un chemin plus rapide pour que votre transfert reste immédiat.",
+                        ),
+                        const SizedBox(height: 48),
+                        Text(
+                          "KinoaPay ne change pas vos habitudes, il les simplifie en connectant vos moyens de paiement préférés sous une protection universelle.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.4),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _InfoSection extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _InfoSection({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: KinoaColors.accent, size: 28),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                description,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  fontSize: 14,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

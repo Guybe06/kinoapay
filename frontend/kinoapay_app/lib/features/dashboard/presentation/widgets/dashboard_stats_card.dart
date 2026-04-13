@@ -1,3 +1,4 @@
+import "dart:ui";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
@@ -18,98 +19,131 @@ class DashboardStatsCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: KinoaColors.quinoaRed,
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Titre + période ──────────────────────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Activité mensuelle",
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.75),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Text(
-                  month,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.95),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
+        child: Stack(
+          children: [
+            // Effet de flou de fond
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: KinoaColors.quinoaRed.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // ── Stats entrant / sortant ───────────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: _StatBlock(
-                  label: "Entrant",
-                  amount: currency.format(stats.totalReceived).trim(),
-                  color: const Color(0xFFFFE9C8),
-                ),
-              ),
-              Expanded(
-                child: _StatBlock(
-                  label: "Sortant",
-                  amount: currency.format(stats.totalSent).trim(),
-                  color: const Color(0xFFE8A87C),
-                  alignRight: true,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          // ── Double courbe fluide ──────────────────────────────────────
-          SizedBox(
-            height: 72,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _DualCurvePainter(volumes: stats.dailyVolumes),
             ),
-          ),
-
-          const SizedBox(height: 14),
-
-          // ── Légende ───────────────────────────────────────────────────
-          Row(
-            children: [
-              _LegendDot(color: const Color(0xFFFFE9C8), label: "Reçu"),
-              const SizedBox(width: 16),
-              _LegendDot(color: const Color(0xFFE8A87C), label: "Envoyé"),
-              const Spacer(),
-              Text(
-                "30 derniers jours",
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.60),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
+            // Bordure et Reflet
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.12),
+                  width: 1.5,
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.08),
+                    Colors.transparent,
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Titre + période ──────────────────────────────────────────
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Activité mensuelle",
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.75),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Text(
+                          month,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.95),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // ── Stats entrant / sortant ───────────────────────────────────
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatBlock(
+                          label: "Entrant",
+                          amount: currency.format(stats.totalReceived).trim(),
+                          color: const Color(0xFFFFE9C8),
+                        ),
+                      ),
+                      Expanded(
+                        child: _StatBlock(
+                          label: "Sortant",
+                          amount: currency.format(stats.totalSent).trim(),
+                          color: const Color(0xFFE8A87C),
+                          alignRight: true,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // ── Double courbe fluide ──────────────────────────────────────
+                  SizedBox(
+                    height: 72,
+                    width: double.infinity,
+                    child: CustomPaint(
+                      painter: _DualCurvePainter(volumes: stats.dailyVolumes),
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // ── Légende ───────────────────────────────────────────────────
+                  Row(
+                    children: [
+                      _LegendDot(color: const Color(0xFFFFE9C8), label: "Reçu"),
+                      const SizedBox(width: 16),
+                      _LegendDot(color: const Color(0xFFE8A87C), label: "Envoyé"),
+                      const Spacer(),
+                      Text(
+                        "30 derniers jours",
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.60),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
