@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
+import "package:mobile_scanner/mobile_scanner.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 
-/// Vue scanner QR — UI prête, branchement caméra via mobile_scanner à intégrer en Phase 1.
+/// Vue scanner QR avec caméra réelle via mobile_scanner.
 class ScannerView extends StatefulWidget {
   const ScannerView({super.key});
 
@@ -10,32 +11,28 @@ class ScannerView extends StatefulWidget {
   State<ScannerView> createState() => _ScannerViewState();
 }
 
-class _ScannerViewState extends State<ScannerView>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _lineController;
-  ScanResult? _result;
-
-  @override
-  void initState() {
-    super.initState();
-    _lineController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-  }
+class _ScannerViewState extends State<ScannerView> {
+  final MobileScannerController _controller = MobileScannerController();
+  bool _detected = false;
 
   @override
   void dispose() {
-    _lineController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  /// Simule un scan avec un QR KinoaID pour démonstration.
-  void _simulateScan() {
-    setState(() {
-      _result = ScanResult.parse("kinoa://id/+242066667788");
-    });
-    _showResultSheet(_result!);
+  void _onDetect(BarcodeCapture capture) {
+    if (_detected) return;
+
+    final barcode = capture.barcodes.firstOrNull;
+    final raw = barcode?.rawValue;
+    if (raw == null) return;
+
+    _detected = true;
+    _controller.stop();
+
+    final result = ScanResult.parse(raw);
+    _showResultSheet(result);
   }
 
   void _showResultSheet(ScanResult result) {
@@ -48,10 +45,16 @@ class _ScannerViewState extends State<ScannerView>
         onConfirm: () => Navigator.pop(context),
         onCancel: () {
           Navigator.pop(context);
-          setState(() => _result = null);
+          setState(() => _detected = false);
+          _controller.start();
         },
       ),
-    );
+    ).whenComplete(() {
+      if (mounted && _detected) {
+        setState(() => _detected = false);
+        _controller.start();
+      }
+    });
   }
 
   @override
@@ -64,43 +67,14 @@ class _ScannerViewState extends State<ScannerView>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Fond simulant le viewfinder caméra
-          Container(color: const Color(0xFF0A0A0A)),
-
-          // Overlay semi-opaque avec découpe centrale
-          _ScanOverlay(frameSize: frameSize, screenSize: size),
-
-          // Ligne de scan animée
-          Center(
-            child: SizedBox(
-              width: frameSize,
-              height: frameSize,
-              child: AnimatedBuilder(
-                animation: _lineController,
-                builder: (_, _) => Stack(
-                  children: [
-                    Positioned(
-                      top: _lineController.value * (frameSize - 2),
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 2,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              KinoaColors.quinoaRed.withValues(alpha: 0.9),
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          // Flux caméra réel
+          MobileScanner(
+            controller: _controller,
+            onDetect: _onDetect,
           ),
+
+          // Overlay avec découpe centrale
+          _ScanOverlay(frameSize: frameSize, screenSize: size),
 
           // Header
           Positioned(
@@ -114,7 +88,7 @@ class _ScannerViewState extends State<ScannerView>
                   child: Container(
                     padding: const EdgeInsets.all(9),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -134,13 +108,30 @@ class _ScannerViewState extends State<ScannerView>
                     letterSpacing: -0.4,
                   ),
                 ),
+                const Spacer(),
+                // Bouton torche
+                GestureDetector(
+                  onTap: () => _controller.toggleTorch(),
+                  child: Container(
+                    padding: const EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.flashlight_on_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
 
           // Instruction
           Positioned(
-            bottom: size.height * 0.28,
+            bottom: size.height * 0.20,
             left: 0,
             right: 0,
             child: Column(
@@ -149,55 +140,21 @@ class _ScannerViewState extends State<ScannerView>
                   "Pointez vers un QR KinoaPay",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.75),
+                    color: Colors.white.withValues(alpha: 0.85),
                     fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "ou KinoaID d'un contact",
+                  "ou le KinoaID d'un contact",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: Colors.white.withValues(alpha: 0.45),
                     fontSize: 12,
                   ),
                 ),
               ],
-            ),
-          ),
-
-          // Bouton simulation (à retirer lors du branchement caméra réel)
-          Positioned(
-            bottom: size.height * 0.10,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: GestureDetector(
-                onTap: _simulateScan,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: KinoaColors.quinoaRed,
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: KinoaColors.quinoaRed.withValues(alpha: 0.4),
-                        blurRadius: 20,
-                        spreadRadius: -2,
-                      ),
-                    ],
-                  ),
-                  child: const Text(
-                    "Simuler un scan",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-              ),
             ),
           ),
         ],
@@ -206,7 +163,7 @@ class _ScannerViewState extends State<ScannerView>
   }
 }
 
-// ── Overlay avec découpe ──────────────────────────────────────────────────────
+// ── Overlay avec découpe et coins quinoaRed ───────────────────────────────────
 
 class _ScanOverlay extends StatelessWidget {
   final double frameSize;
@@ -232,14 +189,13 @@ class _OverlayPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final half = frameSize / 2;
-    final r = 16.0;
+    const r = 16.0;
 
-    // Fond semi-opaque
-    final bgPaint = Paint()..color = Colors.black.withValues(alpha: 0.72);
+    final bgPaint = Paint()..color = Colors.black.withValues(alpha: 0.70);
     final fullRect = Rect.fromLTWH(0, 0, size.width, size.height);
     final frameRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(cx - half, cy - half, frameSize, frameSize),
-      Radius.circular(r),
+      const Radius.circular(r),
     );
     final path = Path()
       ..addRect(fullRect)
@@ -247,7 +203,6 @@ class _OverlayPainter extends CustomPainter {
       ..fillType = PathFillType.evenOdd;
     canvas.drawPath(path, bgPaint);
 
-    // Coins du cadre
     final cornerPaint = Paint()
       ..color = KinoaColors.quinoaRed
       ..style = PaintingStyle.stroke
@@ -260,19 +215,18 @@ class _OverlayPainter extends CustomPainter {
     final x1 = cx + half;
     final y1 = cy + half;
 
-    // Coin haut-gauche
     canvas.drawLine(Offset(x0, y0 + len), Offset(x0, y0 + r), cornerPaint);
     canvas.drawArc(Rect.fromLTWH(x0, y0, r * 2, r * 2), 3.14, -1.57, false, cornerPaint);
     canvas.drawLine(Offset(x0 + r, y0), Offset(x0 + len, y0), cornerPaint);
-    // Coin haut-droit
+
     canvas.drawLine(Offset(x1 - len, y0), Offset(x1 - r, y0), cornerPaint);
     canvas.drawArc(Rect.fromLTWH(x1 - r * 2, y0, r * 2, r * 2), -1.57, -1.57, false, cornerPaint);
     canvas.drawLine(Offset(x1, y0 + r), Offset(x1, y0 + len), cornerPaint);
-    // Coin bas-droit
+
     canvas.drawLine(Offset(x1, y1 - len), Offset(x1, y1 - r), cornerPaint);
     canvas.drawArc(Rect.fromLTWH(x1 - r * 2, y1 - r * 2, r * 2, r * 2), 0, 1.57, false, cornerPaint);
     canvas.drawLine(Offset(x1 - r, y1), Offset(x1 - len, y1), cornerPaint);
-    // Coin bas-gauche
+
     canvas.drawLine(Offset(x0 + len, y1), Offset(x0 + r, y1), cornerPaint);
     canvas.drawArc(Rect.fromLTWH(x0, y1 - r * 2, r * 2, r * 2), 1.57, 1.57, false, cornerPaint);
     canvas.drawLine(Offset(x0, y1 - r), Offset(x0, y1 - len), cornerPaint);
@@ -308,8 +262,7 @@ class _ScanResultSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 36,
-            height: 4,
+            width: 36, height: 4,
             decoration: BoxDecoration(
               color: KinoaColors.quinoaDark.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(2),
@@ -317,14 +270,16 @@ class _ScanResultSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Container(
-            width: 56,
-            height: 56,
+            width: 56, height: 56,
             decoration: BoxDecoration(
               color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.qr_code_scanner_rounded,
-                size: 28, color: KinoaColors.quinoaRed),
+            child: const Icon(
+              Icons.qr_code_scanner_rounded,
+              size: 28,
+              color: KinoaColors.quinoaRed,
+            ),
           ),
           const SizedBox(height: 16),
           Text(

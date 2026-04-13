@@ -4,6 +4,8 @@
 <dict>
 	<key>NSContactsUsageDescription</key>
 	<string>KinoaPay accède à vos contacts pour détecter ceux qui utilisent l'application.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>KinoaPay utilise la caméra pour scanner les QR codes de paiement.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
