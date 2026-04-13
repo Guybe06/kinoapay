@@ -16,7 +16,7 @@ class SecureStorageService {
   Future<void> delete(String key) => _storage.delete(key: key);
   Future<void> clearAll() => _storage.deleteAll();
 
-  // Helpers token JWT
+  // Gestion du token JWT
   Future<void> saveToken(String token) => write(_tokenKey, token);
   Future<String?> getToken() => read(_tokenKey);
   Future<void> deleteToken() => delete(_tokenKey);

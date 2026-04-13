@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
 
-/// En-tête light — fond quinoaCream, logo quinoaDark/quinoaGold, icônes colorées.
+/// En-tête light, fond quinoaCream, logo quinoaDark/quinoaGold, icônes colorées.
 class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool withHero;
   final int unreadNotifications;

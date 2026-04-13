@@ -16,8 +16,7 @@ class ShellArgs {
   });
 }
 
-/// Shell principal light — quinoaCream, icônes status bar sombres,
-/// navigation flottante centrée en bas.
+/// Shell principal, fond quinoaCream, icônes status bar sombres, navigation flottante centrée en bas.
 class KinoaShell extends StatefulWidget {
   final ShellArgs args;
   const KinoaShell({super.key, required this.args});
@@ -58,7 +57,6 @@ class _KinoaShellState extends State<KinoaShell> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        // Fond clair → icônes sombres
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
         systemNavigationBarColor: KinoaColors.quinoaCream,
@@ -67,16 +65,14 @@ class _KinoaShellState extends State<KinoaShell> {
       child: Scaffold(
         backgroundColor: KinoaColors.quinoaCream,
         appBar: KinoaHeader(
-          withHero: widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
+          withHero:
+              widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
         ),
         extendBodyBehindAppBar: true,
         extendBody: true,
         body: Stack(
           children: [
-            IndexedStack(
-              index: _currentTab,
-              children: _buildPages(context),
-            ),
+            IndexedStack(index: _currentTab, children: _buildPages(context)),
             Positioned(
               left: 0,
               right: 0,

@@ -9,7 +9,6 @@ import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_state.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
-import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_hero.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_recent_contacts.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_stats_card.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list.dart";
@@ -128,8 +127,6 @@ class _DashboardViewState extends State<DashboardView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _GreetingSection(firstName: firstName),
-                    const SizedBox(height: 8),
-                    DashboardHero(onPeriodTap: () {}),
                     const SizedBox(height: 16),
                     if (stats != null) ...[
                       DashboardStatsCard(stats: stats),

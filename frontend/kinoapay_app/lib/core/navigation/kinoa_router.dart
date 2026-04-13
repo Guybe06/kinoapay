@@ -71,7 +71,7 @@ class KinoaRouter {
     }
   }
 
-  // Fondu court, réservé au splash.
+  /// Fondu court, réservé au splash.
   static PageRouteBuilder _fadeRoute(Widget page, RouteSettings settings) {
     return PageRouteBuilder(
       settings: settings,
@@ -82,7 +82,7 @@ class KinoaRouter {
     );
   }
 
-  // Fondu long, laisse le Hero s'animer librement.
+  /// Fondu long, laisse le Hero s'animer librement.
   static PageRouteBuilder _heroRoute(Widget page, RouteSettings settings) {
     return PageRouteBuilder(
       settings: settings,
@@ -93,7 +93,7 @@ class KinoaRouter {
     );
   }
 
-  // Slide bas → haut avec fondu, utilisé pour les routes internes.
+  /// Glissement bas vers haut avec fondu, utilisé pour les routes internes.
   static PageRouteBuilder _slideRoute(Widget page, RouteSettings settings) {
     return PageRouteBuilder(
       settings: settings,

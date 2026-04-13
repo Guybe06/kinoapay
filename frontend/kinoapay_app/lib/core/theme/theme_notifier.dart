@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-/// Gère l'état du mode de thème actif (clair ou sombre). Light par défaut.
+/// Gère l'état du mode de thème actif (clair ou sombre). Clair par défaut.
 class ThemeNotifier extends ValueNotifier<ThemeMode> {
   ThemeNotifier() : super(ThemeMode.light);
 

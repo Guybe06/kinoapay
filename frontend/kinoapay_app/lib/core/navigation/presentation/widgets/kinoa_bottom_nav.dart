@@ -3,7 +3,7 @@ import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 
-/// Navigation flottante light — fond blanc, ombre douce, pill quinoaGold glissante.
+/// Navigation flottante light, fond blanc, ombre douce, pastille quinoaGold glissante.
 class KinoaBottomNav extends StatefulWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
