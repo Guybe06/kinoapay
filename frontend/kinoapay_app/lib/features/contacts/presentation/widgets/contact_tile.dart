@@ -49,13 +49,13 @@ class ContactTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: KinoaColors.accentDark.withValues(alpha: 0.10),
+                  color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: const Text(
                   "KinoaPay",
                   style: TextStyle(
-                    color: KinoaColors.accentDark,
+                    color: KinoaColors.quinoaRed,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.2,
@@ -91,7 +91,7 @@ class _Avatar extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: onApp
-                ? KinoaColors.accentDark.withValues(alpha: 0.10)
+                ? KinoaColors.quinoaRed.withValues(alpha: 0.10)
                 : KinoaColors.quinoaDark.withValues(alpha: 0.07),
             shape: BoxShape.circle,
           ),
@@ -99,7 +99,7 @@ class _Avatar extends StatelessWidget {
           child: Text(
             initials,
             style: TextStyle(
-              color: onApp ? KinoaColors.accentDark : KinoaColors.quinoaWarmGray,
+              color: onApp ? KinoaColors.quinoaRed : KinoaColors.quinoaWarmGray,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -113,7 +113,7 @@ class _Avatar extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: KinoaColors.accentDark,
+                color: KinoaColors.quinoaRed,
                 shape: BoxShape.circle,
                 border: Border.all(color: KinoaColors.quinoaCream, width: 1.5),
               ),
