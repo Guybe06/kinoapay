@@ -1,15 +1,20 @@
-/// Base locale des numéros enregistrés sur KinoaPay.
-/// Remplacé par un appel API en Phase 1.
-/// Synchronisé avec les mocks de transactions du dashboard.
-const Set<String> kinoaRegisteredNumbers = {
-  "+242066667788", // Jean Dupont
-  "+242055554433", // Marie Claire
-  "+242066660011", // Paul Mbengue
-  "+242055559999", // Karim Idriss
-  "+242066661122", // Fatou Diallo
-  "+242055558877", // Grace Mikobi
-  "+242066663344", // Théo Nganga
-  "+242066665566", // Alain Bossou
+import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
+
+/// Profil KinoaPay d'un utilisateur : identifiant public et canaux configurés.
+typedef KinoaProfile = ({String kinoaId, List<PaymentChannel> channels});
+
+/// Base mock des profils KinoaPay indexés par numéro normalisé.
+/// Synchronisée avec les mocks de transactions du dashboard.
+/// Remplacée par un appel API en Phase 1.
+final Map<String, KinoaProfile> kinoaUsersDatabase = {
+  "+242066667788": (kinoaId: "jean.dupont",    channels: [PaymentChannel.mtn]),
+  "+242055554433": (kinoaId: "marie.claire",   channels: [PaymentChannel.airtel]),
+  "+242066660011": (kinoaId: "paul.mbengue",   channels: [PaymentChannel.mtn, PaymentChannel.airtel]),
+  "+242055559999": (kinoaId: "karim.idriss",   channels: [PaymentChannel.mtn]),
+  "+242066661122": (kinoaId: "fatou.diallo",   channels: [PaymentChannel.airtel]),
+  "+242055558877": (kinoaId: "grace.mikobi",   channels: [PaymentChannel.airtel]),
+  "+242066663344": (kinoaId: "theo.nganga",    channels: [PaymentChannel.mtn]),
+  "+242066665566": (kinoaId: "alain.bossou",   channels: [PaymentChannel.mtn, PaymentChannel.airtel]),
 };
 
 /// Normalise un numéro de téléphone en format international (+242XXXXXXXXX).

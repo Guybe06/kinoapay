@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
+/// Tuile de contact dans la liste, avec avatar, infos et indicateurs de canaux.
 class ContactTile extends StatelessWidget {
   final Contact contact;
   final VoidCallback? onTap;
@@ -46,21 +47,28 @@ class ContactTile extends StatelessWidget {
               ),
             ),
             if (contact.isOnKinoaPay)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: const Text(
-                  "KinoaPay",
-                  style: TextStyle(
-                    color: KinoaColors.quinoaRed,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.2,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...contact.channels.map((c) => _ChannelDot(channel: c)),
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Text(
+                      "KinoaPay",
+                      style: TextStyle(
+                        color: KinoaColors.quinoaRed,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
           ],
         ),
@@ -72,6 +80,23 @@ class ContactTile extends StatelessWidget {
     final parts = name.trim().split(" ");
     if (parts.length >= 2) return "${parts[0][0]}${parts[1][0]}".toUpperCase();
     return name.isNotEmpty ? name[0].toUpperCase() : "?";
+  }
+}
+
+/// Petite pastille colorée indiquant un canal (MTN jaune, Airtel rouge).
+class _ChannelDot extends StatelessWidget {
+  final PaymentChannel channel;
+  const _ChannelDot({required this.channel});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = channel == PaymentChannel.mtn ? KinoaColors.mtnYellow : KinoaColors.airtelRed;
+    return Container(
+      width: 8,
+      height: 8,
+      margin: const EdgeInsets.only(right: 3),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
   }
 }
 

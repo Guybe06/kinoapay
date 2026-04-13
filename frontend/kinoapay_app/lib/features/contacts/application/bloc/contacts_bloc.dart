@@ -21,7 +21,9 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     try {
       final contacts = await _repository.getContacts();
       emit(ContactsLoadSuccess(all: contacts, filtered: contacts));
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print("Erreur ContactsBloc: $e");
       emit(const ContactsError("Impossible de charger les contacts."));
     }
   }
