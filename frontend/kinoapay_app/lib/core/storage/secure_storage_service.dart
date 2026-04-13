@@ -11,9 +11,16 @@ class SecureStorageService {
     FlutterSecureStorage storage = const FlutterSecureStorage(),
   }) : _storage = storage;
 
+  /// Ecrit une valeur chiffrée pour la clé donnée.
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);
+
+  /// Lit la valeur chiffrée pour la clé donnée, null si absente.
   Future<String?> read(String key) => _storage.read(key: key);
+
+  /// Supprime l'entrée associée à la clé.
   Future<void> delete(String key) => _storage.delete(key: key);
+
+  /// Supprime toutes les entrées du stockage sécurisé.
   Future<void> clearAll() => _storage.deleteAll();
 
   // Gestion du token JWT
@@ -21,7 +28,7 @@ class SecureStorageService {
   Future<String?> getToken() => read(_tokenKey);
   Future<void> deleteToken() => delete(_tokenKey);
 
-  // Supprime uniquement la session (token), conserve first_open_app et autres préférences.
+  /// Supprime uniquement la session (token), conserve first_open_app et les autres préférences.
   Future<void> clearSession() => deleteToken();
 
   // first_open_app : true après le premier signin ou signup réussi.

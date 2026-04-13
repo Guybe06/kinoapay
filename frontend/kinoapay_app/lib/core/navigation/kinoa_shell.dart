@@ -7,6 +7,7 @@ import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.d
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
+/// Arguments de navigation transmis au [KinoaShell] à l'ouverture.
 class ShellArgs {
   final int initialTab;
   final bool fromSplash;

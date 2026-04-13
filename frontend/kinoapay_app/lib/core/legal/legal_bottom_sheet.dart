@@ -3,6 +3,7 @@ import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/legal/kinoa_cgu.dart";
 import "package:kinoapay_app/core/legal/kinoa_privacy.dart";
 
+/// Types de documents légaux disponibles dans l'application.
 enum LegalDocType { cgu, privacy }
 
 /// Affiche un document légal (CGU ou Politique de confidentialité) dans un bottom sheet draggable.

@@ -71,6 +71,9 @@ class KinoaColors {
   static const Color navBackground = stone950;
   static const Color navActive = quinoaGold;
   static const Color navInactive = stone500;
+  // Opérateurs Mobile Money (Congo-Brazzaville)
+  static const Color mtnYellow = Color(0xFFFFCC00);
+  static const Color airtelRed = Color(0xFFEE1B24);
   // Utilitaires
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparent = Color(0x00000000);
