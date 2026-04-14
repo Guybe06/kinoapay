@@ -3,12 +3,14 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:intl/date_symbol_data_local.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/navigation/kinoa_nav_throttle.dart";
 import "package:kinoapay_app/core/navigation/kinoa_router.dart";
 import "package:kinoapay_app/core/network/dio_client.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/theme/kinoa_theme.dart";
 import "package:kinoapay_app/core/theme/theme_notifier.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/payment_setup_bloc.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_auth_repository.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_payment_channel_repository.dart";
@@ -17,6 +19,9 @@ import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock
 
 /// Notifier global du thème, accessible depuis n'importe quel widget via [themeNotifier].
 final ThemeNotifier themeNotifier = ThemeNotifier();
+
+/// Observer global de navigation, utilisé par [KinoaEntrance] pour rejouer les animations au retour.
+final RouteObserver<ModalRoute<void>> kinoaRouteObserver = RouteObserver<ModalRoute<void>>();
 
 /// Point d'entrée principal : initialise les dépendances globales et lance l'application.
 void main() async {
@@ -35,7 +40,11 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(repository: MockAuthRepository(), storage: storage),
+          create: (_) {
+            final bloc = AuthBloc(repository: MockAuthRepository(storage: storage), storage: storage);
+            bloc.add(const AuthSessionRestoreRequested());
+            return bloc;
+          },
         ),
         BlocProvider<DashboardBloc>(
           create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
@@ -73,6 +82,7 @@ class KinoaPayApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
+          navigatorObservers: [kinoaRouteObserver, KinoaNavThrottle()],
           initialRoute: KinoaRoutes.splash,
           onGenerateRoute: KinoaRouter.generateRoute,
         );

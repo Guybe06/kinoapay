@@ -20,6 +20,8 @@ class KinoaErrorCodes {
   static const String validationError = "VALIDATION_ERROR";
   static const String missingField = "MISSING_FIELD";
   static const String invalidFormat = "INVALID_FORMAT";
+  // Stockage local (secure storage, etc.)
+  static const String localStorage = "LOCAL_STORAGE";
   // Générique
   static const String unknown = "UNKNOWN_ERROR";
   static const String cancelled = "CANCELLED";

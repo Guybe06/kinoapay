@@ -2,10 +2,10 @@ import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart
 
 /// Définit le contrat d'accès aux données pour les services d'authentification.
 abstract class AuthRepository {
-  /// Authentifie l'utilisateur et retourne son compte ou lève une exception en cas d'échec.
-  Future<UserAccount> signIn(String email, String password, {bool rememberMe = true});
+  /// Authentifie l'utilisateur, persiste les tokens et retourne le profil.
+  Future<UserAccount> signIn(String email, String password);
 
-  /// Inscrit un nouvel utilisateur avec ses informations personnelles et retourne le compte créé.
+  /// Inscrit un nouvel utilisateur (crée le compte côté serveur / mock, sans persister de session).
   Future<UserAccount> signUp({
     required String email,
     required String password,
@@ -27,4 +27,19 @@ abstract class AuthRepository {
 
   /// Récupère l'utilisateur actuellement connecté ou null si aucune session n'est active.
   Future<UserAccount?> getCurrentUser();
+
+  /// Demande l'envoi d'un code de réinitialisation de mot de passe au contact fourni.
+  /// @param contact  Email ou numéro de téléphone
+  /// @param isEmail  true = email, false = téléphone
+  Future<void> requestPasswordReset(String contact, {required bool isEmail});
+
+  /// Vérifie le code OTP de réinitialisation, retourne un token temporaire pour le changement.
+  /// @param contact  Email ou numéro de téléphone
+  /// @param code     Code OTP saisi
+  Future<String> verifyResetOtp(String contact, String code);
+
+  /// Change le mot de passe avec le token temporaire obtenu après vérification OTP.
+  /// @param resetToken    Token temporaire
+  /// @param newPassword   Nouveau mot de passe
+  Future<void> resetPassword(String resetToken, String newPassword);
 }

@@ -9,6 +9,7 @@ import "package:kinoapay_app/features/welcome/domain/welcome_strings.dart";
 import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_entrance_animation.dart";
 import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_illustration.dart";
+import "package:kinoapay_app/main.dart" show kinoaRouteObserver;
 
 /// Page d'accueil immersive avec animations d'entrée en cascade depuis le splash.
 class WelcomeView extends StatefulWidget {
@@ -21,9 +22,16 @@ class WelcomeView extends StatefulWidget {
   State<WelcomeView> createState() => _WelcomeViewState();
 }
 
-class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStateMixin {
+class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _ctrl;
   late final WelcomeEntranceAnimation _anim;
+  bool _navigating = false;
+
+  void _navigateTo(String route) {
+    if (_navigating) return;
+    _navigating = true;
+    Navigator.pushNamed(context, route).then((_) => _navigating = false);
+  }
 
   @override
   void initState() {
@@ -36,7 +44,25 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is ModalRoute<void>) {
+      kinoaRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    _ctrl.reset();
+    Future.delayed(const Duration(milliseconds: 150), () {
+      if (mounted) _ctrl.forward();
+    });
+  }
+
+  @override
   void dispose() {
+    kinoaRouteObserver.unsubscribe(this);
     _ctrl.dispose();
     super.dispose();
   }
@@ -193,7 +219,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, KinoaRoutes.signup),
+        onTap: () => _navigateTo(KinoaRoutes.signup),
         child: Container(
           width: double.infinity,
           height: 68,
@@ -226,7 +252,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   Widget _buildSigninLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(context, KinoaRoutes.signin),
+        onPressed: () => _navigateTo(KinoaRoutes.signin),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",

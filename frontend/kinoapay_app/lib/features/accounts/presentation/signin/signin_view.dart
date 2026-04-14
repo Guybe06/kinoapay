@@ -14,6 +14,7 @@ import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
+import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
 
 /// Gère l'authentification des utilisateurs existants.
 class SignInView extends StatefulWidget {
@@ -27,7 +28,13 @@ class _SignInViewState extends State<SignInView> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _rememberMe = false;
+  bool _navigating = false;
+
+  void _navigateTo(String route, {Object? arguments}) {
+    if (_navigating) return;
+    _navigating = true;
+    Navigator.pushNamed(context, route, arguments: arguments).then((_) => _navigating = false);
+  }
 
   @override
   void dispose() {
@@ -59,7 +66,7 @@ class _SignInViewState extends State<SignInView> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim(), rememberMe: _rememberMe),
+        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()),
       );
     }
   }
@@ -115,41 +122,53 @@ class _SignInViewState extends State<SignInView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            const Text(
-              AuthStrings.signinTitle,
-              style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+            KinoaEntrance(
+              index: 0,
+              child: const Text(
+                AuthStrings.signinTitle,
+                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+              ),
             ),
             const SizedBox(height: 12),
-            Text(
-              AuthStrings.signinSubtitle,
-              style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+            KinoaEntrance(
+              index: 1,
+              child: Text(
+                AuthStrings.signinSubtitle,
+                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+              ),
             ),
             const SizedBox(height: 40),
-            AuthTextField(
-              controller: _emailCtrl,
-              label: AuthStrings.emailLabel,
-              hintText: "Email ou numéro mobile",
-              keyboardType: TextInputType.emailAddress,
-              validator: AuthValidator.validateEmailOrPhone,
+            KinoaEntrance(
+              index: 2,
+              child: AuthTextField(
+                controller: _emailCtrl,
+                label: AuthStrings.emailLabel,
+                hintText: "Email ou numéro mobile",
+                keyboardType: TextInputType.emailAddress,
+                validator: AuthValidator.validateEmailOrPhone,
+              ),
             ),
             const SizedBox(height: 20),
-            AuthTextField(
-              controller: _passwordCtrl,
-              label: AuthStrings.passwordLabel,
-              hintText: "Mot de passe",
-              obscureText: true,
-              validator: AuthValidator.validatePassword,
+            KinoaEntrance(
+              index: 3,
+              child: AuthTextField(
+                controller: _passwordCtrl,
+                label: AuthStrings.passwordLabel,
+                hintText: "Mot de passe",
+                obscureText: true,
+                validator: AuthValidator.validatePassword,
+              ),
             ),
             const SizedBox(height: 16),
-            _buildSwitchRow(),
+            KinoaEntrance(index: 4, child: _buildForgotPasswordRow()),
             const SizedBox(height: 40),
-            KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
+            KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
             const SizedBox(height: 32),
-            const AuthSocialDivider(),
+            KinoaEntrance(index: 6, child: const AuthSocialDivider()),
             const SizedBox(height: 20),
-            const AuthSocialRow(),
+            KinoaEntrance(index: 7, child: const AuthSocialRow()),
             const SizedBox(height: 40),
-            _buildSignupLink(context),
+            KinoaEntrance(index: 8, child: _buildSignupLink(context)),
             const SizedBox(height: 32),
           ],
         ),
@@ -157,47 +176,32 @@ class _SignInViewState extends State<SignInView> {
     );
   }
 
-  Widget _buildSwitchRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Transform.scale(
-              scale: 0.8,
-              child: Switch(
-                value: _rememberMe,
-                onChanged: (v) => setState(() => _rememberMe = v),
-                activeThumbColor: KinoaColors.white,
-                activeTrackColor: KinoaColors.quinoaDark,
-                inactiveThumbColor: KinoaColors.white,
-                inactiveTrackColor: KinoaColors.quinoaDark.withValues(alpha: 0.1),
-                trackOutlineColor: WidgetStateProperty.resolveWith(
-                  (s) => s.contains(WidgetState.selected) ? KinoaColors.quinoaDark : KinoaColors.quinoaDark.withValues(alpha: 0.1),
-                ),
+  Widget _buildForgotPasswordRow() {
+    return GestureDetector(
+      onTap: () => _navigateTo(KinoaRoutes.forgotPassword),
+      child: Text.rich(
+        TextSpan(
+          text: "Mot de passe oublié ? ",
+          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 14, fontWeight: FontWeight.w500),
+          children: const [
+            TextSpan(
+              text: "Réinitialiser",
+              style: TextStyle(
+                color: KinoaColors.quinoaDark,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.underline,
               ),
-            ),
-            Text(
-              "Rester connecté",
-              style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.6), fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ],
         ),
-        TextButton(
-          onPressed: () {},
-          child: const Text(
-            AuthStrings.signinForgotPass,
-            style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildSignupLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(context, KinoaRoutes.signup),
+        onPressed: () => _navigateTo(KinoaRoutes.signup),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signinNoAccount} ",

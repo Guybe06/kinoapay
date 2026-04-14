@@ -4,7 +4,6 @@ import "splash_connectivity_service_io.dart"
     if (dart.library.html) "splash_connectivity_service_web.dart";
 
 /// Vérifie la disponibilité d'une connexion internet active.
-/// Sur le web, le check DNS (dart:io) n'est pas disponible — on considère connecté par défaut.
 class SplashConnectivityService {
   const SplashConnectivityService();
 

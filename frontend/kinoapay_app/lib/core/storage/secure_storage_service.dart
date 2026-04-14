@@ -4,8 +4,11 @@ import "package:flutter_secure_storage/flutter_secure_storage.dart";
 class SecureStorageService {
   final FlutterSecureStorage _storage;
 
-  static const String _tokenKey = "auth_token";
+  static const String _accessTokenKey = "access_token";
+  static const String _refreshTokenKey = "refresh_token";
+  static const String _userDataKey = "user_data";
   static const String _firstOpenAppKey = "first_open_app";
+  static const String _channelsSetupKey = "channels_setup_done";
 
   const SecureStorageService({
     FlutterSecureStorage storage = const FlutterSecureStorage(),
@@ -23,21 +26,38 @@ class SecureStorageService {
   /// Supprime toutes les entrées du stockage sécurisé.
   Future<void> clearAll() => _storage.deleteAll();
 
-  // Gestion du token JWT
-  Future<void> saveToken(String token) => write(_tokenKey, token);
-  Future<String?> getToken() => read(_tokenKey);
-  Future<void> deleteToken() => delete(_tokenKey);
+  // ── Tokens (access + refresh) ──────────────────────────────────────────────
 
-  /// Supprime uniquement la session (token), conserve first_open_app et les autres préférences.
-  Future<void> clearSession() => deleteToken();
+  Future<void> saveTokens({required String accessToken, required String refreshToken}) async {
+    await write(_accessTokenKey, accessToken);
+    await write(_refreshTokenKey, refreshToken);
+  }
 
-  // first_open_app : true après le premier signin ou signup réussi.
-  // Persiste entre les sessions pour router directement vers signin plutôt que welcome.
+  Future<String?> getToken() => read(_accessTokenKey);
+  Future<String?> getRefreshToken() => read(_refreshTokenKey);
+
+  Future<void> saveToken(String token) => write(_accessTokenKey, token);
+  Future<void> saveRefreshToken(String token) => write(_refreshTokenKey, token);
+
+  // ── User data ──────────────────────────────────────────────────────────────
+
+  Future<void> saveUserData(String json) => write(_userDataKey, json);
+  Future<String?> getUserData() => read(_userDataKey);
+
+  // ── Session ────────────────────────────────────────────────────────────────
+
+  /// Supprime la session complète (tokens + profil). Conserve first_open_app et les préférences.
+  Future<void> clearSession() async {
+    await delete(_accessTokenKey);
+    await delete(_refreshTokenKey);
+    await delete(_userDataKey);
+  }
+
+  // ── Préférences app ────────────────────────────────────────────────────────
+
   Future<void> markFirstOpenApp() => write(_firstOpenAppKey, "true");
   Future<bool> isFirstOpenApp() async => (await read(_firstOpenAppKey)) != "true";
 
-  // Comptes de paiement : true si l'utilisateur a configuré ou ignoré l'étape setup.
-  static const String _channelsSetupKey = "channels_setup_done";
   Future<bool> isChannelsSetupDone() async => (await read(_channelsSetupKey)) == "true";
   Future<void> markChannelsSetupDone() => write(_channelsSetupKey, "true");
 }

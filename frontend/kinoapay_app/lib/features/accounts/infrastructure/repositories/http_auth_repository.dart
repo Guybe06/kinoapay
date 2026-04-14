@@ -1,5 +1,6 @@
 import "dart:convert";
 import "package:dio/dio.dart";
+import "package:kinoapay_app/core/constants/kinoa_api.dart";
 import "package:kinoapay_app/core/errors/kinoa_exception.dart";
 import "package:kinoapay_app/core/network/dio_client.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
@@ -18,13 +19,13 @@ class HttpAuthRepository implements AuthRepository {
         _secureStorage = secureStorage;
 
   @override
-  Future<UserAccount> signIn(String email, String password, {bool rememberMe = true}) async {
+  Future<UserAccount> signIn(String email, String password) async {
     try {
       final response = await _dioClient.dio.post(
-        "/auth/login",
+        KinoaApi.signin,
         data: {"email": email, "password": password},
       );
-      return _parseAndPersist(response.data, rememberMe: rememberMe);
+      return _parseAndPersist(response.data as Map<String, dynamic>);
     } on KinoaException {
       rethrow;
     } on DioException catch (e) {
@@ -46,7 +47,7 @@ class HttpAuthRepository implements AuthRepository {
   }) async {
     try {
       final response = await _dioClient.dio.post(
-        "/auth/register",
+        KinoaApi.signup,
         data: {
           "email": email,
           "password": password,
@@ -57,7 +58,8 @@ class HttpAuthRepository implements AuthRepository {
           "birthDate": birthDate,
         },
       );
-      return _parseAndPersist(response.data);
+      final userData = (response.data as Map<String, dynamic>)["user"] as Map<String, dynamic>;
+      return _userFromMap(userData);
     } on KinoaException {
       rethrow;
     } on DioException catch (e) {
@@ -92,12 +94,19 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signOut() => _secureStorage.clearSession();
+  Future<void> signOut() async {
+    try {
+      await _dioClient.dio.post(KinoaApi.signout);
+    } catch (_) {
+      // Best effort : on nettoie la session même si le serveur ne répond pas.
+    }
+    await _secureStorage.clearSession();
+  }
 
   @override
   Future<UserAccount?> getCurrentUser() async {
     final token = await _secureStorage.getToken();
-    final raw = await _secureStorage.read("user_data");
+    final raw = await _secureStorage.getUserData();
     if (token == null || raw == null) return null;
     try {
       return _userFromMap(jsonDecode(raw) as Map<String, dynamic>);
@@ -106,12 +115,13 @@ class HttpAuthRepository implements AuthRepository {
     }
   }
 
-  // Parse API response, persist user data, save token only if rememberMe is true.
-  Future<UserAccount> _parseAndPersist(Map<String, dynamic> data, {bool rememberMe = true}) async {
-    final token = data["token"] as String;
+  /// Parse la réponse login, persiste access + refresh tokens et le profil.
+  Future<UserAccount> _parseAndPersist(Map<String, dynamic> data) async {
+    final accessToken = data["accessToken"] as String;
+    final refreshToken = data["refreshToken"] as String;
     final userData = data["user"] as Map<String, dynamic>;
-    if (rememberMe) await _secureStorage.saveToken(token);
-    await _secureStorage.write("user_data", jsonEncode(userData));
+    await _secureStorage.saveTokens(accessToken: accessToken, refreshToken: refreshToken);
+    await _secureStorage.saveUserData(jsonEncode(userData));
     return _userFromMap(userData);
   }
 
@@ -127,7 +137,42 @@ class HttpAuthRepository implements AuthRepository {
     kycVerified: (d["kycVerified"] as bool?) ?? false,
   );
 
-  // Map DioException status codes to typed KinoaException.
+  // ── Réinitialisation mot de passe ──────────────────────────────────────────
+
+  @override
+  Future<void> requestPasswordReset(String contact, {required bool isEmail}) async {
+    try {
+      await _dioClient.dio.post("/auth/password/request", data: {"contact": contact, "type": isEmail ? "email" : "phone"});
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    } catch (_) {
+      throw KinoaException.unknown();
+    }
+  }
+
+  @override
+  Future<String> verifyResetOtp(String contact, String code) async {
+    try {
+      final response = await _dioClient.dio.post("/auth/password/verify", data: {"contact": contact, "code": code});
+      return (response.data as Map<String, dynamic>)["resetToken"] as String;
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    } catch (_) {
+      throw KinoaException.unknown();
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String resetToken, String newPassword) async {
+    try {
+      await _dioClient.dio.post("/auth/password/reset", data: {"resetToken": resetToken, "password": newPassword});
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    } catch (_) {
+      throw KinoaException.unknown();
+    }
+  }
+
   KinoaException _fromDio(DioException e) {
     final status = e.response?.statusCode;
     return switch (status) {

@@ -33,7 +33,7 @@ class AuthValidator {
     return null;
   }
 
-  /// Valide une date de naissance au format JJ/MM/AAAA, âge minimum 16 ans.
+  /// Valide une date de naissance au format JJ/MM/AAAA, âge entre 18 et 115 ans.
   static String? validateBirthDate(String? value) {
     if (value == null || value.trim().isEmpty) return KinoaStrings.errorFieldRequired;
     final parts = value.split("/");
@@ -43,10 +43,26 @@ class AuthValidator {
     final year = int.tryParse(parts[2]);
     if (day == null || month == null || year == null) return "Date invalide.";
     final date = DateTime(year, month, day);
+    if (date.day != day || date.month != month || date.year != year) return "Date invalide.";
     final now = DateTime.now();
     final age = now.year - date.year - ((now.month < date.month || (now.month == date.month && now.day < date.day)) ? 1 : 0);
-    if (age < 16) return "Vous devez avoir au moins 16 ans.";
-    if (age > 120) return "Date invalide.";
+    if (age < 18) return "Vous devez avoir au moins 18 ans.";
+    if (age > 115) return "Date invalide.";
     return null;
+  }
+
+  /// Valide jour, mois et année saisis séparément (mêmes règles que [validateBirthDate]).
+  static String? validateBirthDateParts(String? day, String? month, String? year) {
+    final dd = (day ?? "").trim();
+    final mm = (month ?? "").trim();
+    final yy = (year ?? "").trim();
+    if (dd.isEmpty || mm.isEmpty || yy.isEmpty) return KinoaStrings.errorFieldRequired;
+    final d = int.tryParse(dd);
+    final m = int.tryParse(mm);
+    final y = int.tryParse(yy);
+    if (d == null || m == null || y == null) return "Date invalide.";
+    final combined =
+        "${d.toString().padLeft(2, "0")}/${m.toString().padLeft(2, "0")}/$y";
+    return validateBirthDate(combined);
   }
 }

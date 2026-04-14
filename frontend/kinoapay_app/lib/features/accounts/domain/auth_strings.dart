@@ -39,6 +39,23 @@ class AuthStrings {
   static const String otpResendIn = "Renvoyer dans";
   static const String otpInvalid = "Code incorrect. Vérifiez et réessayez.";
   static const String otpExpired = "Code expiré. Demandez un nouveau code.";
+  // Réinitialisation mot de passe
+  static const String resetTitle = "Réinitialiser";
+  static const String resetSubtitle = "Choisissez comment recevoir votre code de vérification";
+  static const String resetViaEmail = "Par email";
+  static const String resetViaPhone = "Par téléphone";
+  static const String resetEmailHint = "Votre adresse email";
+  static const String resetPhoneHint = "Votre numéro de téléphone";
+  static const String resetSendCode = "Envoyer le code";
+  static const String resetOtpTitle = "Vérification";
+  static const String resetOtpBody = "Entrez le code à 6 chiffres envoyé à";
+  static const String resetNewPassTitle = "Nouveau mot de passe";
+  static const String resetNewPassSubtitle = "Créez un mot de passe sécurisé pour votre compte";
+  static const String resetNewPassLabel = "Nouveau mot de passe";
+  static const String resetConfirmPassLabel = "Confirmer le mot de passe";
+  static const String resetSuccess = "Mot de passe modifié avec succès !";
+  static const String resetPassMismatch = "Les mots de passe ne correspondent pas.";
+  static const String resetRateLimited = "Trop de tentatives. Réessayez dans";
   // Onboarding post-inscription
   static const String celebrationTitle = "Votre compte est créé";
   static const String celebrationSubtitlePrefix = "Bienvenue,";

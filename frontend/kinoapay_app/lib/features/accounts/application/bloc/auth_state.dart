@@ -37,3 +37,17 @@ class AuthError extends AuthState {
   @override
   List<Object?> get props => [exception];
 }
+
+// ── Réinitialisation mot de passe ────────────────────────────────────────────
+
+class ResetOtpSent extends AuthState {}
+
+class ResetOtpVerified extends AuthState {
+  final String resetToken;
+  const ResetOtpVerified(this.resetToken);
+
+  @override
+  List<Object?> get props => [resetToken];
+}
+
+class PasswordResetSuccess extends AuthState {}

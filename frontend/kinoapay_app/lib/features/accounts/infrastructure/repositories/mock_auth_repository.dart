@@ -1,4 +1,7 @@
+import "dart:convert";
+
 import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_error_codes.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
@@ -7,8 +10,6 @@ import "package:kinoapay_app/features/accounts/domain/repositories/auth_reposito
 /// Implémentation mock du dépôt d'authentification.
 /// Simule un backend réel avec stockage en mémoire, mêmes contrats et mêmes erreurs typées.
 class MockAuthRepository implements AuthRepository {
-  // Utilisateurs enregistrés en mémoire (email → credentials + compte).
-  // Pré-seeded avec un compte de test. Réinitialisé à chaque cold restart.
   static final Map<String, _MockCredentials> _store = {
     "test@kinoapay.com": _MockCredentials(
       password: "password123",
@@ -16,10 +17,50 @@ class MockAuthRepository implements AuthRepository {
     ),
   };
 
+  static const String _mockAccessPrefix = "mock_access_";
+  static const String _mockRefreshPrefix = "mock_refresh_";
+
   static UserAccount? _session;
 
+  final SecureStorageService _storage;
+
+  MockAuthRepository({required SecureStorageService storage}) : _storage = storage;
+
+  Map<String, dynamic> _userToMap(UserAccount u) => {
+        "id": u.id,
+        "email": u.email,
+        "fullName": u.fullName,
+        "firstName": u.firstName,
+        "lastName": u.lastName,
+        "phone": u.phone,
+        "countryCode": u.countryCode,
+        "birthDate": u.birthDate,
+        "kycVerified": u.kycVerified,
+      };
+
+  UserAccount _userFromMap(Map<String, dynamic> d) => UserAccount(
+        id: d["id"].toString(),
+        email: d["email"] as String,
+        fullName: d["fullName"] as String?,
+        firstName: d["firstName"] as String?,
+        lastName: d["lastName"] as String?,
+        phone: d["phone"] as String?,
+        countryCode: d["countryCode"] as String?,
+        birthDate: d["birthDate"] as String?,
+        kycVerified: (d["kycVerified"] as bool?) ?? false,
+      );
+
+  /// Persiste toujours access + refresh tokens et le profil utilisateur.
+  Future<void> _persistSession(UserAccount account) async {
+    await _storage.saveTokens(
+      accessToken: "$_mockAccessPrefix${account.id}",
+      refreshToken: "$_mockRefreshPrefix${account.id}_${DateTime.now().millisecondsSinceEpoch}",
+    );
+    await _storage.saveUserData(jsonEncode(_userToMap(account)));
+  }
+
   @override
-  Future<UserAccount> signIn(String email, String password, {bool rememberMe = true}) async {
+  Future<UserAccount> signIn(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 1200));
 
     final entry = _store[email.trim().toLowerCase()];
@@ -32,7 +73,8 @@ class MockAuthRepository implements AuthRepository {
       );
     }
 
-    if (rememberMe) _session = entry.account;
+    _session = entry.account;
+    await _persistSession(entry.account);
     return entry.account;
   }
 
@@ -70,17 +112,14 @@ class MockAuthRepository implements AuthRepository {
     );
 
     _store[key] = _MockCredentials(password: password, account: account);
-    _session = account;
     return account;
   }
 
-  // Code OTP fixe en environnement mock.
   static const String _mockOtpCode = "123456";
 
   @override
   Future<void> sendOtp(String phone, String countryCode) async {
     await Future.delayed(const Duration(milliseconds: 1200));
-    // Mock : le code est toujours 123456, aucun SMS réel envoyé.
   }
 
   @override
@@ -99,10 +138,64 @@ class MockAuthRepository implements AuthRepository {
   Future<void> signOut() async {
     await Future.delayed(const Duration(milliseconds: 300));
     _session = null;
+    await _storage.clearSession();
   }
 
   @override
-  Future<UserAccount?> getCurrentUser() async => _session;
+  Future<UserAccount?> getCurrentUser() async {
+    final token = await _storage.getToken();
+    final raw = await _storage.getUserData();
+    if (token == null || token.isEmpty || raw == null) return _session;
+    try {
+      return _userFromMap(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return _session;
+    }
+  }
+
+  // ── Réinitialisation mot de passe ──────────────────────────────────────────
+
+  static const String _mockResetToken = "mock_reset_token_valid";
+
+  @override
+  Future<void> requestPasswordReset(String contact, {required bool isEmail}) async {
+    await Future.delayed(const Duration(milliseconds: 1200));
+    final key = contact.trim().toLowerCase();
+    if (isEmail && !_store.containsKey(key)) {
+      throw KinoaException(
+        message: "Aucun compte associé à cette adresse.",
+        code: AuthErrorCodes.invalidCredentials,
+        statusCode: 404,
+      );
+    }
+  }
+
+  @override
+  Future<String> verifyResetOtp(String contact, String code) async {
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (code != _mockOtpCode) {
+      throw KinoaException(
+        message: AuthStrings.otpInvalid,
+        code: AuthErrorCodes.otpInvalid,
+        statusCode: 422,
+      );
+    }
+    return _mockResetToken;
+  }
+
+  @override
+  Future<void> resetPassword(String resetToken, String newPassword) async {
+    await Future.delayed(const Duration(milliseconds: 1200));
+    if (resetToken != _mockResetToken) {
+      throw KinoaException.unauthorized();
+    }
+    // En mock : met à jour le premier compte trouvé (simulation).
+    final firstKey = _store.keys.firstOrNull;
+    if (firstKey != null) {
+      final old = _store[firstKey]!;
+      _store[firstKey] = _MockCredentials(password: newPassword, account: old.account);
+    }
+  }
 }
 
 class _MockCredentials {

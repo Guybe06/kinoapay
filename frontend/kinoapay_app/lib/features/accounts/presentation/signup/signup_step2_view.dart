@@ -15,6 +15,7 @@ import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
+import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
 
 /// Étape 2 de l'inscription : adresse email et mot de passe, puis soumission.
 class SignUpStep2View extends StatefulWidget {
@@ -28,6 +29,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _navigating = false;
 
   @override
   void dispose() {
@@ -117,43 +119,39 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            _buildStepIndicator(),
+            KinoaEntrance(index: 0, child: _buildStepIndicator()),
             const SizedBox(height: 24),
-            const Text(
-              AuthStrings.signupStep2Title,
-              style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+            KinoaEntrance(
+              index: 1,
+              child: const Text(
+                AuthStrings.signupStep2Title,
+                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+              ),
             ),
             const SizedBox(height: 12),
-            Text(
-              AuthStrings.signupStep2Subtitle,
-              style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+            KinoaEntrance(
+              index: 2,
+              child: Text(
+                AuthStrings.signupStep2Subtitle,
+                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+              ),
             ),
             const SizedBox(height: 40),
-            AuthTextField(
-              controller: _emailCtrl,
-              label: AuthStrings.emailLabel,
-              hintText: "sofia@exemple.com",
-              keyboardType: TextInputType.emailAddress,
-              validator: AuthValidator.validateEmailOrPhone,
+            KinoaEntrance(
+              index: 3,
+              child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: "sofia@exemple.com", keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
             ),
             const SizedBox(height: 20),
-            AuthTextField(
-              controller: _passwordCtrl,
-              label: AuthStrings.passwordLabel,
-              hintText: "Créer un mot de passe",
-              obscureText: true,
-              validator: AuthValidator.validatePassword,
+            KinoaEntrance(
+              index: 4,
+              child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: "Créer un mot de passe", obscureText: true, validator: AuthValidator.validatePassword),
             ),
             const SizedBox(height: 40),
-            KinoaPrimaryButton(
-              text: AuthStrings.submitBtn,
-              isLoading: state is AuthLoading,
-              onPressed: () => _submit(step1),
-            ),
+            KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1))),
             const SizedBox(height: 32),
-            _buildSigninLink(context),
+            KinoaEntrance(index: 6, child: _buildSigninLink(context)),
             const SizedBox(height: 16),
-            _buildTerms(context),
+            KinoaEntrance(index: 7, child: _buildTerms(context)),
             const SizedBox(height: 32),
           ],
         ),
@@ -191,7 +189,11 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
   Widget _buildSigninLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(context, KinoaRoutes.signin),
+        onPressed: () {
+          if (_navigating) return;
+          _navigating = true;
+          Navigator.pushNamed(context, KinoaRoutes.signin).then((_) => _navigating = false);
+        },
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",

@@ -9,6 +9,8 @@ class KinoaRoutes {
   static const String signupOtp = "/signup-otp";
   static const String signupCredentials = "/signup-credentials";
   static const String forgotPassword = "/forgot-password";
+  static const String forgotPasswordOtp = "/forgot-password-otp";
+  static const String forgotPasswordReset = "/forgot-password-reset";
   // Onboarding post-inscription
   static const String celebration = "/celebration";
   static const String kycAwareness = "/kyc-awareness";

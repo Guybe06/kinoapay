@@ -11,12 +11,11 @@ abstract class AuthEvent extends Equatable {
 class SignInRequested extends AuthEvent {
   final String email;
   final String password;
-  final bool rememberMe;
 
-  const SignInRequested(this.email, this.password, {this.rememberMe = true});
+  const SignInRequested(this.email, this.password);
 
   @override
-  List<Object> get props => [email, password, rememberMe];
+  List<Object> get props => [email, password];
 }
 
 class SignUpRequested extends AuthEvent {
@@ -64,3 +63,40 @@ class VerifyOtpRequested extends AuthEvent {
 }
 
 class SignOutRequested extends AuthEvent {}
+
+/// Restaure l'utilisateur depuis le stockage (token + user_data) au démarrage de l'app.
+class AuthSessionRestoreRequested extends AuthEvent {
+  const AuthSessionRestoreRequested();
+}
+
+// ── Réinitialisation mot de passe ────────────────────────────────────────────
+
+class RequestPasswordResetRequested extends AuthEvent {
+  final String contact;
+  final bool isEmail;
+
+  const RequestPasswordResetRequested({required this.contact, required this.isEmail});
+
+  @override
+  List<Object> get props => [contact, isEmail];
+}
+
+class VerifyResetOtpRequested extends AuthEvent {
+  final String contact;
+  final String code;
+
+  const VerifyResetOtpRequested({required this.contact, required this.code});
+
+  @override
+  List<Object> get props => [contact, code];
+}
+
+class ResetPasswordRequested extends AuthEvent {
+  final String resetToken;
+  final String newPassword;
+
+  const ResetPasswordRequested({required this.resetToken, required this.newPassword});
+
+  @override
+  List<Object> get props => [resetToken, newPassword];
+}

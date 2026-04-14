@@ -83,6 +83,12 @@ class KinoaException implements Exception {
         statusCode: 429,
       );
 
+  /// Échec d'écriture dans le stockage sécurisé (ex. Android Keystore).
+  factory KinoaException.localStorage([String? detail]) => KinoaException(
+        message: detail ?? KinoaStrings.errorLocalStorage,
+        code: KinoaErrorCodes.localStorage,
+      );
+
   // Générique
   factory KinoaException.unknown() => const KinoaException(
         message: KinoaStrings.errorUnknown,

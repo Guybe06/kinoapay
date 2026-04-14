@@ -20,10 +20,9 @@ class DioClient {
           },
         ),
       ) {
-    _dio.interceptors.add(AuthInterceptor(storage));
+    _dio.interceptors.add(AuthInterceptor(storage, _dio));
   }
 
   /// Retourne l'instance Dio configurée pour une utilisation dans les repositories.
-  /// @return  Instance Dio avec intercepteurs actifs
   Dio get dio => _dio;
 }

@@ -12,41 +12,52 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 
 const int _otpLength = 6;
-const int _countdownSec = 60;
+const List<int> _resendDelays = [30, 60, 120, 120, 120];
+const int _maxAttempts = 5;
+const Duration _lockoutDuration = Duration(hours: 2);
 
-/// Écran de vérification du numéro de téléphone par code OTP.
-class SignupOtpView extends StatefulWidget {
-  const SignupOtpView({super.key});
+/// Écran 2 : saisie du code OTP avec rate limiting progressif.
+class ForgotPasswordOtpView extends StatefulWidget {
+  const ForgotPasswordOtpView({super.key});
 
   @override
-  State<SignupOtpView> createState() => _SignupOtpViewState();
+  State<ForgotPasswordOtpView> createState() => _ForgotPasswordOtpViewState();
 }
 
-class _SignupOtpViewState extends State<SignupOtpView> {
+class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
   final _otpKey = GlobalKey<KinoaOtpInputState>();
   bool _hasError = false;
   bool _isVerifying = false;
   bool _navigating = false;
-  int _countdown = _countdownSec;
+  int _countdown = _resendDelays[0];
+  int _attempt = 0;
   Timer? _timer;
+  DateTime? _lockedUntil;
 
-  SignupStep1Args get _step1 => ModalRoute.of(context)!.settings.arguments as SignupStep1Args;
+  ForgotPasswordArgs get _args => ModalRoute.of(context)!.settings.arguments as ForgotPasswordArgs;
 
-  String get _maskedPhone {
-    final digits = _step1.phone.replaceAll(RegExp(r"\D"), "");
-    if (digits.length < 4) return "${_step1.countryCode} ${_step1.phone}";
-    return "${_step1.countryCode} ${digits.substring(0, 2)} ••• •• ${digits.substring(digits.length - 2)}";
+  String get _maskedContact {
+    final c = _args.contact;
+    if (_args.isEmail) {
+      final parts = c.split("@");
+      if (parts.length != 2 || parts[0].length < 2) return c;
+      return "${parts[0][0]}${"•" * (parts[0].length - 1)}@${parts[1]}";
+    }
+    final digits = c.replaceAll(RegExp(r"\D"), "");
+    if (digits.length < 4) return c;
+    return "${digits.substring(0, 2)} ••• •• ${digits.substring(digits.length - 2)}";
   }
+
+  bool get _isLockedOut => _lockedUntil != null && DateTime.now().isBefore(_lockedUntil!);
 
   @override
   void initState() {
     super.initState();
     _startCountdown();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _sendOtp());
   }
 
   @override
@@ -57,35 +68,40 @@ class _SignupOtpViewState extends State<SignupOtpView> {
 
   void _startCountdown() {
     _timer?.cancel();
-    setState(() => _countdown = _countdownSec);
+    final delay = _attempt < _resendDelays.length ? _resendDelays[_attempt] : _resendDelays.last;
+    setState(() => _countdown = delay);
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) { t.cancel(); return; }
       if (_countdown <= 1) { t.cancel(); setState(() => _countdown = 0); } else { setState(() => _countdown--); }
     });
   }
 
-  void _sendOtp() {
-    context.read<AuthBloc>().add(SendOtpRequested(phone: _step1.phone, countryCode: _step1.countryCode));
-  }
-
   void _resend() {
+    if (_isLockedOut) return;
+    _attempt++;
+    if (_attempt >= _maxAttempts) {
+      _timer?.cancel();
+      setState(() { _lockedUntil = DateTime.now().add(_lockoutDuration); _countdown = 0; });
+      AuthSnackBar.showError(context, "${AuthStrings.resetRateLimited} 2h.");
+      return;
+    }
     _otpKey.currentState?.clear();
     setState(() => _hasError = false);
     _startCountdown();
-    _sendOtp();
+    context.read<AuthBloc>().add(RequestPasswordResetRequested(contact: _args.contact, isEmail: _args.isEmail));
   }
 
   void _onOtpCompleted(String code) {
     setState(() => _isVerifying = true);
-    context.read<AuthBloc>().add(VerifyOtpRequested(phone: _step1.phone, countryCode: _step1.countryCode, code: code));
+    context.read<AuthBloc>().add(VerifyResetOtpRequested(contact: _args.contact, code: code));
   }
 
   void _onState(BuildContext ctx, AuthState state) {
-    if (state is OtpVerified) {
+    if (state is ResetOtpVerified) {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(context, KinoaRoutes.signupCredentials, arguments: _step1).then((_) => _navigating = false);
+      Navigator.pushNamed(context, KinoaRoutes.forgotPasswordReset, arguments: state.resetToken).then((_) => _navigating = false);
     } else if (state is AuthError) {
       setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);
@@ -130,14 +146,12 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const SizedBox(height: 32),
-        _buildStepIndicator(),
-        const SizedBox(height: 24),
-        const Text(AuthStrings.otpTitle, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5)),
+        const Text(AuthStrings.resetOtpTitle, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5)),
         const SizedBox(height: 12),
         RichText(text: TextSpan(
-          text: "${AuthStrings.otpBody} ",
+          text: "${AuthStrings.resetOtpBody} ",
           style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
-          children: [TextSpan(text: _maskedPhone, style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700))],
+          children: [TextSpan(text: _maskedContact, style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700))],
         )),
         const SizedBox(height: 48),
         KinoaOtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
@@ -153,23 +167,12 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     );
   }
 
-  Widget _buildStepIndicator() {
-    return Row(children: [
-      _dot(filled: true), const SizedBox(width: 6),
-      _dot(filled: true), const SizedBox(width: 6),
-      _dot(filled: false), const SizedBox(width: 10),
-      Text("Vérification", style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500)),
-    ]);
-  }
-
-  Widget _dot({required bool filled}) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250), width: 8, height: 8,
-      decoration: BoxDecoration(color: filled ? KinoaColors.quinoaGold : KinoaColors.quinoaDark.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(4)),
-    );
-  }
-
   Widget _buildResendRow() {
+    if (_isLockedOut) {
+      final r = _lockedUntil!.difference(DateTime.now());
+      return Text("${AuthStrings.resetRateLimited} ${r.inHours}h${r.inMinutes.remainder(60).toString().padLeft(2, "0")}",
+        style: TextStyle(color: KinoaColors.quinoaRed.withValues(alpha: 0.7), fontSize: 14, fontWeight: FontWeight.w600));
+    }
     if (_countdown > 0) {
       return Text.rich(TextSpan(
         text: "${AuthStrings.otpResendIn} ",
@@ -179,7 +182,7 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     }
     return TextButton(
       onPressed: _resend,
-      child: const Text(AuthStrings.otpResend, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+      child: Text("${AuthStrings.otpResend} (${_attempt + 1}/$_maxAttempts)", style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
     );
   }
 }

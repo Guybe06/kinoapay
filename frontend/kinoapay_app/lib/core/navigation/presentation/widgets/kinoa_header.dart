@@ -51,7 +51,7 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
             color: KinoaColors.accent,
             iconColor: KinoaColors.quinoaDark,
             solidBg: true,
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, KinoaRoutes.scanner),
           ),
         ],
       ),

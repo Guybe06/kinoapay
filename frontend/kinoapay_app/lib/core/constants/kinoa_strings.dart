@@ -47,6 +47,9 @@ class KinoaStrings {
   static const String errorTokenExpired = "Votre session a expiré. Reconnectez-vous.";
   static const String errorTokenInvalid = "Token d'authentification invalide.";
   static const String errorSessionRevoked = "Session révoquée. Reconnectez-vous.";
+  // Stockage local
+  static const String errorLocalStorage =
+      "Impossible d'enregistrer les données sur cet appareil. Réessayez ou redémarrez l'application.";
   // Erreurs génériques
   static const String errorUnknown = "Une erreur inattendue s'est produite.";
   static const String errorCancelled = "Opération annulée.";
