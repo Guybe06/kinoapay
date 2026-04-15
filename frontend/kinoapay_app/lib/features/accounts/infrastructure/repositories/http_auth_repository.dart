@@ -137,8 +137,6 @@ class HttpAuthRepository implements AuthRepository {
     kycVerified: (d["kycVerified"] as bool?) ?? false,
   );
 
-  // ── Réinitialisation mot de passe ──────────────────────────────────────────
-
   @override
   Future<void> requestPasswordReset(String contact, {required bool isEmail}) async {
     try {

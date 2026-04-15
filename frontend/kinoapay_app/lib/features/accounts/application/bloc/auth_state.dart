@@ -38,10 +38,10 @@ class AuthError extends AuthState {
   List<Object?> get props => [exception];
 }
 
-// ── Réinitialisation mot de passe ────────────────────────────────────────────
-
+/// Code de réinitialisation envoyé (email/SMS selon le contact).
 class ResetOtpSent extends AuthState {}
 
+/// OTP de réinitialisation validé ; [resetToken] sert à la dernière étape.
 class ResetOtpVerified extends AuthState {
   final String resetToken;
   const ResetOtpVerified(this.resetToken);
@@ -50,4 +50,5 @@ class ResetOtpVerified extends AuthState {
   List<Object?> get props => [resetToken];
 }
 
+/// Mot de passe mis à jour côté serveur (mock ou API).
 class PasswordResetSuccess extends AuthState {}

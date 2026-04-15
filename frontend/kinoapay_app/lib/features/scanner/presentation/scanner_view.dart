@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
-import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
+import "package:kinoapay_app/features/scanner/presentation/scanner_overlay.dart";
+import "package:kinoapay_app/features/scanner/presentation/scanner_result_sheet.dart";
 
-/// Vue scanner QR avec caméra réelle via mobile_scanner.
+/// Écran caméra + cadre de scan ; renvoie un [ScanResult] au pop si confirmé.
 class ScannerView extends StatefulWidget {
   const ScannerView({super.key});
 
@@ -40,7 +41,7 @@ class _ScannerViewState extends State<ScannerView> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => _ScanResultSheet(
+      builder: (_) => ScannerResultBottomSheet(
         result: result,
         onConfirm: () {
           Navigator.pop(context);
@@ -70,16 +71,11 @@ class _ScannerViewState extends State<ScannerView> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Flux caméra réel
           MobileScanner(
             controller: _controller,
             onDetect: _onDetect,
           ),
-
-          // Overlay avec découpe centrale
-          _ScanOverlay(frameSize: frameSize, screenSize: size),
-
-          // Header
+          ScannerViewfinderOverlay(frameSize: frameSize, screenSize: size),
           Positioned(
             top: topInset + 12,
             left: 16,
@@ -112,7 +108,6 @@ class _ScannerViewState extends State<ScannerView> {
                   ),
                 ),
                 const Spacer(),
-                // Bouton torche
                 GestureDetector(
                   onTap: () => _controller.toggleTorch(),
                   child: Container(
@@ -131,8 +126,6 @@ class _ScannerViewState extends State<ScannerView> {
               ],
             ),
           ),
-
-          // Instruction
           Positioned(
             bottom: size.height * 0.20,
             left: 0,
@@ -164,217 +157,4 @@ class _ScannerViewState extends State<ScannerView> {
       ),
     );
   }
-}
-
-// ── Overlay avec découpe et coins quinoaRed ───────────────────────────────────
-
-class _ScanOverlay extends StatelessWidget {
-  final double frameSize;
-  final Size screenSize;
-  const _ScanOverlay({required this.frameSize, required this.screenSize});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      size: screenSize,
-      painter: _OverlayPainter(frameSize: frameSize, screenSize: screenSize),
-    );
-  }
-}
-
-class _OverlayPainter extends CustomPainter {
-  final double frameSize;
-  final Size screenSize;
-  const _OverlayPainter({required this.frameSize, required this.screenSize});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-    final half = frameSize / 2;
-    const r = 16.0;
-
-    final bgPaint = Paint()..color = Colors.black.withValues(alpha: 0.70);
-    final fullRect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final frameRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(cx - half, cy - half, frameSize, frameSize),
-      const Radius.circular(r),
-    );
-    final path = Path()
-      ..addRect(fullRect)
-      ..addRRect(frameRect)
-      ..fillType = PathFillType.evenOdd;
-    canvas.drawPath(path, bgPaint);
-
-    final cornerPaint = Paint()
-      ..color = AppColors.quinoaRed
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-
-    const len = 24.0;
-    final x0 = cx - half;
-    final y0 = cy - half;
-    final x1 = cx + half;
-    final y1 = cy + half;
-
-    canvas.drawLine(Offset(x0, y0 + len), Offset(x0, y0 + r), cornerPaint);
-    canvas.drawArc(Rect.fromLTWH(x0, y0, r * 2, r * 2), 3.14, -1.57, false, cornerPaint);
-    canvas.drawLine(Offset(x0 + r, y0), Offset(x0 + len, y0), cornerPaint);
-
-    canvas.drawLine(Offset(x1 - len, y0), Offset(x1 - r, y0), cornerPaint);
-    canvas.drawArc(Rect.fromLTWH(x1 - r * 2, y0, r * 2, r * 2), -1.57, -1.57, false, cornerPaint);
-    canvas.drawLine(Offset(x1, y0 + r), Offset(x1, y0 + len), cornerPaint);
-
-    canvas.drawLine(Offset(x1, y1 - len), Offset(x1, y1 - r), cornerPaint);
-    canvas.drawArc(Rect.fromLTWH(x1 - r * 2, y1 - r * 2, r * 2, r * 2), 0, 1.57, false, cornerPaint);
-    canvas.drawLine(Offset(x1 - r, y1), Offset(x1 - len, y1), cornerPaint);
-
-    canvas.drawLine(Offset(x0 + len, y1), Offset(x0 + r, y1), cornerPaint);
-    canvas.drawArc(Rect.fromLTWH(x0, y1 - r * 2, r * 2, r * 2), 1.57, 1.57, false, cornerPaint);
-    canvas.drawLine(Offset(x0, y1 - r), Offset(x0, y1 - len), cornerPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _OverlayPainter old) =>
-      old.frameSize != frameSize;
-}
-
-// ── Sheet résultat scan ───────────────────────────────────────────────────────
-
-class _ScanResultSheet extends StatelessWidget {
-  final ScanResult result;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
-
-  const _ScanResultSheet({
-    required this.result,
-    required this.onConfirm,
-    required this.onCancel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-      decoration: const BoxDecoration(
-        color: AppColors.quinoaCream,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 36, height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.quinoaDark.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            width: 56, height: 56,
-            decoration: BoxDecoration(
-              color: AppColors.quinoaRed.withValues(alpha: 0.10),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.qr_code_scanner_rounded,
-              size: 28,
-              color: AppColors.quinoaRed,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _title(),
-            style: const TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.4,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            _subtitle(),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.5),
-              fontSize: 13,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 28),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: onCancel,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Annuler",
-                      style: TextStyle(
-                        color: AppColors.quinoaDark,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  onTap: onConfirm,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.quinoaDark,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      _actionLabel(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _title() => switch (result.type) {
-        ScanResultType.publicHandle => "KinoaID détecté",
-        ScanResultType.paymentRequest => "Demande de paiement",
-        ScanResultType.unknown => "QR non reconnu",
-      };
-
-  String _subtitle() => switch (result.type) {
-        ScanResultType.publicHandle =>
-          "Envoyer de l'argent à ${result.publicHandle ?? result.raw}",
-        ScanResultType.paymentRequest =>
-          "Payer ${result.amount?.toStringAsFixed(0) ?? "?"} ${result.currency ?? "XAF"} à ${result.publicHandle ?? ""}",
-        ScanResultType.unknown =>
-          "Ce QR code n'est pas reconnu par kinoaPay.",
-      };
-
-  String _actionLabel() => switch (result.type) {
-        ScanResultType.publicHandle => "Envoyer",
-        ScanResultType.paymentRequest => "Payer",
-        ScanResultType.unknown => "OK",
-      };
 }

@@ -6,6 +6,7 @@ import "package:kinoapay_app/features/notifications/application/bloc/notificatio
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_state.dart";
 import "package:kinoapay_app/features/notifications/presentation/widgets/notification_tile.dart";
 
+/// Liste des notifications avec marquage lu global.
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
 
@@ -111,8 +112,6 @@ class _NotificationsViewState extends State<NotificationsView> {
   }
 }
 
-// ── Liste ─────────────────────────────────────────────────────────────────────
-
 class _NotificationsList extends StatelessWidget {
   final NotificationsLoadSuccess state;
   const _NotificationsList({required this.state});
@@ -152,8 +151,6 @@ class _NotificationsList extends StatelessWidget {
     );
   }
 }
-
-// ── Etat vide ─────────────────────────────────────────────────────────────────
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState();

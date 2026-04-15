@@ -3,7 +3,7 @@ import "package:flutter/services.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 
-/// Thèmes Material clair et sombre ; les couleurs passent par [AppColors], sans hex en dur.
+/// Thèmes Material 3 (clair et sombre) basés sur [AppColors] et [ColorScheme].
 class AppTheme {
   static ThemeData light() {
     return _build(
@@ -105,7 +105,7 @@ class AppTheme {
   }
 }
 
-/// Extension sur [BuildContext] : couleurs sémantiques du thème actif (`context.colors.surface`, `context.colors.onSurface`, etc.).
+/// Accès raccourci au [ColorScheme] courant via [BuildContext].
 extension AppThemeContext on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
   bool get isDark => Theme.of(this).brightness == Brightness.dark;

@@ -101,8 +101,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(Unauthenticated());
   }
 
-  // ── Réinitialisation mot de passe ──────────────────────────────────────────
-
   Future<void> _onRequestPasswordReset(RequestPasswordResetRequested event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {

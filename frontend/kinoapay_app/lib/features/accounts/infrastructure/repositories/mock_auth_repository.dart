@@ -153,8 +153,6 @@ class MockAuthRepository implements AuthRepository {
     }
   }
 
-  // ── Réinitialisation mot de passe ──────────────────────────────────────────
-
   static const String _mockResetToken = "mock_reset_token_valid";
 
   @override

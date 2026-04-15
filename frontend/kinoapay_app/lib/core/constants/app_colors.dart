@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-/// Palette officielle ; toute couleur doit être définie ici, jamais en dur ailleurs dans le code.
+/// Palette et couleurs sémantiques de l’application (seule source de vérité pour les [Color]).
 class AppColors {
   static const Color quinoaGold = Color(0xFFC8964A);
   static const Color quinoaGoldLight = Color(0xFFE8C98A);

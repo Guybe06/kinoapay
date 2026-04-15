@@ -95,10 +95,8 @@ class DashboardRecentContacts extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  // Bouton "Ajouter un contact"
                   _AddContactBtn(onTap: onAdd),
                   const SizedBox(width: 12),
-                  // Contacts extraits des transactions
                   ...contacts.asMap().entries.map((entry) => Padding(
                     padding: EdgeInsets.only(
                       right: entry.key < contacts.length - 1 ? 12 : 0,
@@ -114,8 +112,6 @@ class DashboardRecentContacts extends StatelessWidget {
     );
   }
 }
-
-// ── Bouton Ajouter ────────────────────────────────────────────────────────────
 
 class _AddContactBtn extends StatelessWidget {
   final VoidCallback onTap;
@@ -161,8 +157,6 @@ class _AddContactBtn extends StatelessWidget {
     );
   }
 }
-
-// ── Item contact ──────────────────────────────────────────────────────────────
 
 class _ContactItem extends StatelessWidget {
   final _Contact contact;

@@ -69,8 +69,7 @@ class AuthSessionRestoreRequested extends AuthEvent {
   const AuthSessionRestoreRequested();
 }
 
-// ── Réinitialisation mot de passe ────────────────────────────────────────────
-
+/// Demande d’envoi du code de réinitialisation (email ou téléphone).
 class RequestPasswordResetRequested extends AuthEvent {
   final String contact;
   final bool isEmail;
@@ -81,6 +80,7 @@ class RequestPasswordResetRequested extends AuthEvent {
   List<Object> get props => [contact, isEmail];
 }
 
+/// Vérification du code OTP reçu pour la réinitialisation.
 class VerifyResetOtpRequested extends AuthEvent {
   final String contact;
   final String code;
@@ -91,6 +91,7 @@ class VerifyResetOtpRequested extends AuthEvent {
   List<Object> get props => [contact, code];
 }
 
+/// Soumission du nouveau mot de passe après validation OTP.
 class ResetPasswordRequested extends AuthEvent {
   final String resetToken;
   final String newPassword;
