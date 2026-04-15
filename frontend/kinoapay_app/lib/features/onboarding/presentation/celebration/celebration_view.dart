@@ -4,8 +4,8 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
-import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_painter.dart";
+import "package:kinoapay_app/features/onboarding/domain/onboarding_strings.dart";
+import "package:kinoapay_app/features/onboarding/presentation/celebration/celebration_painter.dart";
 
 /// Écran de célébration post-inscription avec animation staggerée.
 class CelebrationView extends StatefulWidget {
@@ -18,23 +18,17 @@ class CelebrationView extends StatefulWidget {
 class _CelebrationViewState extends State<CelebrationView> with TickerProviderStateMixin {
   late final AnimationController _ctrl;
 
-  // Logo
   late final Animation<double> _logoFade;
   late final Animation<Offset> _logoSlide;
-  // Checkmark
   late final Animation<double> _checkScale;
-  // Rings
   late final Animation<double> _ring1Scale;
   late final Animation<double> _ring1Opacity;
   late final Animation<double> _ring2Scale;
   late final Animation<double> _ring2Opacity;
-  // Particules
   late final Animation<double> _particles;
-  // Texte
   late final Animation<double> _titleFade;
   late final Animation<Offset> _titleSlide;
   late final Animation<double> _bodyFade;
-  // Bouton
   late final Animation<double> _btnFade;
   late final Animation<Offset> _btnSlide;
 
@@ -102,9 +96,9 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
       opacity: _logoFade,
       child: SlideTransition(
         position: _logoSlide,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
-          child: const Align(
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+          child: Align(
             alignment: Alignment.centerLeft,
             child: BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           ),
@@ -126,7 +120,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
             child: FadeTransition(
               opacity: _titleFade,
               child: Text(
-                "${AuthStrings.celebrationSubtitlePrefix} $_firstName !",
+                "${OnboardingStrings.celebrationSubtitlePrefix} $_firstName !",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.quinoaDark,
@@ -142,7 +136,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
           FadeTransition(
             opacity: _bodyFade,
             child: Text(
-              AuthStrings.celebrationBody,
+              OnboardingStrings.celebrationBody,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.quinoaDark.withValues(alpha: 0.5),
@@ -157,8 +151,8 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
             child: FadeTransition(
               opacity: _btnFade,
               child: PrimaryButton(
-                text: "Continuer",
-                onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.kycAwareness),
+                text: OnboardingStrings.celebrationContinue,
+                onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.paymentSetup),
               ),
             ),
           ),

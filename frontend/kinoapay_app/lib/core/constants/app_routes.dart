@@ -10,7 +10,6 @@ abstract final class AppRoutes {
   static const String forgotPasswordOtp = "/forgot-password-otp";
   static const String forgotPasswordReset = "/forgot-password-reset";
   static const String celebration = "/celebration";
-  static const String kycAwareness = "/kyc-awareness";
   static const String paymentSetup = "/payment-setup";
   static const String shell = "/app";
   static const String contacts = "/app/contacts";

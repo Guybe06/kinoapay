@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-/// Métadonnées d’un canal Mobile Money affiché sur l’écran de configuration.
+/// Métadonnées d'un canal Mobile Money affiché sur l'écran de configuration.
 class PaymentSetupChannelDef {
   final String type;
   final String label;

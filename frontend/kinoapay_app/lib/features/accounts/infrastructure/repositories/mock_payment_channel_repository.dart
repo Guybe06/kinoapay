@@ -10,24 +10,25 @@ class MockPaymentChannelRepository implements PaymentChannelRepository {
   static const String _setupDoneKey = "channels_setup_done";
 
   MockPaymentChannelRepository({required SecureStorageService storage})
-      : _storage = storage;
+    : _storage = storage;
 
   @override
-  Future<List<LinkedAccount>> getLinkedAccounts() async => List.unmodifiable(_accounts);
+  Future<List<LinkedAccount>> getLinkedAccounts() async =>
+      List.unmodifiable(_accounts);
 
   @override
   Future<void> addLinkedAccount(LinkedAccount account) async {
-    _accounts.removeWhere((a) => a.channelType == account.channelType);
     _accounts.add(account);
   }
 
   @override
-  Future<void> removeLinkedAccount(String channelType) async {
-    _accounts.removeWhere((a) => a.channelType == channelType);
+  Future<void> removeLinkedAccount(String id) async {
+    _accounts.removeWhere((a) => a.id == id);
   }
 
   @override
-  Future<bool> isSetupDone() async => (await _storage.read(_setupDoneKey)) == "true";
+  Future<bool> isSetupDone() async =>
+      (await _storage.read(_setupDoneKey)) == "true";
 
   @override
   Future<void> markSetupDone() async => _storage.write(_setupDoneKey, "true");

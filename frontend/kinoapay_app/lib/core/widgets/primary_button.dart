@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isSecondary;
+  final bool enabled;
   final double height;
 
   const PrimaryButton({
@@ -16,6 +17,7 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.isSecondary = false,
+    this.enabled = true,
     this.height = 64,
   });
 
@@ -31,7 +33,7 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       height: height,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: isLoading || !enabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: isSecondary ? AppColors.white : AppColors.quinoaDark,
           foregroundColor: isSecondary ? AppColors.quinoaDark : AppColors.white,
@@ -39,16 +41,27 @@ class PrimaryButton extends StatelessWidget {
           splashFactory: NoSplash.splashFactory,
           overlayColor: Colors.transparent,
           shape: const RoundedRectangleBorder(borderRadius: borderRadius),
-          side: isSecondary ? const BorderSide(color: AppColors.quinoaDark, width: 2) : BorderSide.none,
+          side: isSecondary
+              ? const BorderSide(color: AppColors.quinoaDark, width: 2)
+              : BorderSide.none,
           disabledBackgroundColor: AppColors.quinoaDark.withValues(alpha: 0.4),
         ),
         child: isLoading
             ? const SizedBox(
                 height: 22,
                 width: 22,
-                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.white,
+                ),
               )
-            : Text(text, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+            : Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
       ),
     );
   }

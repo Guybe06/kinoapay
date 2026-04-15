@@ -31,7 +31,15 @@ class PaymentAccountAdded extends PaymentSetupEvent {
   List<Object?> get props => [channelType, phone, countryCode];
 }
 
-/// L'utilisateur a terminé (au moins 1 compte ajouté ou ignoré).
+/// L'utilisateur supprime un compte lié.
+class PaymentAccountRemoved extends PaymentSetupEvent {
+  final String accountId;
+  const PaymentAccountRemoved({required this.accountId});
+  @override
+  List<Object?> get props => [accountId];
+}
+
+/// L'utilisateur a terminé (au moins 1 compte ajouté).
 class PaymentSetupCompleted extends PaymentSetupEvent {
   const PaymentSetupCompleted();
 }

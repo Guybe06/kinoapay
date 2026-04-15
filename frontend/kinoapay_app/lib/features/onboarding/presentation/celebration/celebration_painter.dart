@@ -2,7 +2,7 @@ import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 
-/// Animation check + anneaux + particules pour l’écran post-inscription.
+/// Animation check + anneaux + particules pour l'écran post-inscription.
 class CelebrationPainter extends CustomPainter {
   final double checkScale;
   final double ring1Scale;

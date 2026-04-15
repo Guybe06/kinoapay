@@ -8,9 +8,8 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_reset_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/onboarding/kyc_awareness_view.dart";
-import "package:kinoapay_app/features/accounts/presentation/onboarding/payment_setup_view.dart";
+import "package:kinoapay_app/features/onboarding/presentation/celebration/celebration_view.dart";
+import "package:kinoapay_app/features/onboarding/presentation/payment_setup/payment_setup_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signin/signin_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
@@ -77,8 +76,6 @@ class AppRouter {
         );
       case AppRoutes.celebration:
         return RouteTransitions.scaleUp(const CelebrationView(), settings);
-      case AppRoutes.kycAwareness:
-        return RouteTransitions.authStep(const KycAwarenessView(), settings);
       case AppRoutes.paymentSetup:
         return RouteTransitions.authStep(const PaymentSetupView(), settings);
       case AppRoutes.shell:
