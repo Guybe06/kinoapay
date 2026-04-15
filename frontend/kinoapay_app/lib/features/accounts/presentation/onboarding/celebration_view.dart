@@ -1,10 +1,10 @@
 import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
-import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
+import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 
 /// Écran de célébration post-inscription avec animation staggerée.

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Illustration de l'écran d'accueil : trois cartes en V centré.
 class WelcomeIllustration extends StatelessWidget {

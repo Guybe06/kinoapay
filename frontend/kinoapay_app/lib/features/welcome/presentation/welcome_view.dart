@@ -2,14 +2,14 @@ import "dart:ui";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/welcome/domain/welcome_strings.dart";
-import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
+import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_entrance_animation.dart";
 import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_illustration.dart";
-import "package:kinoapay_app/main.dart" show kinoaRouteObserver;
+import "package:kinoapay_app/main.dart" show appRouteObserver;
 
 /// Page d'accueil immersive avec animations d'entrée en cascade depuis le splash.
 class WelcomeView extends StatefulWidget {
@@ -48,7 +48,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
     if (route is ModalRoute<void>) {
-      kinoaRouteObserver.subscribe(this, route);
+      appRouteObserver.subscribe(this, route);
     }
   }
 
@@ -62,7 +62,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    kinoaRouteObserver.unsubscribe(this);
+    appRouteObserver.unsubscribe(this);
     _ctrl.dispose();
     super.dispose();
   }

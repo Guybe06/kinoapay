@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";

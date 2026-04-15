@@ -2,7 +2,7 @@ import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/domain/repositories/contacts_repository.dart";
 
 /// Numéros considérés comme inscrits, alignés sur les mocks de transactions.
-const Set<String> _kinoaNumbers = {
+const Set<String> _registeredPhones = {
   "+242066667788", // Jean Dupont
   "+242055554433", // Marie Claire
   "+242066660011", // Paul Mbengue
@@ -36,7 +36,7 @@ class MockContactsRepository implements ContactsRepository {
     await Future.delayed(const Duration(milliseconds: 700));
 
     final contacts = _phoneBook.map((e) {
-      final onApp = _kinoaNumbers.contains(e.phone);
+      final onApp = _registeredPhones.contains(e.phone);
       return Contact(
         id: e.id,
         fullName: e.name,

@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";

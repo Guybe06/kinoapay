@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:kinoapay_app/features/notifications/domain/entities/kinoa_notification.dart";
+import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
 
 abstract class NotificationsState extends Equatable {
   const NotificationsState();

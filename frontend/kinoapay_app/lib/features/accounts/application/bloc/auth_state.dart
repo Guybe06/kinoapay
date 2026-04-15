@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 
 /// Définit les états du cycle d'authentification.

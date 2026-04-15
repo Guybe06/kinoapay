@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 
 /// Écran de sensibilisation au KYC affiché après la création du compte.

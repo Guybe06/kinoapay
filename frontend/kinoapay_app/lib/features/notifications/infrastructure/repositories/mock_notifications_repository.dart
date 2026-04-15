@@ -1,4 +1,4 @@
-import "package:kinoapay_app/features/notifications/domain/entities/kinoa_notification.dart";
+import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
 import "package:kinoapay_app/features/notifications/domain/repositories/notifications_repository.dart";
 
 /// Simule un flux de notifications : transactions, alertes AML, système, promo.

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Bouton d'action principal réutilisable à travers toutes les features.
 /// Variante sombre par défaut, variante secondaire outline disponible.

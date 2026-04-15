@@ -1,4 +1,4 @@
-import "package:kinoapay_app/features/notifications/domain/entities/kinoa_notification.dart";
+import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
 
 /// Contrat d'accès aux notifications utilisateur.
 abstract class NotificationsRepository {

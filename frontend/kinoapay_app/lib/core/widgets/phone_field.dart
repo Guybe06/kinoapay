@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/widgets/country_picker_sheet.dart";
 
 /// Formate les chiffres saisis en groupes 2 + 3 + 2×n pour l'affichage du numéro.

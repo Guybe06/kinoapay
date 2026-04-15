@@ -1,5 +1,5 @@
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 
 /// Liste des 4 onglets de la navigation principale.

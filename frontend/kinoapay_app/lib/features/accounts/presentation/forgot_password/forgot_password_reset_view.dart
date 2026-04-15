@@ -2,10 +2,10 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
-import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
+import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
@@ -13,7 +13,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart"
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
+import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Écran 3 : saisie du nouveau mot de passe + confirmation.
 class ForgotPasswordResetView extends StatefulWidget {

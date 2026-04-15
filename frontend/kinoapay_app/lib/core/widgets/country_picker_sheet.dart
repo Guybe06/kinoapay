@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 
 typedef CountryEntry = ({String iso, String flag, String name, String dialCode});
 

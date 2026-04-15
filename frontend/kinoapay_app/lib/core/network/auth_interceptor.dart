@@ -1,7 +1,7 @@
 import "dart:async";
 import "package:dio/dio.dart";
-import "package:kinoapay_app/core/constants/kinoa_api.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/constants/api_paths.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 
 /// Intercepteur Dio : injecte le token JWT, rafraîchit automatiquement sur 401

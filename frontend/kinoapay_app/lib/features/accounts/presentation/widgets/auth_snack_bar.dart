@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Affiche des notifications toast standardisées pour les écrans d'authentification.
 abstract final class AuthSnackBar {

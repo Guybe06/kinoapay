@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/channel_stat.dart";
 
 /// Répartition des flux par canal de paiement (MTN, Airtel…).

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Barre de progression indéterminée affichée pendant la vérification réseau.
 class SplashProgressBar extends StatelessWidget {

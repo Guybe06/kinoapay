@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Thèmes Material clair et sombre ; les couleurs passent par [KinoaColors], sans hex en dur.
 class KinoaTheme {

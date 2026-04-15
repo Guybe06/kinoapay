@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/features/notifications/domain/entities/kinoa_notification.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
 
 class NotificationTile extends StatelessWidget {
   final KinoaNotification notification;

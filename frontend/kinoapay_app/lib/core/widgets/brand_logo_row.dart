@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:kinoapay_app/core/constants/kinoa_assets.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/asset_paths.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 
 /// Tailles standardisées du composant [KinoaBrand].
 enum BrandSize {

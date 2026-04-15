@@ -1,4 +1,4 @@
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 
 /// Fournit les services de validation pour les données d'authentification utilisateur.
 class AuthValidator {

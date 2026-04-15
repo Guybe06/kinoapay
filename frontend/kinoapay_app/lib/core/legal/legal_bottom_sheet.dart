@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/legal/kinoa_cgu.dart";
-import "package:kinoapay_app/core/legal/kinoa_privacy.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/legal/cgu_content.dart";
+import "package:kinoapay_app/core/legal/privacy_content.dart";
 
 /// Types de documents légaux affichables dans un bottom sheet.
 enum LegalDocType { cgu, privacy }

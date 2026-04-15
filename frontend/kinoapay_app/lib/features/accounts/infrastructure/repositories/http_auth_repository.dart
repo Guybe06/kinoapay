@@ -1,7 +1,7 @@
 import "dart:convert";
 import "package:dio/dio.dart";
-import "package:kinoapay_app/core/constants/kinoa_api.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/constants/api_paths.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/core/network/dio_client.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";

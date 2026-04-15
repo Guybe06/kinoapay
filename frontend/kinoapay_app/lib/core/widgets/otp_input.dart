@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Widget réutilisable : rangée de N cases OTP avec navigation clavier automatique.
 class KinoaOtpInput extends StatefulWidget {

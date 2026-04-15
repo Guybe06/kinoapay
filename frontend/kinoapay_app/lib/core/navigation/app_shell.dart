@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_bottom_nav.dart";
-import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/bottom_nav.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
 import "package:kinoapay_app/features/history/presentation/history_view.dart";
 import "package:kinoapay_app/features/profile/presentation/profile_view.dart";

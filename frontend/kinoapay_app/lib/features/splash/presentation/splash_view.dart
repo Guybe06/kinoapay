@@ -1,11 +1,11 @@
 import "dart:async";
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/navigation/kinoa_router.dart";
-import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/app_router.dart";
+import "package:kinoapay_app/core/navigation/app_shell.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
-import "package:kinoapay_app/core/widgets/kinoa_brand.dart";
+import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/features/splash/application/splash_connectivity_service.dart";
 import "package:kinoapay_app/features/splash/presentation/widgets/splash_status_bar.dart";
 

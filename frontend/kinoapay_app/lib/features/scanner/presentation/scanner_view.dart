@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 
 /// Vue scanner QR avec caméra réelle via mobile_scanner.

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 
 class _Contact {

@@ -2,12 +2,12 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:intl/date_symbol_data_local.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/navigation/kinoa_nav_throttle.dart";
-import "package:kinoapay_app/core/navigation/kinoa_router.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/nav_throttle.dart";
+import "package:kinoapay_app/core/navigation/app_router.dart";
 import "package:kinoapay_app/core/network/dio_client.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
-import "package:kinoapay_app/core/theme/kinoa_theme.dart";
+import "package:kinoapay_app/core/theme/app_theme.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/payment_setup_bloc.dart";
@@ -19,7 +19,7 @@ import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send_repository.dart";
 
 /// Observer global de navigation, utilisé par [KinoaEntrance] pour rejouer les animations au retour.
-final RouteObserver<ModalRoute<void>> kinoaRouteObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> appRouteObserver = RouteObserver<ModalRoute<void>>();
 
 /// Point d'entrée : initialisation des dépendances globales puis [runApp].
 void main() async {
@@ -80,7 +80,7 @@ class KinoaPayApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      navigatorObservers: [kinoaRouteObserver, KinoaNavThrottle()],
+      navigatorObservers: [appRouteObserver, KinoaNavThrottle()],
       initialRoute: KinoaRoutes.splash,
       onGenerateRoute: KinoaRouter.generateRoute,
     );

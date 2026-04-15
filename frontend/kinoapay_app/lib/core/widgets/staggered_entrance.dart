@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/main.dart" show kinoaRouteObserver;
+import "package:kinoapay_app/main.dart" show appRouteObserver;
 
 /// Animation d'entrée staggerée : chaque élément « tombe » en place avec un léger décalage.
 /// Rejoue automatiquement quand l'utilisateur revient sur la page (pop).
@@ -52,13 +52,13 @@ class _KinoaEntranceState extends State<KinoaEntrance>
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
     if (route is ModalRoute<void>) {
-      kinoaRouteObserver.subscribe(this, route);
+      appRouteObserver.subscribe(this, route);
     }
   }
 
   @override
   void dispose() {
-    kinoaRouteObserver.unsubscribe(this);
+    appRouteObserver.unsubscribe(this);
     _controller.dispose();
     super.dispose();
   }

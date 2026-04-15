@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
 /// Tuile de contact dans la liste, avec avatar, infos et indicateurs de canaux.

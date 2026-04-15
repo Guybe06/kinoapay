@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/core/constants/kinoa_routes.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
-import "package:kinoapay_app/core/navigation/kinoa_nav_throttle.dart";
-import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/core/navigation/nav_throttle.dart";
+import "package:kinoapay_app/core/navigation/app_shell.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/celebration_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/onboarding/kyc_awareness_view.dart";

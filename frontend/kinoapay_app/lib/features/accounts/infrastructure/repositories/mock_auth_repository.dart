@@ -1,6 +1,6 @@
 import "dart:convert";
 
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_error_codes.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";

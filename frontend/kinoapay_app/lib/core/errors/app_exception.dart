@@ -1,5 +1,5 @@
-import "package:kinoapay_app/core/constants/kinoa_error_codes.dart";
-import "package:kinoapay_app/core/constants/kinoa_strings.dart";
+import "package:kinoapay_app/core/constants/error_codes.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 
 /// Exception typée, propagée des repositories aux BLoCs ; chaque feature peut ajouter ses codes dans [feature]_error_codes.dart.
 class KinoaException implements Exception {

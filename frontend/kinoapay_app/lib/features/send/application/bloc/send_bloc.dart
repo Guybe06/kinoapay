@@ -1,5 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_state.dart";
 import "package:kinoapay_app/features/send/domain/repositories/send_repository.dart";

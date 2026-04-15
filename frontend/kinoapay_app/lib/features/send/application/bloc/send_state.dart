@@ -1,5 +1,5 @@
 import "package:equatable/equatable.dart";
-import "package:kinoapay_app/core/errors/kinoa_exception.dart";
+import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
 
