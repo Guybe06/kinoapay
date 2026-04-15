@@ -1,5 +1,5 @@
 /// Chemins d'endpoints API : utilisation exclusive, sans littéraux dans les requêtes HTTP.
-class ApiPaths {
+abstract final class ApiPaths {
   static const String _v1 = "/v1";
 
   static const String signup = "$_v1/accounts/signup";
@@ -12,11 +12,13 @@ class ApiPaths {
 
   /// @param transactionId  Identifiant public de la transaction
   /// @return                 Chemin GET /v1/client/transactions/:id
-  static String transactionDetail(String transactionId) => "$_v1/client/transactions/$transactionId";
+  static String transactionDetail(String transactionId) =>
+      "$_v1/client/transactions/$transactionId";
 
   /// @param transactionId  Identifiant public de la transaction
   /// @return                 Chemin GET /v1/client/receipts/:id
-  static String receipt(String transactionId) => "$_v1/client/receipts/$transactionId";
+  static String receipt(String transactionId) =>
+      "$_v1/client/receipts/$transactionId";
 
   static const String createRequest = "$_v1/client/requests";
   static const String listRequests = "$_v1/client/requests";
@@ -35,7 +37,8 @@ class ApiPaths {
 
   /// @param splitId  Identifiant du split
   /// @return         Chemin POST /v1/client/splits/:splitId/pay
-  static String paySplitPart(String splitId) => "$_v1/client/splits/$splitId/pay";
+  static String paySplitPart(String splitId) =>
+      "$_v1/client/splits/$splitId/pay";
 
   static const String createPaymentLink = "$_v1/client/payment-links";
   static const String listPaymentLinks = "$_v1/client/payment-links";

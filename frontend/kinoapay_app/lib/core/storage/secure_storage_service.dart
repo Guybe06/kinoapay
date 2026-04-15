@@ -14,7 +14,7 @@ class SecureStorageService {
     FlutterSecureStorage storage = const FlutterSecureStorage(),
   }) : _storage = storage;
 
-  /// Ecrit une valeur chiffrée pour la clé donnée.
+  /// Écrit une valeur chiffrée pour la clé donnée.
   /// @return void après écriture
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);
 
