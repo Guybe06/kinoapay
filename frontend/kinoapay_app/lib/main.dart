@@ -16,6 +16,8 @@ import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_payment_channel_repository.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock_dashboard_repository.dart";
+import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
+import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send_repository.dart";
 
 /// Notifier global du thème, accessible depuis n'importe quel widget via [themeNotifier].
 final ThemeNotifier themeNotifier = ThemeNotifier();
@@ -48,6 +50,9 @@ void main() async {
         ),
         BlocProvider<DashboardBloc>(
           create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
+        ),
+        BlocProvider<SendBloc>(
+          create: (_) => SendBloc(repository: MockSendRepository()),
         ),
         BlocProvider<PaymentSetupBloc>(
           create: (_) => PaymentSetupBloc(

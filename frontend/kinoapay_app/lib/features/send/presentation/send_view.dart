@@ -1,8 +1,21 @@
-import "dart:ui";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
+import "package:kinoapay_app/core/widgets/kinoa_primary_button.dart";
+import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
+import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
+import "package:kinoapay_app/features/send/application/bloc/send_state.dart";
+import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
+import "package:kinoapay_app/features/send/domain/send_strings.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 
+const List<String> _channels = ["MTN Mobile Money", "Airtel Money"];
+
+/// Écran principal d'envoi : saisie → quote → confirmation → receipt.
 class SendView extends StatefulWidget {
   const SendView({super.key});
 
@@ -11,450 +24,199 @@ class SendView extends StatefulWidget {
 }
 
 class _SendViewState extends State<SendView> {
-  final TextEditingController _amountController = TextEditingController(text: "5000");
+  final _recipientCtrl = TextEditingController();
+  final _amountCtrl = TextEditingController();
+  String _sourceChannel = _channels[0];
+  String _destChannel = _channels[1];
+
+  @override
+  void dispose() {
+    _recipientCtrl.dispose();
+    _amountCtrl.dispose();
+    super.dispose();
+  }
+
+  void _requestQuote() {
+    final amount = double.tryParse(_amountCtrl.text.replaceAll(" ", ""));
+    if (_recipientCtrl.text.trim().isEmpty || amount == null || amount <= 0) {
+      AuthSnackBar.showError(context, "Veuillez remplir tous les champs.");
+      return;
+    }
+    context.read<SendBloc>().add(SendQuoteRequested(
+      recipientIdentifier: _recipientCtrl.text.trim(),
+      amount: amount,
+      sourceChannel: _sourceChannel,
+      destinationChannel: _destChannel,
+    ));
+  }
+
+  void _onState(BuildContext ctx, SendState state) {
+    if (state is SendSuccess) {
+      Navigator.pushNamed(ctx, KinoaRoutes.receipt, arguments: state.transaction);
+      context.read<SendBloc>().add(SendReset());
+      _recipientCtrl.clear();
+      _amountCtrl.clear();
+    } else if (state is SendError) {
+      AuthSnackBar.showError(ctx, state.exception.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF9F7F2), // Stone 100
-      body: Stack(
-        children: [
-          // Éléments de design en arrière-plan (glows)
-          Positioned(
-            top: -50,
-            left: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFC8964A).withValues(alpha: 0.08),
-              ),
-            ),
-          ),
-          
-          CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leadingWidth: 70,
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: _GlassIconButton(
-                    icon: CupertinoIcons.chevron_left,
-                    onTap: () => Navigator.pop(context),
-                  ),
-                ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: _GlassIconButton(
-                      icon: CupertinoIcons.search,
-                      onTap: () {},
-                    ),
-                  ),
-                ],
-              ),
-              
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    const Text(
-                      "Envoyer\nde l'argent",
-                      style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.w800,
-                        color: KinoaColors.stone900,
-                        height: 1.1,
-                        letterSpacing: -1,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    
-                    // SECTION : DESTINATAIRE (Glass Card)
-                    const _SectionLabel(label: "DESTINATAIRE"),
-                    const SizedBox(height: 12),
-                    _GlassCard(
-                      child: Row(
-                        children: [
-                          _AvatarWithStatus(initials: "JD", color: const Color(0xFFC8964A)),
-                          const SizedBox(width: 16),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Jean Dupont",
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w800,
-                                    color: KinoaColors.stone900,
-                                  ),
-                                ),
-                                Text(
-                                  "Orange Money • +225 07...",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: KinoaColors.stone500,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(CupertinoIcons.chevron_down, size: 14, color: KinoaColors.stone400),
-                        ],
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // SECTION : MONTANT (Gros bloc sombre inspiré par tes images)
-                    const _SectionLabel(label: "MONTANT"),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(32),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A140F), // Ultra Dark
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF1A140F).withValues(alpha: 0.15),
-                            blurRadius: 40,
-                            offset: const Offset(0, 20),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              IntrinsicWidth(
-                                child: TextField(
-                                  controller: _amountController,
-                                  keyboardType: TextInputType.number,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 64,
-                                    fontWeight: FontWeight.w200,
-                                    letterSpacing: -3,
-                                  ),
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.zero,
-                                    isDense: true,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Text(
-                                "FCFA",
-                                style: TextStyle(
-                                  color: Color(0xFFC8964A),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: const Text(
-                              "Frais : 0 FCFA (Kinoa Transfert)",
-                              style: TextStyle(
-                                color: Colors.white60,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 32),
+    final topInset = MediaQuery.of(context).padding.top;
 
-                    // SECTION : CANAL (Horizontal Glass Selection)
-                    const _SectionLabel(label: "CANAL DE PAIEMENT"),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 100,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.zero,
-                        children: [
-                          _ChannelCard(
-                            name: "Wave",
-                            balance: "45k",
-                            icon: CupertinoIcons.wind,
-                            color: Colors.blue.shade400,
-                            isSelected: true,
-                          ),
-                          const SizedBox(width: 12),
-                          _ChannelCard(
-                            name: "OM",
-                            balance: "120k",
-                            icon: CupertinoIcons.flame_fill,
-                            color: Colors.orange.shade700,
-                            isSelected: false,
-                          ),
-                          const SizedBox(width: 12),
-                          _ChannelCard(
-                            name: "MoMo",
-                            balance: "8k",
-                            icon: CupertinoIcons.creditcard_fill,
-                            color: Colors.yellow.shade700,
-                            isSelected: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 120), // Espace pour le bouton
-                  ]),
-                ),
-              ),
-            ],
+    return BlocConsumer<SendBloc, SendState>(
+      listener: _onState,
+      builder: (context, state) {
+        if (state is SendQuoteReady) return _buildConfirm(context, state.quote, topInset);
+        if (state is SendConfirming) return _buildConfirming(topInset);
+        return _buildForm(context, state, topInset);
+      },
+    );
+  }
+
+  Widget _buildForm(BuildContext context, SendState state, double topInset) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(24, topInset + 80, 24, 120),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          KinoaEntrance(
+            index: 0,
+            child: Text(SendStrings.title, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5)),
           ),
-          
-          // BOUTON DE CONFIRMATION (Liquid Glass Design)
-          Positioned(
-            bottom: 40,
-            left: 20,
-            right: 20,
-            child: _ActionConfirmButton(
-              onTap: () {},
-              label: "Confirmer l'envoi",
-            ),
-          ),
+          const SizedBox(height: 32),
+          KinoaEntrance(index: 1, child: _buildField(SendStrings.recipientLabel, _recipientCtrl, "Numéro ou @identifiant", TextInputType.phone)),
+          const SizedBox(height: 16),
+          KinoaEntrance(index: 2, child: _buildField(SendStrings.amountLabel, _amountCtrl, "ex. 5000", TextInputType.number, formatters: [FilteringTextInputFormatter.digitsOnly])),
+          const SizedBox(height: 16),
+          KinoaEntrance(index: 3, child: _buildChannelPicker("De", _sourceChannel, (v) => setState(() => _sourceChannel = v!))),
+          const SizedBox(height: 12),
+          KinoaEntrance(index: 4, child: _buildChannelPicker("Vers", _destChannel, (v) => setState(() => _destChannel = v!))),
+          const SizedBox(height: 40),
+          KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: "Obtenir le devis", isLoading: state is SendLoading, onPressed: _requestQuote)),
         ],
       ),
     );
   }
-}
 
-class _SectionLabel extends StatelessWidget {
-  final String label;
-  const _SectionLabel({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w900,
-        color: KinoaColors.stone400,
-        letterSpacing: 1.5,
+  Widget _buildConfirm(BuildContext context, TransferQuote quote, double topInset) {
+    final fmt = NumberFormat("#,###", "fr_FR");
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(24, topInset + 80, 24, 120),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          KinoaEntrance(index: 0, child: const Text("Confirmer l'envoi", style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5))),
+          const SizedBox(height: 28),
+          KinoaEntrance(index: 1, child: _infoCard([
+            _infoRow("Destinataire", quote.recipientName),
+            _infoRow("Montant", "${fmt.format(quote.amount)} ${quote.currency}"),
+            _infoRow("De", quote.sourceChannel),
+            _infoRow("Vers", quote.destinationChannel),
+          ])),
+          const SizedBox(height: 16),
+          KinoaEntrance(index: 2, child: _infoCard([
+            _infoRow("Frais KinoaPay", "${fmt.format(quote.kinoaFee)} ${quote.currency}"),
+            _infoRow("Frais opérateur", "${fmt.format(quote.operatorFee)} ${quote.currency}"),
+            _infoRow("Total débité", "${fmt.format(quote.amountDebited)} ${quote.currency}", bold: true),
+          ])),
+          const SizedBox(height: 32),
+          KinoaEntrance(index: 3, child: KinoaPrimaryButton(text: SendStrings.confirmBtn, onPressed: () => context.read<SendBloc>().add(SendConfirmRequested(quote.quoteId)))),
+          const SizedBox(height: 12),
+          KinoaEntrance(index: 4, child: KinoaPrimaryButton(text: "Annuler", isSecondary: true, onPressed: () => context.read<SendBloc>().add(SendReset()))),
+        ],
       ),
     );
   }
-}
 
-class _GlassIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  const _GlassIconButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.8),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 0.5),
-        ),
-        child: Icon(icon, size: 20, color: KinoaColors.stone900),
+  Widget _buildConfirming(double topInset) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: KinoaColors.quinoaGold, strokeWidth: 2.5),
+          const SizedBox(height: 20),
+          Text("Envoi en cours…", style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 15, fontWeight: FontWeight.w600)),
+        ],
       ),
     );
   }
-}
 
-class _AvatarWithStatus extends StatelessWidget {
-  final String initials;
-  final Color color;
-  const _AvatarWithStatus({required this.initials, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            initials,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
-          ),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ChannelCard extends StatelessWidget {
-  final String name;
-  final String balance;
-  final IconData icon;
-  final Color color;
-  final bool isSelected;
-
-  const _ChannelCard({
-    required this.name,
-    required this.balance,
-    required this.icon,
-    required this.color,
-    required this.isSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildField(String label, TextEditingController ctrl, String hint, TextInputType type, {List<TextInputFormatter>? formatters}) {
     return Container(
-      width: 110,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFF1A140F) : Colors.white.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isSelected ? Colors.transparent : Colors.white,
-          width: 1,
-        ),
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(24), bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
+        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: isSelected ? const Color(0xFFC8964A) : color, size: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : KinoaColors.stone900,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Text(
-                balance,
-                style: TextStyle(
-                  color: isSelected ? Colors.white54 : KinoaColors.stone500,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500)),
+          TextField(
+            controller: ctrl,
+            keyboardType: type,
+            inputFormatters: formatters,
+            style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w700),
+            decoration: InputDecoration(border: InputBorder.none, hintText: hint, hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.2))),
           ),
         ],
       ),
     );
   }
-}
 
-class _GlassCard extends StatelessWidget {
-  final Widget child;
-  const _GlassCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.7),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white, width: 1),
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionConfirmButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _ActionConfirmButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildChannelPicker(String label, String value, ValueChanged<String?> onChanged) {
     return Container(
-      height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFC8964A).withValues(alpha: 0.25),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: Material(
-          color: const Color(0xFFC8964A),
-          child: InkWell(
-            onTap: onTap,
-            child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.2,
-                ),
+      child: Row(
+        children: [
+          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 13, fontWeight: FontWeight.w500)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                icon: Icon(Icons.expand_more_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.4)),
+                items: _channels.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
+                onChanged: onChanged,
               ),
             ),
           ),
-        ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoCard(List<Widget> rows) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+      ),
+      child: Column(children: rows),
+    );
+  }
+
+  Widget _infoRow(String label, String value, {bool bold = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13)),
+          Text(value, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700)),
+        ],
       ),
     );
   }
