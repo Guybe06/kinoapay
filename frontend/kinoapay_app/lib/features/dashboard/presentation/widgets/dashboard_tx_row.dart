@@ -33,9 +33,6 @@ class DashboardTxRow extends StatelessWidget {
     final String destination = tx.destinationChannel.toUpperCase();
 
     final Color amountColor = isReceived ? KinoaColors.accentDark : KinoaColors.quinoaRed;
-    final Color amlColor = (tx.amlScore ?? 0) < 0.35 
-        ? KinoaColors.accentDark 
-        : (tx.amlScore ?? 0) < 0.65 ? KinoaColors.quinoaGold : KinoaColors.quinoaRed;
 
     return InkWell(
       onTap: () {},
@@ -100,26 +97,8 @@ class DashboardTxRow extends StatelessWidget {
                       _ChannelBadge(label: destination),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: 45,
-                    height: 15,
-                    child: CustomPaint(
-                      painter: _WallStreetSparkline(
-                        score: tx.amlScore ?? 0.1,
-                        color: amlColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    "AML ${tx.amlScore?.toStringAsFixed(2) ?? '0.00'}",
-                    style: TextStyle(
-                      color: amlColor.withValues(alpha: 0.7),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
+                  const SizedBox(height: 6),
+                  _AmlSparkline(score: (tx.amlScore ?? 0.1).clamp(0.0, 1.0)),
                 ],
               ),
             ),
@@ -140,22 +119,7 @@ class DashboardTxRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: nature.color,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      nature.label.toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 7.5,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
+                  _CompactStatus(nature: nature),
                   const SizedBox(height: 2),
                   Text(
                     tx.currency,
@@ -201,78 +165,6 @@ class _ChannelBadge extends StatelessWidget {
       ),
     );
   }
-}
-
-// ── Wall Street Sparkline (Courbe fluide Bézier) ───────────────────────────
-
-class _WallStreetSparkline extends CustomPainter {
-  final double score;
-  final Color color;
-  const _WallStreetSparkline({required this.score, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    final path = Path();
-    
-    // Points stratégiques pour une courbe fluide
-    final p0 = Offset(0, size.height * 0.8);
-    final p1 = Offset(size.width * 0.2, size.height * (0.5 + (score * 0.3)));
-    final p2 = Offset(size.width * 0.5, size.height * (0.7 - (score * 0.5)));
-    final p3 = Offset(size.width * 0.8, size.height * (0.3 + (score * 0.4)));
-    final p4 = Offset(size.width, size.height * (1.0 - score).clamp(0.1, 0.9));
-
-    path.moveTo(p0.dx, p0.dy);
-
-    // Premier segment fluide
-    path.cubicTo(
-      size.width * 0.1, p0.dy, 
-      size.width * 0.1, p1.dy, 
-      p1.dx, p1.dy,
-    );
-
-    // Second segment fluide
-    path.cubicTo(
-      size.width * 0.35, p1.dy, 
-      size.width * 0.35, p2.dy, 
-      p2.dx, p2.dy,
-    );
-
-    // Troisième segment fluide
-    path.cubicTo(
-      size.width * 0.65, p2.dy, 
-      size.width * 0.65, p3.dy, 
-      p3.dx, p3.dy,
-    );
-
-    // Quatrième segment fluide vers la fin
-    path.cubicTo(
-      size.width * 0.9, p3.dy, 
-      size.width * 0.9, p4.dy, 
-      p4.dx, p4.dy,
-    );
-
-    // Ajout d'un léger halo sous la courbe (Glow)
-    canvas.drawPath(path, Paint()
-      ..color = color.withValues(alpha: 0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2));
-
-    canvas.drawPath(path, paint);
-    
-    // Point terminal "Ticker"
-    canvas.drawCircle(p4, 2.5, Paint()..color = color);
-  }
-
-  @override
-  bool shouldRepaint(covariant _WallStreetSparkline old) => old.score != score;
 }
 
 // ── Date relative ─────────────────────────────────────────────────────────────
