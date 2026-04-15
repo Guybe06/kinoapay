@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
@@ -16,11 +17,13 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_t
 class DashboardView extends StatefulWidget {
   final VoidCallback? onNavigateToSend;
   final VoidCallback? onNavigateToRequest;
+  final VoidCallback? onNavigateToHistory;
 
   const DashboardView({
     super.key,
     this.onNavigateToSend,
     this.onNavigateToRequest,
+    this.onNavigateToHistory,
   });
 
   @override
@@ -141,7 +144,7 @@ class _DashboardViewState extends State<DashboardView> {
                     const SizedBox(height: 16),
                     DashboardRecentContacts(
                       transactions: transactions,
-                      onAdd: () {},
+                      onAdd: () => Navigator.pushNamed(context, KinoaRoutes.contacts),
                     ),
                     const SizedBox(height: 28),
                     Padding(
@@ -161,7 +164,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   letterSpacing: -0.4,
                                 ),
                               ),
-                              _VoirToutBtn(),
+                              _VoirToutBtn(onTap: widget.onNavigateToHistory ?? () {}),
                             ],
                           ),
                           const SizedBox(height: 14),
@@ -404,10 +407,13 @@ class _GreetingSection extends StatelessWidget {
 // ── Voir tout ─────────────────────────────────────────────────────────────────
 
 class _VoirToutBtn extends StatelessWidget {
+  final VoidCallback onTap;
+  const _VoirToutBtn({required this.onTap});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         decoration: BoxDecoration(

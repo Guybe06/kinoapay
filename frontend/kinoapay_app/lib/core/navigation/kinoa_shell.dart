@@ -44,8 +44,8 @@ class _KinoaShellState extends State<KinoaShell> {
     return [
       DashboardView(
         onNavigateToSend: () => _onTabChanged(KinoaRoutes.tabTransfer),
-        onNavigateToRequest: () =>
-            Navigator.pushNamed(context, KinoaRoutes.moneyRequest),
+        onNavigateToRequest: () => _onTabChanged(KinoaRoutes.tabTransfer),
+        onNavigateToHistory: () => _onTabChanged(KinoaRoutes.tabHistory),
       ),
       const SendView(),
       const _PlaceholderPage(label: "Historique"),
