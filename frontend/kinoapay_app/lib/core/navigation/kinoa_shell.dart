@@ -5,6 +5,7 @@ import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_bottom_nav.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
+import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
 /// Arguments de navigation transmis au [KinoaShell] à l'ouverture.
@@ -49,7 +50,7 @@ class _KinoaShellState extends State<KinoaShell> {
       ),
       const SendView(),
       const _PlaceholderPage(label: "Historique"),
-      const _PlaceholderPage(label: "Profil"),
+      const ProfileView(),
     ];
   }
 
