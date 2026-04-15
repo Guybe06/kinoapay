@@ -65,4 +65,32 @@ abstract final class AuthStrings {
   static const String resetPassMismatch =
       "Les mots de passe ne correspondent pas.";
   static const String resetRateLimited = "Trop de tentatives. Réessayez dans";
+
+  static const String socialGoogle = "Google";
+  static const String socialApple = "Apple";
+  static const String socialDivider = "OU CONTINUER AVEC";
+
+  static const String signinEmailHint = "Email ou numéro mobile";
+  static const String signinPasswordHint = "Mot de passe";
+  static const String signinResetLink = "Réinitialiser";
+  static const String emailHint = "sofia@exemple.com";
+  static const String passwordHint = "Créer un mot de passe";
+  static const String resetNewPassHint = "Nouveau mot de passe";
+  static const String resetConfirmPassHint = "Confirmer le mot de passe";
+  static const String firstNameHint = "ex. Sofia";
+  static const String lastNameHint = "ex. Mendes";
+  static const String signinForgotPrefix = "Mot de passe oublié ? ";
+  static const String otpVerifyBtn = "Vérifier";
+  static const String otpStepLabel = "Vérification";
+  static const String stepIndicator2 = "Étape 2 sur 2";
+  static const String legalPrefix = "En créant un compte, vous acceptez nos ";
+  static const String legalCgu = "Conditions d'utilisation";
+  static const String legalAnd = " et notre ";
+  static const String legalPrivacy = "Politique de confidentialité";
+
+  static const String validatorMinChars = "Minimum 2 caractères.";
+  static const String validatorInvalidPhone = "Numéro invalide.";
+  static const String validatorDateFormat = "Format JJ/MM/AAAA attendu.";
+  static const String validatorInvalidDate = "Date invalide.";
+  static const String validatorMinAge = "Vous devez avoir au moins 18 ans.";
 }

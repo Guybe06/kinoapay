@@ -7,6 +7,12 @@ abstract final class ApiPaths {
   static const String refresh = "$_v1/accounts/refresh";
   static const String signout = "$_v1/accounts/signout";
   static const String me = "$_v1/accounts/me";
+
+  static const String otpSend = "$_v1/auth/otp/send";
+  static const String otpVerify = "$_v1/auth/otp/verify";
+  static const String passwordRequest = "$_v1/auth/password/request";
+  static const String passwordVerify = "$_v1/auth/password/verify";
+  static const String passwordReset = "$_v1/auth/password/reset";
   static const String createTransaction = "$_v1/client/transactions";
   static const String listTransactions = "$_v1/client/transactions";
 

@@ -15,8 +15,8 @@ class HttpAuthRepository implements AuthRepository {
   const HttpAuthRepository({
     required DioClient dioClient,
     required SecureStorageService secureStorage,
-  })  : _dioClient = dioClient,
-        _secureStorage = secureStorage;
+  }) : _dioClient = dioClient,
+       _secureStorage = secureStorage;
 
   @override
   Future<UserAccount> signIn(String email, String password) async {
@@ -58,7 +58,9 @@ class HttpAuthRepository implements AuthRepository {
           "birthDate": birthDate,
         },
       );
-      final userData = (response.data as Map<String, dynamic>)["user"] as Map<String, dynamic>;
+      final userData =
+          (response.data as Map<String, dynamic>)["user"]
+              as Map<String, dynamic>;
       return _userFromMap(userData);
     } on AppException {
       rethrow;
@@ -72,7 +74,10 @@ class HttpAuthRepository implements AuthRepository {
   @override
   Future<void> sendOtp(String phone, String countryCode) async {
     try {
-      await _dioClient.dio.post("/auth/otp/send", data: {"phone": phone, "countryCode": countryCode});
+      await _dioClient.dio.post(
+        ApiPaths.otpSend,
+        data: {"phone": phone, "countryCode": countryCode},
+      );
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
@@ -83,7 +88,10 @@ class HttpAuthRepository implements AuthRepository {
   @override
   Future<void> verifyOtp(String phone, String countryCode, String code) async {
     try {
-      await _dioClient.dio.post("/auth/otp/verify", data: {"phone": phone, "countryCode": countryCode, "code": code});
+      await _dioClient.dio.post(
+        ApiPaths.otpVerify,
+        data: {"phone": phone, "countryCode": countryCode, "code": code},
+      );
     } on AppException {
       rethrow;
     } on DioException catch (e) {
@@ -97,9 +105,7 @@ class HttpAuthRepository implements AuthRepository {
   Future<void> signOut() async {
     try {
       await _dioClient.dio.post(ApiPaths.signout);
-    } catch (_) {
-      // Best effort : on nettoie la session même si le serveur ne répond pas.
-    }
+    } catch (_) {}
     await _secureStorage.clearSession();
   }
 
@@ -120,7 +126,10 @@ class HttpAuthRepository implements AuthRepository {
     final accessToken = data["accessToken"] as String;
     final refreshToken = data["refreshToken"] as String;
     final userData = data["user"] as Map<String, dynamic>;
-    await _secureStorage.saveTokens(accessToken: accessToken, refreshToken: refreshToken);
+    await _secureStorage.saveTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
     await _secureStorage.saveUserData(jsonEncode(userData));
     return _userFromMap(userData);
   }
@@ -138,9 +147,15 @@ class HttpAuthRepository implements AuthRepository {
   );
 
   @override
-  Future<void> requestPasswordReset(String contact, {required bool isEmail}) async {
+  Future<void> requestPasswordReset(
+    String contact, {
+    required bool isEmail,
+  }) async {
     try {
-      await _dioClient.dio.post("/auth/password/request", data: {"contact": contact, "type": isEmail ? "email" : "phone"});
+      await _dioClient.dio.post(
+        ApiPaths.passwordRequest,
+        data: {"contact": contact, "type": isEmail ? "email" : "phone"},
+      );
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
@@ -151,7 +166,10 @@ class HttpAuthRepository implements AuthRepository {
   @override
   Future<String> verifyResetOtp(String contact, String code) async {
     try {
-      final response = await _dioClient.dio.post("/auth/password/verify", data: {"contact": contact, "code": code});
+      final response = await _dioClient.dio.post(
+        ApiPaths.passwordVerify,
+        data: {"contact": contact, "code": code},
+      );
       return (response.data as Map<String, dynamic>)["resetToken"] as String;
     } on DioException catch (e) {
       throw _fromDio(e);
@@ -163,7 +181,10 @@ class HttpAuthRepository implements AuthRepository {
   @override
   Future<void> resetPassword(String resetToken, String newPassword) async {
     try {
-      await _dioClient.dio.post("/auth/password/reset", data: {"resetToken": resetToken, "password": newPassword});
+      await _dioClient.dio.post(
+        ApiPaths.passwordReset,
+        data: {"resetToken": resetToken, "password": newPassword},
+      );
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
@@ -178,9 +199,11 @@ class HttpAuthRepository implements AuthRepository {
       409 => AppException.conflict(),
       429 => AppException.rateLimited(),
       503 => AppException.serviceUnavailable(),
-      null => e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout
-          ? AppException.timeout()
-          : AppException.noInternet(),
+      null =>
+        e.type == DioExceptionType.connectionTimeout ||
+                e.type == DioExceptionType.receiveTimeout
+            ? AppException.timeout()
+            : AppException.noInternet(),
       _ => status >= 500 ? AppException.serverError() : AppException.unknown(),
     };
   }

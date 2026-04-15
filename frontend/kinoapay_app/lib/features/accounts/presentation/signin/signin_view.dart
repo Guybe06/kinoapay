@@ -33,7 +33,11 @@ class _SignInViewState extends State<SignInView> {
   void _navigateTo(String route, {Object? arguments}) {
     if (_navigating) return;
     _navigating = true;
-    Navigator.pushNamed(context, route, arguments: arguments).then((_) => _navigating = false);
+    Navigator.pushNamed(
+      context,
+      route,
+      arguments: arguments,
+    ).then((_) => _navigating = false);
   }
 
   @override
@@ -48,7 +52,11 @@ class _SignInViewState extends State<SignInView> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signinSuccess);
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.shell, (_) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.shell,
+          (_) => false,
+        );
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -102,11 +110,18 @@ class _SignInViewState extends State<SignInView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
+            icon: const Icon(
+              SolarIconsOutline.altArrowLeft,
+              color: AppColors.quinoaDark,
+            ),
             onPressed: () => _handleBack(context),
           ),
           const Spacer(),
-          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
+          const BrandLogoRow(
+            size: BrandSize.sm,
+            color: AppColors.quinoaDark,
+            iconColor: AppColors.quinoaGold,
+          ),
           const Spacer(flex: 2),
         ],
       ),
@@ -126,7 +141,13 @@ class _SignInViewState extends State<SignInView> {
               index: 0,
               child: const Text(
                 AuthStrings.signinTitle,
-                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                  letterSpacing: -2,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -134,7 +155,11 @@ class _SignInViewState extends State<SignInView> {
               index: 1,
               child: Text(
                 AuthStrings.signinSubtitle,
-                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                  fontSize: 15,
+                  height: 1.4,
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -143,7 +168,7 @@ class _SignInViewState extends State<SignInView> {
               child: AuthTextField(
                 controller: _emailCtrl,
                 label: AuthStrings.emailLabel,
-                hintText: "Email ou numéro mobile",
+                hintText: AuthStrings.signinEmailHint,
                 keyboardType: TextInputType.emailAddress,
                 validator: AuthValidator.validateEmailOrPhone,
               ),
@@ -154,7 +179,7 @@ class _SignInViewState extends State<SignInView> {
               child: AuthTextField(
                 controller: _passwordCtrl,
                 label: AuthStrings.passwordLabel,
-                hintText: "Mot de passe",
+                hintText: AuthStrings.signinPasswordHint,
                 obscureText: true,
                 validator: AuthValidator.validatePassword,
               ),
@@ -162,7 +187,14 @@ class _SignInViewState extends State<SignInView> {
             const SizedBox(height: 16),
             StaggeredEntrance(index: 4, child: _buildForgotPasswordRow()),
             const SizedBox(height: 40),
-            StaggeredEntrance(index: 5, child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
+            StaggeredEntrance(
+              index: 5,
+              child: PrimaryButton(
+                text: AuthStrings.submitBtn,
+                isLoading: state is AuthLoading,
+                onPressed: _submit,
+              ),
+            ),
             const SizedBox(height: 32),
             StaggeredEntrance(index: 6, child: const AuthSocialDivider()),
             const SizedBox(height: 20),
@@ -181,11 +213,15 @@ class _SignInViewState extends State<SignInView> {
       onTap: () => _navigateTo(AppRoutes.forgotPassword),
       child: Text.rich(
         TextSpan(
-          text: "Mot de passe oublié ? ",
-          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 14, fontWeight: FontWeight.w500),
+          text: AuthStrings.signinForgotPrefix,
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.5),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
           children: const [
             TextSpan(
-              text: "Réinitialiser",
+              text: AuthStrings.signinResetLink,
               style: TextStyle(
                 color: AppColors.quinoaDark,
                 fontWeight: FontWeight.w800,
@@ -205,11 +241,17 @@ class _SignInViewState extends State<SignInView> {
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signinNoAccount} ",
-            style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w500,
+            ),
             children: const [
               TextSpan(
                 text: AuthStrings.signinSignupLink,
-                style: TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),

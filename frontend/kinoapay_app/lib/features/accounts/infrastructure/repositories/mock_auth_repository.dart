@@ -13,7 +13,11 @@ class MockAuthRepository implements AuthRepository {
   static final Map<String, _MockCredentials> _store = {
     "test@kinoapay.com": _MockCredentials(
       password: "password123",
-      account: const UserAccount(id: "seed_1", email: "test@kinoapay.com", fullName: "Compte test kinoaPay"),
+      account: const UserAccount(
+        id: "seed_1",
+        email: "test@kinoapay.com",
+        fullName: "Compte test kinoaPay",
+      ),
     ),
   };
 
@@ -24,37 +28,39 @@ class MockAuthRepository implements AuthRepository {
 
   final SecureStorageService _storage;
 
-  MockAuthRepository({required SecureStorageService storage}) : _storage = storage;
+  MockAuthRepository({required SecureStorageService storage})
+    : _storage = storage;
 
   Map<String, dynamic> _userToMap(UserAccount u) => {
-        "id": u.id,
-        "email": u.email,
-        "fullName": u.fullName,
-        "firstName": u.firstName,
-        "lastName": u.lastName,
-        "phone": u.phone,
-        "countryCode": u.countryCode,
-        "birthDate": u.birthDate,
-        "kycVerified": u.kycVerified,
-      };
+    "id": u.id,
+    "email": u.email,
+    "fullName": u.fullName,
+    "firstName": u.firstName,
+    "lastName": u.lastName,
+    "phone": u.phone,
+    "countryCode": u.countryCode,
+    "birthDate": u.birthDate,
+    "kycVerified": u.kycVerified,
+  };
 
   UserAccount _userFromMap(Map<String, dynamic> d) => UserAccount(
-        id: d["id"].toString(),
-        email: d["email"] as String,
-        fullName: d["fullName"] as String?,
-        firstName: d["firstName"] as String?,
-        lastName: d["lastName"] as String?,
-        phone: d["phone"] as String?,
-        countryCode: d["countryCode"] as String?,
-        birthDate: d["birthDate"] as String?,
-        kycVerified: (d["kycVerified"] as bool?) ?? false,
-      );
+    id: d["id"].toString(),
+    email: d["email"] as String,
+    fullName: d["fullName"] as String?,
+    firstName: d["firstName"] as String?,
+    lastName: d["lastName"] as String?,
+    phone: d["phone"] as String?,
+    countryCode: d["countryCode"] as String?,
+    birthDate: d["birthDate"] as String?,
+    kycVerified: (d["kycVerified"] as bool?) ?? false,
+  );
 
   /// Persiste toujours access + refresh tokens et le profil utilisateur.
   Future<void> _persistSession(UserAccount account) async {
     await _storage.saveTokens(
       accessToken: "$_mockAccessPrefix${account.id}",
-      refreshToken: "$_mockRefreshPrefix${account.id}_${DateTime.now().millisecondsSinceEpoch}",
+      refreshToken:
+          "$_mockRefreshPrefix${account.id}_${DateTime.now().millisecondsSinceEpoch}",
     );
     await _storage.saveUserData(jsonEncode(_userToMap(account)));
   }
@@ -156,7 +162,10 @@ class MockAuthRepository implements AuthRepository {
   static const String _mockResetToken = "mock_reset_token_valid";
 
   @override
-  Future<void> requestPasswordReset(String contact, {required bool isEmail}) async {
+  Future<void> requestPasswordReset(
+    String contact, {
+    required bool isEmail,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 1200));
     final key = contact.trim().toLowerCase();
     if (isEmail && !_store.containsKey(key)) {
@@ -187,11 +196,13 @@ class MockAuthRepository implements AuthRepository {
     if (resetToken != _mockResetToken) {
       throw AppException.unauthorized();
     }
-    // En mock : met à jour le premier compte trouvé (simulation).
     final firstKey = _store.keys.firstOrNull;
     if (firstKey != null) {
       final old = _store[firstKey]!;
-      _store[firstKey] = _MockCredentials(password: newPassword, account: old.account);
+      _store[firstKey] = _MockCredentials(
+        password: newPassword,
+        account: old.account,
+      );
     }
   }
 }

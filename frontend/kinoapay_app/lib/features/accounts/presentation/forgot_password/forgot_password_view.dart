@@ -10,6 +10,7 @@ import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
+import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_args.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
@@ -219,11 +220,4 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ],
     );
   }
-}
-
-/// Arguments transmis aux écrans suivants du flux de réinitialisation.
-class ForgotPasswordArgs {
-  final String contact;
-  final bool isEmail;
-  const ForgotPasswordArgs({required this.contact, required this.isEmail});
 }

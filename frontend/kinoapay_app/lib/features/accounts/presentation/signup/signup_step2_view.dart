@@ -46,8 +46,12 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signupSuccess);
       Future.delayed(const Duration(milliseconds: 800), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.celebration, (_) => false,
-            arguments: state.user.firstName ?? "");
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.celebration,
+          (_) => false,
+          arguments: state.user.firstName ?? "",
+        );
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -99,18 +103,29 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
+            icon: const Icon(
+              SolarIconsOutline.altArrowLeft,
+              color: AppColors.quinoaDark,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
+          const BrandLogoRow(
+            size: BrandSize.sm,
+            color: AppColors.quinoaDark,
+            iconColor: AppColors.quinoaGold,
+          ),
           const Spacer(flex: 2),
         ],
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context, AuthState state, SignupStep1Args step1) {
+  Widget _buildBody(
+    BuildContext context,
+    AuthState state,
+    SignupStep1Args step1,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Form(
@@ -125,7 +140,13 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
               index: 1,
               child: const Text(
                 AuthStrings.signupStep2Title,
-                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                  letterSpacing: -2,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -133,21 +154,44 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
               index: 2,
               child: Text(
                 AuthStrings.signupStep2Subtitle,
-                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                  fontSize: 15,
+                  height: 1.4,
+                ),
               ),
             ),
             const SizedBox(height: 40),
             StaggeredEntrance(
               index: 3,
-              child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: "sofia@exemple.com", keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
+              child: AuthTextField(
+                controller: _emailCtrl,
+                label: AuthStrings.emailLabel,
+                hintText: AuthStrings.emailHint,
+                keyboardType: TextInputType.emailAddress,
+                validator: AuthValidator.validateEmailOrPhone,
+              ),
             ),
             const SizedBox(height: 20),
             StaggeredEntrance(
               index: 4,
-              child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: "Créer un mot de passe", obscureText: true, validator: AuthValidator.validatePassword),
+              child: AuthTextField(
+                controller: _passwordCtrl,
+                label: AuthStrings.passwordLabel,
+                hintText: AuthStrings.passwordHint,
+                obscureText: true,
+                validator: AuthValidator.validatePassword,
+              ),
             ),
             const SizedBox(height: 40),
-            StaggeredEntrance(index: 5, child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1))),
+            StaggeredEntrance(
+              index: 5,
+              child: PrimaryButton(
+                text: AuthStrings.submitBtn,
+                isLoading: state is AuthLoading,
+                onPressed: () => _submit(step1),
+              ),
+            ),
             const SizedBox(height: 32),
             StaggeredEntrance(index: 6, child: _buildSigninLink(context)),
             const SizedBox(height: 16),
@@ -167,8 +211,12 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         _dot(active: true),
         const SizedBox(width: 10),
         Text(
-          "Étape 2 sur 2",
-          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
+          AuthStrings.stepIndicator2,
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.4),
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -180,7 +228,9 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       width: active ? 20 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: active ? AppColors.quinoaGold : AppColors.quinoaDark.withValues(alpha: 0.15),
+        color: active
+            ? AppColors.quinoaGold
+            : AppColors.quinoaDark.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -192,16 +242,25 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         onPressed: () {
           if (_navigating) return;
           _navigating = true;
-          Navigator.pushNamed(context, AppRoutes.signin).then((_) => _navigating = false);
+          Navigator.pushNamed(
+            context,
+            AppRoutes.signin,
+          ).then((_) => _navigating = false);
         },
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",
-            style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w500,
+            ),
             children: const [
               TextSpan(
                 text: AuthStrings.signupSigninLink,
-                style: TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
@@ -211,8 +270,19 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
   }
 
   Widget _buildTerms(BuildContext context) {
-    final muted = TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12, height: 1.5);
-    final link = TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.6), fontSize: 12, height: 1.5, fontWeight: FontWeight.w700, decoration: TextDecoration.underline, decorationColor: AppColors.quinoaDark.withValues(alpha: 0.3));
+    final muted = TextStyle(
+      color: AppColors.quinoaDark.withValues(alpha: 0.35),
+      fontSize: 12,
+      height: 1.5,
+    );
+    final link = TextStyle(
+      color: AppColors.quinoaDark.withValues(alpha: 0.6),
+      fontSize: 12,
+      height: 1.5,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.underline,
+      decorationColor: AppColors.quinoaDark.withValues(alpha: 0.3),
+    );
 
     return Center(
       child: Padding(
@@ -220,15 +290,15 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         child: Wrap(
           alignment: WrapAlignment.center,
           children: [
-            Text("En créant un compte, vous acceptez nos ", style: muted),
+            Text(AuthStrings.legalPrefix, style: muted),
             GestureDetector(
               onTap: () => LegalBottomSheet.show(context, LegalDocType.cgu),
-              child: Text("Conditions d'utilisation", style: link),
+              child: Text(AuthStrings.legalCgu, style: link),
             ),
-            Text(" et notre ", style: muted),
+            Text(AuthStrings.legalAnd, style: muted),
             GestureDetector(
               onTap: () => LegalBottomSheet.show(context, LegalDocType.privacy),
-              child: Text("Politique de confidentialité", style: link),
+              child: Text(AuthStrings.legalPrivacy, style: link),
             ),
             Text(".", style: muted),
           ],

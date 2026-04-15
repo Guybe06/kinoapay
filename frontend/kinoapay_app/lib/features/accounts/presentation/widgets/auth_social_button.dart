@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 
 /// Bouton de connexion via un fournisseur externe (Google, Apple…).
 class AuthSocialButton extends StatelessWidget {
@@ -29,16 +30,27 @@ class AuthSocialButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: AppColors.white.withValues(alpha: 0.7),
-          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.1),
+          ),
           borderRadius: borderRadius,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon is IconData) Icon(icon, color: AppColors.quinoaDark, size: 20),
-            if (icon is FaIconData) FaIcon(icon, color: AppColors.quinoaDark, size: 20),
+            if (icon is IconData)
+              Icon(icon, color: AppColors.quinoaDark, size: 20),
+            if (icon is FaIconData)
+              FaIcon(icon, color: AppColors.quinoaDark, size: 20),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700, fontSize: 14)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),
@@ -54,9 +66,21 @@ class AuthSocialRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: AuthSocialButton(icon: FontAwesomeIcons.google, label: "Google", onPressed: () {})),
+        Expanded(
+          child: AuthSocialButton(
+            icon: FontAwesomeIcons.google,
+            label: AuthStrings.socialGoogle,
+            onPressed: () {},
+          ),
+        ),
         const SizedBox(width: 16),
-        Expanded(child: AuthSocialButton(icon: FontAwesomeIcons.apple, label: "Apple", onPressed: () {})),
+        Expanded(
+          child: AuthSocialButton(
+            icon: FontAwesomeIcons.apple,
+            label: AuthStrings.socialApple,
+            onPressed: () {},
+          ),
+        ),
       ],
     );
   }
@@ -70,7 +94,7 @@ class AuthSocialDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        "OU CONTINUER AVEC",
+        AuthStrings.socialDivider,
         style: TextStyle(
           color: AppColors.quinoaDark.withValues(alpha: 0.35),
           fontSize: 11,

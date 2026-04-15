@@ -169,7 +169,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
               child: AuthTextField(
                 controller: _firstNameCtrl,
                 label: AuthStrings.firstNameLabel,
-                hintText: "ex. Sofia",
+                hintText: AuthStrings.firstNameHint,
                 validator: AuthValidator.validateName,
               ),
             ),
@@ -179,7 +179,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
               child: AuthTextField(
                 controller: _lastNameCtrl,
                 label: AuthStrings.lastNameLabel,
-                hintText: "ex. Mendes",
+                hintText: AuthStrings.lastNameHint,
                 validator: AuthValidator.validateName,
               ),
             ),
