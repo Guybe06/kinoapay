@@ -2,12 +2,16 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/core/constants/supported_countries.dart";
 import "package:kinoapay_app/core/widgets/country_picker_sheet.dart";
 
 /// Formate les chiffres saisis en groupes 2 + 3 + 2×n pour l'affichage du numéro.
 class _PhoneGroupFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue old, TextEditingValue next) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue old,
+    TextEditingValue next,
+  ) {
     final digits = next.text.replaceAll(RegExp(r"\D"), "");
     final buffer = StringBuffer();
     for (int i = 0; i < digits.length; i++) {
@@ -50,8 +54,10 @@ class _PhoneFieldState extends State<PhoneField> {
   @override
   void initState() {
     super.initState();
-    _selected = widget.initialCountry ?? defaultDialCountries[0];
-    _focusNode.addListener(() => setState(() => _hasFocus = _focusNode.hasFocus));
+    _selected = widget.initialCountry ?? SupportedCountries.all[0];
+    _focusNode.addListener(
+      () => setState(() => _hasFocus = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -105,7 +111,9 @@ class _PhoneFieldState extends State<PhoneField> {
         focusNode: _focusNode,
         keyboardType: TextInputType.phone,
         inputFormatters: [_PhoneGroupFormatter()],
-        onChanged: (_) { if (_hasError) setState(() => _hasError = false); },
+        onChanged: (_) {
+          if (_hasError) setState(() => _hasError = false);
+        },
         validator: (value) {
           final result = widget.validator?.call(value);
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -115,14 +123,28 @@ class _PhoneFieldState extends State<PhoneField> {
           });
           return result;
         },
-        style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
+        style: const TextStyle(
+          color: AppColors.quinoaDark,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
         cursorColor: AppColors.quinoaGold,
         decoration: InputDecoration(
           labelText: AppStrings.phoneFieldLabel,
-          labelStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
+          labelStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.45),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
           hintText: AppStrings.phoneFieldHint,
-          hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
-          floatingLabelStyle: const TextStyle(color: AppColors.quinoaGold, fontWeight: FontWeight.w700),
+          hintStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.25),
+            fontSize: 14,
+          ),
+          floatingLabelStyle: const TextStyle(
+            color: AppColors.quinoaGold,
+            fontWeight: FontWeight.w700,
+          ),
           contentPadding: const EdgeInsets.only(right: 24, top: 22, bottom: 22),
           prefixIcon: GestureDetector(
             onTap: _openPicker,
@@ -130,39 +152,73 @@ class _PhoneFieldState extends State<PhoneField> {
               margin: const EdgeInsets.only(left: 4, right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
-                border: Border(right: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.12), width: 1)),
+                border: Border(
+                  right: BorderSide(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.12),
+                    width: 1,
+                  ),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(_selected.flag, style: const TextStyle(fontSize: 20)),
                   const SizedBox(width: 6),
-                  Text(_selected.dialCode, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+                  Text(
+                    _selected.dialCode,
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   const SizedBox(width: 4),
-                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.4), size: 18),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: AppColors.quinoaDark.withValues(alpha: 0.4),
+                    size: 18,
+                  ),
                 ],
               ),
             ),
           ),
           filled: true,
-          fillColor: _hasFocus ? AppColors.white : AppColors.white.withValues(alpha: 0.65),
+          fillColor: _hasFocus
+              ? AppColors.white
+              : AppColors.white.withValues(alpha: 0.65),
           enabledBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.12), width: 1),
+            borderSide: BorderSide(
+              color: AppColors.quinoaDark.withValues(alpha: 0.12),
+              width: 1,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.quinoaGold.withValues(alpha: 0.6),
+              width: 1.5,
+            ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.35), width: 1),
+            borderSide: BorderSide(
+              color: AppColors.quinoaRed.withValues(alpha: 0.35),
+              width: 1,
+            ),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.quinoaRed.withValues(alpha: 0.6),
+              width: 1.5,
+            ),
           ),
-          errorStyle: const TextStyle(color: AppColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500),
+          errorStyle: const TextStyle(
+            color: AppColors.quinoaRed,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

@@ -4,7 +4,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_entrance_animation.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_page_widgets.dart";
-import "package:kinoapay_app/main.dart" show appRouteObserver;
+import "package:kinoapay_app/core/navigation/route_observer.dart";
 
 /// Page d'accueil immersive avec animations d'entrée en cascade depuis le splash.
 class WelcomeView extends StatefulWidget {
@@ -17,7 +17,8 @@ class WelcomeView extends StatefulWidget {
   State<WelcomeView> createState() => _WelcomeViewState();
 }
 
-class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStateMixin, RouteAware {
+class _WelcomeViewState extends State<WelcomeView>
+    with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _ctrl;
   late final WelcomeEntranceAnimation _anim;
   bool _navigating = false;
@@ -31,7 +32,10 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(duration: const Duration(milliseconds: 1100), vsync: this);
+    _ctrl = AnimationController(
+      duration: const Duration(milliseconds: 1100),
+      vsync: this,
+    );
     _anim = WelcomeEntranceAnimation(_ctrl);
     Future.delayed(const Duration(milliseconds: 280), () {
       if (mounted) _ctrl.forward();
@@ -65,7 +69,11 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   /// Applique un fade + glissement vertical à [child] selon [opacity].
   /// @param opacity  Animation d'opacité (0→1) pilotant aussi le slide
   /// @param slide    Amplitude du glissement en pixels
-  Widget _animated(Animation<double> opacity, Widget child, {double slide = 28}) {
+  Widget _animated(
+    Animation<double> opacity,
+    Widget child, {
+    double slide = 28,
+  }) {
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (_, c) => Opacity(
@@ -92,7 +100,9 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  WelcomeBrandHeader(heroTag: widget.fromSplash ? "app_brand" : null),
+                  WelcomeBrandHeader(
+                    heroTag: widget.fromSplash ? "app_brand" : null,
+                  ),
                   const SizedBox(height: 44),
                   _animated(_anim.title, const WelcomeHeroTitle()),
                   const SizedBox(height: 16),
@@ -106,13 +116,17 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
                   const Spacer(),
                   _animated(
                     _anim.button,
-                    WelcomeSignupCta(onTap: () => _navigateTo(AppRoutes.signup)),
+                    WelcomeSignupCta(
+                      onTap: () => _navigateTo(AppRoutes.signup),
+                    ),
                     slide: 40,
                   ),
                   const SizedBox(height: 16),
                   _animated(
                     _anim.link,
-                    WelcomeSigninLink(onPressed: () => _navigateTo(AppRoutes.signin)),
+                    WelcomeSigninLink(
+                      onPressed: () => _navigateTo(AppRoutes.signin),
+                    ),
                     slide: 20,
                   ),
                   const SizedBox(height: 12),

@@ -1,5 +1,5 @@
 /// Codes d'erreur globaux ; chaque feature complète via [feature]_error_codes.dart dans son dossier domain/.
-class ErrorCodes {
+abstract final class ErrorCodes {
   static const String network = "NETWORK_ERROR";
   static const String timeout = "TIMEOUT_ERROR";
   static const String noInternet = "NO_INTERNET";

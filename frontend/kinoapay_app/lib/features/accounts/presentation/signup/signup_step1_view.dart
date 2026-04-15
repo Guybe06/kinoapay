@@ -4,7 +4,7 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
-import "package:kinoapay_app/core/widgets/country_picker_sheet.dart";
+import "package:kinoapay_app/core/constants/supported_countries.dart";
 import "package:kinoapay_app/core/widgets/phone_field.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
@@ -30,7 +30,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
   final _phoneCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _birthDateFieldKey = GlobalKey<FormFieldState<void>>();
-  String _countryCode = defaultDialCountries[0].dialCode;
+  String _countryCode = SupportedCountries.all[0].dialCode;
   bool _navigating = false;
 
   late int _selectedDay;
@@ -75,7 +75,8 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         lastName: _lastNameCtrl.text.trim(),
         phone: _phoneCtrl.text.replaceAll(" ", ""),
         countryCode: _countryCode,
-        birthDate: "$y-${m.toString().padLeft(2, "0")}-${d.toString().padLeft(2, "0")}",
+        birthDate:
+            "$y-${m.toString().padLeft(2, "0")}-${d.toString().padLeft(2, "0")}",
       ),
     ).then((_) => _navigating = false);
   }
@@ -104,11 +105,18 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
+            icon: const Icon(
+              SolarIconsOutline.altArrowLeft,
+              color: AppColors.quinoaDark,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
+          const BrandLogoRow(
+            size: BrandSize.sm,
+            color: AppColors.quinoaDark,
+            iconColor: AppColors.quinoaGold,
+          ),
           const Spacer(flex: 2),
         ],
       ),
@@ -125,7 +133,10 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            const StaggeredEntrance(index: 0, child: SignupStep1StepIndicator()),
+            const StaggeredEntrance(
+              index: 0,
+              child: SignupStep1StepIndicator(),
+            ),
             const SizedBox(height: 24),
             const StaggeredEntrance(
               index: 1,
@@ -145,7 +156,11 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
               index: 2,
               child: Text(
                 AuthStrings.signupStep1Subtitle,
-                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                  fontSize: 15,
+                  height: 1.4,
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -197,7 +212,13 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
               ),
             ),
             const SizedBox(height: 48),
-            StaggeredEntrance(index: 7, child: PrimaryButton(text: AuthStrings.submitBtn, onPressed: _submit)),
+            StaggeredEntrance(
+              index: 7,
+              child: PrimaryButton(
+                text: AuthStrings.submitBtn,
+                onPressed: _submit,
+              ),
+            ),
             const SizedBox(height: 32),
           ],
         ),

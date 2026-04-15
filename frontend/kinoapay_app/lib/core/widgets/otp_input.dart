@@ -34,15 +34,21 @@ class OtpInputState extends State<OtpInput> {
 
   @override
   void dispose() {
-    for (final c in _ctrls) { c.dispose(); }
-    for (final n in _nodes) { n.dispose(); }
+    for (final c in _ctrls) {
+      c.dispose();
+    }
+    for (final n in _nodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
   /// Vide toutes les cases et remet le focus sur la première.
   /// @return void
   void clear() {
-    for (final c in _ctrls) { c.clear(); }
+    for (final c in _ctrls) {
+      c.clear();
+    }
     if (mounted) _nodes[0].requestFocus();
   }
 
@@ -77,7 +83,7 @@ class OtpInputState extends State<OtpInput> {
   Widget _buildBox(int i) {
     final err = widget.hasError;
     return KeyboardListener(
-      focusNode: FocusNode(),
+      focusNode: _nodes[i],
       onKeyEvent: (e) => _onKeyEvent(i, e),
       child: SizedBox(
         width: 48,
@@ -90,20 +96,34 @@ class OtpInputState extends State<OtpInput> {
           maxLength: 1,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (v) => _onChanged(i, v),
-          style: TextStyle(color: err ? AppColors.quinoaRed : AppColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w800),
+          style: TextStyle(
+            color: err ? AppColors.quinoaRed : AppColors.quinoaDark,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+          ),
           cursorColor: AppColors.quinoaGold,
           decoration: InputDecoration(
             counterText: "",
             filled: true,
-            fillColor: err ? AppColors.quinoaRed.withValues(alpha: 0.06) : AppColors.white,
+            fillColor: err
+                ? AppColors.quinoaRed.withValues(alpha: 0.06)
+                : AppColors.white,
             contentPadding: EdgeInsets.zero,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: err ? AppColors.quinoaRed.withValues(alpha: 0.4) : AppColors.quinoaDark.withValues(alpha: 0.15), width: 1.5),
+              borderSide: BorderSide(
+                color: err
+                    ? AppColors.quinoaRed.withValues(alpha: 0.4)
+                    : AppColors.quinoaDark.withValues(alpha: 0.15),
+                width: 1.5,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.quinoaGold, width: 2),
+              borderSide: const BorderSide(
+                color: AppColors.quinoaGold,
+                width: 2,
+              ),
             ),
           ),
         ),

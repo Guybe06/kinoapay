@@ -4,6 +4,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/app_router.dart";
 import "package:kinoapay_app/core/navigation/app_shell.dart";
+import "package:kinoapay_app/features/welcome/domain/welcome_args.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/features/splash/application/splash_connectivity_service.dart";
@@ -49,9 +50,10 @@ class _SplashViewState extends State<SplashView>
   /// Initialise les animations de scale et fondu du logo.
   void _initAnimations() {
     _controller = AnimationController(vsync: this, duration: _animDuration);
-    _scaleAnim = Tween<double>(begin: 0.7, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 0.7,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
     _fadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
@@ -136,10 +138,10 @@ class _SplashViewState extends State<SplashView>
     final route = await AppRouter.resolveInitialRoute(storage);
     if (!mounted) return;
 
-    final Object args = switch (route) {
+    final Object? args = switch (route) {
       AppRoutes.shell => const ShellArgs(fromSplash: true),
-      AppRoutes.signin => const AuthArgs(fromSplash: true),
-      _ => const WelcomeArgs(fromSplash: true),
+      AppRoutes.welcome => const WelcomeArgs(fromSplash: true),
+      _ => null,
     };
     Navigator.pushReplacementNamed(context, route, arguments: args);
   }
@@ -199,8 +201,11 @@ class _SplashViewState extends State<SplashView>
                 child: _isBackOnline
                     ? const SplashBackOnlinePanel(key: ValueKey("back"))
                     : _isOffline
-                        ? SplashOfflinePanel(key: const ValueKey("offline"), onRetry: _beginCheck)
-                        : const SizedBox(key: ValueKey("empty")),
+                    ? SplashOfflinePanel(
+                        key: const ValueKey("offline"),
+                        onRetry: _beginCheck,
+                      )
+                    : const SizedBox(key: ValueKey("empty")),
               ),
             ),
           ],

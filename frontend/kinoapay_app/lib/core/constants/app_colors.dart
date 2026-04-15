@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 /// Palette et couleurs sémantiques de l’application (seule source de vérité pour les [Color]).
-class AppColors {
+abstract final class AppColors {
   static const Color quinoaGold = Color(0xFFC8964A);
   static const Color quinoaGoldLight = Color(0xFFE8C98A);
   static const Color quinoaGoldLowOpacity = Color(0x40C8964A);
@@ -31,11 +31,7 @@ class AppColors {
   static const Color burtCyan = Color(0xFFD1F2F9);
 
   /// Dégradé complet Burt dans l'ordre [violet, orange, cyan] pour LinearGradient.
-  static const List<Color> burtGradient = [
-    burtViolet,
-    burtOrange,
-    burtCyan,
-  ];
+  static const List<Color> burtGradient = [burtViolet, burtOrange, burtCyan];
 
   static const Color surfaceDark = Color(0xFF0D0D0D);
   static const Color surfaceCard = Color(0xFF1A1A1A);
@@ -44,7 +40,6 @@ class AppColors {
   static const Color surfaceGlassBorder = Color(0x33FFFFFF);
   static const Color primary = quinoaGold;
   static const Color background = quinoaCream;
-  static const Color backgroundLight = quinoaCream;
   static const Color backgroundDark = quinoaDark;
   static const Color backgroundShell = stone950;
   static const Color textMain = quinoaDark;

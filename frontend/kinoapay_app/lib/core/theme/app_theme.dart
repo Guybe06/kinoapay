@@ -26,14 +26,15 @@ class AppTheme {
     required ColorScheme colorScheme,
     required SystemUiOverlayStyle systemOverlayStyle,
   }) {
-    final textTheme = GoogleFonts.plusJakartaSansTextTheme(
-      brightness == Brightness.light
-          ? ThemeData.light().textTheme
-          : ThemeData.dark().textTheme,
-    ).apply(
-      bodyColor: colorScheme.onSurface,
-      displayColor: colorScheme.onSurface,
-    );
+    final textTheme =
+        GoogleFonts.plusJakartaSansTextTheme(
+          brightness == Brightness.light
+              ? ThemeData.light().textTheme
+              : ThemeData.dark().textTheme,
+        ).apply(
+          bodyColor: colorScheme.onSurface,
+          displayColor: colorScheme.onSurface,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -71,7 +72,7 @@ class AppTheme {
       onPrimary: AppColors.textLight,
       secondary: AppColors.accent,
       onSecondary: AppColors.stone900,
-      surface: AppColors.backgroundLight,
+      surface: AppColors.background,
       onSurface: AppColors.textMain,
       surfaceContainerHighest: AppColors.stone100,
       onSurfaceVariant: AppColors.textMuted,
@@ -91,7 +92,7 @@ class AppTheme {
       onPrimary: AppColors.textLight,
       secondary: AppColors.accent,
       onSecondary: AppColors.stone900,
-      surface: AppColors.background,
+      surface: AppColors.surfaceDark,
       onSurface: AppColors.textLight,
       surfaceContainerHighest: AppColors.stone800,
       onSurfaceVariant: AppColors.stone400,

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:kinoapay_app/main.dart" show appRouteObserver;
+import "package:kinoapay_app/core/navigation/route_observer.dart";
 
 /// Animation d'entrée staggerée : chaque élément « tombe » en place avec un léger décalage.
 /// Rejoue automatiquement quand l'utilisateur revient sur la page (pop).
@@ -36,13 +36,16 @@ class _StaggeredEntranceState extends State<StaggeredEntrance>
     _controller = AnimationController(vsync: this, duration: widget.duration);
 
     _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.35, curve: Curves.easeOut)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.35, curve: Curves.easeOut),
+      ),
     );
 
-    _slide = Tween<Offset>(
-      begin: Offset(0, widget.offsetY),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: const _CustomDropCurve()));
+    _slide = Tween<Offset>(begin: Offset(0, widget.offsetY), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _controller, curve: const _CustomDropCurve()),
+        );
 
     _playAfterDelay();
   }

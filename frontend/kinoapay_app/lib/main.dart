@@ -6,7 +6,7 @@ import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/nav_throttle.dart";
 import "package:kinoapay_app/core/navigation/app_router.dart";
-import "package:kinoapay_app/core/network/dio_client.dart";
+import "package:kinoapay_app/core/navigation/route_observer.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/theme/app_theme.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -19,9 +19,6 @@ import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send_repository.dart";
 
-/// Observer global de navigation, utilisé par [StaggeredEntrance] pour rejouer les animations au retour.
-final RouteObserver<ModalRoute<void>> appRouteObserver = RouteObserver<ModalRoute<void>>();
-
 /// Point d'entrée : initialisation des dépendances globales puis [runApp].
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,24 +26,22 @@ void main() async {
 
   const storage = SecureStorageService();
 
-  // ignore: unused_local_variable, sera injecté dans les repositories HTTP lors de la refonte auth.
-  final dioClient = DioClient(
-    baseUrl: "https://api.kinoapay.com",
-    storage: storage,
-  );
-
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
           create: (_) {
-            final bloc = AuthBloc(repository: MockAuthRepository(storage: storage), storage: storage);
+            final bloc = AuthBloc(
+              repository: MockAuthRepository(storage: storage),
+              storage: storage,
+            );
             bloc.add(const AuthSessionRestoreRequested());
             return bloc;
           },
         ),
         BlocProvider<DashboardBloc>(
-          create: (_) => DashboardBloc(dashboardRepository: MockDashboardRepository()),
+          create: (_) =>
+              DashboardBloc(dashboardRepository: MockDashboardRepository()),
         ),
         BlocProvider<SendBloc>(
           create: (_) => SendBloc(repository: MockSendRepository()),

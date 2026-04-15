@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
 
-/// Empêche les navigations concurrentes (double-tap) en bloquant les push pendant une transition.
+/// Empêche les double-taps sur les boutons de navigation en verrouillant pendant un push.
+/// Un pop n'est jamais verrouillé : l'utilisateur doit toujours pouvoir revenir en arrière.
 class NavThrottle extends NavigatorObserver {
   static bool _isTransitioning = false;
 
-  /// @return false pendant le court verrou après push ou pop
+  /// @return false uniquement pendant les 300ms suivant un push
   static bool get canNavigate => !_isTransitioning;
 
   @override
@@ -12,14 +13,9 @@ class NavThrottle extends NavigatorObserver {
     _lock();
   }
 
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    _lock();
-  }
-
   void _lock() {
     _isTransitioning = true;
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       _isTransitioning = false;
     });
   }

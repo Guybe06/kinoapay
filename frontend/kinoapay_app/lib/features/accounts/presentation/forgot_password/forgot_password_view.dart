@@ -13,7 +13,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart"
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/country_picker_sheet.dart";
+import "package:kinoapay_app/core/constants/supported_countries.dart";
 import "package:kinoapay_app/core/widgets/phone_field.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
@@ -29,7 +29,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _formKey = GlobalKey<FormState>();
   final _contactCtrl = TextEditingController();
   bool _isEmail = true;
-  String _countryCode = defaultDialCountries[0].dialCode;
+  String _countryCode = SupportedCountries.all[0].dialCode;
   bool _navigating = false;
 
   @override
@@ -90,11 +90,18 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
+            icon: const Icon(
+              SolarIconsOutline.altArrowLeft,
+              color: AppColors.quinoaDark,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
+          const BrandLogoRow(
+            size: BrandSize.sm,
+            color: AppColors.quinoaDark,
+            iconColor: AppColors.quinoaGold,
+          ),
           const Spacer(flex: 2),
         ],
       ),
@@ -114,7 +121,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               index: 0,
               child: const Text(
                 AuthStrings.resetTitle,
-                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                  height: 1.0,
+                  letterSpacing: -2,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -122,7 +135,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               index: 1,
               child: Text(
                 AuthStrings.resetSubtitle,
-                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                  fontSize: 15,
+                  height: 1.4,
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -131,11 +148,29 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             StaggeredEntrance(
               index: 3,
               child: _isEmail
-                  ? AuthTextField(controller: _contactCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.resetEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone)
-                  : PhoneField(controller: _contactCtrl, onCountryChanged: (code) => setState(() => _countryCode = code), validator: AuthValidator.validatePhone),
+                  ? AuthTextField(
+                      controller: _contactCtrl,
+                      label: AuthStrings.emailLabel,
+                      hintText: AuthStrings.resetEmailHint,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: AuthValidator.validateEmailOrPhone,
+                    )
+                  : PhoneField(
+                      controller: _contactCtrl,
+                      onCountryChanged: (code) =>
+                          setState(() => _countryCode = code),
+                      validator: AuthValidator.validatePhone,
+                    ),
             ),
             const SizedBox(height: 48),
-            StaggeredEntrance(index: 4, child: PrimaryButton(text: AuthStrings.resetSendCode, isLoading: state is AuthLoading, onPressed: _submit)),
+            StaggeredEntrance(
+              index: 4,
+              child: PrimaryButton(
+                text: AuthStrings.resetSendCode,
+                isLoading: state is AuthLoading,
+                onPressed: _submit,
+              ),
+            ),
             const SizedBox(height: 32),
           ],
         ),
@@ -149,7 +184,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         Text(
           AuthStrings.resetViaPhone,
           style: TextStyle(
-            color: !_isEmail ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.4),
+            color: !_isEmail
+                ? AppColors.quinoaDark
+                : AppColors.quinoaDark.withValues(alpha: 0.4),
             fontSize: 14,
             fontWeight: !_isEmail ? FontWeight.w800 : FontWeight.w500,
           ),
@@ -172,7 +209,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         Text(
           AuthStrings.resetViaEmail,
           style: TextStyle(
-            color: _isEmail ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.4),
+            color: _isEmail
+                ? AppColors.quinoaDark
+                : AppColors.quinoaDark.withValues(alpha: 0.4),
             fontSize: 14,
             fontWeight: _isEmail ? FontWeight.w800 : FontWeight.w500,
           ),
