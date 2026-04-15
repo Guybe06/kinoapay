@@ -1,0 +1,15 @@
+# Ignore everything by default
+/*
+
+# Allow only these specific directories
+!/frontend/
+!/backend/
+!/README.md
+!.gitignore
+
+# Documentation projet : jamais versionnée (hors commits)
+.docs/
+
+# Common OS files
+.DS_Store
+Thumbs.db
