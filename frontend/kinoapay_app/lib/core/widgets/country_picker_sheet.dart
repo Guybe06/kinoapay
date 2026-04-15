@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 
 typedef CountryEntry = ({String iso, String flag, String name, String dialCode});
 
@@ -79,7 +80,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Choisir un pays",
+                  KinoaStrings.countryPickerTitle,
                   style: TextStyle(
                     color: KinoaColors.quinoaDark,
                     fontSize: 18,
@@ -97,7 +98,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
                 style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 15),
                 cursorColor: KinoaColors.quinoaGold,
                 decoration: InputDecoration(
-                  hintText: "Rechercher un pays...",
+                  hintText: KinoaStrings.countryPickerSearchHint,
                   hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
                   prefixIcon: Icon(Icons.search_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.35), size: 20),
                   filled: true,

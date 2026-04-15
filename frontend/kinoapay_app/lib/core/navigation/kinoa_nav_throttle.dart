@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 class KinoaNavThrottle extends NavigatorObserver {
   static bool _isTransitioning = false;
 
-  /// Vérifie si une navigation est possible (pas de transition en cours).
+  /// @return false pendant le court verrou après push ou pop
   static bool get canNavigate => !_isTransitioning;
 
   @override

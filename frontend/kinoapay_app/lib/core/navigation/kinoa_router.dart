@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
+import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/navigation/kinoa_nav_throttle.dart";
 import "package:kinoapay_app/core/navigation/kinoa_shell.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
@@ -27,8 +28,8 @@ import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
 /// Gère la résolution des routes et les transitions de navigation de l'application.
 class KinoaRouter {
-  /// Détermine la route initiale après le splash selon l'état d'authentification.
-  /// Token présent : shell. Sans token, déjà ouvert : signin. Jamais ouvert : welcome.
+  /// Détermine la route initiale après le splash selon l'état d'authentification et le setup canaux.
+  /// @return le nom de route [KinoaRoutes] à afficher
   static Future<String> resolveInitialRoute(SecureStorageService storage) async {
     final token = await storage.getToken();
     if (token != null && token.isNotEmpty) {
@@ -40,6 +41,7 @@ class KinoaRouter {
   }
 
   /// Génère la route et sa transition selon le nom et les arguments fournis.
+  /// @return la [Route] construite ou null si la navigation est temporairement bloquée
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     if (!KinoaNavThrottle.canNavigate) return null;
     final args = settings.arguments;
@@ -112,7 +114,7 @@ class KinoaRouter {
 
       default:
         return _slideRoute(
-          Scaffold(body: Center(child: Text("Route inconnue : ${settings.name}"))),
+          Scaffold(body: Center(child: Text(KinoaStrings.unknownRoute(settings.name ?? "")))),
           settings,
         );
     }

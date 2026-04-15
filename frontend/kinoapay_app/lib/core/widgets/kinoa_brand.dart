@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:kinoapay_app/core/constants/kinoa_assets.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 
 /// Tailles standardisées du composant [KinoaBrand].
 enum BrandSize {
@@ -16,14 +18,12 @@ enum BrandSize {
   const BrandSize({required this.iconSize, required this.fontSize});
 }
 
-/// Identité visuelle combinée KinoaPay : logo + nom en typographie de marque.
+/// Identité visuelle combinée KinoaPay : logo + nom en typographie de marque ; [heroTag] optionnel pour une transition Hero (ex. depuis le splash).
 class KinoaBrand extends StatelessWidget {
   final BrandSize size;
   final Color? color;
   final Color? iconColor;
   final MainAxisAlignment alignment;
-
-  /// Tag Hero optionnel, activer uniquement si [fromSplash] est true.
   final String? heroTag;
 
   const KinoaBrand({
@@ -61,13 +61,13 @@ class KinoaBrand extends StatelessWidget {
       mainAxisAlignment: alignment,
       children: [
         Image.asset(
-          "assets/images/logo.png",
+          KinoaAssets.brandLogo,
           height: size.iconSize,
           color: iconColor,
         ),
         const SizedBox(width: 8),
         Text(
-          "KinoaPay",
+          KinoaStrings.appName,
           style: GoogleFonts.plusJakartaSans(
             fontSize: size.fontSize,
             fontWeight: FontWeight.w500,

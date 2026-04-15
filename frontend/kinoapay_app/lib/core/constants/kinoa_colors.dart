@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 /// Palette de couleurs officielle KinoaPay, toute valeur hexadécimale doit être définie ici, jamais dans le code.
 class KinoaColors {
-  // Quinoa Brand (palette signature)
   static const Color quinoaGold = Color(0xFFC8964A);
   static const Color quinoaGoldLight = Color(0xFFE8C98A);
   static const Color quinoaGoldLowOpacity = Color(0x40C8964A);
@@ -13,11 +12,9 @@ class KinoaColors {
   static const Color quinoaSand = Color(0xFFEDD9A3);
   static const Color quinoaCream = Color(0xFFFBF5E9);
   static const Color quinoaWarmGray = Color(0xFF7A6A55);
-  // Accent néon (dashboard, CTAs dynamiques)
   static const Color accent = Color(0xFFBBCB64);
   static const Color accentDark = Color(0xFFA6CC00);
   static const Color accentLowOpacity = Color(0x33D9FF19);
-  // Palette Stone (neutres froids)
   static const Color stone50 = Color(0xFFFAFAF9);
   static const Color stone100 = Color(0xFFF5F5F4);
   static const Color stone200 = Color(0xFFE7E5E4);
@@ -29,7 +26,6 @@ class KinoaColors {
   static const Color stone800 = Color(0xFF292524);
   static const Color stone900 = Color(0xFF1C1917);
   static const Color stone950 = Color(0xFF0C0A09);
-  // Dégradé Burt (onboarding, auth)
   static const Color burtViolet = Color(0xFFE2D1F9);
   static const Color burtOrange = Color(0xFFFEE1C7);
   static const Color burtCyan = Color(0xFFD1F2F9);
@@ -41,13 +37,11 @@ class KinoaColors {
     burtCyan,
   ];
 
-  // Surfaces sombres (dashboard, shell)
   static const Color surfaceDark = Color(0xFF0D0D0D);
   static const Color surfaceCard = Color(0xFF1A1A1A);
   static const Color surfaceOverlay = Color(0x80000000);
   static const Color surfaceGlass = Color(0x1AFFFFFF);
   static const Color surfaceGlassBorder = Color(0x33FFFFFF);
-  // Alias sémantiques (light mode)
   static const Color primary = quinoaGold;
   static const Color background = quinoaCream;
   static const Color backgroundLight = quinoaCream;
@@ -58,7 +52,6 @@ class KinoaColors {
   static const Color textMuted = quinoaWarmGray;
   static const Color border = stone200;
   static const Color borderDark = stone700;
-  // États
   static const Color success = Color(0xFF10B981);
   static const Color successLowOpacity = Color(0x2010B981);
   static const Color error = Color(0xFFE11D48);
@@ -67,14 +60,11 @@ class KinoaColors {
   static const Color warningLowOpacity = Color(0x20F59E0B);
   static const Color pending = Color(0xFF6366F1);
   static const Color pendingLowOpacity = Color(0x206366F1);
-  // Navigation
   static const Color navBackground = stone950;
   static const Color navActive = quinoaGold;
   static const Color navInactive = stone500;
-  // Opérateurs Mobile Money (Congo-Brazzaville)
   static const Color mtnYellow = Color(0xFFFFCC00);
   static const Color airtelRed = Color(0xFFEE1B24);
-  // Utilitaires
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparent = Color(0x00000000);
 }

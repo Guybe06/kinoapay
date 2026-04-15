@@ -40,6 +40,7 @@ class KinoaOtpInputState extends State<KinoaOtpInput> {
   }
 
   /// Vide toutes les cases et remet le focus sur la première.
+  /// @return void
   void clear() {
     for (final c in _ctrls) { c.clear(); }
     if (mounted) _nodes[0].requestFocus();

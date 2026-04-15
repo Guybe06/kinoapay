@@ -2,13 +2,11 @@
 class KinoaApi {
   static const String _v1 = "/v1";
 
-  // Comptes
   static const String signup = "$_v1/accounts/signup";
   static const String signin = "$_v1/accounts/signin";
   static const String refresh = "$_v1/accounts/refresh";
   static const String signout = "$_v1/accounts/signout";
   static const String me = "$_v1/accounts/me";
-  // Transactions client
   static const String createTransaction = "$_v1/client/transactions";
   static const String listTransactions = "$_v1/client/transactions";
 
@@ -20,7 +18,6 @@ class KinoaApi {
   /// @return       Chemin GET /v1/client/receipts/:ktxid
   static String receipt(String ktxid) => "$_v1/client/receipts/$ktxid";
 
-  // Demandes d'argent
   static const String createRequest = "$_v1/client/requests";
   static const String listRequests = "$_v1/client/requests";
 
@@ -29,7 +26,6 @@ class KinoaApi {
   static String respondToRequest(String requestId) =>
       "$_v1/client/requests/$requestId/respond";
 
-  // Splits
   static const String createSplit = "$_v1/client/splits";
   static const String listSplits = "$_v1/client/splits";
 
@@ -41,12 +37,9 @@ class KinoaApi {
   /// @return         Chemin POST /v1/client/splits/:splitId/pay
   static String paySplitPart(String splitId) => "$_v1/client/splits/$splitId/pay";
 
-  // Liens de paiement
   static const String createPaymentLink = "$_v1/client/payment-links";
   static const String listPaymentLinks = "$_v1/client/payment-links";
-  // Contacts
   static const String listContacts = "$_v1/client/contacts";
-  // Ledger public
 
   /// @param ref  Référence publique de la transaction
   /// @return     Chemin GET /v1/ledger/verify/:ref

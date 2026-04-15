@@ -14,6 +14,8 @@ class LegalBottomSheet extends StatelessWidget {
 
   bool get _isCgu => type == LegalDocType.cgu;
 
+  /// Ouvre le bottom sheet pour le document [type].
+  /// @return void
   static void show(BuildContext context, LegalDocType type) {
     showModalBottomSheet(
       context: context,

@@ -14,7 +14,7 @@ class AuthInterceptor extends Interceptor {
   Completer<String?>? _refreshCompleter;
 
   /// @param storage  Service de stockage des tokens
-  /// @param dio      Instance Dio (nécessaire pour appeler /refresh sans boucle infinie)
+  /// @param dio      Instance Dio pour POST [KinoaApi.refresh] sans réentrer dans l'intercepteur de façon circulaire
   AuthInterceptor(this._storage, this._dio);
 
   /// Ajoute le header Authorization si un access token est disponible.
@@ -47,15 +47,14 @@ class AuthInterceptor extends Interceptor {
         handler.resolve(response);
         return;
       }
-    } catch (_) {
-      // Refresh échoué : on laisse l'erreur originale se propager.
-    }
+    } catch (_) {}
 
     await _storage.clearSession();
     handler.reject(_wrap(err));
   }
 
-  /// Mutex : un seul refresh en vol ; les requêtes concurrentes attendent le résultat.
+  /// Rafraîchit le couple access/refresh de façon exclusive pour les appels concurrents.
+  /// @return le nouvel access token ou null si échec ou refresh absent
   Future<String?> _tryRefresh() async {
     if (_isRefreshing) return _refreshCompleter?.future;
 

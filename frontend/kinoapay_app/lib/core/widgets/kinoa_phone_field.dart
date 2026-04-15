@@ -1,17 +1,16 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
+import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 import "package:kinoapay_app/core/widgets/country_picker_sheet.dart";
 
-/// Formate le numéro : XX XXX XX XX XX...
-/// Groupes : 2 chiffres, puis 3 chiffres, puis 2 chiffres répétés.
+/// Formate les chiffres saisis en groupes 2 + 3 + 2×n pour l'affichage du numéro.
 class _PhoneGroupFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue old, TextEditingValue next) {
     final digits = next.text.replaceAll(RegExp(r"\D"), "");
     final buffer = StringBuffer();
     for (int i = 0; i < digits.length; i++) {
-      // Espace avant pos 2 (groupe 2->3), pos 5 (groupe 3->2), puis toutes les 2.
       if (i == 2 || i == 5 || (i > 5 && (i - 5) % 2 == 0)) buffer.write(" ");
       buffer.write(digits[i]);
     }
@@ -119,9 +118,9 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
         style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
         cursorColor: KinoaColors.quinoaGold,
         decoration: InputDecoration(
-          labelText: "Numéro de téléphone",
+          labelText: KinoaStrings.phoneFieldLabel,
           labelStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
-          hintText: "06 000 00 00",
+          hintText: KinoaStrings.phoneFieldHint,
           hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
           floatingLabelStyle: const TextStyle(color: KinoaColors.quinoaGold, fontWeight: FontWeight.w700),
           contentPadding: const EdgeInsets.only(right: 24, top: 22, bottom: 22),

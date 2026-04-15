@@ -1,12 +1,10 @@
 /// Politique de Confidentialité de KinoaPay.
 /// Chaque article est découpé en titre + corps pour permettre un rendu stylisé indépendant.
 abstract final class KinoaPrivacy {
-  // En-tête
   static const String title = "Politique de Confidentialité";
   static const String version = "Version 1.0, Avril 2026";
   static const String controller = "Responsable du traitement : Winsa Ltd, Brazzaville, République du Congo";
 
-  // Article 1
   static const String a1Title = "1. Données collectées";
   static const String a1Body =
       "Dans le cadre de l'utilisation de KinoaPay, Winsa Ltd collecte les catégories "
@@ -19,7 +17,6 @@ abstract final class KinoaPrivacy {
       "Données techniques : adresse IP, type d'appareil, système d'exploitation, "
       "version de l'application, identifiant de session, journaux d'activité.";
 
-  // Article 2
   static const String a2Title = "2. Finalités du traitement";
   static const String a2Body =
       "Les données personnelles collectées sont traitées aux fins suivantes :\n"
@@ -29,7 +26,6 @@ abstract final class KinoaPrivacy {
       "et analyse des usages de façon agrégée et anonymisée ; communication avec "
       "l'utilisateur concernant son compte, ses transactions et les évolutions du service.";
 
-  // Article 3
   static const String a3Title = "3. Base légale";
   static const String a3Body =
       "Le traitement de vos données repose sur les bases légales suivantes : "
@@ -39,7 +35,6 @@ abstract final class KinoaPrivacy {
       "le consentement explicite de l'utilisateur pour les communications à caractère "
       "non essentiel (notifications marketing, enquêtes de satisfaction).";
 
-  // Article 4
   static const String a4Title = "4. Conservation des données";
   static const String a4Body =
       "Les données sont conservées pendant toute la durée de la relation contractuelle. "
@@ -51,7 +46,6 @@ abstract final class KinoaPrivacy {
       "du registre. À l'issue de tous les délais légaux, les données à caractère personnel "
       "sont supprimées ou rendues définitivement anonymes.";
 
-  // Article 5
   static const String a5Title = "5. Partage des données";
   static const String a5Body =
       "Winsa Ltd ne vend ni ne loue les données personnelles de ses utilisateurs à des tiers. "
@@ -63,7 +57,6 @@ abstract final class KinoaPrivacy {
       "Prestataires techniques de Winsa Ltd : sous contrat de confidentialité et dans le "
       "strict cadre de la prestation fournie (hébergement, sécurité, analyse).";
 
-  // Article 6
   static const String a6Title = "6. Sécurité";
   static const String a6Body =
       "KinoaPay applique un chiffrement de bout en bout (TLS 1.3 minimum) sur l'ensemble "
@@ -75,7 +68,6 @@ abstract final class KinoaPrivacy {
       "habilité de Winsa Ltd, soumis à une obligation de confidentialité, accède aux "
       "données à caractère personnel.";
 
-  // Article 7
   static const String a7Title = "7. Droits de l'utilisateur";
   static const String a7Body =
       "Conformément aux textes applicables, l'utilisateur dispose des droits suivants "
@@ -87,7 +79,6 @@ abstract final class KinoaPrivacy {
       "ou via la rubrique dédiée dans les paramètres de l'application. "
       "Winsa Ltd s'engage à répondre dans un délai de 30 jours ouvrés.";
 
-  // Article 8
   static const String a8Title = "8. Cookies et traceurs";
   static const String a8Body =
       "L'application mobile KinoaPay n'utilise pas de cookies publicitaires ni de "
@@ -96,7 +87,6 @@ abstract final class KinoaPrivacy {
       "mesure d'audience anonymisée) peuvent être utilisés ; ils ne requièrent pas de "
       "consentement préalable car indispensables à la fourniture du service.";
 
-  // Article 9
   static const String a9Title = "9. Modifications de la politique";
   static const String a9Body =
       "Winsa Ltd se réserve le droit de modifier la présente politique à tout moment, "
@@ -106,7 +96,6 @@ abstract final class KinoaPrivacy {
       "accessible depuis les paramètres de l'application. La date de dernière mise à jour "
       "est indiquée en en-tête du document.";
 
-  // Article 10
   static const String a10Title = "10. Contact";
   static const String a10Body =
       "Pour toute question relative à la protection de vos données personnelles, "
@@ -115,7 +104,6 @@ abstract final class KinoaPrivacy {
       "Brazzaville, République du Congo\n"
       "E-mail : privacy@kinoaPay.com";
 
-  // Contact
   static const String contactLabel = "Contact protection des données";
   static const String contactEmail = "privacy@kinoaPay.com";
 }

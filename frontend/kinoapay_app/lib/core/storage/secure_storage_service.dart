@@ -15,18 +15,20 @@ class SecureStorageService {
   }) : _storage = storage;
 
   /// Ecrit une valeur chiffrée pour la clé donnée.
+  /// @return void après écriture
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);
 
-  /// Lit la valeur chiffrée pour la clé donnée, null si absente.
+  /// Lit la valeur chiffrée pour la clé donnée.
+  /// @return la valeur ou null si absente
   Future<String?> read(String key) => _storage.read(key: key);
 
   /// Supprime l'entrée associée à la clé.
+  /// @return void après suppression
   Future<void> delete(String key) => _storage.delete(key: key);
 
   /// Supprime toutes les entrées du stockage sécurisé.
+  /// @return void après suppression
   Future<void> clearAll() => _storage.deleteAll();
-
-  // ── Tokens (access + refresh) ──────────────────────────────────────────────
 
   Future<void> saveTokens({required String accessToken, required String refreshToken}) async {
     await write(_accessTokenKey, accessToken);
@@ -39,21 +41,16 @@ class SecureStorageService {
   Future<void> saveToken(String token) => write(_accessTokenKey, token);
   Future<void> saveRefreshToken(String token) => write(_refreshTokenKey, token);
 
-  // ── User data ──────────────────────────────────────────────────────────────
-
   Future<void> saveUserData(String json) => write(_userDataKey, json);
   Future<String?> getUserData() => read(_userDataKey);
 
-  // ── Session ────────────────────────────────────────────────────────────────
-
-  /// Supprime la session complète (tokens + profil). Conserve first_open_app et les préférences.
+  /// Supprime la session complète (tokens + profil) sans effacer first_open_app ni les préférences canaux.
+  /// @return void après suppression
   Future<void> clearSession() async {
     await delete(_accessTokenKey);
     await delete(_refreshTokenKey);
     await delete(_userDataKey);
   }
-
-  // ── Préférences app ────────────────────────────────────────────────────────
 
   Future<void> markFirstOpenApp() => write(_firstOpenAppKey, "true");
   Future<bool> isFirstOpenApp() async => (await read(_firstOpenAppKey)) != "true";

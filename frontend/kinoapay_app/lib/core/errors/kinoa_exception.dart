@@ -17,7 +17,6 @@ class KinoaException implements Exception {
     this.statusCode,
   });
 
-  // Réseau
   factory KinoaException.noInternet() => const KinoaException(
         message: KinoaStrings.errorNoInternet,
         code: KinoaErrorCodes.noInternet,
@@ -33,7 +32,6 @@ class KinoaException implements Exception {
         code: KinoaErrorCodes.network,
       );
 
-  // Authentification
   factory KinoaException.unauthorized() => const KinoaException(
         message: KinoaStrings.errorUnauthorized,
         code: KinoaErrorCodes.unauthorized,
@@ -52,7 +50,6 @@ class KinoaException implements Exception {
         statusCode: 401,
       );
 
-  // Serveur
   factory KinoaException.serverError() => const KinoaException(
         message: KinoaStrings.errorServer,
         code: KinoaErrorCodes.serverError,
@@ -83,13 +80,13 @@ class KinoaException implements Exception {
         statusCode: 429,
       );
 
-  /// Échec d'écriture dans le stockage sécurisé (ex. Android Keystore).
+  /// @param detail  message utilisateur optionnel en remplacement du message par défaut
+  /// @return une instance avec code [KinoaErrorCodes.localStorage]
   factory KinoaException.localStorage([String? detail]) => KinoaException(
         message: detail ?? KinoaStrings.errorLocalStorage,
         code: KinoaErrorCodes.localStorage,
       );
 
-  // Générique
   factory KinoaException.unknown() => const KinoaException(
         message: KinoaStrings.errorUnknown,
         code: KinoaErrorCodes.unknown,

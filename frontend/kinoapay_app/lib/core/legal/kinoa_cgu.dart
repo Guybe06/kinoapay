@@ -1,12 +1,10 @@
 /// Conditions Générales d'Utilisation de KinoaPay.
 /// Chaque article est découpé en titre + corps pour permettre un rendu stylisé indépendant.
 abstract final class KinoaCgu {
-  // En-tête
   static const String title = "Conditions Générales d'Utilisation";
   static const String version = "Version 1.0, Avril 2026";
   static const String editor = "Éditeur : Winsa Ltd, Brazzaville, République du Congo";
 
-  // Article 1
   static const String a1Title = "1. Objet";
   static const String a1Body =
       "KinoaPay est un service de paiement électronique édité par Winsa Ltd. "
@@ -17,7 +15,6 @@ abstract final class KinoaCgu {
       "l'intégrité des opérations. L'utilisation de l'application vaut acceptation des "
       "présentes conditions dans leur intégralité.";
 
-  // Article 2
   static const String a2Title = "2. Accès au service";
   static const String a2Body =
       "L'accès à KinoaPay est réservé aux personnes physiques majeures (18 ans et plus) "
@@ -26,7 +23,6 @@ abstract final class KinoaCgu {
       "et à jour lors de la création de son compte. Tout compte créé avec de fausses informations "
       "peut être suspendu sans préavis et faire l'objet d'un signalement aux autorités compétentes.";
 
-  // Article 3
   static const String a3Title = "3. Inscription et compte utilisateur";
   static const String a3Body =
       "L'utilisateur crée un compte unique à son nom ou à celui de son entité. Il est seul "
@@ -37,7 +33,6 @@ abstract final class KinoaCgu {
       "du compte. Winsa Ltd ne pourra être tenu responsable des pertes résultant d'un accès "
       "non autorisé consécutif à un manquement de l'utilisateur à cette obligation.";
 
-  // Article 4
   static const String a4Title = "4. Transactions";
   static const String a4Body =
       "KinoaPay traite les transactions en XAF uniquement dans le cadre de son déploiement "
@@ -50,7 +45,6 @@ abstract final class KinoaCgu {
       "KinoaPay mettra en œuvre ses meilleurs efforts pour faciliter la résolution, "
       "sans obligation de résultat.";
 
-  // Article 5
   static const String a5Title = "5. Frais et commissions";
   static const String a5Body =
       "Des frais de service peuvent s'appliquer selon le type de transaction (envoi, "
@@ -60,7 +54,6 @@ abstract final class KinoaCgu {
       "sa grille tarifaire, avec notification préalable aux utilisateurs dans un délai "
       "raisonnable avant l'entrée en vigueur des nouveaux tarifs.";
 
-  // Article 6
   static const String a6Title = "6. Obligations de l'utilisateur";
   static const String a6Body =
       "L'utilisateur s'interdit formellement d'utiliser KinoaPay à des fins illicites, "
@@ -71,7 +64,6 @@ abstract final class KinoaCgu {
       "et peut faire l'objet d'un signalement aux autorités compétentes, conformément "
       "aux obligations réglementaires de Winsa Ltd.";
 
-  // Article 7
   static const String a7Title = "7. Disponibilité du service";
   static const String a7Body =
       "Winsa Ltd s'engage à maintenir le service disponible en continu, sans pouvoir "
@@ -81,7 +73,6 @@ abstract final class KinoaCgu {
       "Winsa Ltd décline toute responsabilité pour les indisponibilités résultant de "
       "causes extérieures (pannes d'opérateurs tiers, cas de force majeure, etc.).";
 
-  // Article 8
   static const String a8Title = "8. Responsabilité";
   static const String a8Body =
       "Winsa Ltd ne saurait être tenue responsable des pertes résultant d'une utilisation "
@@ -91,7 +82,6 @@ abstract final class KinoaCgu {
       "Dans tous les cas, la responsabilité de Winsa Ltd est expressément limitée au "
       "montant des frais effectivement perçus sur la transaction concernée.";
 
-  // Article 9
   static const String a9Title = "9. Modification des conditions";
   static const String a9Body =
       "Winsa Ltd peut modifier les présentes conditions à tout moment, notamment pour "
@@ -102,7 +92,6 @@ abstract final class KinoaCgu {
       "En cas de refus, l'utilisateur peut clôturer son compte conformément aux "
       "procédures en vigueur.";
 
-  // Article 10
   static const String a10Title = "10. Droit applicable et juridiction";
   static const String a10Body =
       "Les présentes conditions sont soumises au droit congolais et aux textes "
@@ -113,7 +102,6 @@ abstract final class KinoaCgu {
       "En cas de litige, une tentative de résolution amiable sera privilégiée dans un "
       "délai de 30 jours avant toute action judiciaire.";
 
-  // Contact
   static const String contactLabel = "Contact légal";
   static const String contactEmail = "legal@kinoaPay.com";
 }

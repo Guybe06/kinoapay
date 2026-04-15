@@ -106,8 +106,7 @@ class KinoaTheme {
   }
 }
 
-/// Extension sur [BuildContext] pour accéder aux couleurs sémantiques selon le thème actif.
-/// Utilisation : `context.colors.surface`, `context.colors.onSurface`, etc.
+/// Extension sur [BuildContext] : couleurs sémantiques du thème actif (`context.colors.surface`, `context.colors.onSurface`, etc.).
 extension KinoaThemeContext on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
   bool get isDark => Theme.of(this).brightness == Brightness.dark;

@@ -63,7 +63,8 @@ class _KinoaEntranceState extends State<KinoaEntrance>
     super.dispose();
   }
 
-  /// Au retour (pop) : rejoue le slide staggeré mais sans le fade (la page est déjà visible).
+  /// Au retour (pop) : rejoue le slide staggeré sans fade car la page est déjà visible.
+  /// @return void
   @override
   void didPopNext() {
     _skipFade = true;
