@@ -5,6 +5,7 @@ import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_bottom_nav.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/kinoa_header.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
+import "package:kinoapay_app/features/history/presentation/history_view.dart";
 import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
@@ -49,7 +50,7 @@ class _KinoaShellState extends State<KinoaShell> {
         onNavigateToHistory: () => _onTabChanged(KinoaRoutes.tabHistory),
       ),
       const SendView(),
-      const _PlaceholderPage(label: "Historique"),
+      const HistoryView(),
       const ProfileView(),
     ];
   }
@@ -86,23 +87,6 @@ class _KinoaShellState extends State<KinoaShell> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _PlaceholderPage extends StatelessWidget {
-  final String label;
-  const _PlaceholderPage({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: KinoaColors.quinoaCream,
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: const TextStyle(color: KinoaColors.quinoaWarmGray, fontSize: 16),
       ),
     );
   }
