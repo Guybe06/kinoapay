@@ -42,7 +42,10 @@ class _ScannerViewState extends State<ScannerView> {
       isScrollControlled: true,
       builder: (_) => _ScanResultSheet(
         result: result,
-        onConfirm: () => Navigator.pop(context),
+        onConfirm: () {
+          Navigator.pop(context);
+          Navigator.pop(context, result);
+        },
         onCancel: () {
           Navigator.pop(context);
           setState(() => _detected = false);
