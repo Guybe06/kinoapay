@@ -8,7 +8,6 @@ import "package:kinoapay_app/core/navigation/kinoa_router.dart";
 import "package:kinoapay_app/core/network/dio_client.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/theme/kinoa_theme.dart";
-import "package:kinoapay_app/core/theme/theme_notifier.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/payment_setup_bloc.dart";
@@ -18,9 +17,6 @@ import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.
 import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock_dashboard_repository.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send_repository.dart";
-
-/// Notifier global du thème, accessible depuis n'importe quel widget via [themeNotifier].
-final ThemeNotifier themeNotifier = ThemeNotifier();
 
 /// Observer global de navigation, utilisé par [KinoaEntrance] pour rejouer les animations au retour.
 final RouteObserver<ModalRoute<void>> kinoaRouteObserver = RouteObserver<ModalRoute<void>>();
@@ -65,33 +61,28 @@ void main() async {
   );
 }
 
-/// Racine de l'application : écoute [ThemeNotifier] et reconstruit le thème à chaque changement.
+/// Racine de l'application : thème clair global ; seul [WelcomeView] applique un fond sombre local.
 class KinoaPayApp extends StatelessWidget {
   const KinoaPayApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (context, mode, child) {
-        return MaterialApp(
-          title: "KinoaPay",
-          debugShowCheckedModeBanner: false,
-          theme: KinoaTheme.light(),
-          darkTheme: KinoaTheme.dark(),
-          themeMode: mode,
-          locale: const Locale("fr"),
-          supportedLocales: const [Locale("fr"), Locale("en")],
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          navigatorObservers: [kinoaRouteObserver, KinoaNavThrottle()],
-          initialRoute: KinoaRoutes.splash,
-          onGenerateRoute: KinoaRouter.generateRoute,
-        );
-      },
+    return MaterialApp(
+      title: "KinoaPay",
+      debugShowCheckedModeBanner: false,
+      theme: KinoaTheme.light(),
+      darkTheme: KinoaTheme.dark(),
+      themeMode: ThemeMode.light,
+      locale: const Locale("fr"),
+      supportedLocales: const [Locale("fr"), Locale("en")],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      navigatorObservers: [kinoaRouteObserver, KinoaNavThrottle()],
+      initialRoute: KinoaRoutes.splash,
+      onGenerateRoute: KinoaRouter.generateRoute,
     );
   }
 }

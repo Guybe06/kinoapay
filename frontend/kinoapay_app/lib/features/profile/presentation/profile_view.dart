@@ -1,7 +1,5 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/core/constants/kinoa_routes.dart";
 import "package:kinoapay_app/core/widgets/kinoa_entrance.dart";
@@ -10,9 +8,8 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart"
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 import "package:kinoapay_app/features/profile/domain/profile_strings.dart";
-import "package:kinoapay_app/main.dart" show themeNotifier;
 
-/// Écran Profil : infos utilisateur, paramètres, déconnexion.
+/// Écran Profil : infos utilisateur et déconnexion.
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
@@ -46,12 +43,10 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 32),
           KinoaEntrance(index: 3, child: _buildInfoSection(user)),
           const SizedBox(height: 16),
-          KinoaEntrance(index: 4, child: _buildSettingsSection(context)),
-          const SizedBox(height: 16),
-          KinoaEntrance(index: 5, child: _buildSignOutBtn(context)),
+          KinoaEntrance(index: 4, child: _buildSignOutBtn(context)),
           const SizedBox(height: 24),
           KinoaEntrance(
-            index: 6,
+            index: 5,
             child: Text(
               "${ProfileStrings.version} 1.0.0",
               style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.25), fontSize: 12),
@@ -86,20 +81,6 @@ class ProfileView extends StatelessWidget {
         _InfoRow(label: ProfileStrings.email, value: user?.email ?? "—"),
         _InfoRow(label: ProfileStrings.phone, value: user?.phone ?? "—"),
         _InfoRow(label: ProfileStrings.birthDate, value: user?.birthDate ?? "—"),
-      ],
-    );
-  }
-
-  Widget _buildSettingsSection(BuildContext context) {
-    return _Section(
-      title: ProfileStrings.settings,
-      children: [
-        _ToggleRow(
-          label: ProfileStrings.darkMode,
-          icon: SolarIconsOutline.moon,
-          value: themeNotifier.value == ThemeMode.dark,
-          onChanged: (v) => themeNotifier.value = v ? ThemeMode.dark : ThemeMode.light,
-        ),
       ],
     );
   }
@@ -206,30 +187,6 @@ class _InfoRow extends StatelessWidget {
           Text(value, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
         ],
       ),
-    );
-  }
-}
-
-class _ToggleRow extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  const _ToggleRow({required this.label, required this.icon, required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: KinoaColors.quinoaDark.withValues(alpha: 0.5)),
-        const SizedBox(width: 12),
-        Expanded(child: Text(label, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w600))),
-        CupertinoSwitch(
-          value: value,
-          onChanged: onChanged,
-          activeTrackColor: KinoaColors.quinoaDark,
-        ),
-      ],
     );
   }
 }
