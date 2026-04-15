@@ -23,33 +23,33 @@ class ProfileView extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20, topInset + 80, 20, 120),
       child: Column(
         children: [
-          KinoaEntrance(index: 0, child: _buildAvatar(user?.fullName)),
+          StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
           const SizedBox(height: 14),
-          KinoaEntrance(
+          StaggeredEntrance(
             index: 1,
             child: Text(
               user?.fullName ?? "",
-              style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5),
+              style: const TextStyle(color: AppColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5),
             ),
           ),
           const SizedBox(height: 4),
-          KinoaEntrance(
+          StaggeredEntrance(
             index: 2,
             child: Text(
               user?.email ?? "",
-              style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14),
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14),
             ),
           ),
           const SizedBox(height: 32),
-          KinoaEntrance(index: 3, child: _buildInfoSection(user)),
+          StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
           const SizedBox(height: 16),
-          KinoaEntrance(index: 4, child: _buildSignOutBtn(context)),
+          StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
           const SizedBox(height: 24),
-          KinoaEntrance(
+          StaggeredEntrance(
             index: 5,
             child: Text(
               "${ProfileStrings.version} 1.0.0",
-              style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.25), fontSize: 12),
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.25), fontSize: 12),
             ),
           ),
         ],
@@ -63,13 +63,13 @@ class ProfileView extends StatelessWidget {
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-        color: KinoaColors.quinoaGold.withValues(alpha: 0.15),
+        color: AppColors.quinoaGold.withValues(alpha: 0.15),
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: const TextStyle(color: KinoaColors.quinoaGold, fontSize: 26, fontWeight: FontWeight.w900),
+        style: const TextStyle(color: AppColors.quinoaGold, fontSize: 26, fontWeight: FontWeight.w900),
       ),
     );
   }
@@ -92,18 +92,18 @@ class ProfileView extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
-          color: KinoaColors.quinoaRed.withValues(alpha: 0.08),
+          color: AppColors.quinoaRed.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: KinoaColors.quinoaRed.withValues(alpha: 0.15)),
+          border: Border.all(color: AppColors.quinoaRed.withValues(alpha: 0.15)),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout_rounded, size: 18, color: KinoaColors.quinoaRed),
+            Icon(Icons.logout_rounded, size: 18, color: AppColors.quinoaRed),
             SizedBox(width: 10),
             Text(
               ProfileStrings.signOut,
-              style: TextStyle(color: KinoaColors.quinoaRed, fontSize: 15, fontWeight: FontWeight.w800),
+              style: TextStyle(color: AppColors.quinoaRed, fontSize: 15, fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -115,22 +115,22 @@ class ProfileView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(ProfileStrings.signOutConfirmTitle, style: TextStyle(fontWeight: FontWeight.w800)),
         content: const Text(ProfileStrings.signOutConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text("Annuler", style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5))),
+            child: Text("Annuler", style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5))),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               context.read<AuthBloc>().add(SignOutRequested());
-              Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.signin, (_) => false);
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.signin, (_) => false);
             },
-            child: const Text(ProfileStrings.signOut, style: TextStyle(color: KinoaColors.quinoaRed, fontWeight: FontWeight.w700)),
+            child: const Text(ProfileStrings.signOut, style: TextStyle(color: AppColors.quinoaRed, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -157,12 +157,12 @@ class _Section extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title.toUpperCase(), style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
+          Text(title.toUpperCase(), style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
           const SizedBox(height: 16),
           ...children,
         ],
@@ -183,8 +183,8 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500)),
-          Text(value, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500)),
+          Text(value, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
         ],
       ),
     );

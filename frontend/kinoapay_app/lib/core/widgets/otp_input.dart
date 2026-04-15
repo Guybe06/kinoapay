@@ -3,12 +3,12 @@ import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Widget réutilisable : rangée de N cases OTP avec navigation clavier automatique.
-class KinoaOtpInput extends StatefulWidget {
+class OtpInput extends StatefulWidget {
   final int length;
   final bool hasError;
   final ValueChanged<String> onCompleted;
 
-  const KinoaOtpInput({
+  const OtpInput({
     super.key,
     this.length = 6,
     this.hasError = false,
@@ -16,10 +16,10 @@ class KinoaOtpInput extends StatefulWidget {
   });
 
   @override
-  State<KinoaOtpInput> createState() => KinoaOtpInputState();
+  State<OtpInput> createState() => OtpInputState();
 }
 
-class KinoaOtpInputState extends State<KinoaOtpInput> {
+class OtpInputState extends State<OtpInput> {
   late final List<TextEditingController> _ctrls;
   late final List<FocusNode> _nodes;
 
@@ -90,20 +90,20 @@ class KinoaOtpInputState extends State<KinoaOtpInput> {
           maxLength: 1,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (v) => _onChanged(i, v),
-          style: TextStyle(color: err ? KinoaColors.quinoaRed : KinoaColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w800),
-          cursorColor: KinoaColors.quinoaGold,
+          style: TextStyle(color: err ? AppColors.quinoaRed : AppColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w800),
+          cursorColor: AppColors.quinoaGold,
           decoration: InputDecoration(
             counterText: "",
             filled: true,
-            fillColor: err ? KinoaColors.quinoaRed.withValues(alpha: 0.06) : KinoaColors.white,
+            fillColor: err ? AppColors.quinoaRed.withValues(alpha: 0.06) : AppColors.white,
             contentPadding: EdgeInsets.zero,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: err ? KinoaColors.quinoaRed.withValues(alpha: 0.4) : KinoaColors.quinoaDark.withValues(alpha: 0.15), width: 1.5),
+              borderSide: BorderSide(color: err ? AppColors.quinoaRed.withValues(alpha: 0.4) : AppColors.quinoaDark.withValues(alpha: 0.15), width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: KinoaColors.quinoaGold, width: 2),
+              borderSide: const BorderSide(color: AppColors.quinoaGold, width: 2),
             ),
           ),
         ),

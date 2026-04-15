@@ -16,7 +16,7 @@ class NotificationsLoading extends NotificationsState {
 }
 
 class NotificationsLoadSuccess extends NotificationsState {
-  final List<KinoaNotification> notifications;
+  final List<NotificationRecord> notifications;
 
   int get unreadCount => notifications.where((n) => !n.isRead).length;
 

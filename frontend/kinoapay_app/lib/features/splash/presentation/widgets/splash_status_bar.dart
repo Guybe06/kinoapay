@@ -12,9 +12,9 @@ class SplashProgressBar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100),
         child: LinearProgressIndicator(
-          backgroundColor: KinoaColors.stone900.withValues(alpha: 0.1),
+          backgroundColor: AppColors.stone900.withValues(alpha: 0.1),
           valueColor: AlwaysStoppedAnimation<Color>(
-            KinoaColors.stone900.withValues(alpha: 0.4),
+            AppColors.stone900.withValues(alpha: 0.4),
           ),
           minHeight: 2,
         ),
@@ -38,14 +38,14 @@ class SplashOfflinePanel extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.wifi_off_rounded, size: 14, color: KinoaColors.stone700),
+            Icon(Icons.wifi_off_rounded, size: 14, color: AppColors.stone700),
             const SizedBox(width: 8),
             Text(
               "Aucune connexion internet.",
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: KinoaColors.stone700,
+                color: AppColors.stone700,
               ),
             ),
           ],
@@ -56,7 +56,7 @@ class SplashOfflinePanel extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
             decoration: BoxDecoration(
-              color: KinoaColors.stone900,
+              color: AppColors.stone900,
               borderRadius: BorderRadius.circular(100),
             ),
             child: const Text(
@@ -64,7 +64,7 @@ class SplashOfflinePanel extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: KinoaColors.textLight,
+                color: AppColors.textLight,
               ),
             ),
           ),
@@ -83,14 +83,14 @@ class SplashBackOnlinePanel extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.wifi_rounded, size: 14, color: KinoaColors.success),
+        Icon(Icons.wifi_rounded, size: 14, color: AppColors.success),
         const SizedBox(width: 8),
         Text(
           "Connexion rétablie.",
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: KinoaColors.stone700,
+            color: AppColors.stone700,
           ),
         ),
       ],

@@ -12,14 +12,14 @@ class MockSendRepository implements SendRepository {
     required String destinationChannel,
   }) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    final kinoaFee = amount * 0.01;
+    final platformFee = amount * 0.01;
     final operatorFee = amount * 0.005;
-    final totalFee = kinoaFee + operatorFee;
+    final totalFee = platformFee + operatorFee;
     return TransferQuote(
       quoteId: "quote_${DateTime.now().millisecondsSinceEpoch}",
       amount: amount,
       currency: "XAF",
-      kinoaFee: kinoaFee,
+      platformFee: platformFee,
       operatorFee: operatorFee,
       totalFee: totalFee,
       amountDebited: amount + totalFee,
@@ -36,7 +36,7 @@ class MockSendRepository implements SendRepository {
     await Future.delayed(const Duration(milliseconds: 1500));
     final now = DateTime.now();
     return Transaction(
-      ktxid: "KTX-${now.millisecondsSinceEpoch}",
+      transactionId: "TX-${now.millisecondsSinceEpoch}",
       status: "success",
       senderName: "Moi",
       receiverIdentifier: "+242060000000",
@@ -48,7 +48,7 @@ class MockSendRepository implements SendRepository {
       fees: const TransactionFees(
         sourceOperatorFee: 25,
         destinationOperatorFee: 0,
-        kinoaFee: 50,
+        platformFee: 50,
         totalFee: 75,
         amountDebited: 5075,
         amountReceived: 5000,

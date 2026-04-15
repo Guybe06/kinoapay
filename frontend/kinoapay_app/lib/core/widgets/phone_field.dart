@@ -23,13 +23,13 @@ class _PhoneGroupFormatter extends TextInputFormatter {
 }
 
 /// Champ de saisie du numéro de téléphone avec sélecteur de code pays intégré.
-class KinoaPhoneField extends StatefulWidget {
+class PhoneField extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onCountryChanged;
   final String? Function(String?)? validator;
   final CountryEntry? initialCountry;
 
-  const KinoaPhoneField({
+  const PhoneField({
     super.key,
     required this.controller,
     required this.onCountryChanged,
@@ -38,10 +38,10 @@ class KinoaPhoneField extends StatefulWidget {
   });
 
   @override
-  State<KinoaPhoneField> createState() => _KinoaPhoneFieldState();
+  State<PhoneField> createState() => _PhoneFieldState();
 }
 
-class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
+class _PhoneFieldState extends State<PhoneField> {
   late CountryEntry _selected;
   final _focusNode = FocusNode();
   bool _hasFocus = false;
@@ -50,7 +50,7 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
   @override
   void initState() {
     super.initState();
-    _selected = widget.initialCountry ?? kinoaCountries[0];
+    _selected = widget.initialCountry ?? defaultDialCountries[0];
     _focusNode.addListener(() => setState(() => _hasFocus = _focusNode.hasFocus));
   }
 
@@ -84,8 +84,8 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
     );
 
     final ringColor = _hasError
-        ? KinoaColors.quinoaRed.withValues(alpha: 0.12)
-        : KinoaColors.quinoaGold.withValues(alpha: 0.14);
+        ? AppColors.quinoaRed.withValues(alpha: 0.12)
+        : AppColors.quinoaGold.withValues(alpha: 0.14);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
@@ -115,14 +115,14 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
           });
           return result;
         },
-        style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
-        cursorColor: KinoaColors.quinoaGold,
+        style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
+        cursorColor: AppColors.quinoaGold,
         decoration: InputDecoration(
-          labelText: KinoaStrings.phoneFieldLabel,
-          labelStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
-          hintText: KinoaStrings.phoneFieldHint,
-          hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
-          floatingLabelStyle: const TextStyle(color: KinoaColors.quinoaGold, fontWeight: FontWeight.w700),
+          labelText: AppStrings.phoneFieldLabel,
+          labelStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
+          hintText: AppStrings.phoneFieldHint,
+          hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
+          floatingLabelStyle: const TextStyle(color: AppColors.quinoaGold, fontWeight: FontWeight.w700),
           contentPadding: const EdgeInsets.only(right: 24, top: 22, bottom: 22),
           prefixIcon: GestureDetector(
             onTap: _openPicker,
@@ -130,39 +130,39 @@ class _KinoaPhoneFieldState extends State<KinoaPhoneField> {
               margin: const EdgeInsets.only(left: 4, right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
-                border: Border(right: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.12), width: 1)),
+                border: Border(right: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.12), width: 1)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(_selected.flag, style: const TextStyle(fontSize: 20)),
                   const SizedBox(width: 6),
-                  Text(_selected.dialCode, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+                  Text(_selected.dialCode, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
                   const SizedBox(width: 4),
-                  Icon(Icons.keyboard_arrow_down_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.4), size: 18),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.4), size: 18),
                 ],
               ),
             ),
           ),
           filled: true,
-          fillColor: _hasFocus ? KinoaColors.white : KinoaColors.white.withValues(alpha: 0.65),
+          fillColor: _hasFocus ? AppColors.white : AppColors.white.withValues(alpha: 0.65),
           enabledBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.12), width: 1),
+            borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.12), width: 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: KinoaColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: KinoaColors.quinoaRed.withValues(alpha: 0.35), width: 1),
+            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.35), width: 1),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: KinoaColors.quinoaRed.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.6), width: 1.5),
           ),
-          errorStyle: const TextStyle(color: KinoaColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500),
+          errorStyle: const TextStyle(color: AppColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500),
         ),
       ),
     );

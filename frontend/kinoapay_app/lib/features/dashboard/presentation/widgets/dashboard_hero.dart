@@ -36,13 +36,13 @@ class _PeriodChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+          color: AppColors.quinoaDark.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(100),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.55),
+            color: AppColors.quinoaDark.withValues(alpha: 0.55),
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),

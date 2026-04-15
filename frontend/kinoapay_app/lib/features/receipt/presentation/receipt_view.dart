@@ -18,13 +18,13 @@ class ReceiptView extends StatelessWidget {
   Widget build(BuildContext context) {
     final tx = ModalRoute.of(context)!.settings.arguments as Transaction;
     final isOutgoing = tx.direction == "outgoing";
-    final statusColor = tx.status == "success" ? KinoaColors.accentDark : KinoaColors.quinoaGold;
-    final statusLabel = tx.status == "success" ? KinoaStrings.statusSuccess : KinoaStrings.statusPending;
+    final statusColor = tx.status == "success" ? AppColors.accentDark : AppColors.quinoaGold;
+    final statusLabel = tx.status == "success" ? AppStrings.statusSuccess : AppStrings.statusPending;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: Column(
             children: [
@@ -35,17 +35,17 @@ class ReceiptView extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-                      KinoaEntrance(index: 0, child: _buildStatusBadge(statusLabel, statusColor)),
+                      StaggeredEntrance(index: 0, child: _buildStatusBadge(statusLabel, statusColor)),
                       const SizedBox(height: 20),
-                      KinoaEntrance(index: 1, child: _buildAmount(tx, isOutgoing)),
+                      StaggeredEntrance(index: 1, child: _buildAmount(tx, isOutgoing)),
                       const SizedBox(height: 28),
-                      KinoaEntrance(index: 2, child: _buildDetailsCard(tx, isOutgoing)),
+                      StaggeredEntrance(index: 2, child: _buildDetailsCard(tx, isOutgoing)),
                       const SizedBox(height: 16),
-                      KinoaEntrance(index: 3, child: _buildFeesCard(tx)),
+                      StaggeredEntrance(index: 3, child: _buildFeesCard(tx)),
                       const SizedBox(height: 16),
-                      KinoaEntrance(index: 4, child: _buildRefCard(tx)),
+                      StaggeredEntrance(index: 4, child: _buildRefCard(tx)),
                       const SizedBox(height: 32),
-                      KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: "Fermer", onPressed: () => Navigator.pop(context))),
+                      StaggeredEntrance(index: 5, child: PrimaryButton(text: "Fermer", onPressed: () => Navigator.pop(context))),
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -64,11 +64,11 @@ class ReceiptView extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -95,7 +95,7 @@ class ReceiptView extends StatelessWidget {
 
   Widget _buildAmount(Transaction tx, bool isOutgoing) {
     final sign = isOutgoing ? "−" : "+";
-    final color = isOutgoing ? KinoaColors.quinoaDark : KinoaColors.accentDark;
+    final color = isOutgoing ? AppColors.quinoaDark : AppColors.accentDark;
     return Column(
       children: [
         Text(
@@ -105,7 +105,7 @@ class ReceiptView extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           DateFormat("d MMMM yyyy à HH:mm", "fr_FR").format(tx.startedAt),
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13),
+          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13),
         ),
       ],
     );
@@ -123,7 +123,7 @@ class ReceiptView extends StatelessWidget {
     final fmt = NumberFormat("#,###", "fr_FR");
     return _Card(children: [
       _Row(label: "Montant envoyé", value: "${fmt.format(tx.fees.amountDebited)} ${tx.currency}"),
-      _Row(label: "Frais KinoaPay", value: "${fmt.format(tx.fees.kinoaFee)} ${tx.currency}"),
+      _Row(label: "Frais kinoaPay", value: "${fmt.format(tx.fees.platformFee)} ${tx.currency}"),
       _Row(label: "Frais opérateur", value: "${fmt.format(tx.fees.sourceOperatorFee + tx.fees.destinationOperatorFee)} ${tx.currency}"),
       _Row(label: "Montant reçu", value: "${fmt.format(tx.fees.amountReceived)} ${tx.currency}", bold: true),
     ]);
@@ -131,7 +131,7 @@ class ReceiptView extends StatelessWidget {
 
   Widget _buildRefCard(Transaction tx) {
     return _Card(children: [
-      _Row(label: "Référence", value: tx.ktxid),
+      _Row(label: "Référence", value: tx.transactionId),
     ]);
   }
 }
@@ -148,7 +148,7 @@ class _Card extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
       child: Column(children: children),
     );
@@ -168,13 +168,13 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(child: Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500))),
+          Flexible(child: Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500))),
           const SizedBox(width: 12),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700),
+              style: TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700),
             ),
           ),
         ],

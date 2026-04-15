@@ -4,7 +4,7 @@ import "package:kinoapay_app/core/constants/asset_paths.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 
-/// Tailles standardisées du composant [KinoaBrand].
+/// Tailles standardisées du composant [BrandLogoRow].
 enum BrandSize {
   xs(iconSize: 16, fontSize: 14),
   sm(iconSize: 20, fontSize: 18),
@@ -19,14 +19,14 @@ enum BrandSize {
 }
 
 /// Logo et nom de marque ; [heroTag] optionnel pour une transition Hero (ex. depuis le splash).
-class KinoaBrand extends StatelessWidget {
+class BrandLogoRow extends StatelessWidget {
   final BrandSize size;
   final Color? color;
   final Color? iconColor;
   final MainAxisAlignment alignment;
   final String? heroTag;
 
-  const KinoaBrand({
+  const BrandLogoRow({
     super.key,
     this.size = BrandSize.md,
     this.color,
@@ -54,20 +54,20 @@ class KinoaBrand extends StatelessWidget {
   }
 
   Widget _buildBrand() {
-    final effectiveColor = color ?? KinoaColors.textLight;
+    final effectiveColor = color ?? AppColors.textLight;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: alignment,
       children: [
         Image.asset(
-          KinoaAssets.brandLogo,
+          AssetPaths.brandLogo,
           height: size.iconSize,
           color: iconColor,
         ),
         const SizedBox(width: 8),
         Text(
-          KinoaStrings.appName,
+          AppStrings.appName,
           style: GoogleFonts.plusJakartaSans(
             fontSize: size.fontSize,
             fontWeight: FontWeight.w500,

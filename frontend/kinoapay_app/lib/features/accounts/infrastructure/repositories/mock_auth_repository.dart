@@ -13,7 +13,7 @@ class MockAuthRepository implements AuthRepository {
   static final Map<String, _MockCredentials> _store = {
     "test@kinoapay.com": _MockCredentials(
       password: "password123",
-      account: const UserAccount(id: "seed_1", email: "test@kinoapay.com", fullName: "Compte Test KinoaPay"),
+      account: const UserAccount(id: "seed_1", email: "test@kinoapay.com", fullName: "Compte test kinoaPay"),
     ),
   };
 
@@ -66,7 +66,7 @@ class MockAuthRepository implements AuthRepository {
     final entry = _store[email.trim().toLowerCase()];
 
     if (entry == null || entry.password != password) {
-      throw KinoaException(
+      throw AppException(
         message: AuthStrings.errorInvalidCredentials,
         code: AuthErrorCodes.invalidCredentials,
         statusCode: 401,
@@ -93,7 +93,7 @@ class MockAuthRepository implements AuthRepository {
     final key = email.trim().toLowerCase();
 
     if (_store.containsKey(key)) {
-      throw KinoaException(
+      throw AppException(
         message: AuthStrings.errorEmailAlreadyExists,
         code: AuthErrorCodes.emailAlreadyExists,
         statusCode: 409,
@@ -126,7 +126,7 @@ class MockAuthRepository implements AuthRepository {
   Future<void> verifyOtp(String phone, String countryCode, String code) async {
     await Future.delayed(const Duration(milliseconds: 900));
     if (code != _mockOtpCode) {
-      throw KinoaException(
+      throw AppException(
         message: AuthStrings.otpInvalid,
         code: AuthErrorCodes.otpInvalid,
         statusCode: 422,
@@ -162,7 +162,7 @@ class MockAuthRepository implements AuthRepository {
     await Future.delayed(const Duration(milliseconds: 1200));
     final key = contact.trim().toLowerCase();
     if (isEmail && !_store.containsKey(key)) {
-      throw KinoaException(
+      throw AppException(
         message: "Aucun compte associé à cette adresse.",
         code: AuthErrorCodes.invalidCredentials,
         statusCode: 404,
@@ -174,7 +174,7 @@ class MockAuthRepository implements AuthRepository {
   Future<String> verifyResetOtp(String contact, String code) async {
     await Future.delayed(const Duration(milliseconds: 900));
     if (code != _mockOtpCode) {
-      throw KinoaException(
+      throw AppException(
         message: AuthStrings.otpInvalid,
         code: AuthErrorCodes.otpInvalid,
         statusCode: 422,
@@ -187,7 +187,7 @@ class MockAuthRepository implements AuthRepository {
   Future<void> resetPassword(String resetToken, String newPassword) async {
     await Future.delayed(const Duration(milliseconds: 1200));
     if (resetToken != _mockResetToken) {
-      throw KinoaException.unauthorized();
+      throw AppException.unauthorized();
     }
     // En mock : met à jour le premier compte trouvé (simulation).
     final firstKey = _store.keys.firstOrNull;

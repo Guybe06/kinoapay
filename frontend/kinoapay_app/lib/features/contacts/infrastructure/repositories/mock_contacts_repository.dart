@@ -41,14 +41,14 @@ class MockContactsRepository implements ContactsRepository {
         id: e.id,
         fullName: e.name,
         phone: e.phone,
-        isOnKinoaPay: onApp,
-        kinoaId: onApp ? e.phone : null,
+        isRegistered: onApp,
+        publicHandle: onApp ? e.phone : null,
       );
     }).toList();
 
     contacts.sort((a, b) {
-      if (a.isOnKinoaPay != b.isOnKinoaPay) {
-        return a.isOnKinoaPay ? -1 : 1;
+      if (a.isRegistered != b.isRegistered) {
+        return a.isRegistered ? -1 : 1;
       }
       return a.fullName.compareTo(b.fullName);
     });

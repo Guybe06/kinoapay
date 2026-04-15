@@ -48,7 +48,7 @@ class _SignInViewState extends State<SignInView> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signinSuccess);
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.shell, (_) => false);
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.shell, (_) => false);
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -59,7 +59,7 @@ class _SignInViewState extends State<SignInView> {
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     } else {
-      Navigator.pushReplacementNamed(context, KinoaRoutes.welcome);
+      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
     }
   }
 
@@ -79,7 +79,7 @@ class _SignInViewState extends State<SignInView> {
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
-          backgroundColor: KinoaColors.quinoaCream,
+          backgroundColor: AppColors.quinoaCream,
           body: SafeArea(
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: _onState,
@@ -102,11 +102,11 @@ class _SignInViewState extends State<SignInView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => _handleBack(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -122,23 +122,23 @@ class _SignInViewState extends State<SignInView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 0,
               child: const Text(
                 AuthStrings.signinTitle,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
               ),
             ),
             const SizedBox(height: 12),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 1,
               child: Text(
                 AuthStrings.signinSubtitle,
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               ),
             ),
             const SizedBox(height: 40),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 2,
               child: AuthTextField(
                 controller: _emailCtrl,
@@ -149,7 +149,7 @@ class _SignInViewState extends State<SignInView> {
               ),
             ),
             const SizedBox(height: 20),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 3,
               child: AuthTextField(
                 controller: _passwordCtrl,
@@ -160,15 +160,15 @@ class _SignInViewState extends State<SignInView> {
               ),
             ),
             const SizedBox(height: 16),
-            KinoaEntrance(index: 4, child: _buildForgotPasswordRow()),
+            StaggeredEntrance(index: 4, child: _buildForgotPasswordRow()),
             const SizedBox(height: 40),
-            KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
+            StaggeredEntrance(index: 5, child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
             const SizedBox(height: 32),
-            KinoaEntrance(index: 6, child: const AuthSocialDivider()),
+            StaggeredEntrance(index: 6, child: const AuthSocialDivider()),
             const SizedBox(height: 20),
-            KinoaEntrance(index: 7, child: const AuthSocialRow()),
+            StaggeredEntrance(index: 7, child: const AuthSocialRow()),
             const SizedBox(height: 40),
-            KinoaEntrance(index: 8, child: _buildSignupLink(context)),
+            StaggeredEntrance(index: 8, child: _buildSignupLink(context)),
             const SizedBox(height: 32),
           ],
         ),
@@ -178,16 +178,16 @@ class _SignInViewState extends State<SignInView> {
 
   Widget _buildForgotPasswordRow() {
     return GestureDetector(
-      onTap: () => _navigateTo(KinoaRoutes.forgotPassword),
+      onTap: () => _navigateTo(AppRoutes.forgotPassword),
       child: Text.rich(
         TextSpan(
           text: "Mot de passe oublié ? ",
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 14, fontWeight: FontWeight.w500),
+          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 14, fontWeight: FontWeight.w500),
           children: const [
             TextSpan(
               text: "Réinitialiser",
               style: TextStyle(
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
                 fontWeight: FontWeight.w800,
                 decoration: TextDecoration.underline,
               ),
@@ -201,15 +201,15 @@ class _SignInViewState extends State<SignInView> {
   Widget _buildSignupLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => _navigateTo(KinoaRoutes.signup),
+        onPressed: () => _navigateTo(AppRoutes.signup),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signinNoAccount} ",
-            style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
+            style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
             children: const [
               TextSpan(
                 text: AuthStrings.signinSignupLink,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w800),
+                style: TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w800),
               ),
             ],
           ),

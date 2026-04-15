@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/constants/app_strings.dart";
 typedef CountryEntry = ({String iso, String flag, String name, String dialCode});
 
 /// Pays pris en charge
-const List<CountryEntry> kinoaCountries = [
+const List<CountryEntry> defaultDialCountries = [
   (iso: "CG", flag: "🇨🇬", name: "Congo-Brazzaville", dialCode: "+242"),
   (iso: "CD", flag: "🇨🇩", name: "Congo-Kinshasa", dialCode: "+243"),
   (iso: "GA", flag: "🇬🇦", name: "Gabon", dialCode: "+241"),
@@ -33,7 +33,7 @@ class CountryPickerSheet extends StatefulWidget {
 
 class _CountryPickerSheetState extends State<CountryPickerSheet> {
   final _search = TextEditingController();
-  List<CountryEntry> _filtered = kinoaCountries;
+  List<CountryEntry> _filtered = defaultDialCountries;
 
   @override
   void dispose() {
@@ -44,7 +44,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
   void _onSearch(String q) {
     final lower = q.toLowerCase();
     setState(() {
-      _filtered = kinoaCountries
+      _filtered = defaultDialCountries
           .where((c) => c.name.toLowerCase().contains(lower) || c.dialCode.contains(lower))
           .toList();
     });
@@ -60,7 +60,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
       snapSizes: const [0.65, 0.92],
       builder: (_, controller) => Container(
         decoration: const BoxDecoration(
-          color: KinoaColors.quinoaCream,
+          color: AppColors.quinoaCream,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: Column(
@@ -70,7 +70,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.18),
+                color: AppColors.quinoaDark.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -80,9 +80,9 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  KinoaStrings.countryPickerTitle,
+                  AppStrings.countryPickerTitle,
                   style: TextStyle(
-                    color: KinoaColors.quinoaDark,
+                    color: AppColors.quinoaDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
@@ -95,26 +95,26 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
               child: TextField(
                 controller: _search,
                 onChanged: _onSearch,
-                style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 15),
-                cursorColor: KinoaColors.quinoaGold,
+                style: const TextStyle(color: AppColors.quinoaDark, fontSize: 15),
+                cursorColor: AppColors.quinoaGold,
                 decoration: InputDecoration(
-                  hintText: KinoaStrings.countryPickerSearchHint,
-                  hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
-                  prefixIcon: Icon(Icons.search_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.35), size: 20),
+                  hintText: AppStrings.countryPickerSearchHint,
+                  hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
+                  prefixIcon: Icon(Icons.search_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.35), size: 20),
                   filled: true,
-                  fillColor: KinoaColors.white,
+                  fillColor: AppColors.white,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
+                    borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
+                    borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: KinoaColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+                    borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
                   ),
                 ),
               ),
@@ -134,17 +134,17 @@ class _CountryPickerSheetState extends State<CountryPickerSheet> {
                     title: Text(
                       c.name,
                       style: TextStyle(
-                        color: KinoaColors.quinoaDark,
+                        color: AppColors.quinoaDark,
                         fontSize: 15,
                         fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                       ),
                     ),
                     trailing: Text(
                       c.dialCode,
-                      style: const TextStyle(color: KinoaColors.quinoaWarmGray, fontSize: 14, fontWeight: FontWeight.w600),
+                      style: const TextStyle(color: AppColors.quinoaWarmGray, fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     selected: isSelected,
-                    selectedTileColor: KinoaColors.quinoaGold.withValues(alpha: 0.08),
+                    selectedTileColor: AppColors.quinoaGold.withValues(alpha: 0.08),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     onTap: () {
                       widget.onSelected(c);

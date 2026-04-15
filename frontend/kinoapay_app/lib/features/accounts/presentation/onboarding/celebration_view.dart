@@ -92,7 +92,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: Column(
             children: [
@@ -114,7 +114,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
           child: const Align(
             alignment: Alignment.centerLeft,
-            child: KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+            child: BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           ),
         ),
       ),
@@ -137,7 +137,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
                 "${AuthStrings.celebrationSubtitlePrefix} $_firstName !",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: KinoaColors.quinoaDark,
+                  color: AppColors.quinoaDark,
                   fontSize: 36,
                   fontWeight: FontWeight.w900,
                   height: 1.05,
@@ -153,7 +153,7 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
               AuthStrings.celebrationBody,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.5),
+                color: AppColors.quinoaDark.withValues(alpha: 0.5),
                 fontSize: 15,
                 height: 1.6,
               ),
@@ -164,9 +164,9 @@ class _CelebrationViewState extends State<CelebrationView> with TickerProviderSt
             position: _btnSlide,
             child: FadeTransition(
               opacity: _btnFade,
-              child: KinoaPrimaryButton(
+              child: PrimaryButton(
                 text: "Continuer",
-                onPressed: () => Navigator.pushReplacementNamed(context, KinoaRoutes.kycAwareness),
+                onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.kycAwareness),
               ),
             ),
           ),
@@ -215,7 +215,7 @@ class _CelebrationPainter extends CustomPainter {
   });
 
   static const _baseRadius = 44.0;
-  static const _gold = KinoaColors.quinoaGold;
+  static const _gold = AppColors.quinoaGold;
   static const _particleCount = 10;
 
   @override
@@ -288,7 +288,7 @@ class _CelebrationPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = KinoaColors.white
+        ..color = AppColors.white
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.5
         ..strokeCap = StrokeCap.round
@@ -306,7 +306,7 @@ class _CelebrationPainter extends CustomPainter {
       final pos = center + Offset(math.cos(angle) * distance, math.sin(angle) * distance);
       final opacity = (1.0 - t).clamp(0.0, 1.0);
       // Alternance or / crème foncé
-      paint.color = (i % 3 == 0 ? KinoaColors.quinoaDark : _gold).withValues(alpha: opacity);
+      paint.color = (i % 3 == 0 ? AppColors.quinoaDark : _gold).withValues(alpha: opacity);
       canvas.drawCircle(pos, size * (1.0 - t * 0.4), paint);
     }
   }

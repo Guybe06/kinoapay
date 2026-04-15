@@ -4,7 +4,7 @@ import "package:equatable/equatable.dart";
 enum NotificationType { transaction, system, promo }
 
 /// Notification reçue par l'utilisateur, liée ou non à une transaction.
-class KinoaNotification extends Equatable {
+class NotificationRecord extends Equatable {
   final String id;
   final NotificationType type;
   final String title;
@@ -12,27 +12,27 @@ class KinoaNotification extends Equatable {
   final DateTime receivedAt;
   final bool isRead;
 
-  /// Identifiant KinoaTx associé, si la notification concerne une transaction.
-  final String? ktxid;
+  /// Identifiant de transaction associé, si la notification concerne une opération.
+  final String? relatedTransactionId;
 
-  const KinoaNotification({
+  const NotificationRecord({
     required this.id,
     required this.type,
     required this.title,
     required this.body,
     required this.receivedAt,
     required this.isRead,
-    this.ktxid,
+    this.relatedTransactionId,
   });
 
-  KinoaNotification markRead() => KinoaNotification(
+  NotificationRecord markRead() => NotificationRecord(
         id: id,
         type: type,
         title: title,
         body: body,
         receivedAt: receivedAt,
         isRead: true,
-        ktxid: ktxid,
+        relatedTransactionId: relatedTransactionId,
       );
 
   @override

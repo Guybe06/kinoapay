@@ -89,7 +89,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaDeep,
+        backgroundColor: AppColors.quinoaDeep,
         body: Stack(
           children: [
             _buildGlow(),
@@ -125,7 +125,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(CupertinoIcons.checkmark_shield_fill, color: KinoaColors.quinoaGold, size: 14),
+          const Icon(CupertinoIcons.checkmark_shield_fill, color: AppColors.quinoaGold, size: 14),
           const SizedBox(width: 8),
           Text(
             WelcomeStrings.trustLabel,
@@ -150,7 +150,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
         height: 280,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: KinoaColors.quinoaGold.withValues(alpha: 0.15),
+          color: AppColors.quinoaGold.withValues(alpha: 0.15),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
@@ -163,12 +163,12 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 20, 28, 0),
-      child: KinoaBrand(
+      child: BrandLogoRow(
         size: BrandSize.lg,
-        color: KinoaColors.white,
-        iconColor: KinoaColors.quinoaGold,
+        color: AppColors.white,
+        iconColor: AppColors.quinoaGold,
         alignment: MainAxisAlignment.start,
-        heroTag: widget.fromSplash ? "kinoa_brand" : null,
+        heroTag: widget.fromSplash ? "app_brand" : null,
       ),
     );
   }
@@ -179,7 +179,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
       child: Text(
         WelcomeStrings.heroTitle,
         style: const TextStyle(
-          color: KinoaColors.white,
+          color: AppColors.white,
           fontSize: 48,
           fontWeight: FontWeight.w900,
           height: 1.0,
@@ -195,7 +195,7 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
       child: Text(
         WelcomeStrings.heroSubtitle,
         style: TextStyle(
-          color: KinoaColors.white.withValues(alpha: 0.6),
+          color: AppColors.white.withValues(alpha: 0.6),
           fontSize: 15,
           height: 1.5,
           fontWeight: FontWeight.w400,
@@ -219,12 +219,12 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: GestureDetector(
-        onTap: () => _navigateTo(KinoaRoutes.signup),
+        onTap: () => _navigateTo(AppRoutes.signup),
         child: Container(
           width: double.infinity,
           height: 68,
           decoration: BoxDecoration(
-            color: KinoaColors.quinoaGold,
+            color: AppColors.quinoaGold,
             borderRadius: BorderRadius.circular(24),
           ),
           alignment: Alignment.center,
@@ -234,14 +234,14 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
               Text(
                 WelcomeStrings.signupBtn,
                 style: const TextStyle(
-                  color: KinoaColors.quinoaDark,
+                  color: AppColors.quinoaDark,
                   fontSize: 17,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.5,
                 ),
               ),
               const SizedBox(width: 10),
-              const Icon(CupertinoIcons.arrow_right, color: KinoaColors.quinoaDark, size: 18),
+              const Icon(CupertinoIcons.arrow_right, color: AppColors.quinoaDark, size: 18),
             ],
           ),
         ),
@@ -252,19 +252,19 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
   Widget _buildSigninLink(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => _navigateTo(KinoaRoutes.signin),
+        onPressed: () => _navigateTo(AppRoutes.signin),
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",
             style: TextStyle(
-              color: KinoaColors.white.withValues(alpha: 0.5),
+              color: AppColors.white.withValues(alpha: 0.5),
               fontWeight: FontWeight.w500,
               fontSize: 15,
             ),
             children: const [
               TextSpan(
                 text: AuthStrings.signupSigninLink,
-                style: TextStyle(color: KinoaColors.white, fontWeight: FontWeight.w800),
+                style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w800),
               ),
             ],
           ),

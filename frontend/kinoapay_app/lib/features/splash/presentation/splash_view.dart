@@ -133,12 +133,12 @@ class _SplashViewState extends State<SplashView>
   /// Résout la route initiale selon l'état d'authentification et navigue.
   Future<void> _redirect() async {
     final storage = const SecureStorageService();
-    final route = await KinoaRouter.resolveInitialRoute(storage);
+    final route = await AppRouter.resolveInitialRoute(storage);
     if (!mounted) return;
 
     final Object args = switch (route) {
-      KinoaRoutes.shell => const ShellArgs(fromSplash: true),
-      KinoaRoutes.signin => const AuthArgs(fromSplash: true),
+      AppRoutes.shell => const ShellArgs(fromSplash: true),
+      AppRoutes.signin => const AuthArgs(fromSplash: true),
       _ => const WelcomeArgs(fromSplash: true),
     };
     Navigator.pushReplacementNamed(context, route, arguments: args);
@@ -157,7 +157,7 @@ class _SplashViewState extends State<SplashView>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: KinoaColors.burtGradient,
+            colors: AppColors.burtGradient,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -175,11 +175,11 @@ class _SplashViewState extends State<SplashView>
                       child: ScaleTransition(scale: _scaleAnim, child: child),
                     ),
                     child: const Hero(
-                      tag: "kinoa_brand",
-                      child: KinoaBrand(
+                      tag: "app_brand",
+                      child: BrandLogoRow(
                         size: BrandSize.lg,
-                        color: KinoaColors.stone900,
-                        iconColor: KinoaColors.stone900,
+                        color: AppColors.stone900,
+                        iconColor: AppColors.stone900,
                       ),
                     ),
                   ),

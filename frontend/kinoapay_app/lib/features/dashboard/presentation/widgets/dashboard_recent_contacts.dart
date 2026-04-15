@@ -51,10 +51,10 @@ class DashboardRecentContacts extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
           boxShadow: [
             BoxShadow(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+              color: AppColors.quinoaDark.withValues(alpha: 0.05),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -70,7 +70,7 @@ class DashboardRecentContacts extends StatelessWidget {
                 Text(
                   "Contacts récents",
                   style: TextStyle(
-                    color: KinoaColors.quinoaDark.withValues(alpha: 0.85),
+                    color: AppColors.quinoaDark.withValues(alpha: 0.85),
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,
@@ -81,7 +81,7 @@ class DashboardRecentContacts extends StatelessWidget {
                   child: Text(
                     "Voir plus",
                     style: TextStyle(
-                      color: KinoaColors.quinoaGold.withValues(alpha: 0.80),
+                      color: AppColors.quinoaGold.withValues(alpha: 0.80),
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -133,9 +133,9 @@ class _AddContactBtn extends StatelessWidget {
             height: 58,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+              color: AppColors.quinoaDark.withValues(alpha: 0.05),
               border: Border.all(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.12),
+                color: AppColors.quinoaDark.withValues(alpha: 0.12),
                 width: 1.5,
                 strokeAlign: BorderSide.strokeAlignInside,
               ),
@@ -144,14 +144,14 @@ class _AddContactBtn extends StatelessWidget {
             child: Icon(
               SolarIconsOutline.addCircle,
               size: 24,
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.60),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.60),
             ),
           ),
           const SizedBox(height: 6),
           Text(
             "Ajouter",
             style: TextStyle(
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
@@ -181,10 +181,10 @@ class _ContactItem extends StatelessWidget {
             width: 58,
             height: 58,
             decoration: BoxDecoration(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+              color: AppColors.quinoaDark.withValues(alpha: 0.06),
               shape: BoxShape.circle,
               border: Border.all(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.10),
+                color: AppColors.quinoaDark.withValues(alpha: 0.10),
                 width: 1.5,
               ),
             ),
@@ -192,7 +192,7 @@ class _ContactItem extends StatelessWidget {
             child: Text(
               contact.initials,
               style: TextStyle(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.65),
+                color: AppColors.quinoaDark.withValues(alpha: 0.65),
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
               ),
@@ -202,7 +202,7 @@ class _ContactItem extends StatelessWidget {
           Text(
             firstName.length > 8 ? "${firstName.substring(0, 7)}." : firstName,
             style: TextStyle(
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.80),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.80),
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),

@@ -12,10 +12,10 @@ abstract final class AuthSnackBar {
   );
 
   static void showSuccess(BuildContext context, String message) =>
-      _show(context, message, KinoaColors.success, Icons.check_circle_outline);
+      _show(context, message, AppColors.success, Icons.check_circle_outline);
 
   static void showError(BuildContext context, String message) =>
-      _show(context, message, KinoaColors.quinoaRed, Icons.error_outline);
+      _show(context, message, AppColors.quinoaRed, Icons.error_outline);
 
   static void _show(BuildContext context, String message, Color color, IconData icon) {
     ScaffoldMessenger.of(context)
@@ -27,12 +27,12 @@ abstract final class AuthSnackBar {
         shape: _shape,
         content: Row(
           children: [
-            Icon(icon, color: KinoaColors.white, size: 20),
+            Icon(icon, color: AppColors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(color: KinoaColors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                style: const TextStyle(color: AppColors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
           ],

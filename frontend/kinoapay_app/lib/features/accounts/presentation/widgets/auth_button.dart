@@ -1,4 +1,4 @@
-export "package:kinoapay_app/core/widgets/primary_button.dart" show KinoaPrimaryButton;
+export "package:kinoapay_app/core/widgets/primary_button.dart" show PrimaryButton;
 
-// AuthButton est remplacé par KinoaPrimaryButton (core/widgets/).
-// Les vues accounts importent désormais KinoaPrimaryButton directement.
+// AuthButton est remplacé par PrimaryButton (core/widgets/).
+// Les vues accounts importent désormais PrimaryButton directement.

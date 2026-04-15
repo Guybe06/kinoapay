@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 /// Empêche les navigations concurrentes (double-tap) en bloquant les push pendant une transition.
-class KinoaNavThrottle extends NavigatorObserver {
+class NavThrottle extends NavigatorObserver {
   static bool _isTransitioning = false;
 
   /// @return false pendant le court verrou après push ou pop

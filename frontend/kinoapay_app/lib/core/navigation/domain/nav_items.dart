@@ -6,22 +6,22 @@ import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 class NavItems {
   static const List<NavItem> all = [
     NavItem(
-      label: KinoaStrings.navDashboard,
+      label: AppStrings.navDashboard,
       icon: SolarIconsOutline.home2,
       activeIcon: SolarIconsBold.home2,
     ),
     NavItem(
-      label: KinoaStrings.navTransfer,
+      label: AppStrings.navTransfer,
       icon: SolarIconsOutline.plain,
       activeIcon: SolarIconsBold.plain,
     ),
     NavItem(
-      label: KinoaStrings.navHistory,
+      label: AppStrings.navHistory,
       icon: SolarIconsOutline.transferHorizontal,
       activeIcon: SolarIconsBold.transferHorizontal,
     ),
     NavItem(
-      label: KinoaStrings.navProfile,
+      label: AppStrings.navProfile,
       icon: SolarIconsOutline.user,
       activeIcon: SolarIconsBold.user,
     ),

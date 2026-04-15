@@ -4,7 +4,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
 
 class NotificationTile extends StatelessWidget {
-  final KinoaNotification notification;
+  final NotificationRecord notification;
   final VoidCallback onTap;
 
   const NotificationTile({
@@ -23,7 +23,7 @@ class NotificationTile extends StatelessWidget {
       child: Container(
         color: notification.isRead
             ? Colors.transparent
-            : KinoaColors.quinoaGold.withValues(alpha: 0.04),
+            : AppColors.quinoaGold.withValues(alpha: 0.04),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +45,7 @@ class NotificationTile extends StatelessWidget {
                         child: Text(
                           notification.title,
                           style: TextStyle(
-                            color: KinoaColors.quinoaDark,
+                            color: AppColors.quinoaDark,
                             fontSize: 13,
                             fontWeight: notification.isRead
                                 ? FontWeight.w600
@@ -57,7 +57,7 @@ class NotificationTile extends StatelessWidget {
                       Text(
                         timeLabel,
                         style: TextStyle(
-                          color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.5),
+                          color: AppColors.quinoaWarmGray.withValues(alpha: 0.5),
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -68,7 +68,7 @@ class NotificationTile extends StatelessWidget {
                   Text(
                     notification.body,
                     style: TextStyle(
-                      color: KinoaColors.quinoaDark.withValues(alpha: 0.55),
+                      color: AppColors.quinoaDark.withValues(alpha: 0.55),
                       fontSize: 12,
                       height: 1.4,
                     ),
@@ -83,7 +83,7 @@ class NotificationTile extends StatelessWidget {
                   width: 7,
                   height: 7,
                   decoration: const BoxDecoration(
-                    color: KinoaColors.quinoaGold,
+                    color: AppColors.quinoaGold,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -98,18 +98,18 @@ class NotificationTile extends StatelessWidget {
     return switch (type) {
       NotificationType.transaction => (
           Icons.swap_horiz_rounded,
-          KinoaColors.accentDark.withValues(alpha: 0.12),
-          KinoaColors.accentDark,
+          AppColors.accentDark.withValues(alpha: 0.12),
+          AppColors.accentDark,
         ),
       NotificationType.system => (
           Icons.shield_outlined,
-          KinoaColors.quinoaGold.withValues(alpha: 0.15),
-          KinoaColors.quinoaGold,
+          AppColors.quinoaGold.withValues(alpha: 0.15),
+          AppColors.quinoaGold,
         ),
       NotificationType.promo => (
           Icons.card_giftcard_rounded,
-          KinoaColors.quinoaRed.withValues(alpha: 0.10),
-          KinoaColors.quinoaRed,
+          AppColors.quinoaRed.withValues(alpha: 0.10),
+          AppColors.quinoaRed,
         ),
     };
   }

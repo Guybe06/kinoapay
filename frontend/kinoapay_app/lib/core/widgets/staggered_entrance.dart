@@ -3,14 +3,14 @@ import "package:kinoapay_app/main.dart" show appRouteObserver;
 
 /// Animation d'entrée staggerée : chaque élément « tombe » en place avec un léger décalage.
 /// Rejoue automatiquement quand l'utilisateur revient sur la page (pop).
-class KinoaEntrance extends StatefulWidget {
+class StaggeredEntrance extends StatefulWidget {
   final Widget child;
   final int index;
   final Duration baseDelay;
   final Duration duration;
   final double offsetY;
 
-  const KinoaEntrance({
+  const StaggeredEntrance({
     super.key,
     required this.child,
     this.index = 0,
@@ -20,10 +20,10 @@ class KinoaEntrance extends StatefulWidget {
   });
 
   @override
-  State<KinoaEntrance> createState() => _KinoaEntranceState();
+  State<StaggeredEntrance> createState() => _StaggeredEntranceState();
 }
 
-class _KinoaEntranceState extends State<KinoaEntrance>
+class _StaggeredEntranceState extends State<StaggeredEntrance>
     with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _controller;
   late final Animation<double> _opacity;

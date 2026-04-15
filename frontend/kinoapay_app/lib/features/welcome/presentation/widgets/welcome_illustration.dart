@@ -47,10 +47,10 @@ class WelcomeIllustration extends StatelessWidget {
       height: _cardH,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KinoaColors.quinoaGold.withValues(alpha: 0.25), width: 1),
+        border: Border.all(color: AppColors.quinoaGold.withValues(alpha: 0.25), width: 1),
         boxShadow: [
           BoxShadow(
-            color: KinoaColors.quinoaGold.withValues(alpha: 0.10),
+            color: AppColors.quinoaGold.withValues(alpha: 0.10),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),

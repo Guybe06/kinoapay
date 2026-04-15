@@ -34,7 +34,7 @@ class _ContactsViewState extends State<ContactsView> {
     final topInset = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: KinoaColors.quinoaCream,
+      backgroundColor: AppColors.quinoaCream,
       body: Column(
         children: [
           _buildHeader(topInset),
@@ -56,7 +56,7 @@ class _ContactsViewState extends State<ContactsView> {
 
   Widget _buildHeader(double topInset) {
     return Container(
-      color: KinoaColors.quinoaCream,
+      color: AppColors.quinoaCream,
       padding: EdgeInsets.fromLTRB(20, topInset + 16, 16, 12),
       child: Row(
         children: [
@@ -65,10 +65,10 @@ class _ContactsViewState extends State<ContactsView> {
             child: Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+                color: AppColors.quinoaDark.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: KinoaColors.quinoaDark),
+              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.quinoaDark),
             ),
           ),
           const SizedBox(width: 14),
@@ -76,7 +76,7 @@ class _ContactsViewState extends State<ContactsView> {
             child: Text(
               "Contacts",
               style: TextStyle(
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.5,
@@ -88,10 +88,10 @@ class _ContactsViewState extends State<ContactsView> {
             child: Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+                color: AppColors.quinoaDark.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.refresh_rounded, size: 18, color: KinoaColors.quinoaDark),
+              child: const Icon(Icons.refresh_rounded, size: 18, color: AppColors.quinoaDark),
             ),
           ),
         ],
@@ -105,12 +105,12 @@ class _ContactsViewState extends State<ContactsView> {
       child: TextField(
         controller: _searchController,
         onChanged: (q) => context.read<ContactsBloc>().add(ContactsSearchChanged(q)),
-        style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14),
-        cursorColor: KinoaColors.quinoaGold,
+        style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14),
+        cursorColor: AppColors.quinoaGold,
         decoration: InputDecoration(
           hintText: "Rechercher un contact...",
-          hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
-          prefixIcon: Icon(Icons.search_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.35), size: 20),
+          hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
+          prefixIcon: Icon(Icons.search_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.35), size: 20),
           suffixIcon: ValueListenableBuilder<TextEditingValue>(
             valueListenable: _searchController,
             builder: (_, val, _) => val.text.isNotEmpty
@@ -119,7 +119,7 @@ class _ContactsViewState extends State<ContactsView> {
                       _searchController.clear();
                       context.read<ContactsBloc>().add(const ContactsSearchChanged(""));
                     },
-                    child: Icon(Icons.close_rounded, size: 18, color: KinoaColors.quinoaDark.withValues(alpha: 0.4)),
+                    child: Icon(Icons.close_rounded, size: 18, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -128,11 +128,11 @@ class _ContactsViewState extends State<ContactsView> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: KinoaColors.quinoaDark.withValues(alpha: 0.10)),
+            borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.10)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: KinoaColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
           ),
         ),
       ),
@@ -146,7 +146,7 @@ class _LoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(color: KinoaColors.quinoaGold, strokeWidth: 2),
+      child: CircularProgressIndicator(color: AppColors.quinoaGold, strokeWidth: 2),
     );
   }
 }
@@ -158,7 +158,7 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(message, style: const TextStyle(color: KinoaColors.quinoaRed, fontSize: 14)),
+      child: Text(message, style: const TextStyle(color: AppColors.quinoaRed, fontSize: 14)),
     );
   }
 }

@@ -9,26 +9,26 @@ import "package:kinoapay_app/features/history/presentation/history_view.dart";
 import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
-/// Arguments de navigation transmis au [KinoaShell] à l'ouverture.
+/// Arguments de navigation transmis au [AppShell] à l'ouverture.
 class ShellArgs {
   final int initialTab;
   final bool fromSplash;
   const ShellArgs({
-    this.initialTab = KinoaRoutes.tabDashboard,
+    this.initialTab = AppRoutes.tabDashboard,
     this.fromSplash = false,
   });
 }
 
 /// Shell principal, fond quinoaCream, icônes status bar sombres, navigation flottante centrée en bas.
-class KinoaShell extends StatefulWidget {
+class AppShell extends StatefulWidget {
   final ShellArgs args;
-  const KinoaShell({super.key, required this.args});
+  const AppShell({super.key, required this.args});
 
   @override
-  State<KinoaShell> createState() => _KinoaShellState();
+  State<AppShell> createState() => _AppShellState();
 }
 
-class _KinoaShellState extends State<KinoaShell> {
+class _AppShellState extends State<AppShell> {
   late int _currentTab;
 
   @override
@@ -45,9 +45,9 @@ class _KinoaShellState extends State<KinoaShell> {
   List<Widget> _buildPages(BuildContext context) {
     return [
       DashboardView(
-        onNavigateToSend: () => _onTabChanged(KinoaRoutes.tabTransfer),
-        onNavigateToRequest: () => _onTabChanged(KinoaRoutes.tabTransfer),
-        onNavigateToHistory: () => _onTabChanged(KinoaRoutes.tabHistory),
+        onNavigateToSend: () => _onTabChanged(AppRoutes.tabTransfer),
+        onNavigateToRequest: () => _onTabChanged(AppRoutes.tabTransfer),
+        onNavigateToHistory: () => _onTabChanged(AppRoutes.tabHistory),
       ),
       const SendView(),
       const HistoryView(),
@@ -62,14 +62,14 @@ class _KinoaShellState extends State<KinoaShell> {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: KinoaColors.quinoaCream,
+        systemNavigationBarColor: AppColors.quinoaCream,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
-        appBar: KinoaHeader(
+        backgroundColor: AppColors.quinoaCream,
+        appBar: AppHeader(
           withHero:
-              widget.args.fromSplash && _currentTab == KinoaRoutes.tabDashboard,
+              widget.args.fromSplash && _currentTab == AppRoutes.tabDashboard,
         ),
         extendBodyBehindAppBar: true,
         extendBody: true,
@@ -80,7 +80,7 @@ class _KinoaShellState extends State<KinoaShell> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: KinoaBottomNav(
+              child: AppBottomNav(
                 currentIndex: _currentTab,
                 onTabChanged: _onTabChanged,
               ),

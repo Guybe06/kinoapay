@@ -28,17 +28,17 @@ class AuthSocialButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: KinoaColors.white.withValues(alpha: 0.7),
-          border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
+          color: AppColors.white.withValues(alpha: 0.7),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
           borderRadius: borderRadius,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon is IconData) Icon(icon, color: KinoaColors.quinoaDark, size: 20),
-            if (icon is FaIconData) FaIcon(icon, color: KinoaColors.quinoaDark, size: 20),
+            if (icon is IconData) Icon(icon, color: AppColors.quinoaDark, size: 20),
+            if (icon is FaIconData) FaIcon(icon, color: AppColors.quinoaDark, size: 20),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700, fontSize: 14)),
+            Text(label, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700, fontSize: 14)),
           ],
         ),
       ),
@@ -72,7 +72,7 @@ class AuthSocialDivider extends StatelessWidget {
       child: Text(
         "OU CONTINUER AVEC",
         style: TextStyle(
-          color: KinoaColors.quinoaDark.withValues(alpha: 0.35),
+          color: AppColors.quinoaDark.withValues(alpha: 0.35),
           fontSize: 11,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.2,

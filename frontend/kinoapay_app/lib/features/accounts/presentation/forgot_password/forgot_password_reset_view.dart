@@ -42,7 +42,7 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
       AuthSnackBar.showSuccess(ctx, AuthStrings.resetSuccess);
       Future.delayed(const Duration(milliseconds: 1200), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.signin, (_) => false);
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.signin, (_) => false);
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(ctx, state.exception.message);
@@ -65,7 +65,7 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: _onState,
@@ -87,11 +87,11 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -107,33 +107,33 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 0,
               child: const Text(
                 AuthStrings.resetNewPassTitle,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
               ),
             ),
             const SizedBox(height: 12),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 1,
               child: Text(
                 AuthStrings.resetNewPassSubtitle,
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               ),
             ),
             const SizedBox(height: 40),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 2,
               child: AuthTextField(controller: _passCtrl, label: AuthStrings.resetNewPassLabel, hintText: "Nouveau mot de passe", obscureText: true, validator: AuthValidator.validatePassword),
             ),
             const SizedBox(height: 20),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 3,
               child: AuthTextField(controller: _confirmCtrl, label: AuthStrings.resetConfirmPassLabel, hintText: "Confirmer le mot de passe", obscureText: true, validator: AuthValidator.validatePassword),
             ),
             const SizedBox(height: 48),
-            KinoaEntrance(index: 4, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
+            StaggeredEntrance(index: 4, child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit)),
             const SizedBox(height: 32),
           ],
         ),

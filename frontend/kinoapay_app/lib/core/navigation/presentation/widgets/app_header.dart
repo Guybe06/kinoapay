@@ -6,11 +6,11 @@ import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 
 /// En-tête light, fond quinoaCream, logo quinoaDark/quinoaGold, icônes colorées.
-class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
+class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool withHero;
   final int unreadNotifications;
 
-  const KinoaHeader({
+  const AppHeader({
     super.key,
     this.withHero = false,
     this.unreadNotifications = 0,
@@ -24,7 +24,7 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
     final topInset = MediaQuery.of(context).padding.top;
 
     return Container(
-      color: KinoaColors.quinoaCream,
+      color: AppColors.quinoaCream,
       padding: EdgeInsets.fromLTRB(20, topInset + 10, 16, 10),
       height: preferredSize.height + topInset,
       child: Row(
@@ -34,24 +34,24 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
           const Spacer(),
           _HeaderIconBtn(
             icon: SolarIconsOutline.usersGroupTwoRounded,
-            tooltip: KinoaStrings.headerContacts,
-            color: KinoaColors.quinoaDark,
-            onTap: () => Navigator.pushNamed(context, KinoaRoutes.contacts),
+            tooltip: AppStrings.headerContacts,
+            color: AppColors.quinoaDark,
+            onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
           ),
           const SizedBox(width: 6),
           _NotificationBtn(
             unreadCount: unreadNotifications,
-            color: KinoaColors.quinoaDark,
-            onTap: () => Navigator.pushNamed(context, KinoaRoutes.notifications),
+            color: AppColors.quinoaDark,
+            onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
           ),
           const SizedBox(width: 6),
           _HeaderIconBtn(
             icon: SolarIconsOutline.qrCode,
-            tooltip: KinoaStrings.headerScan,
-            color: KinoaColors.accent,
-            iconColor: KinoaColors.quinoaDark,
+            tooltip: AppStrings.headerScan,
+            color: AppColors.accent,
+            iconColor: AppColors.quinoaDark,
             solidBg: true,
-            onTap: () => Navigator.pushNamed(context, KinoaRoutes.scanner),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
           ),
         ],
       ),
@@ -59,10 +59,10 @@ class KinoaHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildLogo() {
-    const brand = KinoaBrand(
+    const brand = BrandLogoRow(
       size: BrandSize.sm,
-      color: KinoaColors.quinoaDark,
-      iconColor: KinoaColors.quinoaGold,
+      color: AppColors.quinoaDark,
+      iconColor: AppColors.quinoaGold,
     );
     if (withHero) return const Hero(tag: "kinoa_brand", child: brand);
     return brand;
@@ -121,7 +121,7 @@ class _NotificationBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: KinoaStrings.headerNotifications,
+      message: AppStrings.headerNotifications,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),

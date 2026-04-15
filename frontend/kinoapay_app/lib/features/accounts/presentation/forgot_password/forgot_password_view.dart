@@ -29,7 +29,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _formKey = GlobalKey<FormState>();
   final _contactCtrl = TextEditingController();
   bool _isEmail = true;
-  String _countryCode = kinoaCountries[0].dialCode;
+  String _countryCode = defaultDialCountries[0].dialCode;
   bool _navigating = false;
 
   @override
@@ -48,7 +48,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       _navigating = true;
       Navigator.pushNamed(
         context,
-        KinoaRoutes.forgotPasswordOtp,
+        AppRoutes.forgotPasswordOtp,
         arguments: ForgotPasswordArgs(contact: _fullContact, isEmail: _isEmail),
       ).then((_) => _navigating = false);
     } else if (state is AuthError) {
@@ -68,7 +68,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: _onState,
@@ -90,11 +90,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -110,32 +110,32 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 0,
               child: const Text(
                 AuthStrings.resetTitle,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
               ),
             ),
             const SizedBox(height: 12),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 1,
               child: Text(
                 AuthStrings.resetSubtitle,
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               ),
             ),
             const SizedBox(height: 32),
-            KinoaEntrance(index: 2, child: _buildChannelToggle()),
+            StaggeredEntrance(index: 2, child: _buildChannelToggle()),
             const SizedBox(height: 28),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 3,
               child: _isEmail
                   ? AuthTextField(controller: _contactCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.resetEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone)
-                  : KinoaPhoneField(controller: _contactCtrl, onCountryChanged: (code) => setState(() => _countryCode = code), validator: AuthValidator.validatePhone),
+                  : PhoneField(controller: _contactCtrl, onCountryChanged: (code) => setState(() => _countryCode = code), validator: AuthValidator.validatePhone),
             ),
             const SizedBox(height: 48),
-            KinoaEntrance(index: 4, child: KinoaPrimaryButton(text: AuthStrings.resetSendCode, isLoading: state is AuthLoading, onPressed: _submit)),
+            StaggeredEntrance(index: 4, child: PrimaryButton(text: AuthStrings.resetSendCode, isLoading: state is AuthLoading, onPressed: _submit)),
             const SizedBox(height: 32),
           ],
         ),
@@ -149,7 +149,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         Text(
           AuthStrings.resetViaPhone,
           style: TextStyle(
-            color: !_isEmail ? KinoaColors.quinoaDark : KinoaColors.quinoaDark.withValues(alpha: 0.4),
+            color: !_isEmail ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.4),
             fontSize: 14,
             fontWeight: !_isEmail ? FontWeight.w800 : FontWeight.w500,
           ),
@@ -161,18 +161,18 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             child: Switch(
               value: _isEmail,
               onChanged: (v) => setState(() => _isEmail = v),
-              activeThumbColor: KinoaColors.white,
-              activeTrackColor: KinoaColors.quinoaDark,
-              inactiveThumbColor: KinoaColors.white,
-              inactiveTrackColor: KinoaColors.quinoaDark,
-              trackOutlineColor: WidgetStateProperty.all(KinoaColors.quinoaDark),
+              activeThumbColor: AppColors.white,
+              activeTrackColor: AppColors.quinoaDark,
+              inactiveThumbColor: AppColors.white,
+              inactiveTrackColor: AppColors.quinoaDark,
+              trackOutlineColor: WidgetStateProperty.all(AppColors.quinoaDark),
             ),
           ),
         ),
         Text(
           AuthStrings.resetViaEmail,
           style: TextStyle(
-            color: _isEmail ? KinoaColors.quinoaDark : KinoaColors.quinoaDark.withValues(alpha: 0.4),
+            color: _isEmail ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.4),
             fontSize: 14,
             fontWeight: _isEmail ? FontWeight.w800 : FontWeight.w500,
           ),

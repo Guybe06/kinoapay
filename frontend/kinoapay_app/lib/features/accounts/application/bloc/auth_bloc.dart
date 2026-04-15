@@ -39,13 +39,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _repository.signIn(event.email, event.password);
       await _storage.markFirstOpenApp();
       emit(Authenticated(user));
-    } on KinoaException catch (e) {
+    } on AppException catch (e) {
       emit(AuthError(e));
     } on PlatformException catch (e) {
-      emit(AuthError(KinoaException.localStorage(e.message)));
+      emit(AuthError(AppException.localStorage(e.message)));
     } catch (e, st) {
       debugPrint("AuthBloc signIn: $e\n$st");
-      emit(AuthError(KinoaException.unknown()));
+      emit(AuthError(AppException.unknown()));
     }
   }
 
@@ -65,13 +65,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _repository.signIn(event.email, event.password);
       await _storage.markFirstOpenApp();
       emit(Authenticated(user));
-    } on KinoaException catch (e) {
+    } on AppException catch (e) {
       emit(AuthError(e));
     } on PlatformException catch (e) {
-      emit(AuthError(KinoaException.localStorage(e.message)));
+      emit(AuthError(AppException.localStorage(e.message)));
     } catch (e, st) {
       debugPrint("AuthBloc signUp: $e\n$st");
-      emit(AuthError(KinoaException.unknown()));
+      emit(AuthError(AppException.unknown()));
     }
   }
 
@@ -81,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _repository.sendOtp(event.phone, event.countryCode);
       emit(OtpSent());
     } catch (e) {
-      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(AuthError(e is AppException ? e : AppException.unknown()));
     }
   }
 
@@ -91,7 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _repository.verifyOtp(event.phone, event.countryCode, event.code);
       emit(OtpVerified());
     } catch (e) {
-      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(AuthError(e is AppException ? e : AppException.unknown()));
     }
   }
 
@@ -109,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _repository.requestPasswordReset(event.contact, isEmail: event.isEmail);
       emit(ResetOtpSent());
     } catch (e) {
-      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(AuthError(e is AppException ? e : AppException.unknown()));
     }
   }
 
@@ -119,7 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final token = await _repository.verifyResetOtp(event.contact, event.code);
       emit(ResetOtpVerified(token));
     } catch (e) {
-      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(AuthError(e is AppException ? e : AppException.unknown()));
     }
   }
 
@@ -129,7 +129,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _repository.resetPassword(event.resetToken, event.newPassword);
       emit(PasswordResetSuccess());
     } catch (e) {
-      emit(AuthError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(AuthError(e is AppException ? e : AppException.unknown()));
     }
   }
 }

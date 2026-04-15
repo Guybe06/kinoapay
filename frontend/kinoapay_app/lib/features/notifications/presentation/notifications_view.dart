@@ -25,7 +25,7 @@ class _NotificationsViewState extends State<NotificationsView> {
     final topInset = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: KinoaColors.quinoaCream,
+      backgroundColor: AppColors.quinoaCream,
       body: Column(
         children: [
           _buildHeader(topInset),
@@ -35,7 +35,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                 if (state is NotificationsLoading) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      color: KinoaColors.quinoaGold,
+                      color: AppColors.quinoaGold,
                       strokeWidth: 2,
                     ),
                   );
@@ -55,7 +55,7 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   Widget _buildHeader(double topInset) {
     return Container(
-      color: KinoaColors.quinoaCream,
+      color: AppColors.quinoaCream,
       padding: EdgeInsets.fromLTRB(20, topInset + 16, 16, 12),
       child: Row(
         children: [
@@ -64,13 +64,13 @@ class _NotificationsViewState extends State<NotificationsView> {
             child: Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+                color: AppColors.quinoaDark.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new_rounded,
                 size: 16,
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
               ),
             ),
           ),
@@ -79,7 +79,7 @@ class _NotificationsViewState extends State<NotificationsView> {
             child: Text(
               "Notifications",
               style: TextStyle(
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.5,
@@ -97,7 +97,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                 child: Text(
                   "Tout lire",
                   style: TextStyle(
-                    color: KinoaColors.quinoaGold,
+                    color: AppColors.quinoaGold,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -124,7 +124,7 @@ class _NotificationsList extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -136,7 +136,7 @@ class _NotificationsList extends StatelessWidget {
             thickness: 1,
             indent: 74,
             endIndent: 20,
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+            color: AppColors.quinoaDark.withValues(alpha: 0.05),
           ),
           itemBuilder: (context, i) {
             final n = state.notifications[i];
@@ -167,13 +167,13 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.notifications_none_rounded,
             size: 48,
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.2),
+            color: AppColors.quinoaDark.withValues(alpha: 0.2),
           ),
           const SizedBox(height: 12),
           Text(
             "Aucune notification",
             style: TextStyle(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.4),
+              color: AppColors.quinoaDark.withValues(alpha: 0.4),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

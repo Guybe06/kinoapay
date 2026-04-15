@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>NSContactsUsageDescription</key>
-	<string>KinoaPay accède à vos contacts pour détecter ceux qui utilisent l'application.</string>
+	<string>kinoaPay accède à vos contacts pour détecter ceux qui utilisent l'application.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>KinoaPay utilise la caméra pour scanner les QR codes de paiement.</string>
+	<string>kinoaPay utilise la caméra pour scanner les QR codes de paiement.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Kinoapay App</string>
+	<string>kinoaPay</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -7,7 +7,7 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 import "package:kinoapay_app/features/accounts/domain/repositories/auth_repository.dart";
 
-/// Implémentation du dépôt d'authentification via l'API REST KinoaGate.
+/// Implémentation du dépôt d'authentification via l'API REST du backend.
 class HttpAuthRepository implements AuthRepository {
   final DioClient _dioClient;
   final SecureStorageService _secureStorage;
@@ -22,16 +22,16 @@ class HttpAuthRepository implements AuthRepository {
   Future<UserAccount> signIn(String email, String password) async {
     try {
       final response = await _dioClient.dio.post(
-        KinoaApi.signin,
+        ApiPaths.signin,
         data: {"email": email, "password": password},
       );
       return _parseAndPersist(response.data as Map<String, dynamic>);
-    } on KinoaException {
+    } on AppException {
       rethrow;
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
@@ -47,7 +47,7 @@ class HttpAuthRepository implements AuthRepository {
   }) async {
     try {
       final response = await _dioClient.dio.post(
-        KinoaApi.signup,
+        ApiPaths.signup,
         data: {
           "email": email,
           "password": password,
@@ -60,12 +60,12 @@ class HttpAuthRepository implements AuthRepository {
       );
       final userData = (response.data as Map<String, dynamic>)["user"] as Map<String, dynamic>;
       return _userFromMap(userData);
-    } on KinoaException {
+    } on AppException {
       rethrow;
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
@@ -76,7 +76,7 @@ class HttpAuthRepository implements AuthRepository {
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
@@ -84,19 +84,19 @@ class HttpAuthRepository implements AuthRepository {
   Future<void> verifyOtp(String phone, String countryCode, String code) async {
     try {
       await _dioClient.dio.post("/auth/otp/verify", data: {"phone": phone, "countryCode": countryCode, "code": code});
-    } on KinoaException {
+    } on AppException {
       rethrow;
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
   @override
   Future<void> signOut() async {
     try {
-      await _dioClient.dio.post(KinoaApi.signout);
+      await _dioClient.dio.post(ApiPaths.signout);
     } catch (_) {
       // Best effort : on nettoie la session même si le serveur ne répond pas.
     }
@@ -146,7 +146,7 @@ class HttpAuthRepository implements AuthRepository {
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
@@ -158,7 +158,7 @@ class HttpAuthRepository implements AuthRepository {
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
@@ -169,21 +169,21 @@ class HttpAuthRepository implements AuthRepository {
     } on DioException catch (e) {
       throw _fromDio(e);
     } catch (_) {
-      throw KinoaException.unknown();
+      throw AppException.unknown();
     }
   }
 
-  KinoaException _fromDio(DioException e) {
+  AppException _fromDio(DioException e) {
     final status = e.response?.statusCode;
     return switch (status) {
-      401 => KinoaException.unauthorized(),
-      409 => KinoaException.conflict(),
-      429 => KinoaException.rateLimited(),
-      503 => KinoaException.serviceUnavailable(),
+      401 => AppException.unauthorized(),
+      409 => AppException.conflict(),
+      429 => AppException.rateLimited(),
+      503 => AppException.serviceUnavailable(),
       null => e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout
-          ? KinoaException.timeout()
-          : KinoaException.noInternet(),
-      _ => status >= 500 ? KinoaException.serverError() : KinoaException.unknown(),
+          ? AppException.timeout()
+          : AppException.noInternet(),
+      _ => status >= 500 ? AppException.serverError() : AppException.unknown(),
     };
   }
 }

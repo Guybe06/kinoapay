@@ -5,7 +5,7 @@ class TransferQuote extends Equatable {
   final String quoteId;
   final double amount;
   final String currency;
-  final double kinoaFee;
+  final double platformFee;
   final double operatorFee;
   final double totalFee;
   final double amountDebited;
@@ -19,7 +19,7 @@ class TransferQuote extends Equatable {
     required this.quoteId,
     required this.amount,
     required this.currency,
-    required this.kinoaFee,
+    required this.platformFee,
     required this.operatorFee,
     required this.totalFee,
     required this.amountDebited,

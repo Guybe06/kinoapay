@@ -27,7 +27,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       );
       emit(SendQuoteReady(quote));
     } catch (e) {
-      emit(SendError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(SendError(e is AppException ? e : AppException.unknown()));
     }
   }
 
@@ -37,7 +37,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       final tx = await _repository.confirmTransfer(event.quoteId);
       emit(SendSuccess(tx));
     } catch (e) {
-      emit(SendError(e is KinoaException ? e : KinoaException.unknown()));
+      emit(SendError(e is AppException ? e : AppException.unknown()));
     }
   }
 

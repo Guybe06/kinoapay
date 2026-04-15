@@ -8,10 +8,10 @@ class Contact extends Equatable {
   final String id;
   final String fullName;
   final String phone;
-  final bool isOnKinoaPay;
+  final bool isRegistered;
 
-  /// Identifiant public ; présent uniquement si [isOnKinoaPay] est true.
-  final String? kinoaId;
+  /// Identifiant public ; présent uniquement si [isRegistered] est true.
+  final String? publicHandle;
 
   /// Canaux de paiement configurés sur le compte du contact.
   final List<PaymentChannel> channels;
@@ -20,8 +20,8 @@ class Contact extends Equatable {
     required this.id,
     required this.fullName,
     required this.phone,
-    required this.isOnKinoaPay,
-    this.kinoaId,
+    required this.isRegistered,
+    this.publicHandle,
     this.channels = const [],
   });
 

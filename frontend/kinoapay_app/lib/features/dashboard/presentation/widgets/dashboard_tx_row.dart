@@ -32,7 +32,7 @@ class DashboardTxRow extends StatelessWidget {
     final String source = tx.sourceChannel.toUpperCase();
     final String destination = tx.destinationChannel.toUpperCase();
 
-    final Color amountColor = isReceived ? KinoaColors.accentDark : KinoaColors.quinoaRed;
+    final Color amountColor = isReceived ? AppColors.accentDark : AppColors.quinoaRed;
 
     return InkWell(
       onTap: () {},
@@ -49,7 +49,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     name.toUpperCase(),
                     style: const TextStyle(
-                      color: KinoaColors.quinoaDark,
+                      color: AppColors.quinoaDark,
                       fontSize: 12,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.5,
@@ -61,7 +61,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     tx.receiverIdentifier,
                     style: TextStyle(
-                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.6),
+                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.6),
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.2,
@@ -71,7 +71,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     timeLabel,
                     style: TextStyle(
-                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.4),
+                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.4),
                       fontSize: 9,
                       fontWeight: FontWeight.w600,
                     ),
@@ -92,7 +92,7 @@ class DashboardTxRow extends StatelessWidget {
                       Icon(
                         SolarIconsOutline.arrowRight,
                         size: 10,
-                        color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.3),
+                        color: AppColors.quinoaWarmGray.withValues(alpha: 0.3),
                       ),
                       _ChannelBadge(label: destination),
                     ],
@@ -124,7 +124,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     tx.currency,
                     style: TextStyle(
-                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.3),
+                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.3),
                       fontSize: 8,
                       fontWeight: FontWeight.w800,
                     ),
@@ -151,13 +151,13 @@ class _ChannelBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
-        color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+        color: AppColors.quinoaDark.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(3),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: KinoaColors.quinoaDark.withValues(alpha: 0.5),
+          color: AppColors.quinoaDark.withValues(alpha: 0.5),
           fontSize: 8,
           fontWeight: FontWeight.w900,
           letterSpacing: 0.2,
@@ -202,11 +202,11 @@ enum _TxNature {
   refused;
 
   Color get color => switch (this) {
-        _TxNature.sent       => KinoaColors.quinoaDark,
-        _TxNature.received   => KinoaColors.accentDark,
-        _TxNature.pending    => KinoaColors.quinoaGold,
+        _TxNature.sent       => AppColors.quinoaDark,
+        _TxNature.received   => AppColors.accentDark,
+        _TxNature.pending    => AppColors.quinoaGold,
         _TxNature.processing => const Color(0xFF2979FF),
-        _TxNature.refused    => KinoaColors.quinoaRed,
+        _TxNature.refused    => AppColors.quinoaRed,
       };
 
   String get label => switch (this) {
@@ -253,9 +253,9 @@ class _AmlSparkline extends StatelessWidget {
   const _AmlSparkline({required this.score});
 
   Color get _color {
-    if (score < 0.35) return KinoaColors.accentDark;
-    if (score < 0.65) return KinoaColors.quinoaGold;
-    return KinoaColors.quinoaRed;
+    if (score < 0.35) return AppColors.accentDark;
+    if (score < 0.65) return AppColors.quinoaGold;
+    return AppColors.quinoaRed;
   }
 
   List<double> get _points {
@@ -295,7 +295,7 @@ class _AmlSparkline extends StatelessWidget {
         Text(
           "AML",
           style: TextStyle(
-            color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.40),
+            color: AppColors.quinoaWarmGray.withValues(alpha: 0.40),
             fontSize: 8,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,

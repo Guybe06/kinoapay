@@ -52,7 +52,7 @@ class _SendViewState extends State<SendView> {
 
   void _onState(BuildContext ctx, SendState state) {
     if (state is SendSuccess) {
-      Navigator.pushNamed(ctx, KinoaRoutes.receipt, arguments: state.transaction);
+      Navigator.pushNamed(ctx, AppRoutes.receipt, arguments: state.transaction);
       context.read<SendBloc>().add(SendReset());
       _recipientCtrl.clear();
       _amountCtrl.clear();
@@ -81,20 +81,20 @@ class _SendViewState extends State<SendView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          KinoaEntrance(
+          StaggeredEntrance(
             index: 0,
-            child: Text(SendStrings.title, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5)),
+            child: Text(SendStrings.title, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5)),
           ),
           const SizedBox(height: 32),
-          KinoaEntrance(index: 1, child: _buildField(SendStrings.recipientLabel, _recipientCtrl, "Numéro ou @identifiant", TextInputType.phone)),
+          StaggeredEntrance(index: 1, child: _buildField(SendStrings.recipientLabel, _recipientCtrl, "Numéro ou @identifiant", TextInputType.phone)),
           const SizedBox(height: 16),
-          KinoaEntrance(index: 2, child: _buildField(SendStrings.amountLabel, _amountCtrl, "ex. 5000", TextInputType.number, formatters: [FilteringTextInputFormatter.digitsOnly])),
+          StaggeredEntrance(index: 2, child: _buildField(SendStrings.amountLabel, _amountCtrl, "ex. 5000", TextInputType.number, formatters: [FilteringTextInputFormatter.digitsOnly])),
           const SizedBox(height: 16),
-          KinoaEntrance(index: 3, child: _buildChannelPicker("De", _sourceChannel, (v) => setState(() => _sourceChannel = v!))),
+          StaggeredEntrance(index: 3, child: _buildChannelPicker("De", _sourceChannel, (v) => setState(() => _sourceChannel = v!))),
           const SizedBox(height: 12),
-          KinoaEntrance(index: 4, child: _buildChannelPicker("Vers", _destChannel, (v) => setState(() => _destChannel = v!))),
+          StaggeredEntrance(index: 4, child: _buildChannelPicker("Vers", _destChannel, (v) => setState(() => _destChannel = v!))),
           const SizedBox(height: 40),
-          KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: "Obtenir le devis", isLoading: state is SendLoading, onPressed: _requestQuote)),
+          StaggeredEntrance(index: 5, child: PrimaryButton(text: "Obtenir le devis", isLoading: state is SendLoading, onPressed: _requestQuote)),
         ],
       ),
     );
@@ -107,24 +107,24 @@ class _SendViewState extends State<SendView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          KinoaEntrance(index: 0, child: const Text("Confirmer l'envoi", style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5))),
+          StaggeredEntrance(index: 0, child: const Text("Confirmer l'envoi", style: TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5))),
           const SizedBox(height: 28),
-          KinoaEntrance(index: 1, child: _infoCard([
+          StaggeredEntrance(index: 1, child: _infoCard([
             _infoRow("Destinataire", quote.recipientName),
             _infoRow("Montant", "${fmt.format(quote.amount)} ${quote.currency}"),
             _infoRow("De", quote.sourceChannel),
             _infoRow("Vers", quote.destinationChannel),
           ])),
           const SizedBox(height: 16),
-          KinoaEntrance(index: 2, child: _infoCard([
-            _infoRow("Frais KinoaPay", "${fmt.format(quote.kinoaFee)} ${quote.currency}"),
+          StaggeredEntrance(index: 2, child: _infoCard([
+            _infoRow("Frais kinoaPay", "${fmt.format(quote.platformFee)} ${quote.currency}"),
             _infoRow("Frais opérateur", "${fmt.format(quote.operatorFee)} ${quote.currency}"),
             _infoRow("Total débité", "${fmt.format(quote.amountDebited)} ${quote.currency}", bold: true),
           ])),
           const SizedBox(height: 32),
-          KinoaEntrance(index: 3, child: KinoaPrimaryButton(text: SendStrings.confirmBtn, onPressed: () => context.read<SendBloc>().add(SendConfirmRequested(quote.quoteId)))),
+          StaggeredEntrance(index: 3, child: PrimaryButton(text: SendStrings.confirmBtn, onPressed: () => context.read<SendBloc>().add(SendConfirmRequested(quote.quoteId)))),
           const SizedBox(height: 12),
-          KinoaEntrance(index: 4, child: KinoaPrimaryButton(text: "Annuler", isSecondary: true, onPressed: () => context.read<SendBloc>().add(SendReset()))),
+          StaggeredEntrance(index: 4, child: PrimaryButton(text: "Annuler", isSecondary: true, onPressed: () => context.read<SendBloc>().add(SendReset()))),
         ],
       ),
     );
@@ -135,9 +135,9 @@ class _SendViewState extends State<SendView> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircularProgressIndicator(color: KinoaColors.quinoaGold, strokeWidth: 2.5),
+          const CircularProgressIndicator(color: AppColors.quinoaGold, strokeWidth: 2.5),
           const SizedBox(height: 20),
-          Text("Envoi en cours…", style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 15, fontWeight: FontWeight.w600)),
+          Text("Envoi en cours…", style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 15, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -149,18 +149,18 @@ class _SendViewState extends State<SendView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(topRight: Radius.circular(24), bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500)),
+          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500)),
           TextField(
             controller: ctrl,
             keyboardType: type,
             inputFormatters: formatters,
-            style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w700),
-            decoration: InputDecoration(border: InputBorder.none, hintText: hint, hintStyle: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.2))),
+            style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w700),
+            decoration: InputDecoration(border: InputBorder.none, hintText: hint, hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.2))),
           ),
         ],
       ),
@@ -173,18 +173,18 @@ class _SendViewState extends State<SendView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
-          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 13, fontWeight: FontWeight.w500)),
+          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 13, fontWeight: FontWeight.w500)),
           const SizedBox(width: 12),
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: value,
                 isExpanded: true,
-                icon: Icon(Icons.expand_more_rounded, color: KinoaColors.quinoaDark.withValues(alpha: 0.4)),
+                icon: Icon(Icons.expand_more_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
                 items: _channels.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
                 onChanged: onChanged,
               ),
@@ -202,7 +202,7 @@ class _SendViewState extends State<SendView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
       child: Column(children: rows),
     );
@@ -214,8 +214,8 @@ class _SendViewState extends State<SendView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13)),
-          Text(value, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700)),
+          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13)),
+          Text(value, style: TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700)),
         ],
       ),
     );

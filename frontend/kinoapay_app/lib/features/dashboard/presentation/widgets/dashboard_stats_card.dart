@@ -29,7 +29,7 @@ class DashboardStatsCard extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: KinoaColors.quinoaRed.withValues(alpha: 0.85),
+                    color: AppColors.quinoaRed.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(28),
                   ),
                 ),

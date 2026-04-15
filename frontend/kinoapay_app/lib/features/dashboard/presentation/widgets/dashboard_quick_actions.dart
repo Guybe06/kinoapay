@@ -15,7 +15,7 @@ class DashboardQuickActions extends StatelessWidget {
           const Text(
             "Actions rapides",
             style: TextStyle(
-              color: KinoaColors.quinoaDark,
+              color: AppColors.quinoaDark,
               fontSize: 16,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.4,
@@ -60,7 +60,7 @@ class _ActionSquare extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.7),
+            color: AppColors.quinoaDark.withValues(alpha: 0.7),
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),

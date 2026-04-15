@@ -12,7 +12,7 @@ class KycAwarenessView extends StatelessWidget {
   const KycAwarenessView({super.key});
 
   void _goNext(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.paymentSetup, (_) => false);
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.paymentSetup, (_) => false);
   }
 
   @override
@@ -20,7 +20,7 @@ class KycAwarenessView extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -33,7 +33,7 @@ class KycAwarenessView extends StatelessWidget {
                 const Text(
                   AuthStrings.kycTitle,
                   style: TextStyle(
-                    color: KinoaColors.quinoaDark,
+                    color: AppColors.quinoaDark,
                     fontSize: 38,
                     fontWeight: FontWeight.w900,
                     height: 1.05,
@@ -43,7 +43,7 @@ class KycAwarenessView extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   AuthStrings.kycSubtitle,
-                  style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.5),
+                  style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.5),
                 ),
                 const SizedBox(height: 36),
                 _buildBenefit(icon: SolarIconsOutline.sendSquare, text: AuthStrings.kycBenefitTransfer),
@@ -52,9 +52,9 @@ class KycAwarenessView extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildBenefit(icon: SolarIconsOutline.bolt, text: AuthStrings.kycBenefitSecurity),
                 const Spacer(flex: 3),
-                KinoaPrimaryButton(text: AuthStrings.kycVerifyNow, onPressed: () => _goNext(context)),
+                PrimaryButton(text: AuthStrings.kycVerifyNow, onPressed: () => _goNext(context)),
                 const SizedBox(height: 12),
-                KinoaPrimaryButton(
+                PrimaryButton(
                   text: AuthStrings.kycLater,
                   isSecondary: true,
                   onPressed: () => _goNext(context),
@@ -63,7 +63,7 @@ class KycAwarenessView extends StatelessWidget {
                 Center(
                   child: Text(
                     AuthStrings.kycLaterNote,
-                    style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12),
+                    style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12),
                   ),
                 ),
                 const SizedBox(height: 36),
@@ -79,17 +79,17 @@ class KycAwarenessView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: KinoaColors.quinoaGold.withValues(alpha: 0.12),
+        color: AppColors.quinoaGold.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(SolarIconsOutline.userCheck, color: KinoaColors.quinoaGold, size: 16),
+          const Icon(SolarIconsOutline.userCheck, color: AppColors.quinoaGold, size: 16),
           const SizedBox(width: 8),
           const Text(
             "Vérification d'identité",
-            style: TextStyle(color: KinoaColors.quinoaGold, fontSize: 13, fontWeight: FontWeight.w700),
+            style: TextStyle(color: AppColors.quinoaGold, fontSize: 13, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -103,16 +103,16 @@ class KycAwarenessView extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+            color: AppColors.quinoaDark.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: KinoaColors.quinoaDark, size: 18),
+          child: Icon(icon, color: AppColors.quinoaDark, size: 18),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 15, fontWeight: FontWeight.w600),
+            style: const TextStyle(color: AppColors.quinoaDark, fontSize: 15, fontWeight: FontWeight.w600),
           ),
         ),
       ],

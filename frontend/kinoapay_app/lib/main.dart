@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:intl/date_symbol_data_local.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/nav_throttle.dart";
 import "package:kinoapay_app/core/navigation/app_router.dart";
@@ -18,7 +19,7 @@ import "package:kinoapay_app/features/dashboard/infrastructure/repositories/mock
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send_repository.dart";
 
-/// Observer global de navigation, utilisé par [KinoaEntrance] pour rejouer les animations au retour.
+/// Observer global de navigation, utilisé par [StaggeredEntrance] pour rejouer les animations au retour.
 final RouteObserver<ModalRoute<void>> appRouteObserver = RouteObserver<ModalRoute<void>>();
 
 /// Point d'entrée : initialisation des dépendances globales puis [runApp].
@@ -30,7 +31,7 @@ void main() async {
 
   // ignore: unused_local_variable, sera injecté dans les repositories HTTP lors de la refonte auth.
   final dioClient = DioClient(
-    baseUrl: "https://api.kinoaPay.com",
+    baseUrl: "https://api.kinoapay.com",
     storage: storage,
   );
 
@@ -56,22 +57,22 @@ void main() async {
           ),
         ),
       ],
-      child: const KinoaPayApp(),
+      child: const RootApp(),
     ),
   );
 }
 
 /// Widget racine [MaterialApp] : thème clair global ; [WelcomeView] conserve un fond sombre local.
-class KinoaPayApp extends StatelessWidget {
-  const KinoaPayApp({super.key});
+class RootApp extends StatelessWidget {
+  const RootApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "KinoaPay",
+      title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
-      theme: KinoaTheme.light(),
-      darkTheme: KinoaTheme.dark(),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.light,
       locale: const Locale("fr"),
       supportedLocales: const [Locale("fr"), Locale("en")],
@@ -80,9 +81,9 @@ class KinoaPayApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      navigatorObservers: [appRouteObserver, KinoaNavThrottle()],
-      initialRoute: KinoaRoutes.splash,
-      onGenerateRoute: KinoaRouter.generateRoute,
+      navigatorObservers: [appRouteObserver, NavThrottle()],
+      initialRoute: AppRoutes.splash,
+      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }

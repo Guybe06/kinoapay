@@ -80,7 +80,7 @@ class _DashboardViewState extends State<DashboardView> {
             );
           },
           displacement: 100,
-          color: KinoaColors.quinoaGold,
+          color: AppColors.quinoaGold,
           backgroundColor: Colors.white,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -101,7 +101,7 @@ class _DashboardViewState extends State<DashboardView> {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          KinoaColors.accent.withValues(alpha: 0.25),
+                          AppColors.accent.withValues(alpha: 0.25),
                           Colors.transparent,
                         ],
                       ),
@@ -118,7 +118,7 @@ class _DashboardViewState extends State<DashboardView> {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          KinoaColors.accent.withValues(alpha: 0.15),
+                          AppColors.accent.withValues(alpha: 0.15),
                           Colors.transparent,
                         ],
                       ),
@@ -144,7 +144,7 @@ class _DashboardViewState extends State<DashboardView> {
                     const SizedBox(height: 16),
                     DashboardRecentContacts(
                       transactions: transactions,
-                      onAdd: () => Navigator.pushNamed(context, KinoaRoutes.contacts),
+                      onAdd: () => Navigator.pushNamed(context, AppRoutes.contacts),
                     ),
                     const SizedBox(height: 28),
                     Padding(
@@ -158,7 +158,7 @@ class _DashboardViewState extends State<DashboardView> {
                               Text(
                                 "Dernières transactions",
                                 style: TextStyle(
-                                  color: KinoaColors.quinoaDark.withValues(alpha: 0.85),
+                                  color: AppColors.quinoaDark.withValues(alpha: 0.85),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.4,
@@ -218,19 +218,19 @@ class _ActionBtn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+          color: AppColors.quinoaDark.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.07)),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.07)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: KinoaColors.quinoaDark),
+            Icon(icon, size: 16, color: AppColors.quinoaDark),
             const SizedBox(width: 8),
             Text(
               label,
               style: const TextStyle(
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.5,
@@ -273,7 +273,7 @@ class _PromoCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      KinoaColors.accent.withValues(alpha: 0.25),
+                      AppColors.accent.withValues(alpha: 0.25),
                       Colors.transparent,
                     ],
                   ),
@@ -315,11 +315,11 @@ class _PromoCard extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                             decoration: BoxDecoration(
-                              color: KinoaColors.accent,
+                              color: AppColors.accent,
                               borderRadius: BorderRadius.circular(100),
                               boxShadow: [
                                 BoxShadow(
-                                  color: KinoaColors.accent.withValues(alpha: 0.4),
+                                  color: AppColors.accent.withValues(alpha: 0.4),
                                   blurRadius: 20,
                                   spreadRadius: -2,
                                 ),
@@ -346,13 +346,13 @@ class _PromoCard extends StatelessWidget {
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: KinoaColors.accent.withValues(alpha: 0.06),
-                          border: Border.all(color: KinoaColors.accent.withValues(alpha: 0.1)),
+                          color: AppColors.accent.withValues(alpha: 0.06),
+                          border: Border.all(color: AppColors.accent.withValues(alpha: 0.1)),
                         ),
                         child: const Icon(
                           SolarIconsOutline.plain,
                           size: 48,
-                          color: KinoaColors.accent,
+                          color: AppColors.accent,
                         ),
                       ),
                     ),
@@ -383,7 +383,7 @@ class _GreetingSection extends StatelessWidget {
           Text(
             "Bienvenue,",
             style: TextStyle(
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.75),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.75),
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
@@ -391,7 +391,7 @@ class _GreetingSection extends StatelessWidget {
           Text(
             firstName.isNotEmpty ? firstName : "—",
             style: const TextStyle(
-              color: KinoaColors.quinoaDark,
+              color: AppColors.quinoaDark,
               fontSize: 32,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.8,
@@ -417,9 +417,9 @@ class _VoirToutBtn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         decoration: BoxDecoration(
-          color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+          color: AppColors.quinoaDark.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.08)),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.08)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -427,7 +427,7 @@ class _VoirToutBtn extends StatelessWidget {
             Text(
               "Voir tout",
               style: TextStyle(
-                color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.80),
+                color: AppColors.quinoaWarmGray.withValues(alpha: 0.80),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -436,7 +436,7 @@ class _VoirToutBtn extends StatelessWidget {
             Icon(
               SolarIconsOutline.altArrowRight,
               size: 11,
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
             ),
           ],
         ),
@@ -474,7 +474,7 @@ class _PromoDetailSheet extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        KinoaColors.accent.withValues(alpha: 0.1),
+                        AppColors.accent.withValues(alpha: 0.1),
                         Colors.transparent,
                       ],
                     ),
@@ -512,7 +512,7 @@ class _PromoDetailSheet extends StatelessWidget {
                         _InfoSection(
                           icon: SolarIconsOutline.link,
                           title: "Le lien entre tous vos comptes",
-                          description: "KinoaPay fait le pont entre vos comptes Mobile Money et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
+                          description: "kinoaPay fait le pont entre vos comptes Mobile Money et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
                         ),
                         const SizedBox(height: 32),
                         _InfoSection(
@@ -530,11 +530,11 @@ class _PromoDetailSheet extends StatelessWidget {
                         _InfoSection(
                           icon: SolarIconsOutline.bolt,
                           title: "L'intelligence qui évite les attentes",
-                          description: "Notre système surveille la santé des réseaux en temps réel. Si un opérateur ralentit ou tombe en panne, KinoaPay le voit instantanément et trouve automatiquement un chemin plus rapide pour que votre transfert reste immédiat.",
+                          description: "Notre système surveille la santé des réseaux en temps réel. Si un opérateur ralentit ou tombe en panne, kinoaPay le voit instantanément et trouve automatiquement un chemin plus rapide pour que votre transfert reste immédiat.",
                         ),
                         const SizedBox(height: 48),
                         Text(
-                          "KinoaPay ne change pas vos habitudes, il les simplifie en connectant vos moyens de paiement préférés sous une protection universelle.",
+                          "kinoaPay ne change pas vos habitudes, il les simplifie en connectant vos moyens de paiement préférés sous une protection universelle.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.4),
@@ -572,7 +572,7 @@ class _InfoSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: KinoaColors.accent, size: 28),
+        Icon(icon, color: AppColors.accent, size: 28),
         const SizedBox(width: 20),
         Expanded(
           child: Column(

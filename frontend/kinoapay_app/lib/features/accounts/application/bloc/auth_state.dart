@@ -30,7 +30,7 @@ class OtpSent extends AuthState {}
 class OtpVerified extends AuthState {}
 
 class AuthError extends AuthState {
-  final KinoaException exception;
+  final AppException exception;
 
   const AuthError(this.exception);
 

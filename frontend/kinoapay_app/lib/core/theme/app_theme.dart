@@ -3,8 +3,8 @@ import "package:flutter/services.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 
-/// Thèmes Material clair et sombre ; les couleurs passent par [KinoaColors], sans hex en dur.
-class KinoaTheme {
+/// Thèmes Material clair et sombre ; les couleurs passent par [AppColors], sans hex en dur.
+class AppTheme {
   static ThemeData light() {
     return _build(
       brightness: Brightness.light,
@@ -42,8 +42,8 @@ class KinoaTheme {
       textTheme: textTheme,
       scaffoldBackgroundColor: colorScheme.surface,
       splashFactory: NoSplash.splashFactory,
-      hoverColor: KinoaColors.transparent,
-      highlightColor: KinoaColors.transparent,
+      hoverColor: AppColors.transparent,
+      highlightColor: AppColors.transparent,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -54,7 +54,7 @@ class KinoaTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           splashFactory: NoSplash.splashFactory,
-          overlayColor: KinoaColors.transparent,
+          overlayColor: AppColors.transparent,
         ),
       ),
       dividerTheme: DividerThemeData(
@@ -67,46 +67,46 @@ class KinoaTheme {
   static ColorScheme _lightColorScheme() {
     return ColorScheme(
       brightness: Brightness.light,
-      primary: KinoaColors.primary,
-      onPrimary: KinoaColors.textLight,
-      secondary: KinoaColors.accent,
-      onSecondary: KinoaColors.stone900,
-      surface: KinoaColors.backgroundLight,
-      onSurface: KinoaColors.textMain,
-      surfaceContainerHighest: KinoaColors.stone100,
-      onSurfaceVariant: KinoaColors.textMuted,
-      outline: KinoaColors.border,
-      outlineVariant: KinoaColors.stone200,
-      error: KinoaColors.error,
-      onError: KinoaColors.textLight,
-      tertiary: KinoaColors.success,
-      onTertiary: KinoaColors.textLight,
+      primary: AppColors.primary,
+      onPrimary: AppColors.textLight,
+      secondary: AppColors.accent,
+      onSecondary: AppColors.stone900,
+      surface: AppColors.backgroundLight,
+      onSurface: AppColors.textMain,
+      surfaceContainerHighest: AppColors.stone100,
+      onSurfaceVariant: AppColors.textMuted,
+      outline: AppColors.border,
+      outlineVariant: AppColors.stone200,
+      error: AppColors.error,
+      onError: AppColors.textLight,
+      tertiary: AppColors.success,
+      onTertiary: AppColors.textLight,
     );
   }
 
   static ColorScheme _darkColorScheme() {
     return ColorScheme(
       brightness: Brightness.dark,
-      primary: KinoaColors.primary,
-      onPrimary: KinoaColors.textLight,
-      secondary: KinoaColors.accent,
-      onSecondary: KinoaColors.stone900,
-      surface: KinoaColors.background,
-      onSurface: KinoaColors.textLight,
-      surfaceContainerHighest: KinoaColors.stone800,
-      onSurfaceVariant: KinoaColors.stone400,
-      outline: KinoaColors.borderDark,
-      outlineVariant: KinoaColors.stone700,
-      error: KinoaColors.error,
-      onError: KinoaColors.textLight,
-      tertiary: KinoaColors.success,
-      onTertiary: KinoaColors.textLight,
+      primary: AppColors.primary,
+      onPrimary: AppColors.textLight,
+      secondary: AppColors.accent,
+      onSecondary: AppColors.stone900,
+      surface: AppColors.background,
+      onSurface: AppColors.textLight,
+      surfaceContainerHighest: AppColors.stone800,
+      onSurfaceVariant: AppColors.stone400,
+      outline: AppColors.borderDark,
+      outlineVariant: AppColors.stone700,
+      error: AppColors.error,
+      onError: AppColors.textLight,
+      tertiary: AppColors.success,
+      onTertiary: AppColors.textLight,
     );
   }
 }
 
 /// Extension sur [BuildContext] : couleurs sémantiques du thème actif (`context.colors.surface`, `context.colors.onSurface`, etc.).
-extension KinoaThemeContext on BuildContext {
+extension AppThemeContext on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
 }

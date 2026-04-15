@@ -1,5 +1,5 @@
 /// Routes nommées : navigation exclusivement via ces constantes, jamais de chaîne littérale.
-class KinoaRoutes {
+class AppRoutes {
   static const String splash = "/";
   static const String welcome = "/welcome";
   static const String signin = "/signin";

@@ -32,7 +32,7 @@ class SendSuccess extends SendState {
 }
 
 class SendError extends SendState {
-  final KinoaException exception;
+  final AppException exception;
   const SendError(this.exception);
 
   @override

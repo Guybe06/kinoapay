@@ -27,68 +27,68 @@ import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
 /// Résolution des routes nommées et transitions de navigation.
-class KinoaRouter {
+class AppRouter {
   /// Détermine la route initiale après le splash selon l'état d'authentification et le setup canaux.
-  /// @return le nom de route [KinoaRoutes] à afficher
+  /// @return le nom de route [AppRoutes] à afficher
   static Future<String> resolveInitialRoute(SecureStorageService storage) async {
     final token = await storage.getToken();
     if (token != null && token.isNotEmpty) {
-      if (!await storage.isChannelsSetupDone()) return KinoaRoutes.paymentSetup;
-      return KinoaRoutes.shell;
+      if (!await storage.isChannelsSetupDone()) return AppRoutes.paymentSetup;
+      return AppRoutes.shell;
     }
-    if (!await storage.isFirstOpenApp()) return KinoaRoutes.signin;
-    return KinoaRoutes.welcome;
+    if (!await storage.isFirstOpenApp()) return AppRoutes.signin;
+    return AppRoutes.welcome;
   }
 
   /// Génère la route et sa transition selon le nom et les arguments fournis.
   /// @return la [Route] construite ou null si la navigation est temporairement bloquée
   static Route<dynamic>? generateRoute(RouteSettings settings) {
-    if (!KinoaNavThrottle.canNavigate) return null;
+    if (!NavThrottle.canNavigate) return null;
     final args = settings.arguments;
 
     switch (settings.name) {
-      case KinoaRoutes.splash:
+      case AppRoutes.splash:
         return _fadeRoute(const SplashView(), settings);
 
-      case KinoaRoutes.welcome:
+      case AppRoutes.welcome:
         final wArgs = args is WelcomeArgs ? args : const WelcomeArgs();
         return _heroRoute(WelcomeView(fromSplash: wArgs.fromSplash), settings);
 
-      case KinoaRoutes.signin:
+      case AppRoutes.signin:
         return _authStepRoute(const SignInView(), settings);
 
-      case KinoaRoutes.signup:
+      case AppRoutes.signup:
         return _authStepRoute(const SignUpStep1View(), settings);
 
-      case KinoaRoutes.signupOtp:
+      case AppRoutes.signupOtp:
         return _authStepRoute(const SignupOtpView(), settings);
 
-      case KinoaRoutes.signupCredentials:
+      case AppRoutes.signupCredentials:
         return _authStepRoute(const SignUpStep2View(), settings);
 
-      case KinoaRoutes.forgotPassword:
+      case AppRoutes.forgotPassword:
         return _authStepRoute(const ForgotPasswordView(), settings);
 
-      case KinoaRoutes.forgotPasswordOtp:
+      case AppRoutes.forgotPasswordOtp:
         return _authStepRoute(const ForgotPasswordOtpView(), settings);
 
-      case KinoaRoutes.forgotPasswordReset:
+      case AppRoutes.forgotPasswordReset:
         return _authStepRoute(const ForgotPasswordResetView(), settings);
 
-      case KinoaRoutes.celebration:
+      case AppRoutes.celebration:
         return _scaleUpRoute(const CelebrationView(), settings);
 
-      case KinoaRoutes.kycAwareness:
+      case AppRoutes.kycAwareness:
         return _authStepRoute(const KycAwarenessView(), settings);
 
-      case KinoaRoutes.paymentSetup:
+      case AppRoutes.paymentSetup:
         return _authStepRoute(const PaymentSetupView(), settings);
 
-      case KinoaRoutes.shell:
+      case AppRoutes.shell:
         final sArgs = args is ShellArgs ? args : const ShellArgs();
-        return _heroRoute(KinoaShell(args: sArgs), settings);
+        return _heroRoute(AppShell(args: sArgs), settings);
 
-      case KinoaRoutes.contacts:
+      case AppRoutes.contacts:
         return _slideRoute(
           BlocProvider(
             create: (_) => ContactsBloc(repository: PhoneContactsRepository()),
@@ -97,7 +97,7 @@ class KinoaRouter {
           settings,
         );
 
-      case KinoaRoutes.notifications:
+      case AppRoutes.notifications:
         return _slideRoute(
           BlocProvider(
             create: (_) => NotificationsBloc(repository: MockNotificationsRepository()),
@@ -106,15 +106,15 @@ class KinoaRouter {
           settings,
         );
 
-      case KinoaRoutes.receipt:
+      case AppRoutes.receipt:
         return _authStepRoute(const ReceiptView(), settings);
 
-      case KinoaRoutes.scanner:
+      case AppRoutes.scanner:
         return _slideRoute(const ScannerView(), settings);
 
       default:
         return _slideRoute(
-          Scaffold(body: Center(child: Text(KinoaStrings.unknownRoute(settings.name ?? "")))),
+          Scaffold(body: Center(child: Text(AppStrings.unknownRoute(settings.name ?? "")))),
           settings,
         );
     }

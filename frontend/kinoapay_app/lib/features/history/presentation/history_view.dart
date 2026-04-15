@@ -26,7 +26,7 @@ class HistoryView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: transactions.isEmpty
-                ? [KinoaEntrance(index: 0, child: _buildEmpty())]
+                ? [StaggeredEntrance(index: 0, child: _buildEmpty())]
                 : _buildGroupedList(transactions),
           ),
         );
@@ -40,29 +40,29 @@ class HistoryView extends StatelessWidget {
     int entranceIdx = 0;
 
     for (final entry in grouped.entries) {
-      widgets.add(KinoaEntrance(
+      widgets.add(StaggeredEntrance(
         index: entranceIdx++,
         child: Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 10, left: 4),
           child: Text(
             entry.key,
-            style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 0.5),
+            style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 0.5),
           ),
         ),
       ));
 
-      widgets.add(KinoaEntrance(
+      widgets.add(StaggeredEntrance(
         index: entranceIdx++,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+            border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
           ),
           child: Column(
             children: [
               for (int i = 0; i < entry.value.length; i++) ...[
-                if (i > 0) Divider(height: 1, indent: 60, endIndent: 16, color: KinoaColors.quinoaDark.withValues(alpha: 0.05)),
+                if (i > 0) Divider(height: 1, indent: 60, endIndent: 16, color: AppColors.quinoaDark.withValues(alpha: 0.05)),
                 _TxTile(tx: entry.value[i]),
               ],
             ],
@@ -100,9 +100,9 @@ class HistoryView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 80),
-          Icon(Icons.receipt_long_rounded, size: 48, color: KinoaColors.quinoaDark.withValues(alpha: 0.2)),
+          Icon(Icons.receipt_long_rounded, size: 48, color: AppColors.quinoaDark.withValues(alpha: 0.2)),
           const SizedBox(height: 12),
-          Text(HistoryStrings.empty, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 14, fontWeight: FontWeight.w600)),
+          Text(HistoryStrings.empty, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 14, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -117,13 +117,13 @@ class _TxTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOut = tx.direction == "outgoing";
     final sign = isOut ? "−" : "+";
-    final color = isOut ? KinoaColors.quinoaDark : KinoaColors.accentDark;
+    final color = isOut ? AppColors.quinoaDark : AppColors.accentDark;
     final name = isOut ? (tx.receiverName ?? tx.receiverIdentifier) : (tx.senderName ?? "Inconnu");
     final time = DateFormat("HH:mm", "fr_FR").format(tx.startedAt);
     final fmt = NumberFormat("#,###", "fr_FR");
 
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, KinoaRoutes.receipt, arguments: tx),
+      onTap: () => Navigator.pushNamed(context, AppRoutes.receipt, arguments: tx),
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -133,13 +133,13 @@ class _TxTile extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: (isOut ? KinoaColors.quinoaDark : KinoaColors.accentDark).withValues(alpha: 0.08),
+                color: (isOut ? AppColors.quinoaDark : AppColors.accentDark).withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isOut ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
                 size: 16,
-                color: isOut ? KinoaColors.quinoaDark : KinoaColors.accentDark,
+                color: isOut ? AppColors.quinoaDark : AppColors.accentDark,
               ),
             ),
             const SizedBox(width: 14),
@@ -147,9 +147,9 @@ class _TxTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+                  Text(name, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
-                  Text(time, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 11)),
+                  Text(time, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 11)),
                 ],
               ),
             ),

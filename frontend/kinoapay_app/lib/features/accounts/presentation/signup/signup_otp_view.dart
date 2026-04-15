@@ -27,7 +27,7 @@ class SignupOtpView extends StatefulWidget {
 }
 
 class _SignupOtpViewState extends State<SignupOtpView> {
-  final _otpKey = GlobalKey<KinoaOtpInputState>();
+  final _otpKey = GlobalKey<OtpInputState>();
   bool _hasError = false;
   bool _isVerifying = false;
   bool _navigating = false;
@@ -85,7 +85,7 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(context, KinoaRoutes.signupCredentials, arguments: _step1).then((_) => _navigating = false);
+      Navigator.pushNamed(context, AppRoutes.signupCredentials, arguments: _step1).then((_) => _navigating = false);
     } else if (state is AuthError) {
       setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);
@@ -100,7 +100,7 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: _onState,
@@ -117,9 +117,9 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(children: [
-        IconButton(icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark), onPressed: () => Navigator.pop(context)),
+        IconButton(icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark), onPressed: () => Navigator.pop(context)),
         const Spacer(),
-        const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+        const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
         const Spacer(flex: 2),
       ]),
     );
@@ -132,17 +132,17 @@ class _SignupOtpViewState extends State<SignupOtpView> {
         const SizedBox(height: 32),
         _buildStepIndicator(),
         const SizedBox(height: 24),
-        const Text(AuthStrings.otpTitle, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5)),
+        const Text(AuthStrings.otpTitle, style: TextStyle(color: AppColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5)),
         const SizedBox(height: 12),
         RichText(text: TextSpan(
           text: "${AuthStrings.otpBody} ",
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
-          children: [TextSpan(text: _maskedPhone, style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700))],
+          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+          children: [TextSpan(text: _maskedPhone, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700))],
         )),
         const SizedBox(height: 48),
-        KinoaOtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
+        OtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
         const SizedBox(height: 40),
-        KinoaPrimaryButton(text: "Vérifier", isLoading: _isVerifying, onPressed: () {
+        PrimaryButton(text: "Vérifier", isLoading: _isVerifying, onPressed: () {
           final code = _otpKey.currentState?.code ?? "";
           if (code.length == _otpLength) _onOtpCompleted(code);
         }),
@@ -158,14 +158,14 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       _dot(filled: true), const SizedBox(width: 6),
       _dot(filled: true), const SizedBox(width: 6),
       _dot(filled: false), const SizedBox(width: 10),
-      Text("Vérification", style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500)),
+      Text("Vérification", style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500)),
     ]);
   }
 
   Widget _dot({required bool filled}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250), width: 8, height: 8,
-      decoration: BoxDecoration(color: filled ? KinoaColors.quinoaGold : KinoaColors.quinoaDark.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(4)),
+      decoration: BoxDecoration(color: filled ? AppColors.quinoaGold : AppColors.quinoaDark.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(4)),
     );
   }
 
@@ -173,13 +173,13 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     if (_countdown > 0) {
       return Text.rich(TextSpan(
         text: "${AuthStrings.otpResendIn} ",
-        style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 14),
-        children: [TextSpan(text: "${_countdown}s", style: const TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w700))],
+        style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 14),
+        children: [TextSpan(text: "${_countdown}s", style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700))],
       ));
     }
     return TextButton(
       onPressed: _resend,
-      child: const Text(AuthStrings.otpResend, style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+      child: const Text(AuthStrings.otpResend, style: TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
     );
   }
 }

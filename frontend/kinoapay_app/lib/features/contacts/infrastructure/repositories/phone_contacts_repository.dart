@@ -28,14 +28,14 @@ class PhoneContactsRepository implements ContactsRepository {
           id: pc.id,
           fullName: pc.displayName.isNotEmpty ? pc.displayName : normalized,
           phone: normalized,
-          isOnKinoaPay: profile != null,
-          kinoaId: profile?.publicHandle,
+          isRegistered: profile != null,
+          publicHandle: profile?.publicHandle,
           channels: profile?.channels ?? const [],
         ));
       }
 
       contacts.sort((a, b) {
-        if (a.isOnKinoaPay != b.isOnKinoaPay) return a.isOnKinoaPay ? -1 : 1;
+        if (a.isRegistered != b.isRegistered) return a.isRegistered ? -1 : 1;
         return a.fullName.compareTo(b.fullName);
       });
 

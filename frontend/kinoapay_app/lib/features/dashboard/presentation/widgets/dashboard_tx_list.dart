@@ -23,10 +23,10 @@ class DashboardTxList extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.05)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.05)),
         boxShadow: [
           BoxShadow(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+            color: AppColors.quinoaDark.withValues(alpha: 0.04),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -46,7 +46,7 @@ class DashboardTxList extends StatelessWidget {
                   child: Divider(
                     height: 1,
                     thickness: 1,
-                    color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+                    color: AppColors.quinoaDark.withValues(alpha: 0.04),
                   ),
                 ),
             ],
@@ -72,9 +72,9 @@ class _LoadingSkeleton extends StatelessWidget {
           child: Container(
             height: 74,
             decoration: BoxDecoration(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+              color: AppColors.quinoaDark.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+              border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
             ),
           ),
         ),
@@ -98,13 +98,13 @@ class _EmptyState extends StatelessWidget {
           Icon(
             SolarIconsOutline.history,
             size: 30,
-            color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.40),
+            color: AppColors.quinoaWarmGray.withValues(alpha: 0.40),
           ),
           const SizedBox(height: 12),
           Text(
             "Aucune transaction récente",
             style: TextStyle(
-              color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

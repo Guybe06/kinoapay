@@ -2,100 +2,100 @@ import "package:kinoapay_app/core/constants/error_codes.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 
 /// Exception typée, propagée des repositories aux BLoCs ; chaque feature peut ajouter ses codes dans [feature]_error_codes.dart.
-class KinoaException implements Exception {
+class AppException implements Exception {
   final String message;
   final String code;
   final int? statusCode;
 
   /// @param message     Message utilisateur décrivant l'erreur
-  /// @param code        Code interne issu de [KinoaErrorCodes] ou des codes de feature
+  /// @param code        Code interne issu de [ErrorCodes] ou des codes de feature
   /// @param statusCode  Code HTTP associé, null si l'erreur est cliente
-  const KinoaException({
+  const AppException({
     required this.message,
     required this.code,
     this.statusCode,
   });
 
-  factory KinoaException.noInternet() => const KinoaException(
-        message: KinoaStrings.errorNoInternet,
-        code: KinoaErrorCodes.noInternet,
+  factory AppException.noInternet() => const AppException(
+        message: AppStrings.errorNoInternet,
+        code: ErrorCodes.noInternet,
       );
 
-  factory KinoaException.timeout() => const KinoaException(
-        message: KinoaStrings.errorTimeout,
-        code: KinoaErrorCodes.timeout,
+  factory AppException.timeout() => const AppException(
+        message: AppStrings.errorTimeout,
+        code: ErrorCodes.timeout,
       );
 
-  factory KinoaException.network() => const KinoaException(
-        message: KinoaStrings.errorNetwork,
-        code: KinoaErrorCodes.network,
+  factory AppException.network() => const AppException(
+        message: AppStrings.errorNetwork,
+        code: ErrorCodes.network,
       );
 
-  factory KinoaException.unauthorized() => const KinoaException(
-        message: KinoaStrings.errorUnauthorized,
-        code: KinoaErrorCodes.unauthorized,
+  factory AppException.unauthorized() => const AppException(
+        message: AppStrings.errorUnauthorized,
+        code: ErrorCodes.unauthorized,
         statusCode: 401,
       );
 
-  factory KinoaException.tokenInvalid() => const KinoaException(
-        message: KinoaStrings.errorTokenInvalid,
-        code: KinoaErrorCodes.tokenInvalid,
+  factory AppException.tokenInvalid() => const AppException(
+        message: AppStrings.errorTokenInvalid,
+        code: ErrorCodes.tokenInvalid,
         statusCode: 401,
       );
 
-  factory KinoaException.sessionRevoked() => const KinoaException(
-        message: KinoaStrings.errorSessionRevoked,
-        code: KinoaErrorCodes.sessionRevoked,
+  factory AppException.sessionRevoked() => const AppException(
+        message: AppStrings.errorSessionRevoked,
+        code: ErrorCodes.sessionRevoked,
         statusCode: 401,
       );
 
-  factory KinoaException.serverError() => const KinoaException(
-        message: KinoaStrings.errorServer,
-        code: KinoaErrorCodes.serverError,
+  factory AppException.serverError() => const AppException(
+        message: AppStrings.errorServer,
+        code: ErrorCodes.serverError,
         statusCode: 500,
       );
 
-  factory KinoaException.serviceUnavailable() => const KinoaException(
-        message: KinoaStrings.errorServiceUnavailable,
-        code: KinoaErrorCodes.serviceUnavailable,
+  factory AppException.serviceUnavailable() => const AppException(
+        message: AppStrings.errorServiceUnavailable,
+        code: ErrorCodes.serviceUnavailable,
         statusCode: 503,
       );
 
-  factory KinoaException.notFound() => const KinoaException(
-        message: KinoaStrings.errorNotFound,
-        code: KinoaErrorCodes.notFound,
+  factory AppException.notFound() => const AppException(
+        message: AppStrings.errorNotFound,
+        code: ErrorCodes.notFound,
         statusCode: 404,
       );
 
-  factory KinoaException.conflict() => const KinoaException(
-        message: KinoaStrings.errorConflict,
-        code: KinoaErrorCodes.conflict,
+  factory AppException.conflict() => const AppException(
+        message: AppStrings.errorConflict,
+        code: ErrorCodes.conflict,
         statusCode: 409,
       );
 
-  factory KinoaException.rateLimited() => const KinoaException(
-        message: KinoaStrings.errorRateLimited,
-        code: KinoaErrorCodes.rateLimited,
+  factory AppException.rateLimited() => const AppException(
+        message: AppStrings.errorRateLimited,
+        code: ErrorCodes.rateLimited,
         statusCode: 429,
       );
 
   /// @param detail  message utilisateur optionnel en remplacement du message par défaut
-  /// @return une instance avec code [KinoaErrorCodes.localStorage]
-  factory KinoaException.localStorage([String? detail]) => KinoaException(
-        message: detail ?? KinoaStrings.errorLocalStorage,
-        code: KinoaErrorCodes.localStorage,
+  /// @return une instance avec code [ErrorCodes.localStorage]
+  factory AppException.localStorage([String? detail]) => AppException(
+        message: detail ?? AppStrings.errorLocalStorage,
+        code: ErrorCodes.localStorage,
       );
 
-  factory KinoaException.unknown() => const KinoaException(
-        message: KinoaStrings.errorUnknown,
-        code: KinoaErrorCodes.unknown,
+  factory AppException.unknown() => const AppException(
+        message: AppStrings.errorUnknown,
+        code: ErrorCodes.unknown,
       );
 
-  factory KinoaException.cancelled() => const KinoaException(
-        message: KinoaStrings.errorCancelled,
-        code: KinoaErrorCodes.cancelled,
+  factory AppException.cancelled() => const AppException(
+        message: AppStrings.errorCancelled,
+        code: ErrorCodes.cancelled,
       );
 
   @override
-  String toString() => "KinoaException[$code${statusCode != null ? ':$statusCode' : ''}] $message";
+  String toString() => "AppException[$code${statusCode != null ? ':$statusCode' : ''}] $message";
 }

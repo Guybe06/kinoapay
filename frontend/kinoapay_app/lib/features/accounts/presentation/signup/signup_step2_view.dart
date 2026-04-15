@@ -46,7 +46,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signupSuccess);
       Future.delayed(const Duration(milliseconds: 800), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.celebration, (_) => false,
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.celebration, (_) => false,
             arguments: state.user.firstName ?? "");
       });
     } else if (state is AuthError) {
@@ -74,7 +74,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: _onState,
@@ -99,11 +99,11 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -119,39 +119,39 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            KinoaEntrance(index: 0, child: _buildStepIndicator()),
+            StaggeredEntrance(index: 0, child: _buildStepIndicator()),
             const SizedBox(height: 24),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 1,
               child: const Text(
                 AuthStrings.signupStep2Title,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
               ),
             ),
             const SizedBox(height: 12),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 2,
               child: Text(
                 AuthStrings.signupStep2Subtitle,
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               ),
             ),
             const SizedBox(height: 40),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 3,
               child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: "sofia@exemple.com", keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
             ),
             const SizedBox(height: 20),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 4,
               child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: "Créer un mot de passe", obscureText: true, validator: AuthValidator.validatePassword),
             ),
             const SizedBox(height: 40),
-            KinoaEntrance(index: 5, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1))),
+            StaggeredEntrance(index: 5, child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1))),
             const SizedBox(height: 32),
-            KinoaEntrance(index: 6, child: _buildSigninLink(context)),
+            StaggeredEntrance(index: 6, child: _buildSigninLink(context)),
             const SizedBox(height: 16),
-            KinoaEntrance(index: 7, child: _buildTerms(context)),
+            StaggeredEntrance(index: 7, child: _buildTerms(context)),
             const SizedBox(height: 32),
           ],
         ),
@@ -168,7 +168,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         const SizedBox(width: 10),
         Text(
           "Étape 2 sur 2",
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
+          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -180,7 +180,7 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       width: active ? 20 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: active ? KinoaColors.quinoaGold : KinoaColors.quinoaDark.withValues(alpha: 0.15),
+        color: active ? AppColors.quinoaGold : AppColors.quinoaDark.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -192,16 +192,16 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         onPressed: () {
           if (_navigating) return;
           _navigating = true;
-          Navigator.pushNamed(context, KinoaRoutes.signin).then((_) => _navigating = false);
+          Navigator.pushNamed(context, AppRoutes.signin).then((_) => _navigating = false);
         },
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",
-            style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
+            style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontWeight: FontWeight.w500),
             children: const [
               TextSpan(
                 text: AuthStrings.signupSigninLink,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontWeight: FontWeight.w800),
+                style: TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w800),
               ),
             ],
           ),
@@ -211,8 +211,8 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
   }
 
   Widget _buildTerms(BuildContext context) {
-    final muted = TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12, height: 1.5);
-    final link = TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.6), fontSize: 12, height: 1.5, fontWeight: FontWeight.w700, decoration: TextDecoration.underline, decorationColor: KinoaColors.quinoaDark.withValues(alpha: 0.3));
+    final muted = TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 12, height: 1.5);
+    final link = TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.6), fontSize: 12, height: 1.5, fontWeight: FontWeight.w700, decoration: TextDecoration.underline, decorationColor: AppColors.quinoaDark.withValues(alpha: 0.3));
 
     return Center(
       child: Padding(

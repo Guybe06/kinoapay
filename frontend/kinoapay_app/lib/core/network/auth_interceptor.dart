@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 
 /// Intercepteur Dio : injecte le token JWT, rafraîchit automatiquement sur 401
-/// (refresh token rotation avec mutex) et traduit les erreurs HTTP en KinoaException.
+/// (refresh token rotation avec mutex) et traduit les erreurs HTTP en AppException.
 class AuthInterceptor extends Interceptor {
   final SecureStorageService _storage;
   final Dio _dio;
@@ -14,7 +14,7 @@ class AuthInterceptor extends Interceptor {
   Completer<String?>? _refreshCompleter;
 
   /// @param storage  Service de stockage des tokens
-  /// @param dio      Instance Dio pour POST [KinoaApi.refresh] sans réentrer dans l'intercepteur de façon circulaire
+  /// @param dio      Instance Dio pour POST [ApiPaths.refresh] sans réentrer dans l'intercepteur de façon circulaire
   AuthInterceptor(this._storage, this._dio);
 
   /// Ajoute le header Authorization si un access token est disponible.
@@ -33,7 +33,7 @@ class AuthInterceptor extends Interceptor {
     final status = err.response?.statusCode;
     final path = err.requestOptions.path;
 
-    if (status != 401 || path == KinoaApi.refresh) {
+    if (status != 401 || path == ApiPaths.refresh) {
       handler.reject(_wrap(err));
       return;
     }
@@ -69,7 +69,7 @@ class AuthInterceptor extends Interceptor {
       }
 
       final response = await _dio.post(
-        KinoaApi.refresh,
+        ApiPaths.refresh,
         data: {"refreshToken": refreshToken},
       );
 
@@ -88,9 +88,9 @@ class AuthInterceptor extends Interceptor {
     }
   }
 
-  /// Enveloppe une DioException en y attachant un KinoaException typé.
+  /// Enveloppe une DioException en y attachant un AppException typé.
   DioException _wrap(DioException err) {
-    final exception = _toKinoaException(err);
+    final exception = _toAppException(err);
     return DioException(
       requestOptions: err.requestOptions,
       response: err.response,
@@ -99,25 +99,25 @@ class AuthInterceptor extends Interceptor {
     );
   }
 
-  KinoaException _toKinoaException(DioException err) {
+  AppException _toAppException(DioException err) {
     if (err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.receiveTimeout ||
         err.type == DioExceptionType.sendTimeout) {
-      return KinoaException.timeout();
+      return AppException.timeout();
     }
     if (err.type == DioExceptionType.connectionError) {
-      return KinoaException.network();
+      return AppException.network();
     }
     final status = err.response?.statusCode;
-    if (status == null) return KinoaException.unknown();
+    if (status == null) return AppException.unknown();
     return switch (status) {
-      401 => KinoaException.unauthorized(),
-      404 => KinoaException.notFound(),
-      409 => KinoaException.conflict(),
-      429 => KinoaException.rateLimited(),
-      503 => KinoaException.serviceUnavailable(),
-      _ when status >= 500 => KinoaException.serverError(),
-      _ => KinoaException.unknown(),
+      401 => AppException.unauthorized(),
+      404 => AppException.notFound(),
+      409 => AppException.conflict(),
+      429 => AppException.rateLimited(),
+      503 => AppException.serviceUnavailable(),
+      _ when status >= 500 => AppException.serverError(),
+      _ => AppException.unknown(),
     };
   }
 }

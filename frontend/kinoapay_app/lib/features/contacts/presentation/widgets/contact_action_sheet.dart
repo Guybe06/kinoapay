@@ -17,7 +17,7 @@ class ContactActionSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
       decoration: const BoxDecoration(
-        color: KinoaColors.quinoaCream,
+        color: AppColors.quinoaCream,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
@@ -25,25 +25,25 @@ class ContactActionSheet extends StatelessWidget {
         children: [
           Container(
             width: 36, height: 4,
-            decoration: BoxDecoration(color: KinoaColors.quinoaDark.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(color: AppColors.quinoaDark.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(2)),
           ),
           const SizedBox(height: 24),
           Container(
             width: 60, height: 60,
-            decoration: BoxDecoration(color: KinoaColors.quinoaRed.withValues(alpha: 0.10), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: AppColors.quinoaRed.withValues(alpha: 0.10), shape: BoxShape.circle),
             alignment: Alignment.center,
-            child: Text(initials, style: const TextStyle(color: KinoaColors.quinoaRed, fontSize: 20, fontWeight: FontWeight.w800)),
+            child: Text(initials, style: const TextStyle(color: AppColors.quinoaRed, fontSize: 20, fontWeight: FontWeight.w800)),
           ),
           const SizedBox(height: 12),
-          Text(contact.fullName, style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 17, fontWeight: FontWeight.w900, letterSpacing: -0.4)),
+          Text(contact.fullName, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 17, fontWeight: FontWeight.w900, letterSpacing: -0.4)),
           const SizedBox(height: 3),
-          Text(contact.phone, style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13)),
-          if (contact.kinoaId != null) ...[
+          Text(contact.phone, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13)),
+          if (contact.publicHandle != null) ...[
             const SizedBox(height: 6),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(color: KinoaColors.quinoaGold.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100)),
-              child: Text("@${contact.kinoaId}", style: const TextStyle(color: KinoaColors.quinoaGold, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.2)),
+              decoration: BoxDecoration(color: AppColors.quinoaGold.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100)),
+              child: Text("@${contact.publicHandle}", style: const TextStyle(color: AppColors.quinoaGold, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.2)),
             ),
           ],
           if (contact.channels.isNotEmpty) ...[
@@ -52,7 +52,7 @@ class ContactActionSheet extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 "CANAUX DISPONIBLES",
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.8),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.8),
               ),
             ),
             const SizedBox(height: 8),
@@ -88,7 +88,7 @@ class _ChannelBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMtn = channel == PaymentChannel.mtn;
-    final color = isMtn ? KinoaColors.mtnYellow : KinoaColors.airtelRed;
+    final color = isMtn ? AppColors.mtnYellow : AppColors.airtelRed;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -103,7 +103,7 @@ class _ChannelBadge extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             isMtn ? "MTN Mobile Money" : "Airtel Money",
-            style: TextStyle(color: isMtn ? KinoaColors.quinoaDark : KinoaColors.airtelRed, fontSize: 11, fontWeight: FontWeight.w700),
+            style: TextStyle(color: isMtn ? AppColors.quinoaDark : AppColors.airtelRed, fontSize: 11, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -125,15 +125,15 @@ class _ActionBtn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          color: secondary ? KinoaColors.quinoaDark.withValues(alpha: 0.06) : KinoaColors.quinoaDark,
+          color: secondary ? AppColors.quinoaDark.withValues(alpha: 0.06) : AppColors.quinoaDark,
           borderRadius: BorderRadius.circular(100),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 15, color: secondary ? KinoaColors.quinoaDark : Colors.white),
+            Icon(icon, size: 15, color: secondary ? AppColors.quinoaDark : Colors.white),
             const SizedBox(width: 7),
-            Text(label, style: TextStyle(color: secondary ? KinoaColors.quinoaDark : Colors.white, fontSize: 14, fontWeight: FontWeight.w800)),
+            Text(label, style: TextStyle(color: secondary ? AppColors.quinoaDark : Colors.white, fontSize: 14, fontWeight: FontWeight.w800)),
           ],
         ),
       ),

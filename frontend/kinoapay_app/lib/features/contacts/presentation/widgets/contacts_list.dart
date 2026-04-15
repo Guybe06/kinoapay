@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_action_sheet.dart";
@@ -19,7 +20,7 @@ class ContactsList extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 40),
       children: [
         if (state.onApp.isNotEmpty) ...[
-          _SectionHeader(label: "Sur KinoaPay", count: state.onApp.length),
+          _SectionHeader(label: "Sur ${AppStrings.appName}", count: state.onApp.length),
           _ContactGroup(contacts: state.onApp, actionable: true),
         ],
         if (state.others.isNotEmpty) ...[
@@ -45,7 +46,7 @@ class _SectionHeader extends StatelessWidget {
           Text(
             label.toUpperCase(),
             style: TextStyle(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.45),
+              color: AppColors.quinoaDark.withValues(alpha: 0.45),
               fontSize: 10,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.8,
@@ -55,13 +56,13 @@ class _SectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
             decoration: BoxDecoration(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.07),
+              color: AppColors.quinoaDark.withValues(alpha: 0.07),
               borderRadius: BorderRadius.circular(100),
             ),
             child: Text(
               "$count",
               style: TextStyle(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.55),
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
               ),
@@ -85,7 +86,7 @@ class _ContactGroup extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KinoaColors.quinoaDark.withValues(alpha: 0.06)),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
       child: Column(
         children: List.generate(contacts.length, (i) {
@@ -104,7 +105,7 @@ class _ContactGroup extends StatelessWidget {
                   thickness: 1,
                   indent: 78,
                   endIndent: 20,
-                  color: KinoaColors.quinoaDark.withValues(alpha: 0.05),
+                  color: AppColors.quinoaDark.withValues(alpha: 0.05),
                 ),
             ],
           );
@@ -139,12 +140,12 @@ class _EmptySearchState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.search_off_rounded, size: 48, color: KinoaColors.quinoaDark.withValues(alpha: 0.2)),
+          Icon(Icons.search_off_rounded, size: 48, color: AppColors.quinoaDark.withValues(alpha: 0.2)),
           const SizedBox(height: 12),
           Text(
             "Aucun contact trouvé",
             style: TextStyle(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.4),
+              color: AppColors.quinoaDark.withValues(alpha: 0.4),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

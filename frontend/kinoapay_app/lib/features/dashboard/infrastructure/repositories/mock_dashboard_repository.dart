@@ -85,7 +85,7 @@ class MockDashboardRepository implements DashboardRepository {
     return [
       // Aujourd'hui
       Transaction(
-        ktxid: "KTX-2026-T001",
+        transactionId: "TX-2026-T001",
         status: "COMPLETED",
         receiverIdentifier: "+242066667788",
         receiverName: "Jean Dupont",
@@ -95,7 +95,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "Airtel",
         fees: const TransactionFees(
           sourceOperatorFee: 250, destinationOperatorFee: 0,
-          kinoaFee: 150, totalFee: 400,
+          platformFee: 150, totalFee: 400,
           amountDebited: 25400, amountReceived: 25000,
         ),
         startedAt: now.subtract(const Duration(hours: 1)),
@@ -103,7 +103,7 @@ class MockDashboardRepository implements DashboardRepository {
         amlScore: 0.15,
       ),
       Transaction(
-        ktxid: "KTX-2026-T002",
+        transactionId: "TX-2026-T002",
         status: "COMPLETED",
         receiverIdentifier: "+242055554433",
         senderName: "Marie Claire",
@@ -113,7 +113,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "MTN",
         fees: const TransactionFees(
           sourceOperatorFee: 150, destinationOperatorFee: 0,
-          kinoaFee: 100, totalFee: 250,
+          platformFee: 100, totalFee: 250,
           amountDebited: 15250, amountReceived: 15000,
         ),
         startedAt: now.subtract(const Duration(hours: 3)),
@@ -122,7 +122,7 @@ class MockDashboardRepository implements DashboardRepository {
       ),
       // Hier
       Transaction(
-        ktxid: "KTX-2026-H001",
+        transactionId: "TX-2026-H001",
         status: "COMPLETED",
         receiverIdentifier: "+242066660011",
         receiverName: "Paul Mbengue",
@@ -132,7 +132,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "MTN",
         fees: const TransactionFees(
           sourceOperatorFee: 500, destinationOperatorFee: 0,
-          kinoaFee: 300, totalFee: 800,
+          platformFee: 300, totalFee: 800,
           amountDebited: 50800, amountReceived: 50000,
         ),
         startedAt: now.subtract(const Duration(days: 1, hours: 10)),
@@ -140,7 +140,7 @@ class MockDashboardRepository implements DashboardRepository {
         amlScore: 0.48,
       ),
       Transaction(
-        ktxid: "KTX-2026-H002",
+        transactionId: "TX-2026-H002",
         status: "COMPLETED",
         receiverIdentifier: "+242055559999",
         senderName: "Karim Idriss",
@@ -150,7 +150,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "Airtel",
         fees: const TransactionFees(
           sourceOperatorFee: 350, destinationOperatorFee: 0,
-          kinoaFee: 200, totalFee: 550,
+          platformFee: 200, totalFee: 550,
           amountDebited: 35550, amountReceived: 35000,
         ),
         startedAt: now.subtract(const Duration(days: 1, hours: 14)),
@@ -159,7 +159,7 @@ class MockDashboardRepository implements DashboardRepository {
       ),
       // J-2
       Transaction(
-        ktxid: "KTX-2026-D002",
+        transactionId: "TX-2026-D002",
         status: "COMPLETED",
         receiverIdentifier: "+242066661122",
         senderName: "Fatou Diallo",
@@ -169,7 +169,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "Airtel",
         fees: const TransactionFees(
           sourceOperatorFee: 350, destinationOperatorFee: 0,
-          kinoaFee: 200, totalFee: 550,
+          platformFee: 200, totalFee: 550,
           amountDebited: 35550, amountReceived: 35000,
         ),
         startedAt: now.subtract(const Duration(days: 2, hours: 9)),
@@ -178,7 +178,7 @@ class MockDashboardRepository implements DashboardRepository {
       ),
       // J-3
       Transaction(
-        ktxid: "KTX-2026-D003A",
+        transactionId: "TX-2026-D003A",
         status: "COMPLETED",
         receiverIdentifier: "+242055558877",
         senderName: "Grace Mikobi",
@@ -188,7 +188,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "MTN",
         fees: const TransactionFees(
           sourceOperatorFee: 800, destinationOperatorFee: 0,
-          kinoaFee: 500, totalFee: 1300,
+          platformFee: 500, totalFee: 1300,
           amountDebited: 81300, amountReceived: 80000,
         ),
         startedAt: now.subtract(const Duration(days: 3, hours: 8)),
@@ -196,7 +196,7 @@ class MockDashboardRepository implements DashboardRepository {
         amlScore: 0.38,
       ),
       Transaction(
-        ktxid: "KTX-2026-D003B",
+        transactionId: "TX-2026-D003B",
         status: "PENDING",
         receiverIdentifier: "+242066663344",
         receiverName: "Théo Nganga",
@@ -206,7 +206,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "MTN",
         fees: const TransactionFees(
           sourceOperatorFee: 400, destinationOperatorFee: 0,
-          kinoaFee: 250, totalFee: 650,
+          platformFee: 250, totalFee: 650,
           amountDebited: 40650, amountReceived: 40000,
         ),
         startedAt: now.subtract(const Duration(days: 3, hours: 16)),
@@ -215,7 +215,7 @@ class MockDashboardRepository implements DashboardRepository {
       ),
       // J-5
       Transaction(
-        ktxid: "KTX-2026-D005",
+        transactionId: "TX-2026-D005",
         status: "COMPLETED",
         receiverIdentifier: "+242066665566",
         senderName: "Alain Bossou",
@@ -225,7 +225,7 @@ class MockDashboardRepository implements DashboardRepository {
         destinationChannel: "Airtel",
         fees: const TransactionFees(
           sourceOperatorFee: 1200, destinationOperatorFee: 0,
-          kinoaFee: 700, totalFee: 1900,
+          platformFee: 700, totalFee: 1900,
           amountDebited: 121900, amountReceived: 120000,
         ),
         startedAt: now.subtract(const Duration(days: 5, hours: 11)),

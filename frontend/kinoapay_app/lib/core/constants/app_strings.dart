@@ -1,6 +1,6 @@
 /// Chaînes globales partagées ; chaque feature complète via [feature]_strings.dart dans son dossier domain/.
-class KinoaStrings {
-  static const String appName = "KinoaPay";
+class AppStrings {
+  static const String appName = "kinoaPay";
   static const String currency = "XAF";
   static const String currencyLabel = "FCFA";
   static const String continueBtn = "Continuer";

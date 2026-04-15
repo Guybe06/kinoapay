@@ -4,21 +4,21 @@ import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 
 /// Navigation flottante light, fond blanc, ombre douce, pastille quinoaGold glissante.
-class KinoaBottomNav extends StatefulWidget {
+class AppBottomNav extends StatefulWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
 
-  const KinoaBottomNav({
+  const AppBottomNav({
     super.key,
     required this.currentIndex,
     required this.onTabChanged,
   });
 
   @override
-  State<KinoaBottomNav> createState() => _KinoaBottomNavState();
+  State<AppBottomNav> createState() => _AppBottomNavState();
 }
 
-class _KinoaBottomNavState extends State<KinoaBottomNav> {
+class _AppBottomNavState extends State<AppBottomNav> {
   final List<GlobalKey> _tabKeys =
       List.generate(NavItems.all.length, (_) => GlobalKey());
   final GlobalKey _stackKey = GlobalKey();
@@ -37,7 +37,7 @@ class _KinoaBottomNavState extends State<KinoaBottomNav> {
   }
 
   @override
-  void didUpdateWidget(KinoaBottomNav old) {
+  void didUpdateWidget(AppBottomNav old) {
     super.didUpdateWidget(old);
     if (old.currentIndex != widget.currentIndex) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -76,12 +76,12 @@ class _KinoaBottomNavState extends State<KinoaBottomNav> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(28),
             border: Border.all(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.07),
+              color: AppColors.quinoaDark.withValues(alpha: 0.07),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: KinoaColors.quinoaDark.withValues(alpha: 0.10),
+                color: AppColors.quinoaDark.withValues(alpha: 0.10),
                 blurRadius: 24,
                 offset: const Offset(0, 6),
               ),
@@ -102,7 +102,7 @@ class _KinoaBottomNavState extends State<KinoaBottomNav> {
                   height: _pillHeight,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: KinoaColors.quinoaGold,
+                      color: AppColors.quinoaGold,
                       borderRadius: BorderRadius.circular(22),
                     ),
                   ),
@@ -155,7 +155,7 @@ class _NavTab extends StatelessWidget {
             Icon(
               isActive ? item.activeIcon : item.icon,
               size: 20,
-              color: isActive ? Colors.white : KinoaColors.quinoaWarmGray,
+              color: isActive ? Colors.white : AppColors.quinoaWarmGray,
             ),
             if (isActive) ...[
               const SizedBox(width: 6),

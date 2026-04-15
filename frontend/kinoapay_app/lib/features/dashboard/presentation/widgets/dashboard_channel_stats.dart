@@ -26,7 +26,7 @@ class DashboardChannelStats extends StatelessWidget {
               const Text(
                 "Par canal",
                 style: TextStyle(
-                  color: KinoaColors.quinoaDark,
+                  color: AppColors.quinoaDark,
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.3,
@@ -37,7 +37,7 @@ class DashboardChannelStats extends StatelessWidget {
                 child: const Text(
                   "Voir plus",
                   style: TextStyle(
-                    color: KinoaColors.quinoaGold,
+                    color: AppColors.quinoaGold,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -80,7 +80,7 @@ class _ChannelCard extends StatelessWidget {
       case "AIRTEL":
         return const Color(0xFFE4002B);
       default:
-        return KinoaColors.quinoaGold;
+        return AppColors.quinoaGold;
     }
   }
 
@@ -89,19 +89,19 @@ class _ChannelCard extends StatelessWidget {
     final compact = NumberFormat.compact(locale: "fr_FR");
     final brand = _brandColor;
     final netPositive = stat.net >= 0;
-    final netColor = netPositive ? KinoaColors.success : KinoaColors.quinoaRed;
+    final netColor = netPositive ? AppColors.success : AppColors.quinoaRed;
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: KinoaColors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: KinoaColors.quinoaSand.withValues(alpha: 0.5),
+          color: AppColors.quinoaSand.withValues(alpha: 0.5),
         ),
         boxShadow: [
           BoxShadow(
-            color: KinoaColors.quinoaDark.withValues(alpha: 0.04),
+            color: AppColors.quinoaDark.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -126,7 +126,7 @@ class _ChannelCard extends StatelessWidget {
                 child: Text(
                   stat.type,
                   style: const TextStyle(
-                    color: KinoaColors.quinoaDark,
+                    color: AppColors.quinoaDark,
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.2,
@@ -141,7 +141,7 @@ class _ChannelCard extends StatelessWidget {
           Text(
             "${compact.format(stat.total)} XAF",
             style: const TextStyle(
-              color: KinoaColors.quinoaDark,
+              color: AppColors.quinoaDark,
               fontSize: 18,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.6,
@@ -194,7 +194,7 @@ class _ChannelCard extends StatelessWidget {
           Text(
             "${stat.txCount} transaction${stat.txCount > 1 ? "s" : ""}",
             style: const TextStyle(
-              color: KinoaColors.quinoaWarmGray,
+              color: AppColors.quinoaWarmGray,
               fontSize: 10,
               fontWeight: FontWeight.w500,
             ),

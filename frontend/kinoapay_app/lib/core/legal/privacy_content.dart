@@ -1,18 +1,18 @@
 /// Textes de la politique de confidentialité (titres et corps) pour affichage structuré.
-abstract final class KinoaPrivacy {
+abstract final class PrivacyContent {
   static const String title = "Politique de Confidentialité";
   static const String version = "Version 1.0, Avril 2026";
   static const String controller = "Responsable du traitement : Winsa Ltd, Brazzaville, République du Congo";
 
   static const String a1Title = "1. Données collectées";
   static const String a1Body =
-      "Dans le cadre de l'utilisation de KinoaPay, Winsa Ltd collecte les catégories "
+      "Dans le cadre de l'utilisation de kinoaPay, Winsa Ltd collecte les catégories "
       "de données suivantes :\n\n"
       "Données d'identité : nom, prénom, date de naissance, numéro de pièce d'identité "
       "nationale ou passeport (collectés dans le cadre du processus KYC).\n\n"
       "Données de contact : numéro de téléphone mobile, adresse e-mail.\n\n"
       "Données financières : numéros de comptes Mobile Money ou bancaires liés au compte "
-      "KinoaPay, historique complet des transactions enregistrées dans le KinoaLedger.\n\n"
+      "kinoaPay, historique complet des transactions enregistrées dans le KinoaLedger.\n\n"
       "Données techniques : adresse IP, type d'appareil, système d'exploitation, "
       "version de l'application, identifiant de session, journaux d'activité.";
 
@@ -58,7 +58,7 @@ abstract final class KinoaPrivacy {
 
   static const String a6Title = "6. Sécurité";
   static const String a6Body =
-      "KinoaPay applique un chiffrement de bout en bout (TLS 1.3 minimum) sur l'ensemble "
+      "kinoaPay applique un chiffrement de bout en bout (TLS 1.3 minimum) sur l'ensemble "
       "des communications entre l'application et les serveurs. Les données sensibles "
       "(identifiants de compte, tokens d'authentification) sont stockées de façon chiffrée "
       "sur l'appareil de l'utilisateur via un stockage sécurisé dédié. Les serveurs de "
@@ -74,13 +74,13 @@ abstract final class KinoaPrivacy {
       "d'inexactitude, droit à l'effacement (sous réserve des obligations légales de "
       "conservation), droit à la limitation du traitement, droit à la portabilité pour "
       "les données fournies sur la base du consentement ou du contrat.\n\n"
-      "Ces droits s'exercent par demande écrite adressée à : privacy@kinoaPay.com "
+      "Ces droits s'exercent par demande écrite adressée à : privacy@kinoapay.com "
       "ou via la rubrique dédiée dans les paramètres de l'application. "
       "Winsa Ltd s'engage à répondre dans un délai de 30 jours ouvrés.";
 
   static const String a8Title = "8. Cookies et traceurs";
   static const String a8Body =
-      "L'application mobile KinoaPay n'utilise pas de cookies publicitaires ni de "
+      "L'application mobile kinoaPay n'utilise pas de cookies publicitaires ni de "
       "traceurs de profilage commercial. Des traceurs techniques strictement nécessaires "
       "au bon fonctionnement du service (maintien de session, détection de fraude, "
       "mesure d'audience anonymisée) peuvent être utilisés ; ils ne requièrent pas de "
@@ -101,8 +101,8 @@ abstract final class KinoaPrivacy {
       "ou pour exercer vos droits, contactez le responsable du traitement :\n\n"
       "Winsa Ltd — Délégué à la protection des données\n"
       "Brazzaville, République du Congo\n"
-      "E-mail : privacy@kinoaPay.com";
+      "E-mail : privacy@kinoapay.com";
 
   static const String contactLabel = "Contact protection des données";
-  static const String contactEmail = "privacy@kinoaPay.com";
+  static const String contactEmail = "privacy@kinoapay.com";
 }

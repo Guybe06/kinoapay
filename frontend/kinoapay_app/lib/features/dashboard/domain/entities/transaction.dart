@@ -2,7 +2,7 @@ import "package:equatable/equatable.dart";
 
 /// Transaction financière (données mock ou futures données API).
 class Transaction extends Equatable {
-  final String ktxid;
+  final String transactionId;
   final String status;
   final String? senderName;
   final String receiverIdentifier;
@@ -20,7 +20,7 @@ class Transaction extends Equatable {
   final double? amlScore;
 
   const Transaction({
-    required this.ktxid,
+    required this.transactionId,
     required this.status,
     this.senderName,
     required this.receiverIdentifier,
@@ -38,7 +38,7 @@ class Transaction extends Equatable {
 
   @override
   List<Object?> get props => [
-        ktxid,
+        transactionId,
         status,
         senderName,
         receiverIdentifier,
@@ -59,7 +59,7 @@ class Transaction extends Equatable {
 class TransactionFees extends Equatable {
   final double sourceOperatorFee;
   final double destinationOperatorFee;
-  final double kinoaFee;
+  final double platformFee;
   final double totalFee;
   final double amountDebited;
   final double amountReceived;
@@ -67,7 +67,7 @@ class TransactionFees extends Equatable {
   const TransactionFees({
     required this.sourceOperatorFee,
     required this.destinationOperatorFee,
-    required this.kinoaFee,
+    required this.platformFee,
     required this.totalFee,
     required this.amountDebited,
     required this.amountReceived,
@@ -77,7 +77,7 @@ class TransactionFees extends Equatable {
   List<Object?> get props => [
         sourceOperatorFee,
         destinationOperatorFee,
-        kinoaFee,
+        platformFee,
         totalFee,
         amountDebited,
         amountReceived,

@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
 /// Sheet d'invitation pour un contact non encore inscrit.
@@ -12,7 +13,7 @@ class ContactInviteSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
       decoration: const BoxDecoration(
-        color: KinoaColors.quinoaCream,
+        color: AppColors.quinoaCream,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
@@ -22,7 +23,7 @@ class ContactInviteSheet extends StatelessWidget {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.15),
+              color: AppColors.quinoaDark.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -31,18 +32,18 @@ class ContactInviteSheet extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.06),
+              color: AppColors.quinoaDark.withValues(alpha: 0.06),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.person_add_rounded, size: 24, color: KinoaColors.quinoaDark.withValues(alpha: 0.4)),
+            child: Icon(Icons.person_add_rounded, size: 24, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
           ),
           const SizedBox(height: 16),
           Text(
-            "${contact.fullName} n'est pas encore sur KinoaPay.",
+            "${contact.fullName} n'est pas encore sur ${AppStrings.appName}.",
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: KinoaColors.quinoaDark,
+              color: AppColors.quinoaDark,
               fontSize: 16,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.3,
@@ -53,7 +54,7 @@ class ContactInviteSheet extends StatelessWidget {
             "Invitez-le à rejoindre l'application pour lui envoyer de l'argent.",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: KinoaColors.quinoaDark.withValues(alpha: 0.5),
+              color: AppColors.quinoaDark.withValues(alpha: 0.5),
               fontSize: 13,
               height: 1.4,
             ),
@@ -65,7 +66,7 @@ class ContactInviteSheet extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 15),
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaDark,
+                color: AppColors.quinoaDark,
                 borderRadius: BorderRadius.circular(100),
               ),
               alignment: Alignment.center,

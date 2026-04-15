@@ -79,7 +79,7 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
     return BlocListener<PaymentSetupBloc, PaymentSetupState>(
       listener: (context, state) {
         if (state is PaymentSetupDone) {
-          Navigator.pushNamedAndRemoveUntil(context, KinoaRoutes.shell, (_) => false);
+          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.shell, (_) => false);
         }
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -88,11 +88,11 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
           statusBarIconBrightness: Brightness.light,
         ),
         child: Scaffold(
-          backgroundColor: KinoaColors.surfaceDark,
+          backgroundColor: AppColors.surfaceDark,
           body: BlocBuilder<PaymentSetupBloc, PaymentSetupState>(
             builder: (context, state) {
               if (state is! PaymentSetupReady) {
-                return const Center(child: CircularProgressIndicator(color: KinoaColors.accent));
+                return const Center(child: CircularProgressIndicator(color: AppColors.accent));
               }
               return _buildBody(context, state, topInset);
             },
@@ -124,7 +124,7 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
               );
             }),
             const Spacer(),
-            KinoaPrimaryButton(
+            PrimaryButton(
               text: AuthStrings.paymentSetupContinue,
               onPressed: () => _goToShell(context),
             ),
@@ -137,10 +137,10 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
                   child: Text(
                     AuthStrings.paymentSetupSkip,
                     style: TextStyle(
-                      color: KinoaColors.stone500,
+                      color: AppColors.stone500,
                       fontSize: 13,
                       decoration: TextDecoration.underline,
-                      decorationColor: KinoaColors.stone500,
+                      decorationColor: AppColors.stone500,
                     ),
                   ),
                 ),
@@ -151,7 +151,7 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
               child: Text(
                 AuthStrings.paymentSetupSkipNote,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: KinoaColors.stone500.withValues(alpha: 0.6), fontSize: 11),
+                style: TextStyle(color: AppColors.stone500.withValues(alpha: 0.6), fontSize: 11),
               ),
             ),
             const SizedBox(height: 32),
@@ -169,10 +169,10 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: KinoaColors.quinoaGold.withValues(alpha: 0.10),
+            color: AppColors.quinoaGold.withValues(alpha: 0.10),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(SolarIconsOutline.phone, color: KinoaColors.quinoaGold, size: 22),
+          child: const Icon(SolarIconsOutline.phone, color: AppColors.quinoaGold, size: 22),
         ),
         const SizedBox(height: 20),
         const Text(
@@ -188,7 +188,7 @@ class _PaymentSetupViewState extends State<PaymentSetupView> {
         const SizedBox(height: 10),
         Text(
           AuthStrings.paymentSetupSubtitle,
-          style: TextStyle(color: KinoaColors.stone400, fontSize: 14, height: 1.5),
+          style: TextStyle(color: AppColors.stone400, fontSize: 14, height: 1.5),
         ),
       ],
     );
@@ -234,7 +234,7 @@ class _ChannelCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: KinoaColors.surfaceCard,
+        color: AppColors.surfaceCard,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isLinked ? channel.color.withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.06),
@@ -278,7 +278,7 @@ class _ChannelCard extends StatelessWidget {
                 Text(
                   isLinked ? "Compte lié" : "Non configuré",
                   style: TextStyle(
-                    color: isLinked ? KinoaColors.success : KinoaColors.stone500,
+                    color: isLinked ? AppColors.success : AppColors.stone500,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -291,18 +291,18 @@ class _ChannelCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: KinoaColors.success.withValues(alpha: 0.12),
+                color: AppColors.success.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(SolarIconsBold.checkCircle, size: 13, color: KinoaColors.success),
+                  const Icon(SolarIconsBold.checkCircle, size: 13, color: AppColors.success),
                   const SizedBox(width: 4),
                   Text(
                     AuthStrings.paymentSetupLinked,
                     style: const TextStyle(
-                      color: KinoaColors.success,
+                      color: AppColors.success,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),
@@ -381,7 +381,7 @@ class _LinkSheetState extends State<_LinkSheet> {
         child: Container(
           padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + bottomInset),
           decoration: BoxDecoration(
-            color: KinoaColors.surfaceCard,
+            color: AppColors.surfaceCard,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             border: Border(
               top: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
@@ -437,7 +437,7 @@ class _LinkSheetState extends State<_LinkSheet> {
               Text(
                 "Numéro de téléphone",
                 style: TextStyle(
-                  color: KinoaColors.stone400,
+                  color: AppColors.stone400,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -446,7 +446,7 @@ class _LinkSheetState extends State<_LinkSheet> {
               // Champ numéro avec indicatif préfixé (lecture seule pour l'instant MVP)
               Container(
                 decoration: BoxDecoration(
-                  color: KinoaColors.surfaceDark,
+                  color: AppColors.surfaceDark,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                 ),
@@ -457,7 +457,7 @@ class _LinkSheetState extends State<_LinkSheet> {
                       child: Text(
                         widget.suggestedCountryCode,
                         style: const TextStyle(
-                          color: KinoaColors.stone400,
+                          color: AppColors.stone400,
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
                         ),
@@ -473,7 +473,7 @@ class _LinkSheetState extends State<_LinkSheet> {
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
                           hintText: "06 XXX XX XX",
-                          hintStyle: TextStyle(color: KinoaColors.stone500),
+                          hintStyle: TextStyle(color: AppColors.stone500),
                         ),
                       ),
                     ),
@@ -483,10 +483,10 @@ class _LinkSheetState extends State<_LinkSheet> {
               const SizedBox(height: 8),
               Text(
                 "Utilisez le numéro enregistré sur ce réseau.",
-                style: TextStyle(color: KinoaColors.stone500, fontSize: 11),
+                style: TextStyle(color: AppColors.stone500, fontSize: 11),
               ),
               const SizedBox(height: 28),
-              KinoaPrimaryButton(
+              PrimaryButton(
                 text: AuthStrings.paymentSetupConfirm,
                 onPressed: () {
                   final phone = _phoneCtrl.text.trim().replaceAll(" ", "");

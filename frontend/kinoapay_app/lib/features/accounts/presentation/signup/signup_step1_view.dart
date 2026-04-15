@@ -64,7 +64,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
   final _phoneCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _birthDateFieldKey = GlobalKey<FormFieldState<void>>();
-  String _countryCode = kinoaCountries[0].dialCode;
+  String _countryCode = defaultDialCountries[0].dialCode;
   bool _navigating = false;
 
   /// Valeurs par défaut dès la construction : évite [LateError] au hot reload ([initState] ne rejoue pas).
@@ -111,7 +111,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
     final d = _selectedDay;
     Navigator.pushNamed(
       context,
-      KinoaRoutes.signupOtp,
+      AppRoutes.signupOtp,
       arguments: SignupStep1Args(
         firstName: _firstNameCtrl.text.trim(),
         lastName: _lastNameCtrl.text.trim(),
@@ -127,7 +127,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: KinoaColors.quinoaCream,
+        backgroundColor: AppColors.quinoaCream,
         body: SafeArea(
           child: Column(
             children: [
@@ -146,11 +146,11 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: KinoaColors.quinoaDark),
+            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-          const KinoaBrand(size: BrandSize.sm, color: KinoaColors.quinoaDark, iconColor: KinoaColors.quinoaGold),
+          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
           const Spacer(flex: 2),
         ],
       ),
@@ -167,42 +167,42 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            KinoaEntrance(index: 0, child: _buildStepIndicator()),
+            StaggeredEntrance(index: 0, child: _buildStepIndicator()),
             const SizedBox(height: 24),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 1,
               child: const Text(
                 AuthStrings.signupStep1Title,
-                style: TextStyle(color: KinoaColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
+                style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2),
               ),
             ),
             const SizedBox(height: 12),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 2,
               child: Text(
                 AuthStrings.signupStep1Subtitle,
-                style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+                style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               ),
             ),
             const SizedBox(height: 40),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 3,
               child: AuthTextField(controller: _firstNameCtrl, label: AuthStrings.firstNameLabel, hintText: "ex. Sofia", validator: AuthValidator.validateName),
             ),
             const SizedBox(height: 20),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 4,
               child: AuthTextField(controller: _lastNameCtrl, label: AuthStrings.lastNameLabel, hintText: "ex. Mendes", validator: AuthValidator.validateName),
             ),
             const SizedBox(height: 20),
-            KinoaEntrance(index: 5, child: _buildDateField()),
+            StaggeredEntrance(index: 5, child: _buildDateField()),
             const SizedBox(height: 20),
-            KinoaEntrance(
+            StaggeredEntrance(
               index: 6,
-              child: KinoaPhoneField(controller: _phoneCtrl, onCountryChanged: (code) => setState(() => _countryCode = code), validator: AuthValidator.validatePhone),
+              child: PhoneField(controller: _phoneCtrl, onCountryChanged: (code) => setState(() => _countryCode = code), validator: AuthValidator.validatePhone),
             ),
             const SizedBox(height: 48),
-            KinoaEntrance(index: 7, child: KinoaPrimaryButton(text: AuthStrings.submitBtn, onPressed: _submit)),
+            StaggeredEntrance(index: 7, child: PrimaryButton(text: AuthStrings.submitBtn, onPressed: _submit)),
             const SizedBox(height: 32),
           ],
         ),
@@ -219,7 +219,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         const SizedBox(width: 10),
         Text(
           "Étape 1 sur 2",
-          style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
+          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -231,7 +231,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
       width: active ? 20 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: active ? KinoaColors.quinoaGold : KinoaColors.quinoaDark.withValues(alpha: 0.15),
+        color: active ? AppColors.quinoaGold : AppColors.quinoaDark.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -251,16 +251,16 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         final dayValues = List.generate(maxDay, (i) => i + 1);
         final years = _yearOptions();
         final borderColor = state.hasError
-            ? KinoaColors.quinoaRed.withValues(alpha: 0.35)
-            : KinoaColors.quinoaDark.withValues(alpha: 0.12);
-        final dividerColor = KinoaColors.quinoaDark.withValues(alpha: 0.1);
+            ? AppColors.quinoaRed.withValues(alpha: 0.35)
+            : AppColors.quinoaDark.withValues(alpha: 0.12);
+        final dividerColor = AppColors.quinoaDark.withValues(alpha: 0.1);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
-                color: KinoaColors.white.withValues(alpha: 0.65),
+                color: AppColors.white.withValues(alpha: 0.65),
                 borderRadius: _fieldRadius,
                 border: Border.all(color: borderColor, width: 1),
               ),
@@ -271,7 +271,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
                     padding: const EdgeInsets.only(left: 24, top: 12),
                     child: Text(
                       AuthStrings.birthDateLabel,
-                      style: TextStyle(color: KinoaColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500),
+                      style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                   ),
                   Row(
@@ -310,7 +310,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
             if (state.hasError)
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 24),
-                child: Text(state.errorText!, style: const TextStyle(color: KinoaColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500)),
+                child: Text(state.errorText!, style: const TextStyle(color: AppColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500)),
               ),
           ],
         );
@@ -326,8 +326,8 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
           value: value,
           isExpanded: true,
           menuMaxHeight: 320,
-          icon: Icon(Icons.expand_more_rounded, size: 18, color: KinoaColors.quinoaDark.withValues(alpha: 0.35)),
-          style: const TextStyle(color: KinoaColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
+          icon: Icon(Icons.expand_more_rounded, size: 18, color: AppColors.quinoaDark.withValues(alpha: 0.35)),
+          style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
           items: items,
           onChanged: onChanged,
         ),

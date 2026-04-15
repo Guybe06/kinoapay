@@ -2,7 +2,7 @@ import "package:kinoapay_app/features/notifications/domain/entities/notification
 
 /// Contrat d'accès aux notifications utilisateur.
 abstract class NotificationsRepository {
-  Future<List<KinoaNotification>> getNotifications();
+  Future<List<NotificationRecord>> getNotifications();
 
   /// Marque une notification comme lue par son identifiant.
   Future<void> markAsRead(String id);

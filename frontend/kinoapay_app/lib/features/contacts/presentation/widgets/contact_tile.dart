@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
 /// Tuile de contact dans la liste, avec avatar, infos et indicateurs de canaux.
@@ -20,7 +21,7 @@ class ContactTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
           children: [
-            _Avatar(initials: initials, onApp: contact.isOnKinoaPay),
+            _Avatar(initials: initials, onApp: contact.isRegistered),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -29,7 +30,7 @@ class ContactTile extends StatelessWidget {
                   Text(
                     contact.fullName,
                     style: const TextStyle(
-                      color: KinoaColors.quinoaDark,
+                      color: AppColors.quinoaDark,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
@@ -38,7 +39,7 @@ class ContactTile extends StatelessWidget {
                   Text(
                     contact.phone,
                     style: TextStyle(
-                      color: KinoaColors.quinoaWarmGray.withValues(alpha: 0.65),
+                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.65),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -46,7 +47,7 @@ class ContactTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (contact.isOnKinoaPay)
+            if (contact.isRegistered)
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -55,13 +56,13 @@ class ContactTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: KinoaColors.quinoaRed.withValues(alpha: 0.10),
+                      color: AppColors.quinoaRed.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: const Text(
-                      "KinoaPay",
+                    child: Text(
+                      AppStrings.appName,
                       style: TextStyle(
-                        color: KinoaColors.quinoaRed,
+                        color: AppColors.quinoaRed,
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.2,
@@ -90,7 +91,7 @@ class _ChannelDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = channel == PaymentChannel.mtn ? KinoaColors.mtnYellow : KinoaColors.airtelRed;
+    final color = channel == PaymentChannel.mtn ? AppColors.mtnYellow : AppColors.airtelRed;
     return Container(
       width: 8,
       height: 8,
@@ -116,15 +117,15 @@ class _Avatar extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: onApp
-                ? KinoaColors.quinoaRed.withValues(alpha: 0.10)
-                : KinoaColors.quinoaDark.withValues(alpha: 0.07),
+                ? AppColors.quinoaRed.withValues(alpha: 0.10)
+                : AppColors.quinoaDark.withValues(alpha: 0.07),
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
           child: Text(
             initials,
             style: TextStyle(
-              color: onApp ? KinoaColors.quinoaRed : KinoaColors.quinoaWarmGray,
+              color: onApp ? AppColors.quinoaRed : AppColors.quinoaWarmGray,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -138,9 +139,9 @@ class _Avatar extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: KinoaColors.quinoaRed,
+                color: AppColors.quinoaRed,
                 shape: BoxShape.circle,
-                border: Border.all(color: KinoaColors.quinoaCream, width: 1.5),
+                border: Border.all(color: AppColors.quinoaCream, width: 1.5),
               ),
             ),
           ),

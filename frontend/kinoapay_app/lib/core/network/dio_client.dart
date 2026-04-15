@@ -6,7 +6,7 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 class DioClient {
   final Dio _dio;
 
-  /// @param baseUrl  URL de base de l'API (ex: https://api.kinoaPay.com)
+  /// @param baseUrl  URL de base de l'API (ex: https://api.kinoapay.com)
   /// @param storage  Service de stockage utilisé par l'intercepteur JWT
   DioClient({required String baseUrl, required SecureStorageService storage})
     : _dio = Dio(

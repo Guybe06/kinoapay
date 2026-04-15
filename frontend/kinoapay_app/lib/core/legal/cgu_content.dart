@@ -1,22 +1,22 @@
 /// Textes des CGU (titres et corps) pour affichage structuré.
-abstract final class KinoaCgu {
+abstract final class CguContent {
   static const String title = "Conditions Générales d'Utilisation";
   static const String version = "Version 1.0, Avril 2026";
   static const String editor = "Éditeur : Winsa Ltd, Brazzaville, République du Congo";
 
   static const String a1Title = "1. Objet";
   static const String a1Body =
-      "KinoaPay est un service de paiement électronique édité par Winsa Ltd. "
+      "kinoaPay est un service de paiement électronique édité par Winsa Ltd. "
       "Il permet à ses utilisateurs d'envoyer, recevoir et gérer des fonds en franc CFA (XAF) "
       "via différents canaux : Mobile Money (MTN, Airtel), virement bancaire et carte. "
-      "Toute transaction effectuée via KinoaPay est enregistrée de façon immuable dans le "
+      "Toute transaction effectuée via kinoaPay est enregistrée de façon immuable dans le "
       "KinoaLedger, registre cryptographique propriétaire garantissant la traçabilité et "
       "l'intégrité des opérations. L'utilisation de l'application vaut acceptation des "
       "présentes conditions dans leur intégralité.";
 
   static const String a2Title = "2. Accès au service";
   static const String a2Body =
-      "L'accès à KinoaPay est réservé aux personnes physiques majeures (18 ans et plus) "
+      "L'accès à kinoaPay est réservé aux personnes physiques majeures (18 ans et plus) "
       "et aux personnes morales régulièrement constituées selon le droit congolais ou le droit "
       "OHADA applicable. L'utilisateur s'engage à fournir des informations exactes, complètes "
       "et à jour lors de la création de son compte. Tout compte créé avec de fausses informations "
@@ -27,21 +27,21 @@ abstract final class KinoaCgu {
       "L'utilisateur crée un compte unique à son nom ou à celui de son entité. Il est seul "
       "responsable de la confidentialité de ses identifiants de connexion (email, numéro, "
       "mot de passe, code PIN). Toute activité réalisée depuis son compte lui est pleinement "
-      "attribuée. En cas de compromission suspectée, l'utilisateur doit contacter KinoaPay "
+      "attribuée. En cas de compromission suspectée, l'utilisateur doit contacter kinoaPay "
       "sans délai via les canaux de support officiels afin de procéder à la suspension préventive "
       "du compte. Winsa Ltd ne pourra être tenu responsable des pertes résultant d'un accès "
       "non autorisé consécutif à un manquement de l'utilisateur à cette obligation.";
 
   static const String a4Title = "4. Transactions";
   static const String a4Body =
-      "KinoaPay traite les transactions en XAF uniquement dans le cadre de son déploiement "
+      "kinoaPay traite les transactions en XAF uniquement dans le cadre de son déploiement "
       "initial. Chaque transaction fait l'objet d'un enregistrement horodaté dans le "
       "KinoaLedger ; une preuve cryptographique (reçu numérique) est générée et mise à "
       "disposition de l'utilisateur pour chaque opération validée. Les transactions validées "
-      "sont définitives : KinoaPay ne peut garantir l'annulation d'un virement déjà exécuté. "
+      "sont définitives : kinoaPay ne peut garantir l'annulation d'un virement déjà exécuté. "
       "L'utilisateur est expressément invité à vérifier le numéro du destinataire et le "
       "montant avant toute confirmation. En cas d'erreur de saisie après validation, "
-      "KinoaPay mettra en œuvre ses meilleurs efforts pour faciliter la résolution, "
+      "kinoaPay mettra en œuvre ses meilleurs efforts pour faciliter la résolution, "
       "sans obligation de résultat.";
 
   static const String a5Title = "5. Frais et commissions";
@@ -55,7 +55,7 @@ abstract final class KinoaCgu {
 
   static const String a6Title = "6. Obligations de l'utilisateur";
   static const String a6Body =
-      "L'utilisateur s'interdit formellement d'utiliser KinoaPay à des fins illicites, "
+      "L'utilisateur s'interdit formellement d'utiliser kinoaPay à des fins illicites, "
       "notamment : le blanchiment d'argent, le financement du terrorisme ou d'activités "
       "criminelles, la fraude, l'usurpation d'identité, ou toute opération visant à "
       "contourner les dispositifs de lutte contre le blanchiment (LBC/FT) imposés par "
@@ -102,5 +102,5 @@ abstract final class KinoaCgu {
       "délai de 30 jours avant toute action judiciaire.";
 
   static const String contactLabel = "Contact légal";
-  static const String contactEmail = "legal@kinoaPay.com";
+  static const String contactEmail = "legal@kinoapay.com";
 }
