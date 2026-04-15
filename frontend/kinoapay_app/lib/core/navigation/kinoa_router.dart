@@ -20,6 +20,7 @@ import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
 import "package:kinoapay_app/features/notifications/infrastructure/repositories/mock_notifications_repository.dart";
 import "package:kinoapay_app/features/notifications/presentation/notifications_view.dart";
+import "package:kinoapay_app/features/receipt/presentation/receipt_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
@@ -102,6 +103,9 @@ class KinoaRouter {
           ),
           settings,
         );
+
+      case KinoaRoutes.receipt:
+        return _authStepRoute(const ReceiptView(), settings);
 
       case KinoaRoutes.scanner:
         return _slideRoute(const ScannerView(), settings);
