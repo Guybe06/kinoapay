@@ -1,5 +1,4 @@
-/// Politique de Confidentialité de KinoaPay.
-/// Chaque article est découpé en titre + corps pour permettre un rendu stylisé indépendant.
+/// Textes de la politique de confidentialité (titres et corps) pour affichage structuré.
 abstract final class KinoaPrivacy {
   static const String title = "Politique de Confidentialité";
   static const String version = "Version 1.0, Avril 2026";

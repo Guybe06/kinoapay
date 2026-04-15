@@ -1,8 +1,8 @@
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
-/// Contrat d'accès aux contacts téléphoniques et à la résolution KinoaPay.
+/// Accès au répertoire téléphonique et résolution du statut d'inscription.
 abstract class ContactsRepository {
-  /// Retourne tous les contacts du téléphone enrichis de leur statut KinoaPay.
+  /// Tous les contacts du téléphone enrichis du statut inscrit / non inscrit.
   Future<List<Contact>> getContacts();
 
   /// Filtre [contacts] selon [query] sur le nom ou le numéro de téléphone.

@@ -1,7 +1,7 @@
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/domain/repositories/contacts_repository.dart";
 
-/// Numéros enregistrés sur KinoaPay, synchronisés avec les mocks de transactions.
+/// Numéros considérés comme inscrits, alignés sur les mocks de transactions.
 const Set<String> _kinoaNumbers = {
   "+242066667788", // Jean Dupont
   "+242055554433", // Marie Claire
@@ -13,7 +13,7 @@ const Set<String> _kinoaNumbers = {
   "+242066665566", // Alain Bossou
 };
 
-/// Simule un répertoire téléphonique importé : 8 utilisateurs KinoaPay + 5 non inscrits.
+/// Simule un répertoire importé : 8 numéros inscrits et 5 non inscrits.
 const List<({String id, String name, String phone})> _phoneBook = [
   (id: "c001", name: "Jean Dupont",       phone: "+242066667788"),
   (id: "c002", name: "Marie Claire",      phone: "+242055554433"),
@@ -46,7 +46,6 @@ class MockContactsRepository implements ContactsRepository {
       );
     }).toList();
 
-    // Contacts KinoaPay en premier, puis par ordre alphabétique dans chaque groupe.
     contacts.sort((a, b) {
       if (a.isOnKinoaPay != b.isOnKinoaPay) {
         return a.isOnKinoaPay ? -1 : 1;

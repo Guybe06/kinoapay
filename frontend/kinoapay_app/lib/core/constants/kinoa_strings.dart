@@ -1,5 +1,4 @@
-/// Chaînes globales de l'application KinoaPay.
-/// Chaque feature complète ces chaînes dans son fichier [feature]_strings.dart situé dans son dossier domain/.
+/// Chaînes globales partagées ; chaque feature complète via [feature]_strings.dart dans son dossier domain/.
 class KinoaStrings {
   static const String appName = "KinoaPay";
   static const String currency = "XAF";

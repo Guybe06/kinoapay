@@ -1,4 +1,4 @@
-/// Chemins d'assets statiques référencés par l'application.
+/// Chemins d'assets statiques réutilisés dans l'UI.
 abstract final class KinoaAssets {
   static const String brandLogo = "assets/images/logo.png";
 }

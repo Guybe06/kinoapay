@@ -6,7 +6,7 @@ import "package:kinoapay_app/features/contacts/presentation/widgets/contact_acti
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_invite_sheet.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_tile.dart";
 
-/// Liste des contacts groupés par statut KinoaPay.
+/// Liste groupée par statut d'inscription (inscrit / autre).
 class ContactsList extends StatelessWidget {
   final ContactsLoadSuccess state;
   const ContactsList({super.key, required this.state});

@@ -18,7 +18,7 @@ enum BrandSize {
   const BrandSize({required this.iconSize, required this.fontSize});
 }
 
-/// Identité visuelle combinée KinoaPay : logo + nom en typographie de marque ; [heroTag] optionnel pour une transition Hero (ex. depuis le splash).
+/// Logo et nom de marque ; [heroTag] optionnel pour une transition Hero (ex. depuis le splash).
 class KinoaBrand extends StatelessWidget {
   final BrandSize size;
   final Color? color;

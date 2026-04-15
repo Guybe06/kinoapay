@@ -3,8 +3,7 @@ import "package:flutter/services.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 
-/// Construit et expose les thèmes light et dark de l'application KinoaPay.
-/// Toutes les couleurs passent par [KinoaColors], jamais de valeur hexadécimale directe.
+/// Thèmes Material clair et sombre ; les couleurs passent par [KinoaColors], sans hex en dur.
 class KinoaTheme {
   static ThemeData light() {
     return _build(

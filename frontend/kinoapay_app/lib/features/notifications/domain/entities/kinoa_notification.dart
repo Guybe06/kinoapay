@@ -1,6 +1,6 @@
 import "package:equatable/equatable.dart";
 
-/// Types de notification supportés par l'application.
+/// Catégories de notification côté client.
 enum NotificationType { transaction, system, promo }
 
 /// Notification reçue par l'utilisateur, liée ou non à une transaction.

@@ -1,6 +1,6 @@
 import "package:equatable/equatable.dart";
 
-/// Types de QR code reconnus par KinoaPay.
+/// Catégories de QR code reconnues côté client.
 enum ScanResultType { kinoaId, paymentRequest, unknown }
 
 /// Résultat décodé d'un scan QR.

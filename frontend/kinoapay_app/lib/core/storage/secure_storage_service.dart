@@ -1,6 +1,6 @@
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
-/// Gère le stockage sécurisé et persistant des données sensibles (tokens, identifiants, préférences app).
+/// Stockage sécurisé persistant (tokens, identifiants, préférences).
 class SecureStorageService {
   final FlutterSecureStorage _storage;
 

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-/// Palette de couleurs officielle KinoaPay, toute valeur hexadécimale doit être définie ici, jamais dans le code.
+/// Palette officielle ; toute couleur doit être définie ici, jamais en dur ailleurs dans le code.
 class KinoaColors {
   static const Color quinoaGold = Color(0xFFC8964A);
   static const Color quinoaGoldLight = Color(0xFFE8C98A);

@@ -1,4 +1,4 @@
-/// Endpoints de l'API KinoaPay, toute requête HTTP doit utiliser ces constantes, jamais de chemin littéral.
+/// Chemins d'endpoints API : utilisation exclusive, sans littéraux dans les requêtes HTTP.
 class KinoaApi {
   static const String _v1 = "/v1";
 

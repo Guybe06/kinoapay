@@ -6,7 +6,7 @@ import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.d
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_list.dart";
 
-/// Vue principale des contacts : recherche, groupes KinoaPay/autres.
+/// Liste des contacts : recherche et regroupement inscrits / autres.
 class ContactsView extends StatefulWidget {
   const ContactsView({super.key});
 

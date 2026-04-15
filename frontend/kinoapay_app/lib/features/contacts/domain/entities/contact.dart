@@ -1,16 +1,16 @@
 import "package:equatable/equatable.dart";
 
-/// Canal de paiement mobile configuré sur un compte KinoaPay.
+/// Canal de paiement mobile lié au compte utilisateur.
 enum PaymentChannel { mtn, airtel }
 
-/// Contact issu du répertoire téléphonique, enrichi avec son statut KinoaPay.
+/// Entrée répertoire enrichie du statut d'inscription sur la plateforme.
 class Contact extends Equatable {
   final String id;
   final String fullName;
   final String phone;
   final bool isOnKinoaPay;
 
-  /// Identifiant KinoaPay, disponible uniquement si [isOnKinoaPay] est true.
+  /// Identifiant public ; présent uniquement si [isOnKinoaPay] est true.
   final String? kinoaId;
 
   /// Canaux de paiement configurés sur le compte du contact.

@@ -1,5 +1,4 @@
-/// Codes d'erreur globaux de l'application KinoaPay.
-/// Chaque feature complète ces codes dans son fichier [feature]_error_codes.dart situé dans son dossier domain/.
+/// Codes d'erreur globaux ; chaque feature complète via [feature]_error_codes.dart dans son dossier domain/.
 class KinoaErrorCodes {
   static const String network = "NETWORK_ERROR";
   static const String timeout = "TIMEOUT_ERROR";

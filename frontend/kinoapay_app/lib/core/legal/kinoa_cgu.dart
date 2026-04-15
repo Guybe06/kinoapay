@@ -1,5 +1,4 @@
-/// Conditions Générales d'Utilisation de KinoaPay.
-/// Chaque article est découpé en titre + corps pour permettre un rendu stylisé indépendant.
+/// Textes des CGU (titres et corps) pour affichage structuré.
 abstract final class KinoaCgu {
   static const String title = "Conditions Générales d'Utilisation";
   static const String version = "Version 1.0, Avril 2026";

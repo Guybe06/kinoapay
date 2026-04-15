@@ -1,4 +1,4 @@
-/// Routes nommées de l'application KinoaPay, toute navigation doit utiliser ces constantes, jamais de chaîne littérale.
+/// Routes nommées : navigation exclusivement via ces constantes, jamais de chaîne littérale.
 class KinoaRoutes {
   static const String splash = "/";
   static const String welcome = "/welcome";

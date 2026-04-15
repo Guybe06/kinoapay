@@ -1,8 +1,7 @@
 import "package:kinoapay_app/core/constants/kinoa_error_codes.dart";
 import "package:kinoapay_app/core/constants/kinoa_strings.dart";
 
-/// Exception typée de l'application KinoaPay, propagée depuis les repositories vers les BLoCs.
-/// Chaque feature peut étendre ce système en définissant ses propres codes dans son fichier [feature]_error_codes.dart.
+/// Exception typée, propagée des repositories aux BLoCs ; chaque feature peut ajouter ses codes dans [feature]_error_codes.dart.
 class KinoaException implements Exception {
   final String message;
   final String code;

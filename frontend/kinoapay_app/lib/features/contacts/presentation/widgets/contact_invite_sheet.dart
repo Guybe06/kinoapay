@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
-/// Sheet d'invitation pour un contact non inscrit sur KinoaPay.
+/// Sheet d'invitation pour un contact non encore inscrit.
 class ContactInviteSheet extends StatelessWidget {
   final Contact contact;
   const ContactInviteSheet({super.key, required this.contact});

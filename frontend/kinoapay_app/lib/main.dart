@@ -21,7 +21,7 @@ import "package:kinoapay_app/features/send/infrastructure/repositories/mock_send
 /// Observer global de navigation, utilisé par [KinoaEntrance] pour rejouer les animations au retour.
 final RouteObserver<ModalRoute<void>> kinoaRouteObserver = RouteObserver<ModalRoute<void>>();
 
-/// Point d'entrée principal : initialise les dépendances globales et lance l'application.
+/// Point d'entrée : initialisation des dépendances globales puis [runApp].
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting("fr_FR", null);
@@ -61,7 +61,7 @@ void main() async {
   );
 }
 
-/// Racine de l'application : thème clair global ; seul [WelcomeView] applique un fond sombre local.
+/// Widget racine [MaterialApp] : thème clair global ; [WelcomeView] conserve un fond sombre local.
 class KinoaPayApp extends StatelessWidget {
   const KinoaPayApp({super.key});
 

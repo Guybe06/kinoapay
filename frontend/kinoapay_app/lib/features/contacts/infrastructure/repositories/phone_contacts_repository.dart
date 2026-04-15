@@ -4,8 +4,7 @@ import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/domain/repositories/contacts_repository.dart";
 import "package:kinoapay_app/features/contacts/infrastructure/kinoa_users_database.dart";
 
-/// Lit les contacts du répertoire téléphonique et détecte ceux inscrits sur KinoaPay
-/// en comparant les numéros normalisés à [kinoaUsersDatabase].
+/// Lit le répertoire téléphonique et marque comme inscrits les numéros présents dans [kinoaUsersDatabase] (normalisés).
 class PhoneContactsRepository implements ContactsRepository {
   @override
   Future<List<Contact>> getContacts() async {
@@ -35,7 +34,6 @@ class PhoneContactsRepository implements ContactsRepository {
         ));
       }
 
-      // Contacts KinoaPay en premier, puis ordre alphabétique dans chaque groupe.
       contacts.sort((a, b) {
         if (a.isOnKinoaPay != b.isOnKinoaPay) return a.isOnKinoaPay ? -1 : 1;
         return a.fullName.compareTo(b.fullName);

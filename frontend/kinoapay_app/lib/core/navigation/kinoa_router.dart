@@ -26,7 +26,7 @@ import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
 
-/// Gère la résolution des routes et les transitions de navigation de l'application.
+/// Résolution des routes nommées et transitions de navigation.
 class KinoaRouter {
   /// Détermine la route initiale après le splash selon l'état d'authentification et le setup canaux.
   /// @return le nom de route [KinoaRoutes] à afficher

@@ -2,7 +2,7 @@ import "package:dio/dio.dart";
 import "package:kinoapay_app/core/network/auth_interceptor.dart";
 import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 
-/// Client HTTP centralisé : configure Dio avec les timeouts, headers et intercepteurs KinoaPay.
+/// Client HTTP : configure Dio (timeouts, en-têtes, intercepteurs).
 class DioClient {
   final Dio _dio;
 

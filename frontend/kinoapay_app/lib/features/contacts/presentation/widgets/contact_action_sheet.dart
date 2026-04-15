@@ -5,7 +5,7 @@ import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 /// Résultat retourné par le sheet au [Navigator.pop].
 enum ContactAction { send, request }
 
-/// Action sheet affichée au tap sur un contact KinoaPay.
+/// Actions proposées au tap sur un contact déjà inscrit.
 /// Affiche le profil complet, les canaux disponibles et les actions d'envoi/demande.
 class ContactActionSheet extends StatelessWidget {
   final Contact contact;

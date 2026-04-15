@@ -1,6 +1,6 @@
 import "package:equatable/equatable.dart";
 
-/// Représente une transaction financière traitée par KinoaPay.
+/// Transaction financière (données mock ou futures données API).
 class Transaction extends Equatable {
   final String ktxid;
   final String status;
