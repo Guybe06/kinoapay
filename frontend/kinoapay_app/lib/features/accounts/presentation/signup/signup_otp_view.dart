@@ -12,7 +12,7 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_args.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 
 const int _otpLength = 6;

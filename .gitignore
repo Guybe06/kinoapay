@@ -10,6 +10,12 @@
 # Documentation projet : jamais versionnée (hors commits)
 .docs/
 
+# IDE / outils
+.claude/
+.dist/
+.idea/
+.vscode/
+
 # Common OS files
 .DS_Store
 Thumbs.db

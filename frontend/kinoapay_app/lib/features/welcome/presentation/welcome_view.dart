@@ -1,14 +1,9 @@
-import "dart:ui";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
-import "package:kinoapay_app/features/welcome/domain/welcome_strings.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_entrance_animation.dart";
-import "package:kinoapay_app/features/welcome/presentation/widgets/welcome_illustration.dart";
+import "package:kinoapay_app/features/welcome/presentation/welcome_page_widgets.dart";
 import "package:kinoapay_app/main.dart" show appRouteObserver;
 
 /// Page d'accueil immersive avec animations d'entrée en cascade depuis le splash.
@@ -92,182 +87,41 @@ class _WelcomeViewState extends State<WelcomeView> with SingleTickerProviderStat
         backgroundColor: AppColors.quinoaDeep,
         body: Stack(
           children: [
-            _buildGlow(),
+            const WelcomeBackdropGlow(),
             SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
+                  WelcomeBrandHeader(heroTag: widget.fromSplash ? "app_brand" : null),
                   const SizedBox(height: 44),
-                  _animated(_anim.title, _buildTitle()),
+                  _animated(_anim.title, const WelcomeHeroTitle()),
                   const SizedBox(height: 16),
-                  _animated(_anim.subtitle, _buildSubtitle()),
+                  _animated(_anim.subtitle, const WelcomeHeroSubtitle()),
                   const Spacer(),
-                  _buildImages(),
+                  WelcomeIllustrationAnimated(
+                    opacity: _anim.images,
+                    scale: _anim.imagesScale,
+                    listenable: _ctrl,
+                  ),
                   const Spacer(),
-                  _animated(_anim.button, _buildActions(context), slide: 40),
+                  _animated(
+                    _anim.button,
+                    WelcomeSignupCta(onTap: () => _navigateTo(AppRoutes.signup)),
+                    slide: 40,
+                  ),
                   const SizedBox(height: 16),
-                  _animated(_anim.link, _buildSigninLink(context), slide: 20),
+                  _animated(
+                    _anim.link,
+                    WelcomeSigninLink(onPressed: () => _navigateTo(AppRoutes.signin)),
+                    slide: 20,
+                  ),
                   const SizedBox(height: 12),
-                  _animated(_anim.link, _buildTrustLabel(), slide: 10),
+                  _animated(_anim.link, const WelcomeTrustLabel(), slide: 10),
                   const SizedBox(height: 28),
                 ],
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTrustLabel() {
-    return Center(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(CupertinoIcons.checkmark_shield_fill, color: AppColors.quinoaGold, size: 14),
-          const SizedBox(width: 8),
-          Text(
-            WelcomeStrings.trustLabel,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.4),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGlow() {
-    return Positioned(
-      top: -80,
-      right: -80,
-      child: Container(
-        width: 280,
-        height: 280,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.quinoaGold.withValues(alpha: 0.15),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-          child: const SizedBox.shrink(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 20, 28, 0),
-      child: BrandLogoRow(
-        size: BrandSize.lg,
-        color: AppColors.white,
-        iconColor: AppColors.quinoaGold,
-        alignment: MainAxisAlignment.start,
-        heroTag: widget.fromSplash ? "app_brand" : null,
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      child: Text(
-        WelcomeStrings.heroTitle,
-        style: const TextStyle(
-          color: AppColors.white,
-          fontSize: 48,
-          fontWeight: FontWeight.w900,
-          height: 1.0,
-          letterSpacing: -2.5,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSubtitle() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      child: Text(
-        WelcomeStrings.heroSubtitle,
-        style: TextStyle(
-          color: AppColors.white.withValues(alpha: 0.6),
-          fontSize: 15,
-          height: 1.5,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImages() {
-    return AnimatedBuilder(
-      animation: _ctrl,
-      builder: (_, child) => Opacity(
-        opacity: _anim.images.value.clamp(0.0, 1.0),
-        child: Transform.scale(scale: _anim.imagesScale.value, child: child),
-      ),
-      child: const WelcomeIllustration(),
-    );
-  }
-
-  Widget _buildActions(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      child: GestureDetector(
-        onTap: () => _navigateTo(AppRoutes.signup),
-        child: Container(
-          width: double.infinity,
-          height: 68,
-          decoration: BoxDecoration(
-            color: AppColors.quinoaGold,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                WelcomeStrings.signupBtn,
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Icon(CupertinoIcons.arrow_right, color: AppColors.quinoaDark, size: 18),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSigninLink(BuildContext context) {
-    return Center(
-      child: TextButton(
-        onPressed: () => _navigateTo(AppRoutes.signin),
-        child: Text.rich(
-          TextSpan(
-            text: "${AuthStrings.signupHaveAccount} ",
-            style: TextStyle(
-              color: AppColors.white.withValues(alpha: 0.5),
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
-            ),
-            children: const [
-              TextSpan(
-                text: AuthStrings.signupSigninLink,
-                style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w800),
-              ),
-            ],
-          ),
         ),
       ),
     );
