@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/kinoa_colors.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
+/// Résultat retourné par le sheet au [Navigator.pop].
+enum ContactAction { send, request }
+
 /// Action sheet affichée au tap sur un contact KinoaPay.
 /// Affiche le profil complet, les canaux disponibles et les actions d'envoi/demande.
 class ContactActionSheet extends StatelessWidget {
@@ -61,9 +64,9 @@ class ContactActionSheet extends StatelessWidget {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: _ActionBtn(label: "Envoyer", icon: Icons.arrow_upward_rounded, onTap: () => Navigator.pop(context))),
+              Expanded(child: _ActionBtn(label: "Envoyer", icon: Icons.arrow_upward_rounded, onTap: () => Navigator.pop(context, ContactAction.send))),
               const SizedBox(width: 12),
-              Expanded(child: _ActionBtn(label: "Demander", icon: Icons.arrow_downward_rounded, secondary: true, onTap: () => Navigator.pop(context))),
+              Expanded(child: _ActionBtn(label: "Demander", icon: Icons.arrow_downward_rounded, secondary: true, onTap: () => Navigator.pop(context, ContactAction.request))),
             ],
           ),
         ],
