@@ -39,8 +39,8 @@ class _DashboardViewState extends State<DashboardView> {
     super.initState();
     final now = DateTime.now();
     context.read<DashboardBloc>().add(
-          DashboardStarted(month: now.month, year: now.year),
-        );
+      DashboardStarted(month: now.month, year: now.year),
+    );
   }
 
   void _showPromoDetail() {
@@ -79,8 +79,8 @@ class _DashboardViewState extends State<DashboardView> {
           onRefresh: () async {
             final now = DateTime.now();
             context.read<DashboardBloc>().add(
-                  DashboardRefreshRequested(month: now.month, year: now.year),
-                );
+              DashboardRefreshRequested(month: now.month, year: now.year),
+            );
           },
           displacement: 100,
           color: AppColors.quinoaGold,
@@ -112,7 +112,8 @@ class _DashboardViewState extends State<DashboardView> {
                     const SizedBox(height: 16),
                     DashboardRecentContacts(
                       transactions: transactions,
-                      onAdd: () => Navigator.pushNamed(context, AppRoutes.contacts),
+                      onAdd: () =>
+                          Navigator.pushNamed(context, AppRoutes.contacts),
                     ),
                     const SizedBox(height: 28),
                     Padding(
@@ -126,7 +127,9 @@ class _DashboardViewState extends State<DashboardView> {
                               Text(
                                 "Dernières transactions",
                                 style: TextStyle(
-                                  color: AppColors.quinoaDark.withValues(alpha: 0.85),
+                                  color: AppColors.quinoaDark.withValues(
+                                    alpha: 0.85,
+                                  ),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.4,
@@ -138,7 +141,10 @@ class _DashboardViewState extends State<DashboardView> {
                             ],
                           ),
                           const SizedBox(height: 14),
-                          DashboardTxList(transactions: recent, isLoading: loading),
+                          DashboardTxList(
+                            transactions: recent,
+                            isLoading: loading,
+                          ),
                         ],
                       ),
                     ),
