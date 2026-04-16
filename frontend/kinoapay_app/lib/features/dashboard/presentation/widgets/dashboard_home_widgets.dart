@@ -9,6 +9,7 @@ class DashboardAmbientBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
         Positioned(
           top: 50,
@@ -142,7 +143,9 @@ class DashboardActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.quinoaDark.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.07)),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.07),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -179,7 +182,9 @@ class DashboardVoirToutLink extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.quinoaDark.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.08)),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.08),
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

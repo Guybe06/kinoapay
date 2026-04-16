@@ -72,7 +72,6 @@ class _AppShellState extends State<AppShell> {
               widget.args.fromSplash && _currentTab == AppRoutes.tabDashboard,
         ),
         extendBodyBehindAppBar: true,
-        extendBody: true,
         body: Stack(
           children: [
             IndexedStack(index: _currentTab, children: _buildPages(context)),

@@ -93,7 +93,7 @@ class _DashboardViewState extends State<DashboardView> {
             ),
             child: Stack(
               children: [
-                const DashboardAmbientBackground(),
+                const Positioned.fill(child: DashboardAmbientBackground()),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
