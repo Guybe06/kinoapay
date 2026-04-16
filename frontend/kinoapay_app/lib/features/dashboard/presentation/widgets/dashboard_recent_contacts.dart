@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 
 class _Contact {
@@ -51,7 +52,9 @@ class DashboardRecentContacts extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.quinoaDark.withValues(alpha: 0.05),
@@ -68,7 +71,7 @@ class DashboardRecentContacts extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Contacts récents",
+                  DashboardStrings.recentContacts,
                   style: TextStyle(
                     color: AppColors.quinoaDark.withValues(alpha: 0.85),
                     fontSize: 15,
@@ -79,7 +82,7 @@ class DashboardRecentContacts extends StatelessWidget {
                 GestureDetector(
                   onTap: () {},
                   child: Text(
-                    "Voir plus",
+                    DashboardStrings.seeMore,
                     style: TextStyle(
                       color: AppColors.quinoaGold.withValues(alpha: 0.80),
                       fontSize: 12,
@@ -97,12 +100,14 @@ class DashboardRecentContacts extends StatelessWidget {
                 children: [
                   _AddContactBtn(onTap: onAdd),
                   const SizedBox(width: 12),
-                  ...contacts.asMap().entries.map((entry) => Padding(
-                    padding: EdgeInsets.only(
-                      right: entry.key < contacts.length - 1 ? 12 : 0,
+                  ...contacts.asMap().entries.map(
+                    (entry) => Padding(
+                      padding: EdgeInsets.only(
+                        right: entry.key < contacts.length - 1 ? 12 : 0,
+                      ),
+                      child: _ContactItem(contact: entry.value),
                     ),
-                    child: _ContactItem(contact: entry.value),
-                  )),
+                  ),
                 ],
               ),
             ),
@@ -140,14 +145,14 @@ class _AddContactBtn extends StatelessWidget {
             child: Icon(
               SolarIconsOutline.addCircle,
               size: 24,
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.60),
+              color: AppColors.quinoaDark.withValues(alpha: 0.35),
             ),
           ),
           const SizedBox(height: 6),
           Text(
-            "Ajouter",
+            DashboardStrings.addContact,
             style: TextStyle(
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaDark.withValues(alpha: 0.40),
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
@@ -196,7 +201,7 @@ class _ContactItem extends StatelessWidget {
           Text(
             firstName.length > 8 ? "${firstName.substring(0, 7)}." : firstName,
             style: TextStyle(
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.80),
+              color: AppColors.quinoaDark.withValues(alpha: 0.55),
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),

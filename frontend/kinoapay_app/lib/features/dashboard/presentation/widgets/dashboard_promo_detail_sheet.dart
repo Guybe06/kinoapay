@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Bottom sheet « En savoir plus » : texte marketing structuré.
 class DashboardPromoDetailSheet extends StatelessWidget {
@@ -15,7 +16,7 @@ class DashboardPromoDetailSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF141414),
+            color: AppColors.quinoaDark,
             borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
           ),
           child: Stack(
@@ -55,7 +56,7 @@ class DashboardPromoDetailSheet extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                       children: [
                         const Text(
-                          "Transférez partout,\nsans friction",
+                          DashboardStrings.promoTitle,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 32,
@@ -67,34 +68,30 @@ class DashboardPromoDetailSheet extends StatelessWidget {
                         const SizedBox(height: 24),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.link,
-                          title: "Le lien entre tous vos comptes",
-                          description:
-                              "kinoaPay fait le pont entre vos comptes Mobile Money et vos banques. Vous n'avez pas besoin de créer un nouveau compte ou d'y stocker de l'argent : nous faisons simplement en sorte que vos comptes se parlent enfin.",
+                          title: DashboardStrings.promoLink,
+                          description: DashboardStrings.promoLinkDesc,
                         ),
                         const SizedBox(height: 32),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.userId,
-                          title: "Une identité unique pour tout recevoir",
-                          description:
-                              "Avec votre KinoaID, recevoir de l'argent devient un jeu d'enfant. Ne donnez plus vos numéros de téléphone ou vos coordonnées bancaires à tout le monde. Un seul identifiant suffit pour recevoir vos fonds directement là où vous le souhaitez.",
+                          title: DashboardStrings.promoIdentity,
+                          description: DashboardStrings.promoIdentityDesc,
                         ),
                         const SizedBox(height: 32),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.safeCircle,
-                          title: "Un reçu numérique qui ne ment jamais",
-                          description:
-                              "Chaque transaction est protégée par une preuve numérique infalsifiable. C'est une garantie que personne ne peut contester : votre argent est suivi à la trace et arrive toujours à bon port, avec une transparence totale.",
+                          title: DashboardStrings.promoProof,
+                          description: DashboardStrings.promoProofDesc,
                         ),
                         const SizedBox(height: 32),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.bolt,
-                          title: "L'intelligence qui évite les attentes",
-                          description:
-                              "Notre système surveille la santé des réseaux en temps réel. Si un opérateur ralentit ou tombe en panne, kinoaPay le voit instantanément et trouve automatiquement un chemin plus rapide pour que votre transfert reste immédiat.",
+                          title: DashboardStrings.promoIntel,
+                          description: DashboardStrings.promoIntelDesc,
                         ),
                         const SizedBox(height: 48),
                         Text(
-                          "kinoaPay ne change pas vos habitudes, il les simplifie en connectant vos moyens de paiement préférés sous une protection universelle.",
+                          DashboardStrings.promoFooter,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.4),

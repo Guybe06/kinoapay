@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Halos décoratifs derrière le contenu scrollable du tableau de bord.
 class DashboardAmbientBackground extends StatelessWidget {
@@ -63,15 +64,15 @@ class DashboardGreetingSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Bienvenue,",
+            DashboardStrings.greetingPrefix,
             style: TextStyle(
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.75),
+              color: AppColors.quinoaDark.withValues(alpha: 0.45),
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
           ),
           Text(
-            firstName.isNotEmpty ? firstName : "—",
+            firstName.isNotEmpty ? firstName : DashboardStrings.fallbackName,
             style: const TextStyle(
               color: AppColors.quinoaDark,
               fontSize: 32,
@@ -104,7 +105,7 @@ class DashboardActionButtons extends StatelessWidget {
         children: [
           Expanded(
             child: DashboardActionButton(
-              label: "ENVOYER",
+              label: DashboardStrings.actionSend,
               icon: SolarIconsOutline.arrowRightUp,
               onTap: onSend,
             ),
@@ -112,7 +113,7 @@ class DashboardActionButtons extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: DashboardActionButton(
-              label: "DEMANDER",
+              label: DashboardStrings.actionRequest,
               icon: SolarIconsOutline.cardReceive,
               onTap: onRequest,
             ),
@@ -190,9 +191,9 @@ class DashboardVoirToutLink extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Voir tout",
+              DashboardStrings.seeAll,
               style: TextStyle(
-                color: AppColors.quinoaWarmGray.withValues(alpha: 0.80),
+                color: AppColors.quinoaDark.withValues(alpha: 0.50),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -201,7 +202,7 @@ class DashboardVoirToutLink extends StatelessWidget {
             Icon(
               SolarIconsOutline.altArrowRight,
               size: 11,
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaDark.withValues(alpha: 0.35),
             ),
           ],
         ),

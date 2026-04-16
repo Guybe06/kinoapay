@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/daily_volume.dart";
 
 /// Montant « entrant » ou « sortant » avec pastille de couleur.
@@ -19,29 +21,53 @@ class DashboardStatsValueBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: alignRight ? 16 : 0, right: alignRight ? 0 : 16),
+      padding: EdgeInsets.only(
+        left: alignRight ? 16 : 0,
+        right: alignRight ? 0 : 16,
+      ),
       child: Column(
-        crossAxisAlignment: alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: alignRight
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: alignRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: alignRight
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             children: [
-              Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
               const SizedBox(width: 5),
               Text(
                 label,
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 11, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.75),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
             amount,
-            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
           ),
           Text(
-            "XAF",
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.65), fontSize: 10, fontWeight: FontWeight.w600),
+            DashboardStrings.statsCurrency,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.65),
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -53,17 +79,32 @@ class DashboardStatsValueBlock extends StatelessWidget {
 class DashboardStatsLegendDot extends StatelessWidget {
   final Color color;
   final String label;
-  const DashboardStatsLegendDot({super.key, required this.color, required this.label});
+  const DashboardStatsLegendDot({
+    super.key,
+    required this.color,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(width: 8, height: 8, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
         const SizedBox(width: 5),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.75), fontSize: 11, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.75),
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -79,17 +120,45 @@ class DashboardStatsVolumePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (volumes.length < 2) return;
 
-    final maxVal = volumes.expand((v) => [v.received, v.sent]).reduce((a, b) => a > b ? a : b);
+    final maxVal = volumes
+        .expand((v) => [v.received, v.sent])
+        .reduce((a, b) => a > b ? a : b);
     if (maxVal == 0) return;
 
-    _drawCurve(canvas, size, volumes.map((v) => v.received).toList(), maxVal, const Color(0xFFFFE9C8));
-    _drawCurve(canvas, size, volumes.map((v) => v.sent).toList(), maxVal, const Color(0xFFE8A87C));
+    _drawCurve(
+      canvas,
+      size,
+      volumes.map((v) => v.received).toList(),
+      maxVal,
+      AppColors.quinoaGold.withValues(alpha: 0.7),
+    );
+    _drawCurve(
+      canvas,
+      size,
+      volumes.map((v) => v.sent).toList(),
+      maxVal,
+      Colors.white.withValues(alpha: 0.7),
+    );
   }
 
-  void _drawCurve(Canvas canvas, Size size, List<double> values, double maxVal, Color color) {
+  void _drawCurve(
+    Canvas canvas,
+    Size size,
+    List<double> values,
+    double maxVal,
+    Color color,
+  ) {
     final n = values.length;
     final dx = size.width / (n - 1);
-    final pts = List.generate(n, (i) => Offset(i * dx, size.height - (values[i] / maxVal * size.height * 0.85) - size.height * 0.05));
+    final pts = List.generate(
+      n,
+      (i) => Offset(
+        i * dx,
+        size.height -
+            (values[i] / maxVal * size.height * 0.85) -
+            size.height * 0.05,
+      ),
+    );
 
     final path = Path()..moveTo(pts[0].dx, pts[0].dy);
     for (int i = 0; i < n - 1; i++) {
@@ -144,5 +213,6 @@ class DashboardStatsVolumePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant DashboardStatsVolumePainter old) => old.volumes != volumes;
+  bool shouldRepaint(covariant DashboardStatsVolumePainter old) =>
+      old.volumes != volumes;
 }

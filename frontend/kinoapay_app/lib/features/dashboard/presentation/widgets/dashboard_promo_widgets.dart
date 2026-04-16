@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Carte promo « Transférez partout » sur le tableau de bord.
 class DashboardPromoCard extends StatelessWidget {
@@ -15,7 +16,7 @@ class DashboardPromoCard extends StatelessWidget {
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: const Color(0xFF141414),
+          color: AppColors.quinoaDark,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
@@ -48,7 +49,7 @@ class DashboardPromoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          "Transférez partout,\nsans friction",
+                          DashboardStrings.promoTitle,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 19,
@@ -59,7 +60,7 @@ class DashboardPromoCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Envoyez et recevez de l'argent en quelques secondes.",
+                          DashboardStrings.promoSubtitle,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.4),
                             fontSize: 12,
@@ -70,20 +71,25 @@ class DashboardPromoCard extends StatelessWidget {
                         GestureDetector(
                           onTap: onTap,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 22,
+                              vertical: 12,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.accent,
                               borderRadius: BorderRadius.circular(100),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.accent.withValues(alpha: 0.4),
+                                  color: AppColors.accent.withValues(
+                                    alpha: 0.4,
+                                  ),
                                   blurRadius: 20,
                                   spreadRadius: -2,
                                 ),
                               ],
                             ),
                             child: const Text(
-                              "En savoir plus",
+                              DashboardStrings.promoCta,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 12,
@@ -104,7 +110,9 @@ class DashboardPromoCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.accent.withValues(alpha: 0.06),
-                          border: Border.all(color: AppColors.accent.withValues(alpha: 0.1)),
+                          border: Border.all(
+                            color: AppColors.accent.withValues(alpha: 0.1),
+                          ),
                         ),
                         child: const Icon(
                           SolarIconsOutline.plain,

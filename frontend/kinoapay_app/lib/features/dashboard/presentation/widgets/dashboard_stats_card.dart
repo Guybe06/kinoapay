@@ -2,6 +2,7 @@ import "dart:ui";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_stats_card_widgets.dart";
 
@@ -13,7 +14,11 @@ class DashboardStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR");
+    final currency = NumberFormat.currency(
+      symbol: "",
+      decimalDigits: 0,
+      locale: "fr_FR",
+    );
     final rawMonth = DateFormat("MMMM yyyy", "fr_FR").format(DateTime.now());
     final month = rawMonth[0].toUpperCase() + rawMonth.substring(1);
 
@@ -28,7 +33,7 @@ class DashboardStatsCard extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.quinoaRed.withValues(alpha: 0.85),
+                    color: AppColors.quinoaDark.withValues(alpha: 0.90),
                     borderRadius: BorderRadius.circular(28),
                   ),
                 ),
@@ -58,7 +63,7 @@ class DashboardStatsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Activité mensuelle",
+                        DashboardStrings.statsMonthlyTitle,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.75),
                           fontSize: 12,
@@ -66,7 +71,10 @@ class DashboardStatsCard extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(100),
@@ -87,16 +95,16 @@ class DashboardStatsCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: DashboardStatsValueBlock(
-                          label: "Entrant",
+                          label: DashboardStrings.statsIncoming,
                           amount: currency.format(stats.totalReceived).trim(),
-                          color: const Color(0xFFFFE9C8),
+                          color: AppColors.quinoaGold.withValues(alpha: 0.7),
                         ),
                       ),
                       Expanded(
                         child: DashboardStatsValueBlock(
-                          label: "Sortant",
+                          label: DashboardStrings.statsOutgoing,
                           amount: currency.format(stats.totalSent).trim(),
-                          color: const Color(0xFFE8A87C),
+                          color: Colors.white.withValues(alpha: 0.7),
                           alignRight: true,
                         ),
                       ),
@@ -107,18 +115,26 @@ class DashboardStatsCard extends StatelessWidget {
                     height: 72,
                     width: double.infinity,
                     child: CustomPaint(
-                      painter: DashboardStatsVolumePainter(volumes: stats.dailyVolumes),
+                      painter: DashboardStatsVolumePainter(
+                        volumes: stats.dailyVolumes,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      const DashboardStatsLegendDot(color: Color(0xFFFFE9C8), label: "Reçu"),
+                      DashboardStatsLegendDot(
+                        color: AppColors.quinoaGold.withValues(alpha: 0.7),
+                        label: DashboardStrings.statsLegendReceived,
+                      ),
                       const SizedBox(width: 16),
-                      const DashboardStatsLegendDot(color: Color(0xFFE8A87C), label: "Envoyé"),
+                      DashboardStatsLegendDot(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        label: DashboardStrings.statsLegendSent,
+                      ),
                       const Spacer(),
                       Text(
-                        "30 derniers jours",
+                        DashboardStrings.statsLast30,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.60),
                           fontSize: 10,

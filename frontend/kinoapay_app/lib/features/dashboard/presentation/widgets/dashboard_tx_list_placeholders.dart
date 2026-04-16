@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Placeholders alignés sur la hauteur d’une ligne de transaction.
 class DashboardTxListSkeleton extends StatelessWidget {
@@ -18,7 +19,9 @@ class DashboardTxListSkeleton extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.quinoaDark.withValues(alpha: 0.04),
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
+              border: Border.all(
+                color: AppColors.quinoaDark.withValues(alpha: 0.06),
+              ),
             ),
           ),
         ),
@@ -41,13 +44,13 @@ class DashboardTxListEmpty extends StatelessWidget {
           Icon(
             SolarIconsOutline.history,
             size: 30,
-            color: AppColors.quinoaWarmGray.withValues(alpha: 0.40),
+            color: AppColors.quinoaDark.withValues(alpha: 0.25),
           ),
           const SizedBox(height: 12),
           Text(
-            "Aucune transaction récente",
+            DashboardStrings.noTx,
             style: TextStyle(
-              color: AppColors.quinoaWarmGray.withValues(alpha: 0.55),
+              color: AppColors.quinoaDark.withValues(alpha: 0.40),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

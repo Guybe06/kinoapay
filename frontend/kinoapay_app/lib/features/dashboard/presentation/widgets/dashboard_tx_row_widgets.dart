@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_models.dart";
 
 /// Pastille texte du nom d’un canal (source ou destination).
@@ -64,7 +65,7 @@ class DashboardTxAmlSparkline extends StatelessWidget {
   Color get _color {
     if (score < 0.35) return AppColors.accentDark;
     if (score < 0.65) return AppColors.quinoaGold;
-    return AppColors.quinoaRed;
+    return AppColors.quinoaDark;
   }
 
   List<double> get _points {
@@ -102,9 +103,9 @@ class DashboardTxAmlSparkline extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "AML",
+          DashboardStrings.txAml,
           style: TextStyle(
-            color: AppColors.quinoaWarmGray.withValues(alpha: 0.40),
+            color: AppColors.quinoaDark.withValues(alpha: 0.30),
             fontSize: 8,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,
@@ -115,7 +116,10 @@ class DashboardTxAmlSparkline extends StatelessWidget {
           width: 42,
           height: 18,
           child: CustomPaint(
-            painter: DashboardTxSparklinePainter(points: _points, color: _color),
+            painter: DashboardTxSparklinePainter(
+              points: _points,
+              color: _color,
+            ),
           ),
         ),
         const SizedBox(width: 3),
@@ -136,7 +140,10 @@ class DashboardTxAmlSparkline extends StatelessWidget {
 class DashboardTxSparklinePainter extends CustomPainter {
   final List<double> points;
   final Color color;
-  const DashboardTxSparklinePainter({required this.points, required this.color});
+  const DashboardTxSparklinePainter({
+    required this.points,
+    required this.color,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

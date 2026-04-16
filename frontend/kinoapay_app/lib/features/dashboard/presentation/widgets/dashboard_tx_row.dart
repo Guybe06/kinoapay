@@ -13,10 +13,13 @@ class DashboardTxRow extends StatelessWidget {
 
   DashboardTxNature get _nature {
     final s = tx.status.toUpperCase();
-    if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED") return DashboardTxNature.refused;
+    if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED")
+      return DashboardTxNature.refused;
     if (s == "PROCESSING") return DashboardTxNature.processing;
     if (s == "PENDING") return DashboardTxNature.pending;
-    return tx.direction == "received" ? DashboardTxNature.received : DashboardTxNature.sent;
+    return tx.direction == "received"
+        ? DashboardTxNature.received
+        : DashboardTxNature.sent;
   }
 
   @override
@@ -28,13 +31,19 @@ class DashboardTxRow extends StatelessWidget {
         ? (tx.senderName ?? tx.receiverIdentifier)
         : (tx.receiverName ?? tx.receiverIdentifier);
 
-    final fmt = NumberFormat.currency(symbol: "", decimalDigits: 0, locale: "fr_FR");
+    final fmt = NumberFormat.currency(
+      symbol: "",
+      decimalDigits: 0,
+      locale: "fr_FR",
+    );
     final String timeLabel = dashboardTxRelativeDate(tx.startedAt);
 
     final String source = tx.sourceChannel.toUpperCase();
     final String destination = tx.destinationChannel.toUpperCase();
 
-    final Color amountColor = isReceived ? AppColors.accentDark : AppColors.quinoaRed;
+    final Color amountColor = isReceived
+        ? AppColors.accentDark
+        : AppColors.quinoaDark;
 
     return InkWell(
       onTap: () {},
@@ -62,7 +71,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     tx.receiverIdentifier,
                     style: TextStyle(
-                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.6),
+                      color: AppColors.quinoaDark.withValues(alpha: 0.40),
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.2,
@@ -72,7 +81,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     timeLabel,
                     style: TextStyle(
-                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.4),
+                      color: AppColors.quinoaDark.withValues(alpha: 0.30),
                       fontSize: 9,
                       fontWeight: FontWeight.w600,
                     ),
@@ -91,13 +100,15 @@ class DashboardTxRow extends StatelessWidget {
                       Icon(
                         SolarIconsOutline.arrowRight,
                         size: 10,
-                        color: AppColors.quinoaWarmGray.withValues(alpha: 0.3),
+                        color: AppColors.quinoaDark.withValues(alpha: 0.25),
                       ),
                       DashboardTxChannelBadge(label: destination),
                     ],
                   ),
                   const SizedBox(height: 6),
-                  DashboardTxAmlSparkline(score: (tx.amlScore ?? 0.1).clamp(0.0, 1.0)),
+                  DashboardTxAmlSparkline(
+                    score: (tx.amlScore ?? 0.1).clamp(0.0, 1.0),
+                  ),
                 ],
               ),
             ),
@@ -121,7 +132,7 @@ class DashboardTxRow extends StatelessWidget {
                   Text(
                     tx.currency,
                     style: TextStyle(
-                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.3),
+                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
                       fontSize: 8,
                       fontWeight: FontWeight.w800,
                     ),

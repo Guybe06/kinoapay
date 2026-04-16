@@ -5,6 +5,7 @@ import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_state.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
@@ -125,7 +126,7 @@ class _DashboardViewState extends State<DashboardView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Dernières transactions",
+                                DashboardStrings.lastTx,
                                 style: TextStyle(
                                   color: AppColors.quinoaDark.withValues(
                                     alpha: 0.85,

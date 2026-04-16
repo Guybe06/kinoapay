@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/channel_stat.dart";
 
 /// Répartition des flux par canal de paiement (MTN, Airtel…).
@@ -19,12 +20,11 @@ class DashboardChannelStats extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Column(
         children: [
-          // En-tête section
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Par canal",
+                DashboardStrings.channelSection,
                 style: TextStyle(
                   color: AppColors.quinoaDark,
                   fontSize: 15,
@@ -34,9 +34,9 @@ class DashboardChannelStats extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {},
-                child: const Text(
-                  "Voir plus",
-                  style: TextStyle(
+                child: Text(
+                  DashboardStrings.seeMore,
+                  style: const TextStyle(
                     color: AppColors.quinoaGold,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -55,7 +55,9 @@ class DashboardChannelStats extends StatelessWidget {
                   padding: EdgeInsets.only(left: i > 0 ? 8 : 0),
                   child: _ChannelCard(
                     stat: stat,
-                    sharePercent: totalVolume > 0 ? stat.total / totalVolume : 0,
+                    sharePercent: totalVolume > 0
+                        ? stat.total / totalVolume
+                        : 0,
                   ),
                 ),
               );
@@ -73,32 +75,21 @@ class _ChannelCard extends StatelessWidget {
 
   const _ChannelCard({required this.stat, required this.sharePercent});
 
-  Color get _brandColor {
-    switch (stat.type.toUpperCase()) {
-      case "MTN":
-        return const Color(0xFFFFCC00);
-      case "AIRTEL":
-        return const Color(0xFFE4002B);
-      default:
-        return AppColors.quinoaGold;
-    }
-  }
+  Color get _brandColor => AppColors.quinoaGold;
 
   @override
   Widget build(BuildContext context) {
     final compact = NumberFormat.compact(locale: "fr_FR");
     final brand = _brandColor;
     final netPositive = stat.net >= 0;
-    final netColor = netPositive ? AppColors.success : AppColors.quinoaRed;
+    final netColor = netPositive ? AppColors.accentDark : AppColors.quinoaDark;
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: AppColors.quinoaSand.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
         boxShadow: [
           BoxShadow(
             color: AppColors.quinoaDark.withValues(alpha: 0.04),
@@ -110,16 +101,12 @@ class _ChannelCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Badge canal
           Row(
             children: [
               Container(
                 width: 8,
                 height: 8,
-                decoration: BoxDecoration(
-                  color: brand,
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: brand, shape: BoxShape.circle),
               ),
               const SizedBox(width: 6),
               Expanded(
@@ -137,7 +124,6 @@ class _ChannelCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Volume total
           Text(
             "${compact.format(stat.total)} XAF",
             style: const TextStyle(
@@ -150,7 +136,6 @@ class _ChannelCard extends StatelessWidget {
 
           const SizedBox(height: 2),
 
-          // Net flow
           Row(
             children: [
               Text(
@@ -175,7 +160,6 @@ class _ChannelCard extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Barre de progression (part du total)
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -190,11 +174,10 @@ class _ChannelCard extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // Nombre de transactions
           Text(
-            "${stat.txCount} transaction${stat.txCount > 1 ? "s" : ""}",
-            style: const TextStyle(
-              color: AppColors.quinoaWarmGray,
+            DashboardStrings.txCountLabel(stat.txCount),
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.40),
               fontSize: 10,
               fontWeight: FontWeight.w500,
             ),
