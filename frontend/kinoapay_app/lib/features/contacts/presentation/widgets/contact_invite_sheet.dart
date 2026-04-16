@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
 /// Sheet d'invitation pour un contact non encore inscrit.
@@ -36,11 +37,15 @@ class ContactInviteSheet extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.person_add_rounded, size: 24, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
+            child: Icon(
+              Icons.person_add_rounded,
+              size: 24,
+              color: AppColors.quinoaDark.withValues(alpha: 0.4),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
-            "${contact.fullName} n'est pas encore sur ${AppStrings.appName}.",
+            "${contact.fullName}${ContactsStrings.inviteNotOnAppPrefix}${AppStrings.appName}${ContactsStrings.inviteSuffix}",
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: AppColors.quinoaDark,
@@ -51,7 +56,7 @@ class ContactInviteSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "Invitez-le à rejoindre l'application pour lui envoyer de l'argent.",
+            ContactsStrings.inviteBody,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.quinoaDark.withValues(alpha: 0.5),
@@ -71,8 +76,12 @@ class ContactInviteSheet extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: const Text(
-                "Inviter",
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w800),
+                ContactsStrings.inviteBtn,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
           ),

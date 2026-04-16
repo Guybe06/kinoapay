@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_action_sheet.dart";
@@ -20,11 +21,17 @@ class ContactsList extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 40),
       children: [
         if (state.onApp.isNotEmpty) ...[
-          _SectionHeader(label: "Sur ${AppStrings.appName}", count: state.onApp.length),
+          _SectionHeader(
+            label: "${ContactsStrings.sectionOnAppPrefix}${AppStrings.appName}",
+            count: state.onApp.length,
+          ),
           _ContactGroup(contacts: state.onApp, actionable: true),
         ],
         if (state.others.isNotEmpty) ...[
-          _SectionHeader(label: "Autres contacts", count: state.others.length),
+          _SectionHeader(
+            label: ContactsStrings.sectionOthers,
+            count: state.others.length,
+          ),
           _ContactGroup(contacts: state.others, actionable: false),
         ],
       ],
@@ -140,10 +147,14 @@ class _EmptySearchState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.search_off_rounded, size: 48, color: AppColors.quinoaDark.withValues(alpha: 0.2)),
+          Icon(
+            Icons.search_off_rounded,
+            size: 48,
+            color: AppColors.quinoaDark.withValues(alpha: 0.2),
+          ),
           const SizedBox(height: 12),
           Text(
-            "Aucun contact trouvé",
+            ContactsStrings.emptySearch,
             style: TextStyle(
               color: AppColors.quinoaDark.withValues(alpha: 0.4),
               fontSize: 14,

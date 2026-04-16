@@ -24,14 +24,16 @@ class PhoneContactsRepository implements ContactsRepository {
         final normalized = normalizePhone(pc.phones.first.number);
         final profile = usersByNormalizedPhone[normalized];
 
-        contacts.add(Contact(
-          id: pc.id,
-          fullName: pc.displayName.isNotEmpty ? pc.displayName : normalized,
-          phone: normalized,
-          isRegistered: profile != null,
-          publicHandle: profile?.publicHandle,
-          channels: profile?.channels ?? const [],
-        ));
+        contacts.add(
+          Contact(
+            id: pc.id,
+            fullName: pc.displayName.isNotEmpty ? pc.displayName : normalized,
+            phone: normalized,
+            isRegistered: profile != null,
+            publicHandle: profile?.publicHandle,
+            channels: profile?.channels ?? const [],
+          ),
+        );
       }
 
       contacts.sort((a, b) {
@@ -40,9 +42,7 @@ class PhoneContactsRepository implements ContactsRepository {
       });
 
       return contacts;
-    } catch (e) {
-      // ignore: avoid_print
-      print("Exception dans PhoneContactsRepository: $e");
+    } catch (_) {
       return [];
     }
   }
@@ -51,9 +51,11 @@ class PhoneContactsRepository implements ContactsRepository {
   List<Contact> search(List<Contact> contacts, String query) {
     final lower = query.toLowerCase();
     return contacts
-        .where((c) =>
-            c.fullName.toLowerCase().contains(lower) ||
-            c.phone.contains(lower))
+        .where(
+          (c) =>
+              c.fullName.toLowerCase().contains(lower) ||
+              c.phone.contains(lower),
+        )
         .toList();
   }
 }

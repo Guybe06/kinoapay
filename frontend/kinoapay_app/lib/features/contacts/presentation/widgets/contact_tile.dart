@@ -39,7 +39,7 @@ class ContactTile extends StatelessWidget {
                   Text(
                     contact.phone,
                     style: TextStyle(
-                      color: AppColors.quinoaWarmGray.withValues(alpha: 0.65),
+                      color: AppColors.quinoaDark.withValues(alpha: 0.5),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -54,15 +54,18 @@ class ContactTile extends StatelessWidget {
                   ...contact.channels.map((c) => _ChannelDot(channel: c)),
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: AppColors.quinoaRed.withValues(alpha: 0.10),
+                      color: AppColors.quinoaGold.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
                       AppStrings.appName,
                       style: TextStyle(
-                        color: AppColors.quinoaRed,
+                        color: AppColors.quinoaGold,
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.2,
@@ -84,14 +87,14 @@ class ContactTile extends StatelessWidget {
   }
 }
 
-/// Petite pastille colorée indiquant un canal (MTN jaune, Airtel rouge).
+/// Petite pastille indiquant un canal de paiement disponible.
 class _ChannelDot extends StatelessWidget {
   final PaymentChannel channel;
   const _ChannelDot({required this.channel});
 
   @override
   Widget build(BuildContext context) {
-    final color = channel == PaymentChannel.mtn ? AppColors.mtnYellow : AppColors.airtelRed;
+    final color = AppColors.quinoaDark;
     return Container(
       width: 8,
       height: 8,
@@ -117,7 +120,7 @@ class _Avatar extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: onApp
-                ? AppColors.quinoaRed.withValues(alpha: 0.10)
+                ? AppColors.quinoaGold.withValues(alpha: 0.12)
                 : AppColors.quinoaDark.withValues(alpha: 0.07),
             shape: BoxShape.circle,
           ),
@@ -125,7 +128,9 @@ class _Avatar extends StatelessWidget {
           child: Text(
             initials,
             style: TextStyle(
-              color: onApp ? AppColors.quinoaRed : AppColors.quinoaWarmGray,
+              color: onApp
+                  ? AppColors.quinoaGold
+                  : AppColors.quinoaDark.withValues(alpha: 0.5),
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -139,7 +144,7 @@ class _Avatar extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: AppColors.quinoaRed,
+                color: AppColors.quinoaGold,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.quinoaCream, width: 1.5),
               ),

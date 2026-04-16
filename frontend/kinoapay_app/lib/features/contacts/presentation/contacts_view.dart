@@ -5,6 +5,7 @@ import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.da
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_list.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 
 /// Liste des contacts : recherche et regroupement inscrits / autres.
 class ContactsView extends StatefulWidget {
@@ -43,8 +44,10 @@ class _ContactsViewState extends State<ContactsView> {
             child: BlocBuilder<ContactsBloc, ContactsState>(
               builder: (context, state) {
                 if (state is ContactsLoading) return const _LoadingState();
-                if (state is ContactsError) return _ErrorState(message: state.message);
-                if (state is ContactsLoadSuccess) return ContactsList(state: state);
+                if (state is ContactsError)
+                  return _ErrorState(message: state.message);
+                if (state is ContactsLoadSuccess)
+                  return ContactsList(state: state);
                 return const SizedBox.shrink();
               },
             ),
@@ -68,13 +71,17 @@ class _ContactsViewState extends State<ContactsView> {
                 color: AppColors.quinoaDark.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.quinoaDark),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16,
+                color: AppColors.quinoaDark,
+              ),
             ),
           ),
           const SizedBox(width: 14),
           const Expanded(
             child: Text(
-              "Contacts",
+              ContactsStrings.viewTitle,
               style: TextStyle(
                 color: AppColors.quinoaDark,
                 fontSize: 22,
@@ -84,14 +91,19 @@ class _ContactsViewState extends State<ContactsView> {
             ),
           ),
           GestureDetector(
-            onTap: () => context.read<ContactsBloc>().add(const ContactsStarted()),
+            onTap: () =>
+                context.read<ContactsBloc>().add(const ContactsStarted()),
             child: Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
                 color: AppColors.quinoaDark.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.refresh_rounded, size: 18, color: AppColors.quinoaDark),
+              child: const Icon(
+                Icons.refresh_rounded,
+                size: 18,
+                color: AppColors.quinoaDark,
+              ),
             ),
           ),
         ],
@@ -104,35 +116,57 @@ class _ContactsViewState extends State<ContactsView> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
       child: TextField(
         controller: _searchController,
-        onChanged: (q) => context.read<ContactsBloc>().add(ContactsSearchChanged(q)),
+        onChanged: (q) =>
+            context.read<ContactsBloc>().add(ContactsSearchChanged(q)),
         style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14),
         cursorColor: AppColors.quinoaGold,
         decoration: InputDecoration(
-          hintText: "Rechercher un contact...",
-          hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.3), fontSize: 14),
-          prefixIcon: Icon(Icons.search_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.35), size: 20),
+          hintText: ContactsStrings.searchHint,
+          hintStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.3),
+            fontSize: 14,
+          ),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: AppColors.quinoaDark.withValues(alpha: 0.35),
+            size: 20,
+          ),
           suffixIcon: ValueListenableBuilder<TextEditingValue>(
             valueListenable: _searchController,
             builder: (_, val, _) => val.text.isNotEmpty
                 ? GestureDetector(
                     onTap: () {
                       _searchController.clear();
-                      context.read<ContactsBloc>().add(const ContactsSearchChanged(""));
+                      context.read<ContactsBloc>().add(
+                        const ContactsSearchChanged(""),
+                      );
                     },
-                    child: Icon(Icons.close_rounded, size: 18, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 18,
+                      color: AppColors.quinoaDark.withValues(alpha: 0.4),
+                    ),
                   )
                 : const SizedBox.shrink(),
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.10)),
+            borderSide: BorderSide(
+              color: AppColors.quinoaDark.withValues(alpha: 0.10),
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.quinoaGold.withValues(alpha: 0.6),
+              width: 1.5,
+            ),
           ),
         ),
       ),
@@ -146,7 +180,10 @@ class _LoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(color: AppColors.quinoaGold, strokeWidth: 2),
+      child: CircularProgressIndicator(
+        color: AppColors.quinoaGold,
+        strokeWidth: 2,
+      ),
     );
   }
 }
@@ -158,7 +195,10 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(message, style: const TextStyle(color: AppColors.quinoaRed, fontSize: 14)),
+      child: Text(
+        message,
+        style: const TextStyle(color: AppColors.quinoaGold, fontSize: 14),
+      ),
     );
   }
 }
