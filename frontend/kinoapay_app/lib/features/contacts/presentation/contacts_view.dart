@@ -44,10 +44,12 @@ class _ContactsViewState extends State<ContactsView> {
             child: BlocBuilder<ContactsBloc, ContactsState>(
               builder: (context, state) {
                 if (state is ContactsLoading) return const _LoadingState();
-                if (state is ContactsError)
+                if (state is ContactsError) {
                   return _ErrorState(message: state.message);
-                if (state is ContactsLoadSuccess)
+                }
+                if (state is ContactsLoadSuccess) {
                   return ContactsList(state: state);
+                }
                 return const SizedBox.shrink();
               },
             ),
