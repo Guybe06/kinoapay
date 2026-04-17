@@ -53,6 +53,30 @@ class _SendViewState extends State<SendView> {
       short: "Orange",
       status: "active",
     ),
+    PaymentChannel(
+      id: "src_airtel",
+      type: "Airtel Money",
+      label: "Airtel Money",
+      value: "+242 05 XX XX XX",
+      short: "Airtel",
+      status: "active",
+    ),
+    PaymentChannel(
+      id: "src_visa",
+      type: "Visa Card",
+      label: "Visa •••• 4242",
+      value: "•••• 4242",
+      short: "Visa",
+      status: "active",
+    ),
+    PaymentChannel(
+      id: "src_mastercard",
+      type: "Mastercard",
+      label: "Mastercard •••• 8888",
+      value: "•••• 8888",
+      short: "MC",
+      status: "active",
+    ),
   ];
 
   @override
