@@ -16,11 +16,17 @@ class SendInitial extends SendState {}
 class SendLoading extends SendState {}
 
 class SendRecipientFound extends SendState {
+  final List<RecipientResult> recipients;
+  const SendRecipientFound({required this.recipients});
+  @override
+  List<Object?> get props => [recipients];
+}
+
+/// Résultat de recherche d'un destinataire
+class RecipientResult {
   final String name;
   final List<PaymentChannel> channels;
-  const SendRecipientFound({required this.name, required this.channels});
-  @override
-  List<Object?> get props => [name, channels];
+  const RecipientResult({required this.name, required this.channels});
 }
 
 class SendSimulationReady extends SendState {

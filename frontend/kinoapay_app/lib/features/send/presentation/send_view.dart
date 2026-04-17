@@ -136,8 +136,9 @@ class _SendViewState extends State<SendView> {
   void _onRecipientChanged(String value) {
     final trimmed = value.trim();
     final clean = trimmed.replaceAll(" ", "");
-    // Recherche auto: ID Kinoa (@ + 6 caractères) OU numéro (3+ chiffres)
-    final isId = trimmed.startsWith("@") && clean.length >= 7; // @ + 6 ID
+    // Recherche auto: ID Kinoa (@ + 3+ caractères) OU numéro (3+ chiffres)
+    // Le @ n'est pas compté dans les 3 caractères
+    final isId = trimmed.startsWith("@") && clean.length >= 4; // @ + 3
     final isPhone = !trimmed.startsWith("@") && clean.length >= 3;
     if (isId || isPhone) {
       context.read<SendBloc>().add(SendRecipientSearched(trimmed));

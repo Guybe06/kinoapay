@@ -29,9 +29,11 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
       final searchInput = event.identifier.trim();
 
-      // Validation: minimum 3 caractères requis
+      // Validation: minimum 3 caractères requis (hors @ pour les IDs)
       final cleanInput = searchInput.replaceAll(" ", "");
-      if (cleanInput.length < 3) {
+      final isId = searchInput.startsWith("@");
+      final minLength = isId ? 4 : 3; // @ + 3 pour ID, 3 pour numéro
+      if (cleanInput.length < minLength) {
         throw AppException(
           message: "Entrez au moins 3 caractères",
           code: "INVALID_INPUT",
@@ -130,12 +132,11 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       final match = mockUsers.firstWhere(
         (user) {
           if (isKinoaId) {
-            // Recherche par ID Kinoa: enlève @ et compare (min 3 caractères déjà vérifié)
+            // Recherche par ID Kinoa: enlève @ et compare en début d'ID (partiel)
             final searchId = cleanInput.substring(1);
-            return user.kinoaId == searchId;
+            return user.kinoaId.startsWith(searchId);
           } else {
             // Recherche par numéro partiel sans code pays
-            // Nettoie: enlève espaces
             final cleanPhone = user.phone.replaceAll(" ", "");
             return cleanPhone.contains(cleanInput);
           }
