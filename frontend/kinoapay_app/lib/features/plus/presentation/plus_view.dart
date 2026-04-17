@@ -63,7 +63,7 @@ class PlusView extends StatelessWidget {
                   label: PlusStrings.actionRequest,
                   description: PlusStrings.descRequest,
                   color: AppColors.pending,
-                  onTap: () {}, // TODO: Implémenter la vue de demande
+                  onTap: () {}, 
                 ),
                 _PlusActionCard(
                   icon: SolarIconsOutline.history,

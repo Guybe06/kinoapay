@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
@@ -744,8 +743,9 @@ class _AmountInput extends StatelessWidget {
     if (n == null) return rawAmount;
     if (rawAmount.endsWith(".")) return "${_fmt.format(n)}.";
     final parts = rawAmount.split(".");
-    if (parts.length == 2)
+    if (parts.length == 2) {
       return "${_fmt.format(n).split(".").first}.${parts[1]}";
+    }
     return _fmt.format(n);
   }
 
@@ -809,7 +809,7 @@ class _NumpadAmountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _buildDisplay() {
+    String buildDisplay() {
       if (rawAmount == "0") return "0";
       final num = double.tryParse(rawAmount);
       if (num == null) return rawAmount;
@@ -823,7 +823,7 @@ class _NumpadAmountScreen extends StatelessWidget {
       return _displayFmt.format(num);
     }
 
-    final display = _buildDisplay();
+    final display = buildDisplay();
 
     return Column(
       children: [

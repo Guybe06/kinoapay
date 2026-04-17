@@ -13,8 +13,9 @@ class DashboardTxRow extends StatelessWidget {
 
   DashboardTxNature get _nature {
     final s = tx.status.toUpperCase();
-    if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED")
+    if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED") {
       return DashboardTxNature.refused;
+    }
     if (s == "PROCESSING") return DashboardTxNature.processing;
     if (s == "PENDING") return DashboardTxNature.pending;
     return tx.direction == "received"
