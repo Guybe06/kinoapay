@@ -2,7 +2,7 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 
-/// Liste des 4 onglets de la navigation principale.
+/// Liste des 3 onglets de la navigation principale.
 class NavItems {
   static const List<NavItem> all = [
     NavItem(
@@ -16,14 +16,9 @@ class NavItems {
       activeIcon: SolarIconsBold.plain,
     ),
     NavItem(
-      label: AppStrings.navHistory,
-      icon: SolarIconsOutline.transferHorizontal,
-      activeIcon: SolarIconsBold.transferHorizontal,
-    ),
-    NavItem(
-      label: AppStrings.navProfile,
-      icon: SolarIconsOutline.user,
-      activeIcon: SolarIconsBold.user,
+      label: AppStrings.navMore,
+      icon: SolarIconsOutline.widget,
+      activeIcon: SolarIconsBold.widget,
     ),
   ];
 }

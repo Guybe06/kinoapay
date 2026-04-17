@@ -9,6 +9,7 @@ abstract final class DashboardStrings {
   static const String seeMore = "Voir plus";
 
   static const String statsMonthlyTitle = "Activité mensuelle";
+  static const String balanceLabel = "Solde de transactions";
   static const String statsIncoming = "Entrant";
   static const String statsOutgoing = "Sortant";
   static const String statsLegendReceived = "Reçu";

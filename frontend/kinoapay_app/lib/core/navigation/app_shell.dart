@@ -3,10 +3,8 @@ import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/bottom_nav.dart";
-import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
-import "package:kinoapay_app/features/history/presentation/history_view.dart";
-import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
+import "package:kinoapay_app/features/plus/presentation/plus_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
 
 /// Arguments de navigation transmis au [AppShell] à l'ouverture.
@@ -19,7 +17,7 @@ class ShellArgs {
   });
 }
 
-/// Shell principal, fond quinoaCream, icônes status bar sombres, navigation flottante centrée en bas.
+/// Shell principal, fond quinoaCream, barre de navigation standard en bas.
 class AppShell extends StatefulWidget {
   final ShellArgs args;
   const AppShell({super.key, required this.args});
@@ -46,12 +44,9 @@ class _AppShellState extends State<AppShell> {
     return [
       DashboardView(
         onNavigateToSend: () => _onTabChanged(AppRoutes.tabTransfer),
-        onNavigateToRequest: () => _onTabChanged(AppRoutes.tabTransfer),
-        onNavigateToHistory: () => _onTabChanged(AppRoutes.tabHistory),
       ),
       const SendView(),
-      const HistoryView(),
-      const ProfileView(),
+      const PlusView(),
     ];
   }
 
@@ -67,11 +62,7 @@ class _AppShellState extends State<AppShell> {
       ),
       child: Scaffold(
         backgroundColor: AppColors.quinoaCream,
-        appBar: AppHeader(
-          withHero:
-              widget.args.fromSplash && _currentTab == AppRoutes.tabDashboard,
-        ),
-        extendBodyBehindAppBar: true,
+        extendBody: true,
         body: Stack(
           children: [
             IndexedStack(index: _currentTab, children: _buildPages(context)),

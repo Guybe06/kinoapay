@@ -22,7 +22,7 @@ class DashboardAmbientBackground extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  AppColors.accent.withValues(alpha: 0.25),
+                  AppColors.quinoaGold.withValues(alpha: 0.12),
                   Colors.transparent,
                 ],
               ),
@@ -39,7 +39,7 @@ class DashboardAmbientBackground extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  AppColors.accent.withValues(alpha: 0.15),
+                  AppColors.quinoaGold.withValues(alpha: 0.08),
                   Colors.transparent,
                 ],
               ),
@@ -108,6 +108,7 @@ class DashboardActionButtons extends StatelessWidget {
               label: DashboardStrings.actionSend,
               icon: SolarIconsOutline.arrowRightUp,
               onTap: onSend,
+              isPrimary: true,
             ),
           ),
           const SizedBox(width: 12),
@@ -128,35 +129,49 @@ class DashboardActionButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
+  final bool isPrimary;
   const DashboardActionButton({
     super.key,
     required this.label,
     required this.icon,
     required this.onTap,
+    this.isPrimary = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bg = isPrimary ? AppColors.quinoaDark : Colors.white;
+    final fg = isPrimary ? Colors.white : AppColors.quinoaDark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          color: bg,
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(
-            color: AppColors.quinoaDark.withValues(alpha: 0.07),
-          ),
+          border: isPrimary
+              ? null
+              : Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.10)),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.15),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: AppColors.quinoaDark),
+            Icon(icon, size: 16, color: fg),
             const SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
+              style: TextStyle(
+                color: fg,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.5,

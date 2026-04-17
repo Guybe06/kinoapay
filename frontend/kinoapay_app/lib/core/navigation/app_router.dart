@@ -20,6 +20,8 @@ import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
 import "package:kinoapay_app/features/notifications/infrastructure/repositories/mock_notifications_repository.dart";
 import "package:kinoapay_app/features/notifications/presentation/notifications_view.dart";
+import "package:kinoapay_app/features/history/presentation/history_view.dart";
+import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
 import "package:kinoapay_app/features/receipt/presentation/receipt_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
@@ -89,6 +91,12 @@ class AppRouter {
         return RouteTransitions.authStep(const ReceiptView(), settings);
       case AppRoutes.scanner:
         return RouteTransitions.slide(const ScannerView(), settings);
+      case AppRoutes.profile:
+        return RouteTransitions.slide(const ProfileView(), settings);
+      case AppRoutes.history:
+        return RouteTransitions.slide(const HistoryView(), settings);
+      case AppRoutes.channels:
+        return RouteTransitions.slide(const PaymentSetupView(), settings);
       default:
         return RouteTransitions.slide(_unknownPage(settings.name), settings);
     }

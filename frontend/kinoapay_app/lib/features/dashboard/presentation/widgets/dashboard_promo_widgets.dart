@@ -32,7 +32,7 @@ class DashboardPromoCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.accent.withValues(alpha: 0.25),
+                      AppColors.quinoaGold.withValues(alpha: 0.25),
                       Colors.transparent,
                     ],
                   ),
@@ -76,11 +76,11 @@ class DashboardPromoCard extends StatelessWidget {
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.accent,
+                              color: AppColors.quinoaGold,
                               borderRadius: BorderRadius.circular(100),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.accent.withValues(
+                                  color: AppColors.quinoaGold.withValues(
                                     alpha: 0.4,
                                   ),
                                   blurRadius: 20,
@@ -109,15 +109,15 @@ class DashboardPromoCard extends StatelessWidget {
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.accent.withValues(alpha: 0.06),
+                          color: AppColors.quinoaGold.withValues(alpha: 0.06),
                           border: Border.all(
-                            color: AppColors.accent.withValues(alpha: 0.1),
+                            color: AppColors.quinoaGold.withValues(alpha: 0.1),
                           ),
                         ),
                         child: const Icon(
                           SolarIconsOutline.plain,
                           size: 48,
-                          color: AppColors.accent,
+                          color: AppColors.quinoaGold,
                         ),
                       ),
                     ),

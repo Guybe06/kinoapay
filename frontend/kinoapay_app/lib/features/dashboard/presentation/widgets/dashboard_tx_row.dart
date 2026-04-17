@@ -42,13 +42,25 @@ class DashboardTxRow extends StatelessWidget {
     final String destination = tx.destinationChannel.toUpperCase();
 
     final Color amountColor = isReceived
-        ? AppColors.accentDark
+        ? AppColors.quinoaGold
         : AppColors.quinoaDark;
+    final double amountSize = isReceived ? 14.0 : 16.0;
 
     return InkWell(
       onTap: () {},
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: !isReceived
+            ? BoxDecoration(
+                color: AppColors.quinoaDark.withValues(alpha: 0.02),
+                border: Border(
+                  left: BorderSide(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.15),
+                    width: 2,
+                  ),
+                ),
+              )
+            : null,
         child: Row(
           children: [
             Expanded(
@@ -58,9 +70,9 @@ class DashboardTxRow extends StatelessWidget {
                 children: [
                   Text(
                     name.toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.quinoaDark,
-                      fontSize: 12,
+                      fontSize: isReceived ? 11 : 12,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.5,
                     ),
@@ -121,7 +133,7 @@ class DashboardTxRow extends StatelessWidget {
                     "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
                     style: TextStyle(
                       color: amountColor,
-                      fontSize: 15,
+                      fontSize: amountSize,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.5,
                     ),

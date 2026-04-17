@@ -16,9 +16,12 @@ abstract final class AppRoutes {
   static const String receipt = "/app/receipt";
   static const String notifications = "/app/notifications";
   static const String scanner = "/app/scanner";
+  static const String profile = "/app/profile";
+  static const String history = "/app/history";
+  static const String channels = "/app/channels";
+  static const String request = "/app/request";
 
   static const int tabDashboard = 0;
   static const int tabTransfer = 1;
-  static const int tabHistory = 2;
-  static const int tabProfile = 3;
+  static const int tabMore = 2;
 }

@@ -1,10 +1,11 @@
+import "dart:ui";
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/navigation/domain/nav_item.dart";
 import "package:kinoapay_app/core/navigation/domain/nav_items.dart";
 
-/// Navigation flottante light, fond blanc, ombre douce, pastille quinoaGold glissante.
-class AppBottomNav extends StatefulWidget {
+/// Navigation flottante premium avec effet de glissement fluide.
+/// Glassmorphism et indicateur synchronisé avec précision.
+class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
 
@@ -15,160 +16,101 @@ class AppBottomNav extends StatefulWidget {
   });
 
   @override
-  State<AppBottomNav> createState() => _AppBottomNavState();
-}
-
-class _AppBottomNavState extends State<AppBottomNav> {
-  final List<GlobalKey> _tabKeys =
-      List.generate(NavItems.all.length, (_) => GlobalKey());
-  final GlobalKey _stackKey = GlobalKey();
-
-  double _pillLeft = 0;
-  double _pillWidth = 44;
-  double _pillHeight = 40;
-  bool _measured = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _measureTab(widget.currentIndex, animate: false),
-    );
-  }
-
-  @override
-  void didUpdateWidget(AppBottomNav old) {
-    super.didUpdateWidget(old);
-    if (old.currentIndex != widget.currentIndex) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _measureTab(widget.currentIndex),
-      );
-    }
-  }
-
-  void _measureTab(int index, {bool animate = true}) {
-    if (!mounted) return;
-    final tabBox =
-        _tabKeys[index].currentContext?.findRenderObject() as RenderBox?;
-    final stackBox =
-        _stackKey.currentContext?.findRenderObject() as RenderBox?;
-    if (tabBox == null || stackBox == null) return;
-
-    final offset = tabBox.localToGlobal(Offset.zero, ancestor: stackBox);
-    setState(() {
-      _pillLeft = offset.dx;
-      _pillWidth = tabBox.size.width;
-      _pillHeight = tabBox.size.height;
-      _measured = true;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
+    
+    // Dimensions mathématiques pour un alignement parfait
+    const itemSize = 48.0;
+    const spacing = 12.0;
+    const padding = 6.0;
+    
+    // Calcul de la position de l'indicateur : index * (taille + espacement)
+    final indicatorLeft = currentIndex * (itemSize + spacing);
 
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomInset + 12),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: AppColors.quinoaDark.withValues(alpha: 0.07),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.quinoaDark.withValues(alpha: 0.10),
-                blurRadius: 24,
-                offset: const Offset(0, 6),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 0, 16, bottomInset + 12),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              height: itemSize + (padding * 2),
+              padding: const EdgeInsets.all(padding),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.5), 
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.1),
+                    blurRadius: 30,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
               ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-          child: Stack(
-            key: _stackKey,
-            clipBehavior: Clip.hardEdge,
-            children: [
-              if (_measured)
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutCubic,
-                  left: _pillLeft,
-                  top: 0,
-                  width: _pillWidth,
-                  height: _pillHeight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.quinoaGold,
-                      borderRadius: BorderRadius.circular(22),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Indicateur de déplacement fluide (synchronisé)
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.fastOutSlowIn,
+                    left: indicatorLeft,
+                    child: Container(
+                      width: itemSize,
+                      height: itemSize,
+                      decoration: const BoxDecoration(
+                        color: AppColors.quinoaDark,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                   ),
-                ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(NavItems.all.length, (i) {
-                  return _NavTab(
-                    key: _tabKeys[i],
-                    item: NavItems.all[i],
-                    isActive: i == widget.currentIndex,
-                    onTap: () => widget.onTabChanged(i),
-                  );
-                }),
+                  // Items de navigation (Row sans marges internes polluantes)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(NavItems.all.length, (i) {
+                      final item = NavItems.all[i];
+                      final active = i == currentIndex;
+
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () => onTabChanged(i),
+                            behavior: HitTestBehavior.opaque,
+                            child: SizedBox(
+                              width: itemSize,
+                              height: itemSize,
+                              child: Center(
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: Icon(
+                                    active ? item.activeIcon : item.icon,
+                                    key: ValueKey<bool>(active),
+                                    size: 24,
+                                    color: active
+                                        ? Colors.white
+                                        : AppColors.quinoaDark.withValues(alpha: 0.35),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Ajout de l'espacement entre les items (sauf le dernier)
+                          if (i < NavItems.all.length - 1)
+                            const SizedBox(width: spacing),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavTab extends StatelessWidget {
-  final NavItem item;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _NavTab({
-    super.key,
-    required this.item,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 3),
-        padding: EdgeInsets.symmetric(
-          horizontal: isActive ? 14 : 11,
-          vertical: 10,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? item.activeIcon : item.icon,
-              size: 20,
-              color: isActive ? Colors.white : AppColors.quinoaWarmGray,
             ),
-            if (isActive) ...[
-              const SizedBox(width: 6),
-              Text(
-                item.label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

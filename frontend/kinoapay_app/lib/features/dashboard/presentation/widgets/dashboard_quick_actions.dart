@@ -9,7 +9,7 @@ class DashboardQuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -22,7 +22,7 @@ class DashboardQuickActions extends StatelessWidget {
               letterSpacing: -0.4,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -63,9 +63,9 @@ class _ActionSquare extends StatelessWidget {
         Container(
           width: 76,
           height: 76,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.quinoaDark,
-            borderRadius: BorderRadius.circular(24),
+            shape: BoxShape.circle,
           ),
           child: Icon(icon, color: Colors.white, size: 28),
         ),

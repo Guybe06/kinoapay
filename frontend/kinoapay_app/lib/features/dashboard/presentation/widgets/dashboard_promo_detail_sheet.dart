@@ -31,7 +31,7 @@ class DashboardPromoDetailSheet extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        AppColors.accent.withValues(alpha: 0.1),
+                        AppColors.quinoaGold.withValues(alpha: 0.1),
                         Colors.transparent,
                       ],
                     ),
@@ -131,7 +131,7 @@ class DashboardPromoInfoSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: AppColors.accent, size: 28),
+        Icon(icon, color: AppColors.quinoaGold, size: 28),
         const SizedBox(width: 20),
         Expanded(
           child: Column(

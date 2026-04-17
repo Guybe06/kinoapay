@@ -3,7 +3,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/daily_volume.dart";
 
-/// Montant « entrant » ou « sortant » avec pastille de couleur.
+/// Montant « entrant » ou « sortant » avec pastille de couleur (light mode).
 class DashboardStatsValueBlock extends StatelessWidget {
   final String label;
   final String amount;
@@ -44,7 +44,7 @@ class DashboardStatsValueBlock extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.75),
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
@@ -54,8 +54,8 @@ class DashboardStatsValueBlock extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             amount,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: color,
               fontSize: 18,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,
@@ -64,7 +64,7 @@ class DashboardStatsValueBlock extends StatelessWidget {
           Text(
             DashboardStrings.statsCurrency,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.65),
+              color: AppColors.quinoaDark.withValues(alpha: 0.30),
               fontSize: 10,
               fontWeight: FontWeight.w600,
             ),
@@ -75,7 +75,7 @@ class DashboardStatsValueBlock extends StatelessWidget {
   }
 }
 
-/// Pastille de légende sous le graphique.
+/// Pastille de légende sous le graphique (light mode).
 class DashboardStatsLegendDot extends StatelessWidget {
   final Color color;
   final String label;
@@ -101,7 +101,7 @@ class DashboardStatsLegendDot extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.75),
+            color: AppColors.quinoaDark.withValues(alpha: 0.50),
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
@@ -128,16 +128,16 @@ class DashboardStatsVolumePainter extends CustomPainter {
     _drawCurve(
       canvas,
       size,
-      volumes.map((v) => v.received).toList(),
+      volumes.map((v) => v.sent).toList(),
       maxVal,
-      AppColors.quinoaGold.withValues(alpha: 0.7),
+      AppColors.quinoaDark.withValues(alpha: 0.55),
     );
     _drawCurve(
       canvas,
       size,
-      volumes.map((v) => v.sent).toList(),
+      volumes.map((v) => v.received).toList(),
       maxVal,
-      Colors.white.withValues(alpha: 0.7),
+      AppColors.quinoaGold.withValues(alpha: 0.70),
     );
   }
 

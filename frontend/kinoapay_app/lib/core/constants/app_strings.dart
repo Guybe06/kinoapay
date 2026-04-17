@@ -11,8 +11,7 @@ abstract final class AppStrings {
   static const String loading = "Chargement...";
   static const String navDashboard = "Accueil";
   static const String navTransfer = "Envoyer";
-  static const String navHistory = "Historique";
-  static const String navProfile = "Profil";
+  static const String navMore = "Plus";
   static const String headerContacts = "Contacts";
   static const String headerNotifications = "Notifications";
   static const String headerScan = "Scanner";
