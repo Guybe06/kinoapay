@@ -586,11 +586,13 @@ class _RecipientSearchField extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     suffixIcon: isLoading
                         ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: AppColors.quinoaDark,
+                            width: 16,
+                            height: 16,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.5,
+                                color: AppColors.quinoaDark,
+                              ),
                             ),
                           )
                         : null,
