@@ -10,8 +10,8 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   final SendRepository _repository;
 
   SendBloc({required SendRepository repository})
-      : _repository = repository,
-        super(SendInitial()) {
+    : _repository = repository,
+      super(SendInitial()) {
     on<SendRecipientSearched>(_onSearchRecipient);
     on<SendSimulationRequested>(_onSimulation);
     on<SendQuoteRequested>(_onQuote);
@@ -19,46 +19,138 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     on<SendReset>(_onReset);
   }
 
-  Future<void> _onSearchRecipient(SendRecipientSearched event, Emitter<SendState> emit) async {
+  Future<void> _onSearchRecipient(
+    SendRecipientSearched event,
+    Emitter<SendState> emit,
+  ) async {
     emit(SendLoading());
     try {
       await Future.delayed(const Duration(milliseconds: 800));
-      
-      if (event.identifier.contains("error")) {
-        throw AppException(message: "Utilisateur non trouvé", code: "NOT_FOUND");
-      }
 
-      final mockChannels = [
-        PaymentChannel(
-          id: "1", 
-          type: "MTN Mobile Money", 
-          label: "Principal", 
-          value: "06 444 55 66", 
-          short: "MTN", 
-          status: "active",
-          txCount: 12,
+      final searchInput = event.identifier.trim();
+
+      // Mock users avec ID Kinoa et numéros de téléphone
+      final mockUsers = [
+        (
+          kinoaId: "956231",
+          name: "Jean Dupont",
+          phone: "06 444 55 66",
+          channels: [
+            PaymentChannel(
+              id: "1",
+              type: "MTN Mobile Money",
+              label: "Principal",
+              value: "06 444 55 66",
+              short: "MTN",
+              status: "active",
+              txCount: 12,
+            ),
+            PaymentChannel(
+              id: "2",
+              type: "Airtel Money",
+              label: "Secondaire",
+              value: "04 111 22 33",
+              short: "AIRTEL",
+              status: "active",
+              txCount: 5,
+            ),
+          ],
         ),
-        PaymentChannel(
-          id: "2", 
-          type: "Airtel Money", 
-          label: "Secondaire", 
-          value: "04 111 22 33", 
-          short: "AIRTEL", 
-          status: "active",
-          txCount: 5,
+        (
+          kinoaId: "847291",
+          name: "Marie Curie",
+          phone: "06 777 88 99",
+          channels: [
+            PaymentChannel(
+              id: "3",
+              type: "Orange Money",
+              label: "Perso",
+              value: "06 777 88 99",
+              short: "Orange",
+              status: "active",
+              txCount: 8,
+            ),
+          ],
+        ),
+        (
+          kinoaId: "152847",
+          name: "Pierre Martin",
+          phone: "06 222 33 44",
+          channels: [
+            PaymentChannel(
+              id: "4",
+              type: "MTN Mobile Money",
+              label: "Pro",
+              value: "06 222 33 44",
+              short: "MTN",
+              status: "active",
+              txCount: 23,
+            ),
+            PaymentChannel(
+              id: "5",
+              type: "Visa Card",
+              label: "Carte",
+              value: "•••• 4242",
+              short: "Visa",
+              status: "active",
+              txCount: 0,
+            ),
+          ],
+        ),
+        (
+          kinoaId: "639482",
+          name: "Sophie Bernard",
+          phone: "05 555 66 77",
+          channels: [
+            PaymentChannel(
+              id: "6",
+              type: "Airtel Money",
+              label: "Principal",
+              value: "05 555 66 77",
+              short: "Airtel",
+              status: "active",
+              txCount: 15,
+            ),
+          ],
         ),
       ];
 
-      emit(SendRecipientFound(name: "Jean Dupont", channels: mockChannels));
+      // Détection du type de recherche
+      final isKinoaId = searchInput.startsWith("@");
+
+      final match = mockUsers.firstWhere(
+        (user) {
+          if (isKinoaId) {
+            // Recherche par ID Kinoa exact (6 caractères après @)
+            final searchId = searchInput.substring(1);
+            return user.kinoaId == searchId;
+          } else {
+            // Recherche par numéro partiel
+            // Nettoie le numéro et la recherche (enlève espaces)
+            final cleanPhone = user.phone.replaceAll(" ", "");
+            final cleanSearch = searchInput.replaceAll(" ", "");
+            return cleanPhone.contains(cleanSearch);
+          }
+        },
+        orElse: () => throw AppException(
+          message: "Utilisateur non trouvé",
+          code: "NOT_FOUND",
+        ),
+      );
+
+      emit(SendRecipientFound(name: match.name, channels: match.channels));
     } catch (e) {
       emit(SendError(e is AppException ? e : AppException.unknown()));
     }
   }
 
-  Future<void> _onSimulation(SendSimulationRequested event, Emitter<SendState> emit) async {
+  Future<void> _onSimulation(
+    SendSimulationRequested event,
+    Emitter<SendState> emit,
+  ) async {
     try {
       final quote = await _repository.getQuote(
-        recipientIdentifier: "sim", 
+        recipientIdentifier: "sim",
         amount: event.amount,
         sourceChannel: event.sourceChannel,
         destinationChannel: event.destinationChannel,
@@ -67,7 +159,10 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     } catch (_) {}
   }
 
-  Future<void> _onQuote(SendQuoteRequested event, Emitter<SendState> emit) async {
+  Future<void> _onQuote(
+    SendQuoteRequested event,
+    Emitter<SendState> emit,
+  ) async {
     emit(SendLoading());
     try {
       final quote = await _repository.getQuote(
@@ -82,7 +177,10 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     }
   }
 
-  Future<void> _onConfirm(SendConfirmRequested event, Emitter<SendState> emit) async {
+  Future<void> _onConfirm(
+    SendConfirmRequested event,
+    Emitter<SendState> emit,
+  ) async {
     emit(SendConfirming());
     try {
       final tx = await _repository.confirmTransfer(event.quoteId);
@@ -92,5 +190,6 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     }
   }
 
-  void _onReset(SendReset event, Emitter<SendState> emit) => emit(SendInitial());
+  void _onReset(SendReset event, Emitter<SendState> emit) =>
+      emit(SendInitial());
 }
