@@ -146,6 +146,20 @@ class _SendViewState extends State<SendView> {
     }
   }
 
+  void _clearRecipient() {
+    setState(() {
+      _recipientName = null;
+      _foundChannels = [];
+      _selectedDestChannel = null;
+      _step = _SendStep.recipient;
+    });
+    _recipientCtrl.clear();
+    Future.delayed(
+      const Duration(milliseconds: 100),
+      _recipientFocus.requestFocus,
+    );
+  }
+
   void _confirmTransfer() {
     if (_selectedSourceChannel == null) {
       AuthSnackBar.showError(context, "Sélectionnez un compte à débiter.");
@@ -320,6 +334,7 @@ class _SendViewState extends State<SendView> {
                     focusNode: _recipientFocus,
                     onSubmit: _searchRecipient,
                     onChanged: _onRecipientChanged,
+                    onClear: _clearRecipient,
                     isLoading: state is SendLoading,
                     resolvedName: _recipientName,
                     enabled: _step == _SendStep.recipient,
@@ -499,6 +514,7 @@ class _RecipientSearchField extends StatelessWidget {
   final FocusNode focusNode;
   final VoidCallback onSubmit;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onClear;
   final bool isLoading;
   final String? resolvedName;
   final bool enabled;
@@ -509,6 +525,7 @@ class _RecipientSearchField extends StatelessWidget {
     required this.onSubmit,
     required this.isLoading,
     this.onChanged,
+    this.onClear,
     this.resolvedName,
     this.enabled = true,
   });
@@ -593,11 +610,34 @@ class _RecipientSearchField extends StatelessWidget {
                   size: 16,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  resolvedName!,
-                  style: const TextStyle(
-                    color: AppColors.success,
-                    fontWeight: FontWeight.w700,
+                Expanded(
+                  child: Text(
+                    resolvedName!,
+                    style: const TextStyle(
+                      color: AppColors.success,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: onClear,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "Modifier",
+                      style: TextStyle(
+                        color: AppColors.quinoaDark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
               ],

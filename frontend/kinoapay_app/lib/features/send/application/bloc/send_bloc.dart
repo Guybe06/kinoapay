@@ -29,12 +29,21 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
       final searchInput = event.identifier.trim();
 
-      // Mock users avec ID Kinoa et numéros de téléphone
+      // Validation: minimum 3 caractères requis
+      final cleanInput = searchInput.replaceAll(" ", "");
+      if (cleanInput.length < 3) {
+        throw AppException(
+          message: "Entrez au moins 3 caractères",
+          code: "INVALID_INPUT",
+        );
+      }
+
+      // Mock users avec ID Kinoa et numéros SANS code pays
       final mockUsers = [
         (
           kinoaId: "956231",
           name: "Jean Dupont",
-          phone: "06 444 55 66",
+          phone: "06 444 55 66", // Sans code pays
           channels: [
             PaymentChannel(
               id: "1",
@@ -121,15 +130,14 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       final match = mockUsers.firstWhere(
         (user) {
           if (isKinoaId) {
-            // Recherche par ID Kinoa exact (6 caractères après @)
-            final searchId = searchInput.substring(1);
+            // Recherche par ID Kinoa: enlève @ et compare (min 3 caractères déjà vérifié)
+            final searchId = cleanInput.substring(1);
             return user.kinoaId == searchId;
           } else {
-            // Recherche par numéro partiel
-            // Nettoie le numéro et la recherche (enlève espaces)
+            // Recherche par numéro partiel sans code pays
+            // Nettoie: enlève espaces
             final cleanPhone = user.phone.replaceAll(" ", "");
-            final cleanSearch = searchInput.replaceAll(" ", "");
-            return cleanPhone.contains(cleanSearch);
+            return cleanPhone.contains(cleanInput);
           }
         },
         orElse: () => throw AppException(
