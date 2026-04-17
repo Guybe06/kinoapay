@@ -137,9 +137,16 @@ class _SendViewState extends State<SendView> {
   void _onRecipientChanged(String value) {
     final trimmed = value.trim();
     final clean = trimmed.replaceAll(" ", "");
+
+    // Si vide ou moins de 3 caractères, vide les résultats
+    final minLength = trimmed.startsWith("@") ? 4 : 3;
+    if (clean.length < minLength) {
+      setState(() => _foundRecipients = []);
+      return;
+    }
+
     // Recherche auto: ID Kinoa (@ + 3+ caractères) OU numéro (3+ chiffres)
-    // Le @ n'est pas compté dans les 3 caractères
-    final isId = trimmed.startsWith("@") && clean.length >= 4; // @ + 3
+    final isId = trimmed.startsWith("@") && clean.length >= 4;
     final isPhone = !trimmed.startsWith("@") && clean.length >= 3;
     if (isId || isPhone) {
       context.read<SendBloc>().add(SendRecipientSearched(trimmed));
