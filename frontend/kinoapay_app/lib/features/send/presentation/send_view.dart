@@ -124,12 +124,6 @@ class _SendViewState extends State<SendView> {
     );
   }
 
-  void _searchRecipient() {
-    final val = _recipientCtrl.text.trim();
-    if (val.length < 3) return;
-    context.read<SendBloc>().add(SendRecipientSearched(val));
-  }
-
   void _selectUser(String name, List<PaymentChannel> channels) {
     setState(() {
       _recipientName = name;
@@ -337,7 +331,6 @@ class _SendViewState extends State<SendView> {
                   _RecipientSearchField(
                     controller: _recipientCtrl,
                     focusNode: _recipientFocus,
-                    onSubmit: _searchRecipient,
                     onChanged: _onRecipientChanged,
                     onClear: _clearRecipient,
                     isLoading: state is SendLoading,
@@ -517,7 +510,6 @@ class _AccountDropdown extends StatelessWidget {
 class _RecipientSearchField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
-  final VoidCallback onSubmit;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onClear;
   final bool isLoading;
@@ -527,7 +519,6 @@ class _RecipientSearchField extends StatelessWidget {
   const _RecipientSearchField({
     required this.controller,
     required this.focusNode,
-    required this.onSubmit,
     required this.isLoading,
     this.onChanged,
     this.onClear,
@@ -548,59 +539,35 @@ class _RecipientSearchField extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.search, size: 20, color: AppColors.textMuted),
-              const SizedBox(width: 12),
               Expanded(
                 child: TextField(
                   controller: controller,
                   focusNode: focusNode,
                   enabled: enabled,
-                  onSubmitted: (_) => onSubmit(),
                   onChanged: onChanged,
-                  textInputAction: TextInputAction.search,
+                  textInputAction: TextInputAction.done,
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
                   ),
-                  decoration: const InputDecoration(
-                    hintText: "@username ou numéro",
+                  decoration: InputDecoration(
+                    hintText: SendStrings.recipientHint,
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
+                    suffixIcon: isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.quinoaDark,
+                            ),
+                          )
+                        : null,
                   ),
                 ),
               ),
-              if (isLoading)
-                const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.quinoaDark,
-                  ),
-                )
-              else if (enabled)
-                GestureDetector(
-                  onTap: onSubmit,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.quinoaDark,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      SendStrings.searchBtn,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
           if (resolvedName != null) ...[
