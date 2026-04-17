@@ -2,20 +2,20 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
-import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_state.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
+import "package:kinoapay_app/core/widgets/primary_button.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 
-const List<String> _channels = ["MTN Mobile Money", "Airtel Money"];
-
-/// Écran principal d'envoi : saisie → quote → confirmation → receipt.
+/// Vue d'envoi : 3 étapes séquentielles — montant → destinataire → canal.
 class SendView extends StatefulWidget {
   const SendView({super.key});
 
@@ -23,200 +23,970 @@ class SendView extends StatefulWidget {
   State<SendView> createState() => _SendViewState();
 }
 
+enum _SendStep { amount, recipient, channel }
+
 class _SendViewState extends State<SendView> {
+  final _amountCtrl = TextEditingController(text: "0");
   final _recipientCtrl = TextEditingController();
-  final _amountCtrl = TextEditingController();
-  String _sourceChannel = _channels[0];
-  String _destChannel = _channels[1];
+  final _recipientFocus = FocusNode();
+
+  _SendStep _step = _SendStep.amount;
+  PaymentChannel? _selectedSourceChannel;
+  PaymentChannel? _selectedDestChannel;
+  List<PaymentChannel> _foundChannels = [];
+  String? _recipientName;
+
+  final List<PaymentChannel> _userAccounts = const [
+    PaymentChannel(
+      id: "src_mtn",
+      type: "MTN Mobile Money",
+      label: "MTN Money",
+      value: "+237 6XX XXX XXX",
+      short: "MTN",
+      status: "active",
+    ),
+    PaymentChannel(
+      id: "src_orange",
+      type: "Orange Money",
+      label: "Orange Money",
+      value: "+237 6XX XXX XXX",
+      short: "Orange",
+      status: "active",
+    ),
+  ];
 
   @override
   void dispose() {
-    _recipientCtrl.dispose();
     _amountCtrl.dispose();
+    _recipientCtrl.dispose();
+    _recipientFocus.dispose();
     super.dispose();
   }
 
-  void _requestQuote() {
-    final amount = double.tryParse(_amountCtrl.text.replaceAll(" ", ""));
-    if (_recipientCtrl.text.trim().isEmpty || amount == null || amount <= 0) {
-      AuthSnackBar.showError(context, "Veuillez remplir tous les champs.");
-      return;
-    }
-    context.read<SendBloc>().add(SendQuoteRequested(
-      recipientIdentifier: _recipientCtrl.text.trim(),
-      amount: amount,
-      sourceChannel: _sourceChannel,
-      destinationChannel: _destChannel,
-    ));
+  String _rawAmount = "0";
+
+  double get _amount => double.tryParse(_rawAmount) ?? 0;
+
+  void _onKey(String key) {
+    setState(() {
+      if (key == "⌫") {
+        if (_rawAmount.length > 1) {
+          _rawAmount = _rawAmount.substring(0, _rawAmount.length - 1);
+        } else {
+          _rawAmount = "0";
+        }
+      } else if (key == ".") {
+        if (!_rawAmount.contains(".")) _rawAmount += ".";
+      } else {
+        if (_rawAmount == "0") {
+          _rawAmount = key;
+        } else {
+          _rawAmount += key;
+        }
+      }
+      _amountCtrl.text = _rawAmount;
+    });
   }
 
-  void _onState(BuildContext ctx, SendState state) {
-    if (state is SendSuccess) {
-      Navigator.pushNamed(ctx, AppRoutes.receipt, arguments: state.transaction);
-      context.read<SendBloc>().add(SendReset());
-      _recipientCtrl.clear();
-      _amountCtrl.clear();
-    } else if (state is SendError) {
-      AuthSnackBar.showError(ctx, state.exception.message);
+  void _confirmAmount() {
+    if (_amount <= 0) {
+      AuthSnackBar.showError(context, SendStrings.errorNoAmount);
+      return;
+    }
+    setState(() => _step = _SendStep.recipient);
+    Future.delayed(
+      const Duration(milliseconds: 100),
+      _recipientFocus.requestFocus,
+    );
+  }
+
+  void _searchRecipient() {
+    final val = _recipientCtrl.text.trim();
+    if (val.length < 3) return;
+    context.read<SendBloc>().add(SendRecipientSearched(val));
+  }
+
+  void _selectUser(String name, List<PaymentChannel> channels) {
+    setState(() {
+      _recipientName = name;
+      _foundChannels = channels;
+      _selectedDestChannel = null;
+      _selectedSourceChannel = null;
+      _step = _SendStep.channel;
+    });
+  }
+
+  void _onRecipientChanged(String value) {
+    if (value.trimLeft().startsWith("@") && value.trim().length >= 3) {
+      context.read<SendBloc>().add(SendRecipientSearched(value.trim()));
+    }
+  }
+
+  void _confirmTransfer() {
+    if (_selectedSourceChannel == null) {
+      AuthSnackBar.showError(context, "Sélectionnez un compte à débiter.");
+      return;
+    }
+    if (_selectedDestChannel == null) {
+      AuthSnackBar.showError(context, SendStrings.errorNoChannel);
+      return;
+    }
+    context.read<SendBloc>().add(
+      SendQuoteRequested(
+        recipientIdentifier: _recipientCtrl.text.trim(),
+        amount: _amount,
+        sourceChannel: _selectedSourceChannel!.type,
+        destinationChannel: _selectedDestChannel!.type,
+      ),
+    );
+  }
+
+  void _showSimulator() {
+    if (_selectedDestChannel == null) {
+      AuthSnackBar.showError(context, SendStrings.errorNoChannel);
+      return;
+    }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (_) => _CalculatorSheet(
+        amount: _amount,
+        source: _selectedSourceChannel?.type ?? "",
+        dest: _selectedDestChannel!.type,
+        onConfirm: _confirmTransfer,
+      ),
+    );
+  }
+
+  void _goBack() {
+    if (_step == _SendStep.channel) {
+      setState(() {
+        _step = _SendStep.recipient;
+        _foundChannels = [];
+        _selectedDestChannel = null;
+      });
+    } else if (_step == _SendStep.recipient) {
+      setState(() {
+        _step = _SendStep.amount;
+        _recipientCtrl.clear();
+        _recipientName = null;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
-
     return BlocConsumer<SendBloc, SendState>(
-      listener: _onState,
+      listener: (context, state) {
+        if (state is SendRecipientFound) {
+          _selectUser(state.name, state.channels);
+        }
+        if (state is SendSuccess) {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.receipt,
+            arguments: state.transaction,
+          );
+          context.read<SendBloc>().add(SendReset());
+          _amountCtrl.text = "0";
+          _recipientCtrl.clear();
+          setState(() {
+            _step = _SendStep.amount;
+            _foundChannels = [];
+            _recipientName = null;
+          });
+        } else if (state is SendError) {
+          AuthSnackBar.showError(context, state.exception.message);
+        }
+      },
       builder: (context, state) {
-        if (state is SendQuoteReady) return _buildConfirm(context, state.quote, topInset);
-        if (state is SendConfirming) return _buildConfirming(topInset);
-        return _buildForm(context, state, topInset);
+        if (state is SendQuoteReady) return _QuoteStep(quote: state.quote);
+        if (state is SendConfirming) return const _ProcessingStep();
+
+        return Scaffold(
+          backgroundColor: AppColors.quinoaCream,
+          appBar: const AppHeader(),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_step != _SendStep.amount)
+                  GestureDetector(
+                    onTap: _goBack,
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: AppColors.quinoaDark.withValues(alpha: 0.07),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        SolarIconsOutline.altArrowLeft,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                const Text(
+                  SendStrings.pageTitle,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.8,
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: Column(
+                    key: ValueKey(_step),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _step == _SendStep.amount
+                            ? SendStrings.stepAmountTitle
+                            : _step == _SendStep.recipient
+                            ? SendStrings.stepRecipientTitle
+                            : SendStrings.stepChannelTitle,
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                        ),
+                      ),
+                      if (_step == _SendStep.amount) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          SendStrings.stepAmountSub,
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.4),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                if (_step == _SendStep.amount) ...[
+                  _NumpadAmountScreen(
+                    rawAmount: _rawAmount,
+                    onKey: _onKey,
+                    onConfirm: _confirmAmount,
+                  ),
+                ] else ...[
+                  _AmountInput(rawAmount: _rawAmount, enabled: false),
+                ],
+
+                if (_step == _SendStep.recipient ||
+                    _step == _SendStep.channel) ...[
+                  const SizedBox(height: 32),
+                  _RecipientSearchField(
+                    controller: _recipientCtrl,
+                    focusNode: _recipientFocus,
+                    onSubmit: _searchRecipient,
+                    onChanged: _onRecipientChanged,
+                    isLoading: state is SendLoading,
+                    resolvedName: _recipientName,
+                    enabled: _step == _SendStep.recipient,
+                  ),
+                ],
+
+                if (_step == _SendStep.channel) ...[
+                  const SizedBox(height: 28),
+                  _AccountDropdown(
+                    label: SendStrings.chooseSource,
+                    value: _selectedSourceChannel,
+                    accounts: _userAccounts,
+                    onChanged: (ch) =>
+                        setState(() => _selectedSourceChannel = ch),
+                  ),
+                  if (_foundChannels.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _AccountDropdown(
+                      label: SendStrings.chooseChannel,
+                      value: _selectedDestChannel,
+                      accounts: _foundChannels,
+                      onChanged: (ch) =>
+                          setState(() => _selectedDestChannel = ch),
+                    ),
+                  ],
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: ElevatedButton.icon(
+                      onPressed: _showSimulator,
+                      icon: const Icon(SolarIconsOutline.chartSquare, size: 20),
+                      label: const Text(
+                        SendStrings.simulateBtn,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.quinoaDark,
+                        foregroundColor: AppColors.white,
+                        elevation: 0,
+                        splashFactory: NoSplash.splashFactory,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(24),
+                            bottomLeft: Radius.circular(24),
+                            bottomRight: Radius.circular(24),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
       },
     );
   }
+}
 
-  Widget _buildForm(BuildContext context, SendState state, double topInset) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(24, topInset + 80, 24, 120),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          StaggeredEntrance(
-            index: 0,
-            child: Text(SendStrings.title, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5)),
+class _AccountDropdown extends StatelessWidget {
+  final String label;
+  final PaymentChannel? value;
+  final List<PaymentChannel> accounts;
+  final ValueChanged<PaymentChannel?> onChanged;
+
+  const _AccountDropdown({
+    required this.label,
+    required this.value,
+    required this.accounts,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.55),
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+            ),
           ),
-          const SizedBox(height: 32),
-          StaggeredEntrance(index: 1, child: _buildField(SendStrings.recipientLabel, _recipientCtrl, "Numéro ou @identifiant", TextInputType.phone)),
-          const SizedBox(height: 16),
-          StaggeredEntrance(index: 2, child: _buildField(SendStrings.amountLabel, _amountCtrl, "ex. 5000", TextInputType.number, formatters: [FilteringTextInputFormatter.digitsOnly])),
-          const SizedBox(height: 16),
-          StaggeredEntrance(index: 3, child: _buildChannelPicker("De", _sourceChannel, (v) => setState(() => _sourceChannel = v!))),
-          const SizedBox(height: 12),
-          StaggeredEntrance(index: 4, child: _buildChannelPicker("Vers", _destChannel, (v) => setState(() => _destChannel = v!))),
-          const SizedBox(height: 40),
-          StaggeredEntrance(index: 5, child: PrimaryButton(text: "Obtenir le devis", isLoading: state is SendLoading, onPressed: _requestQuote)),
-        ],
-      ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.quinoaDark.withValues(alpha: 0.08),
+              width: 1.5,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<PaymentChannel>(
+              value: value,
+              isExpanded: true,
+              hint: const Text(
+                "Sélectionner",
+                style: TextStyle(
+                  color: AppColors.textMuted,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              icon: const Icon(
+                SolarIconsOutline.altArrowDown,
+                color: AppColors.quinoaDark,
+                size: 20,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              items: accounts.map((ch) {
+                return DropdownMenuItem<PaymentChannel>(
+                  value: ch,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          color: AppColors.stone100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          SolarIconsOutline.card,
+                          color: AppColors.stone400,
+                          size: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            ch.type,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            ch.value,
+                            style: const TextStyle(
+                              color: AppColors.textMuted,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+      ],
     );
   }
+}
 
-  Widget _buildConfirm(BuildContext context, TransferQuote quote, double topInset) {
-    final fmt = NumberFormat("#,###", "fr_FR");
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(24, topInset + 80, 24, 120),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          StaggeredEntrance(index: 0, child: const Text("Confirmer l'envoi", style: TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, letterSpacing: -1.5))),
-          const SizedBox(height: 28),
-          StaggeredEntrance(index: 1, child: _infoCard([
-            _infoRow("Destinataire", quote.recipientName),
-            _infoRow("Montant", "${fmt.format(quote.amount)} ${quote.currency}"),
-            _infoRow("De", quote.sourceChannel),
-            _infoRow("Vers", quote.destinationChannel),
-          ])),
-          const SizedBox(height: 16),
-          StaggeredEntrance(index: 2, child: _infoCard([
-            _infoRow("Frais kinoaPay", "${fmt.format(quote.platformFee)} ${quote.currency}"),
-            _infoRow("Frais opérateur", "${fmt.format(quote.operatorFee)} ${quote.currency}"),
-            _infoRow("Total débité", "${fmt.format(quote.amountDebited)} ${quote.currency}", bold: true),
-          ])),
-          const SizedBox(height: 32),
-          StaggeredEntrance(index: 3, child: PrimaryButton(text: SendStrings.confirmBtn, onPressed: () => context.read<SendBloc>().add(SendConfirmRequested(quote.quoteId)))),
-          const SizedBox(height: 12),
-          StaggeredEntrance(index: 4, child: PrimaryButton(text: "Annuler", isSecondary: true, onPressed: () => context.read<SendBloc>().add(SendReset()))),
-        ],
-      ),
-    );
-  }
+class _RecipientSearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final VoidCallback onSubmit;
+  final ValueChanged<String>? onChanged;
+  final bool isLoading;
+  final String? resolvedName;
+  final bool enabled;
 
-  Widget _buildConfirming(double topInset) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(color: AppColors.quinoaGold, strokeWidth: 2.5),
-          const SizedBox(height: 20),
-          Text("Envoi en cours…", style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 15, fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
+  const _RecipientSearchField({
+    required this.controller,
+    required this.focusNode,
+    required this.onSubmit,
+    required this.isLoading,
+    this.onChanged,
+    this.resolvedName,
+    this.enabled = true,
+  });
 
-  Widget _buildField(String label, TextEditingController ctrl, String hint, TextInputType type, {List<TextInputFormatter>? formatters}) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(24), bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 12, fontWeight: FontWeight.w500)),
-          TextField(
-            controller: ctrl,
-            keyboardType: type,
-            inputFormatters: formatters,
-            style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w700),
-            decoration: InputDecoration(border: InputBorder.none, hintText: hint, hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.2))),
+          Row(
+            children: [
+              const Icon(Icons.search, size: 20, color: AppColors.textMuted),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  enabled: enabled,
+                  onSubmitted: (_) => onSubmit(),
+                  onChanged: onChanged,
+                  textInputAction: TextInputAction.search,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: "@username ou numéro",
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+              if (isLoading)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.quinoaDark,
+                  ),
+                )
+              else if (enabled)
+                GestureDetector(
+                  onTap: onSubmit,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.quinoaDark,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      SendStrings.searchBtn,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (resolvedName != null) ...[
+            const SizedBox(height: 12),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const Icon(
+                  SolarIconsOutline.checkCircle,
+                  color: AppColors.success,
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  resolvedName!,
+                  style: const TextStyle(
+                    color: AppColors.success,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _CalculatorSheet extends StatelessWidget {
+  final double amount;
+  final String source;
+  final String dest;
+  final VoidCallback onConfirm;
+
+  const _CalculatorSheet({
+    required this.amount,
+    required this.source,
+    required this.dest,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fmt = NumberFormat("#,##0", "en_US");
+    final kf = amount * 0.01;
+    final of = amount * 0.03;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        32,
+        32,
+        32,
+        MediaQuery.of(context).padding.bottom + 32,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "Simulation des frais",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            "Montants en XAF",
+            style: TextStyle(
+              color: AppColors.textMuted,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 24),
+          _CalcRow(label: "Montant", value: fmt.format(amount)),
+          _CalcRow(label: "Frais Kinoa (1%)", value: fmt.format(kf)),
+          _CalcRow(label: "Frais $dest (3%)", value: fmt.format(of)),
+          const Divider(height: 32),
+          _CalcRow(
+            label: "Total estimé",
+            value: fmt.format(amount + kf + of),
+            isBold: true,
+          ),
+          const SizedBox(height: 32),
+          PrimaryButton(
+            text: SendStrings.continueBtn,
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+          ),
+          const SizedBox(height: 12),
+          PrimaryButton(
+            text: "Annuler",
+            isSecondary: true,
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildChannelPicker(String label, String value, ValueChanged<String?> onChanged) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.1)),
-      ),
+class _CalcRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isBold;
+  const _CalcRow({
+    required this.label,
+    required this.value,
+    this.isBold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 13, fontWeight: FontWeight.w500)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: value,
-                isExpanded: true,
-                icon: Icon(Icons.expand_more_rounded, color: AppColors.quinoaDark.withValues(alpha: 0.4)),
-                items: _channels.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)))).toList(),
-                onChanged: onChanged,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              color: AppColors.textMuted,
+              fontWeight: isBold ? FontWeight.w800 : FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.w900 : FontWeight.w700,
+              fontSize: isBold ? 16 : 14,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _infoCard(List<Widget> rows) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
-      ),
-      child: Column(children: rows),
-    );
+class _AmountInput extends StatelessWidget {
+  final String rawAmount;
+  final bool enabled;
+
+  const _AmountInput({required this.rawAmount, this.enabled = true});
+
+  static final _fmt = NumberFormat("#,##0.########", "en_US");
+
+  String get _display {
+    if (rawAmount == "0" || rawAmount.isEmpty) return "0";
+    final n = double.tryParse(rawAmount);
+    if (n == null) return rawAmount;
+    if (rawAmount.endsWith(".")) return "${_fmt.format(n)}.";
+    final parts = rawAmount.split(".");
+    if (parts.length == 2)
+      return "${_fmt.format(n).split(".").first}.${parts[1]}";
+    return _fmt.format(n);
   }
 
-  Widget _infoRow(String label, String value, {bool bold = false}) {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          "MONTANT",
+          style: TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.5,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              _display,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              "XAF",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _NumpadAmountScreen extends StatelessWidget {
+  final String rawAmount;
+  final ValueChanged<String> onKey;
+  final VoidCallback onConfirm;
+
+  const _NumpadAmountScreen({
+    required this.rawAmount,
+    required this.onKey,
+    required this.onConfirm,
+  });
+
+  static final _displayFmt = NumberFormat("#,##0.########", "en_US");
+
+  static const _keys = [
+    ["1", "2", "3"],
+    ["4", "5", "6"],
+    ["7", "8", "9"],
+    [".", "0", "⌫"],
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    String _buildDisplay() {
+      if (rawAmount == "0") return "0";
+      final num = double.tryParse(rawAmount);
+      if (num == null) return rawAmount;
+      if (rawAmount.endsWith(".")) {
+        return "${_displayFmt.format(num)}.";
+      }
+      final parts = rawAmount.split(".");
+      if (parts.length == 2) {
+        return "${_displayFmt.format(num).split(".").first}.${parts[1]}";
+      }
+      return _displayFmt.format(num);
+    }
+
+    final display = _buildDisplay();
+
+    return Column(
+      children: [
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              display,
+              style: TextStyle(
+                color: rawAmount == "0"
+                    ? AppColors.quinoaDark.withValues(alpha: 0.25)
+                    : AppColors.quinoaDark,
+                fontSize: 52,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -1,
+              ),
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              "XAF",
+              style: TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
+        ...List.generate(_keys.length, (row) {
+          return Row(
+            children: List.generate(_keys[row].length, (col) {
+              final key = _keys[row][col];
+              final isBackspace = key == "⌫";
+              return Expanded(
+                child: AspectRatio(
+                  aspectRatio: 1.4,
+                  child: GestureDetector(
+                    onTap: () => onKey(key),
+                    child: Container(
+                      margin: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isBackspace
+                            ? AppColors.quinoaDark.withValues(alpha: 0.06)
+                            : AppColors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: isBackspace
+                            ? const Icon(
+                                SolarIconsOutline.backspace,
+                                size: 18,
+                                color: AppColors.quinoaDark,
+                              )
+                            : Text(
+                                key,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.quinoaDark,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          );
+        }),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: PrimaryButton(
+            text: SendStrings.continueBtn,
+            onPressed: onConfirm,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuoteStep extends StatelessWidget {
+  final TransferQuote quote;
+  const _QuoteStep({required this.quote});
+
+  @override
+  Widget build(BuildContext context) {
+    final fmt = NumberFormat("#,###", "fr_FR");
+    return Scaffold(
+      backgroundColor: AppColors.quinoaCream,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                SendStrings.confirmTitle,
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 32),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Column(
+                  children: [
+                    _InfoRow(label: "Vers", value: quote.recipientName),
+                    const Divider(height: 32),
+                    _InfoRow(
+                      label: "Frais Kinoa",
+                      value: "${fmt.format(quote.platformFee)} XAF",
+                    ),
+                    _InfoRow(
+                      label: "Frais Opérateur",
+                      value: "${fmt.format(quote.operatorFee)} XAF",
+                    ),
+                    const Divider(height: 32),
+                    _InfoRow(
+                      label: "Total",
+                      value: "${fmt.format(quote.amountDebited)} XAF",
+                      isBold: true,
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              PrimaryButton(
+                text: "Confirmer",
+                onPressed: () => context.read<SendBloc>().add(
+                  SendConfirmRequested(quote.quoteId),
+                ),
+              ),
+              const SizedBox(height: 12),
+              PrimaryButton(
+                text: "Annuler",
+                isSecondary: true,
+                onPressed: () => context.read<SendBloc>().add(SendReset()),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isBold;
+  const _InfoRow({
+    required this.label,
+    required this.value,
+    this.isBold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13)),
-          Text(value, style: TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700)),
+          Text(
+            label,
+            style: TextStyle(
+              color: AppColors.textMuted,
+              fontWeight: isBold ? FontWeight.w800 : FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.w900 : FontWeight.w700,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProcessingStep extends StatelessWidget {
+  const _ProcessingStep();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: AppColors.quinoaCream,
+      body: Center(
+        child: CircularProgressIndicator(color: AppColors.quinoaGold),
       ),
     );
   }

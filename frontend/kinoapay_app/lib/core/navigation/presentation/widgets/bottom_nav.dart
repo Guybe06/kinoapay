@@ -18,12 +18,12 @@ class AppBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
-    
+
     // Dimensions mathématiques pour un alignement parfait
     const itemSize = 48.0;
     const spacing = 12.0;
     const padding = 6.0;
-    
+
     // Calcul de la position de l'indicateur : index * (taille + espacement)
     final indicatorLeft = currentIndex * (itemSize + spacing);
 
@@ -41,14 +41,21 @@ class AppBottomNav extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(100),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.5), 
+                  color: AppColors.quinoaDark.withValues(alpha: 0.08),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.18),
+                    blurRadius: 32,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -6),
+                  ),
+                  BoxShadow(
                     color: AppColors.quinoaDark.withValues(alpha: 0.1),
-                    blurRadius: 30,
-                    offset: const Offset(0, 12),
+                    blurRadius: 48,
+                    spreadRadius: 4,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -94,7 +101,9 @@ class AppBottomNav extends StatelessWidget {
                                     size: 24,
                                     color: active
                                         ? Colors.white
-                                        : AppColors.quinoaDark.withValues(alpha: 0.35),
+                                        : AppColors.quinoaDark.withValues(
+                                            alpha: 0.35,
+                                          ),
                                   ),
                                 ),
                               ),
