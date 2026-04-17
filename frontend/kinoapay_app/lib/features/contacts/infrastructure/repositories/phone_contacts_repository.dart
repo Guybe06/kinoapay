@@ -12,8 +12,8 @@ class PhoneContactsRepository implements ContactsRepository {
       final status = await Permission.contacts.request();
       if (!status.isGranted) return [];
 
-      final phoneContacts = await fc.FlutterContacts.getContacts(
-        withProperties: true,
+      final phoneContacts = await fc.FlutterContacts.getAll(
+        properties: {fc.ContactProperty.phone},
       );
 
       final contacts = <Contact>[];
@@ -21,13 +21,17 @@ class PhoneContactsRepository implements ContactsRepository {
       for (final pc in phoneContacts) {
         if (pc.phones.isEmpty) continue;
 
-        final normalized = normalizePhone(pc.phones.first.number);
+        final rawNumber = pc.phones.first.number.toString();
+        if (rawNumber.isEmpty) continue;
+
+        final normalized = normalizePhone(rawNumber);
         final profile = usersByNormalizedPhone[normalized];
+        final displayName = pc.displayName.toString();
 
         contacts.add(
           Contact(
-            id: pc.id,
-            fullName: pc.displayName.isNotEmpty ? pc.displayName : normalized,
+            id: pc.id.toString(),
+            fullName: displayName.isNotEmpty ? displayName : normalized,
             phone: normalized,
             isRegistered: profile != null,
             publicHandle: profile?.publicHandle,
