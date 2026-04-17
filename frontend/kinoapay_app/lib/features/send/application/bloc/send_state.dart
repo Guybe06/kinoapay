@@ -3,6 +3,8 @@ import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
 
+import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
+
 abstract class SendState extends Equatable {
   const SendState();
   @override
@@ -12,6 +14,21 @@ abstract class SendState extends Equatable {
 class SendInitial extends SendState {}
 
 class SendLoading extends SendState {}
+
+class SendRecipientFound extends SendState {
+  final String name;
+  final List<PaymentChannel> channels;
+  const SendRecipientFound({required this.name, required this.channels});
+  @override
+  List<Object?> get props => [name, channels];
+}
+
+class SendSimulationReady extends SendState {
+  final TransferQuote quote;
+  const SendSimulationReady(this.quote);
+  @override
+  List<Object?> get props => [quote];
+}
 
 class SendQuoteReady extends SendState {
   final TransferQuote quote;

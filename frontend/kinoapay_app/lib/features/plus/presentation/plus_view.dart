@@ -2,92 +2,100 @@ import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
 
 /// Vue principale de la feature Plus.
 /// Design typographique avec des titres massifs et des cartes épurées.
 class PlusView extends StatelessWidget {
-  const PlusView({super.key});
+  final int unreadNotifications;
+  const PlusView({super.key, this.unreadNotifications = 0});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                PlusStrings.title,
-                style: TextStyle(
+      appBar: AppHeader(unreadNotifications: unreadNotifications),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 28, 20, 100),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              PlusStrings.title,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.8,
+                height: 1.1,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              PlusStrings.subtitle,
+              style: TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.1,
+              children: [
+                _PlusActionCard(
+                  icon: SolarIconsOutline.scanner,
+                  label: PlusStrings.actionScan,
+                  description: PlusStrings.descScan,
                   color: AppColors.quinoaDark,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.8,
-                  height: 1.1,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                PlusStrings.subtitle,
-                style: TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  height: 1.4,
+                _PlusActionCard(
+                  icon: SolarIconsOutline.cardReceive,
+                  label: PlusStrings.actionRequest,
+                  description: PlusStrings.descRequest,
+                  color: AppColors.pending,
+                  onTap: () {}, // TODO: Implémenter la vue de demande
                 ),
-              ),
-              const SizedBox(height: 32),
-              
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.1,
-                children: [
-                  _PlusActionCard(
-                    icon: SolarIconsOutline.scanner,
-                    label: PlusStrings.actionScan,
-                    description: PlusStrings.descScan,
-                    color: AppColors.quinoaDark,
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
-                  ),
-                  _PlusActionCard(
-                    icon: SolarIconsOutline.cardReceive,
-                    label: PlusStrings.actionRequest,
-                    description: PlusStrings.descRequest,
-                    color: AppColors.pending,
-                    onTap: () {}, // TODO: Implémenter la vue de demande
-                  ),
-                  _PlusActionCard(
-                    icon: SolarIconsOutline.history,
-                    label: PlusStrings.actionHistory,
-                    description: PlusStrings.descHistory,
-                    color: AppColors.quinoaGold,
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.history),
-                  ),
-                  _PlusActionCard(
-                    icon: SolarIconsOutline.card2,
-                    label: PlusStrings.actionChannels,
-                    description: PlusStrings.descChannels,
-                    color: AppColors.success,
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
-                  ),
-                  _PlusActionCard(
-                    icon: SolarIconsOutline.userCircle,
-                    label: PlusStrings.actionProfile,
-                    description: PlusStrings.descProfile,
-                    color: AppColors.warning,
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                _PlusActionCard(
+                  icon: SolarIconsOutline.history,
+                  label: PlusStrings.actionHistory,
+                  description: PlusStrings.descHistory,
+                  color: AppColors.quinoaGold,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.history),
+                ),
+                _PlusActionCard(
+                  icon: SolarIconsOutline.card2,
+                  label: PlusStrings.actionChannels,
+                  description: PlusStrings.descChannels,
+                  color: AppColors.success,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
+                ),
+                _PlusActionCard(
+                  icon: SolarIconsOutline.usersGroupTwoRounded,
+                  label: PlusStrings.actionContacts,
+                  description: PlusStrings.descContacts,
+                  color: AppColors.quinoaDark,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
+                ),
+                _PlusActionCard(
+                  icon: SolarIconsOutline.userCircle,
+                  label: PlusStrings.actionProfile,
+                  description: PlusStrings.descProfile,
+                  color: AppColors.warning,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

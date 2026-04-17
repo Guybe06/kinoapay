@@ -46,7 +46,7 @@ class _AppShellState extends State<AppShell> {
         onNavigateToSend: () => _onTabChanged(AppRoutes.tabTransfer),
       ),
       const SendView(),
-      const PlusView(),
+      const PlusView(unreadNotifications: 3),
     ];
   }
 

@@ -6,6 +6,28 @@ abstract class SendEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class SendRecipientSearched extends SendEvent {
+  final String identifier;
+  const SendRecipientSearched(this.identifier);
+  @override
+  List<Object> get props => [identifier];
+}
+
+class SendSimulationRequested extends SendEvent {
+  final double amount;
+  final String sourceChannel;
+  final String destinationChannel;
+
+  const SendSimulationRequested({
+    required this.amount,
+    required this.sourceChannel,
+    required this.destinationChannel,
+  });
+
+  @override
+  List<Object> get props => [amount, sourceChannel, destinationChannel];
+}
+
 class SendQuoteRequested extends SendEvent {
   final String recipientIdentifier;
   final double amount;

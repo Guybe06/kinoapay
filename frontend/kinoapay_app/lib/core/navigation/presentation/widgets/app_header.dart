@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 
-/// En-tête light, fond quinoaCream, logo quinoaDark/quinoaGold, icônes colorées.
+/// En-tête minimaliste : logo à gauche, cloche ronde avec badge de notifs à droite.
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool withHero;
   final int unreadNotifications;
@@ -25,33 +25,16 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       color: AppColors.quinoaCream,
-      padding: EdgeInsets.fromLTRB(20, topInset + 10, 16, 10),
+      padding: EdgeInsets.fromLTRB(20, topInset + 10, 20, 10),
       height: preferredSize.height + topInset,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildLogo(),
           const Spacer(),
-          _HeaderIconBtn(
-            icon: SolarIconsOutline.usersGroupTwoRounded,
-            tooltip: AppStrings.headerContacts,
-            color: AppColors.quinoaDark,
-            onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
-          ),
-          const SizedBox(width: 6),
           _NotificationBtn(
             unreadCount: unreadNotifications,
-            color: AppColors.quinoaDark,
             onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
-          ),
-          const SizedBox(width: 6),
-          _HeaderIconBtn(
-            icon: SolarIconsOutline.qrCode,
-            tooltip: AppStrings.headerScan,
-            color: AppColors.accent,
-            iconColor: AppColors.quinoaDark,
-            solidBg: true,
-            onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
           ),
         ],
       ),
@@ -69,92 +52,64 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class _HeaderIconBtn extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final Color color;
-  final Color? iconColor;
-  final bool solidBg;
-  final VoidCallback onTap;
-
-  const _HeaderIconBtn({
-    required this.icon,
-    required this.tooltip,
-    required this.color,
-    required this.onTap,
-    this.iconColor,
-    this.solidBg = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(9),
-          decoration: BoxDecoration(
-            color: solidBg ? color : color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: solidBg ? null : Border.all(color: color.withValues(alpha: 0.12)),
-          ),
-          child: Icon(icon, size: 19, color: iconColor ?? color),
-        ),
-      ),
-    );
-  }
-}
-
 class _NotificationBtn extends StatelessWidget {
   final int unreadCount;
-  final Color color;
   final VoidCallback onTap;
 
-  const _NotificationBtn({
-    required this.unreadCount,
-    required this.color,
-    required this.onTap,
-  });
+  const _NotificationBtn({required this.unreadCount, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final hasUnread = unreadCount > 0;
+    final label = unreadCount > 99 ? "99+" : "$unreadCount";
+
     return Tooltip(
       message: AppStrings.headerNotifications,
-      child: InkWell(
+      child: GestureDetector(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(9),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.12)),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Icon(
-                unreadCount > 0 ? SolarIconsBold.bell : SolarIconsOutline.bell,
-                size: 19,
-                color: color,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
               ),
-              if (unreadCount > 0)
-                Positioned(
-                  top: -3,
-                  right: -3,
-                  child: Container(
-                    width: 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
+              child: Center(
+                child: Icon(
+                  SolarIconsOutline.bell,
+                  size: 28,
+                  color: AppColors.quinoaGold,
+                ),
+              ),
+            ),
+            if (hasUnread)
+              Positioned(
+                top: -4,
+                right: 4,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.accent,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: AppColors.quinoaCream, width: 3),
+                  ),
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      height: 1,
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
