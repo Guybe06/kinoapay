@@ -18,7 +18,7 @@ class SendStrings {
 
   static const String amountLabel = "Montant à envoyer";
   static const String recipientLabel = "À qui ?";
-  static const String recipientHint = "Numéro ou @identifiant";
+  static const String recipientHint = "Numéro sans code pays ou @ID Kinoa";
 
   static const String sourceLabel = "Depuis mon compte";
   static const String destLabel = "Vers le compte";

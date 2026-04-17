@@ -141,8 +141,13 @@ class _SendViewState extends State<SendView> {
   }
 
   void _onRecipientChanged(String value) {
-    if (value.trimLeft().startsWith("@") && value.trim().length >= 3) {
-      context.read<SendBloc>().add(SendRecipientSearched(value.trim()));
+    final trimmed = value.trim();
+    final clean = trimmed.replaceAll(" ", "");
+    // Recherche auto: ID Kinoa (@ + 6 caractères) OU numéro (3+ chiffres)
+    final isId = trimmed.startsWith("@") && clean.length >= 7; // @ + 6 ID
+    final isPhone = !trimmed.startsWith("@") && clean.length >= 3;
+    if (isId || isPhone) {
+      context.read<SendBloc>().add(SendRecipientSearched(trimmed));
     }
   }
 
@@ -153,7 +158,7 @@ class _SendViewState extends State<SendView> {
       _selectedDestChannel = null;
       _step = _SendStep.recipient;
     });
-    _recipientCtrl.clear();
+    // Garde le texte de recherche pour permettre la modification
     Future.delayed(
       const Duration(milliseconds: 100),
       _recipientFocus.requestFocus,
