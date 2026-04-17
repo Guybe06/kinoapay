@@ -5,6 +5,20 @@ import "package:kinoapay_app/features/send/application/bloc/send_state.dart";
 import "package:kinoapay_app/features/send/domain/repositories/send_repository.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 
+/// Mock user pour la recherche
+class _MockUser {
+  final String kinoaId;
+  final String name;
+  final String phone;
+  final List<PaymentChannel> channels;
+  const _MockUser({
+    required this.kinoaId,
+    required this.name,
+    required this.phone,
+    required this.channels,
+  });
+}
+
 /// Orchestre le flux d'envoi d'argent : recherche → quote → confirm → success.
 class SendBloc extends Bloc<SendEvent, SendState> {
   final SendRepository _repository;
@@ -40,12 +54,13 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         );
       }
 
-      // Mock users avec ID Kinoa et numéros SANS code pays
+      // Mock users avec IDs partagés et numéros partagés
       final mockUsers = [
-        (
+        // Groupe ID "956" ---
+        _MockUser(
           kinoaId: "956231",
           name: "Jean Dupont",
-          phone: "06 444 55 66", // Sans code pays
+          phone: "06 444 55 66",
           channels: [
             PaymentChannel(
               id: "1",
@@ -67,7 +82,40 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             ),
           ],
         ),
-        (
+        _MockUser(
+          kinoaId: "956847",
+          name: "Lucas Moreau",
+          phone: "05 123 45 67",
+          channels: [
+            PaymentChannel(
+              id: "7",
+              type: "Orange Money",
+              label: "Perso",
+              value: "05 123 45 67",
+              short: "Orange",
+              status: "active",
+              txCount: 3,
+            ),
+          ],
+        ),
+        _MockUser(
+          kinoaId: "956912",
+          name: "Emma Dubois",
+          phone: "06 888 99 00",
+          channels: [
+            PaymentChannel(
+              id: "8",
+              type: "MTN Mobile Money",
+              label: "Perso",
+              value: "06 888 99 00",
+              short: "MTN",
+              status: "active",
+              txCount: 7,
+            ),
+          ],
+        ),
+        // Groupe ID "847" ---
+        _MockUser(
           kinoaId: "847291",
           name: "Marie Curie",
           phone: "06 777 88 99",
@@ -83,7 +131,24 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             ),
           ],
         ),
-        (
+        _MockUser(
+          kinoaId: "847563",
+          name: "Thomas Petit",
+          phone: "05 444 22 11",
+          channels: [
+            PaymentChannel(
+              id: "9",
+              type: "Airtel Money",
+              label: "Pro",
+              value: "05 444 22 11",
+              short: "Airtel",
+              status: "active",
+              txCount: 12,
+            ),
+          ],
+        ),
+        // Autres ---
+        _MockUser(
           kinoaId: "152847",
           name: "Pierre Martin",
           phone: "06 222 33 44",
@@ -108,7 +173,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             ),
           ],
         ),
-        (
+        _MockUser(
           kinoaId: "639482",
           name: "Sophie Bernard",
           phone: "05 555 66 77",
@@ -129,25 +194,31 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       // Détection du type de recherche
       final isKinoaId = searchInput.startsWith("@");
 
-      final match = mockUsers.firstWhere(
-        (user) {
-          if (isKinoaId) {
-            // Recherche par ID Kinoa: enlève @ et compare en début d'ID (partiel)
-            final searchId = cleanInput.substring(1);
-            return user.kinoaId.startsWith(searchId);
-          } else {
-            // Recherche par numéro partiel sans code pays
-            final cleanPhone = user.phone.replaceAll(" ", "");
-            return cleanPhone.contains(cleanInput);
-          }
-        },
-        orElse: () => throw AppException(
+      // Recherche de TOUS les users correspondants
+      final matches = mockUsers.where((user) {
+        if (isKinoaId) {
+          final searchId = cleanInput.substring(1);
+          return user.kinoaId.startsWith(searchId);
+        } else {
+          final cleanPhone = user.phone.replaceAll(" ", "");
+          return cleanPhone.contains(cleanInput);
+        }
+      }).toList();
+
+      if (matches.isEmpty) {
+        throw AppException(
           message: "Utilisateur non trouvé",
           code: "NOT_FOUND",
+        );
+      }
+
+      emit(
+        SendRecipientFound(
+          recipients: matches
+              .map((u) => RecipientResult(name: u.name, channels: u.channels))
+              .toList(),
         ),
       );
-
-      emit(SendRecipientFound(name: match.name, channels: match.channels));
     } catch (e) {
       emit(SendError(e is AppException ? e : AppException.unknown()));
     }

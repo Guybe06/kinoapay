@@ -34,6 +34,7 @@ class _SendViewState extends State<SendView> {
   PaymentChannel? _selectedDestChannel;
   List<PaymentChannel> _foundChannels = [];
   String? _recipientName;
+  List<({String name, List<PaymentChannel> channels})> _foundRecipients = [];
 
   final List<PaymentChannel> _userAccounts = const [
     PaymentChannel(
@@ -149,6 +150,7 @@ class _SendViewState extends State<SendView> {
     setState(() {
       _recipientName = null;
       _foundChannels = [];
+      _foundRecipients = [];
       _selectedDestChannel = null;
       _step = _SendStep.recipient;
     });
@@ -204,6 +206,7 @@ class _SendViewState extends State<SendView> {
       setState(() {
         _step = _SendStep.recipient;
         _foundChannels = [];
+        _foundRecipients = [];
         _selectedDestChannel = null;
       });
     } else if (_step == _SendStep.recipient) {
@@ -211,6 +214,7 @@ class _SendViewState extends State<SendView> {
         _step = _SendStep.amount;
         _recipientCtrl.clear();
         _recipientName = null;
+        _foundRecipients = [];
       });
     }
   }
@@ -220,7 +224,12 @@ class _SendViewState extends State<SendView> {
     return BlocConsumer<SendBloc, SendState>(
       listener: (context, state) {
         if (state is SendRecipientFound) {
-          _selectUser(state.name, state.channels);
+          // Affiche la liste des résultats pour sélection
+          setState(() {
+            _foundRecipients = state.recipients
+                .map((r) => (name: r.name, channels: r.channels))
+                .toList();
+          });
         }
         if (state is SendSuccess) {
           Navigator.pushNamed(
@@ -234,6 +243,7 @@ class _SendViewState extends State<SendView> {
           setState(() {
             _step = _SendStep.amount;
             _foundChannels = [];
+            _foundRecipients = [];
             _recipientName = null;
           });
         } else if (state is SendError) {
@@ -337,6 +347,18 @@ class _SendViewState extends State<SendView> {
                     resolvedName: _recipientName,
                     enabled: _step == _SendStep.recipient,
                   ),
+                  // Liste des résultats de recherche
+                  if (_foundRecipients.isNotEmpty &&
+                      _recipientName == null) ...[
+                    const SizedBox(height: 16),
+                    _RecipientsList(
+                      recipients: _foundRecipients,
+                      onSelect: (recipient) {
+                        _selectUser(recipient.name, recipient.channels);
+                        setState(() => _foundRecipients = []);
+                      },
+                    ),
+                  ],
                 ],
 
                 if (_step == _SendStep.channel) ...[
@@ -615,6 +637,119 @@ class _RecipientSearchField extends StatelessWidget {
               ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Liste des résultats de recherche de destinataires
+class _RecipientsList extends StatelessWidget {
+  final List<({String name, List<PaymentChannel> channels})> recipients;
+  final void Function(({String name, List<PaymentChannel> channels})) onSelect;
+
+  const _RecipientsList({required this.recipients, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.quinoaDark.withValues(alpha: 0.08),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "${recipients.length} contact${recipients.length > 1 ? 's' : ''} trouvé${recipients.length > 1 ? 's' : ''}",
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.6),
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+          const Divider(height: 1),
+          ...recipients.map(
+            (r) => GestureDetector(
+              onTap: () => onSelect(r),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.quinoaGold.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Center(
+                        child: Text(
+                          r.name.substring(0, 1).toUpperCase(),
+                          style: const TextStyle(
+                            color: AppColors.quinoaGold,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            r.name,
+                            style: const TextStyle(
+                              color: AppColors.quinoaDark,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "${r.channels.length} compte${r.channels.length > 1 ? 's' : ''}",
+                            style: TextStyle(
+                              color: AppColors.quinoaDark.withValues(
+                                alpha: 0.5,
+                              ),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      SolarIconsOutline.altArrowRight,
+                      color: AppColors.quinoaGold,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
