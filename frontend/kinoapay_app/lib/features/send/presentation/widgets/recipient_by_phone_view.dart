@@ -17,11 +17,6 @@ class CountryCode {
     required this.label,
   });
 
-  String get flag {
-    return isoCode.toUpperCase().split("").map((c) {
-      return String.fromCharCode(0x1F1E6 + c.codeUnitAt(0) - "A".codeUnitAt(0));
-    }).join();
-  }
 }
 
 /// Vue recherche par numéro de téléphone — input sans bordure, shadow, flag emoji.
@@ -93,11 +88,12 @@ class RecipientByPhoneView extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.stone200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.quinoaDark.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
+            color: AppColors.quinoaDark.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -159,7 +155,14 @@ class RecipientByPhoneView extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(c.flag, style: const TextStyle(fontSize: 18)),
+              Text(
+                c.isoCode,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                  color: AppColors.quinoaDark,
+                ),
+              ),
               const SizedBox(width: 10),
               Text(
                 c.dialCode,
@@ -184,7 +187,14 @@ class RecipientByPhoneView extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(selectedCountry.flag, style: const TextStyle(fontSize: 20)),
+          Text(
+            selectedCountry.isoCode,
+            style: const TextStyle(
+              color: AppColors.quinoaDark,
+              fontWeight: FontWeight.w800,
+              fontSize: 13,
+            ),
+          ),
           const SizedBox(width: 6),
           Text(
             selectedCountry.dialCode,

@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Pill sombre affichant le destinataire sélectionné avec initiale et bouton Modifier.
+/// Pill sombre affichant le destinataire sélectionné avec icône user et bouton Modifier.
 class RecipientCompactCard extends StatelessWidget {
   final RecipientMatch recipient;
   final VoidCallback onModify;
@@ -16,8 +17,6 @@ class RecipientCompactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initial =
-        recipient.name.isNotEmpty ? recipient.name[0].toUpperCase() : "?";
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -26,7 +25,7 @@ class RecipientCompactCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _buildAvatar(initial),
+          _buildAvatar(),
           const SizedBox(width: 12),
           Expanded(child: _buildInfo()),
           _buildModifyBtn(),
@@ -35,23 +34,18 @@ class RecipientCompactCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(String initial) {
+  Widget _buildAvatar() {
     return Container(
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: AppColors.quinoaGold,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.quinoaGold.withValues(alpha: 0.20),
+        shape: BoxShape.circle,
       ),
-      child: Center(
-        child: Text(
-          initial,
-          style: const TextStyle(
-            color: AppColors.quinoaCream,
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
+      child: const Icon(
+        SolarIconsOutline.user,
+        size: 18,
+        color: AppColors.quinoaGold,
       ),
     );
   }

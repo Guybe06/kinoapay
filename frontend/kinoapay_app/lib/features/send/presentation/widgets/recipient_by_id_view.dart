@@ -49,11 +49,12 @@ class RecipientByIdView extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.stone200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.quinoaDark.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
+            color: AppColors.quinoaDark.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),

@@ -1,22 +1,8 @@
 import "package:flutter/material.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
-
-/// Palette d'avatars — tons chauds cohérents avec la brand.
-const List<Color> _avatarPalette = [
-  Color(0xFFC8964A),
-  Color(0xFF8B3A2F),
-  Color(0xFF7A6A55),
-  Color(0xFF44403C),
-  Color(0xFF57534E),
-  Color(0xFFB07A3A),
-];
-
-Color _colorFor(String name) {
-  final hash = name.codeUnits.fold(0, (a, b) => a + b);
-  return _avatarPalette[hash % _avatarPalette.length];
-}
 
 /// Cartes individuelles animées — chaque résultat est son propre objet flottant.
 class RecipientsResultsList extends StatelessWidget {
@@ -101,7 +87,7 @@ class _AnimatedCardState extends State<_AnimatedCard>
       child: SlideTransition(
         position: _slide,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: 8),
           child: _ResultCard(recipient: widget.recipient, onTap: widget.onTap),
         ),
       ),
@@ -126,11 +112,6 @@ class _ResultCardState extends State<_ResultCard> {
 
   @override
   Widget build(BuildContext context) {
-    final color = _colorFor(widget.recipient.name);
-    final initial = widget.recipient.name.isNotEmpty
-        ? widget.recipient.name[0].toUpperCase()
-        : "?";
-
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) {
@@ -144,25 +125,29 @@ class _ResultCardState extends State<_ResultCard> {
         curve: Curves.easeOut,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 110),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.stone200,
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.quinoaDark.withValues(
-                  alpha: _pressed ? 0.03 : 0.07,
+                  alpha: _pressed ? 0.02 : 0.05,
                 ),
-                blurRadius: _pressed ? 4 : 16,
-                offset: Offset(0, _pressed ? 1 : 5),
+                blurRadius: _pressed ? 4 : 12,
+                offset: Offset(0, _pressed ? 1 : 3),
               ),
             ],
           ),
           child: Row(
             children: [
-              _Avatar(initial: initial, color: color),
-              const SizedBox(width: 14),
-              Expanded(child: _CardInfo(recipient: widget.recipient, color: color)),
+              _AvatarIcon(isKinoa: widget.recipient.isKinoaUser),
+              const SizedBox(width: 12),
+              Expanded(child: _CardInfo(recipient: widget.recipient)),
             ],
           ),
         ),
@@ -171,32 +156,28 @@ class _ResultCardState extends State<_ResultCard> {
   }
 }
 
-// ── Avatar cercle coloré ───────────────────────────────────────────────────────
+// ── Avatar icône user ──────────────────────────────────────────────────────────
 
-class _Avatar extends StatelessWidget {
-  final String initial;
-  final Color color;
+class _AvatarIcon extends StatelessWidget {
+  final bool isKinoa;
 
-  const _Avatar({required this.initial, required this.color});
+  const _AvatarIcon({required this.isKinoa});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 52,
-      height: 52,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: isKinoa
+            ? AppColors.quinoaGold.withValues(alpha: 0.10)
+            : AppColors.stone100,
         shape: BoxShape.circle,
       ),
-      child: Center(
-        child: Text(
-          initial,
-          style: TextStyle(
-            color: color,
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
+      child: Icon(
+        SolarIconsOutline.user,
+        size: 18,
+        color: isKinoa ? AppColors.quinoaGold : AppColors.stone400,
       ),
     );
   }
@@ -206,9 +187,8 @@ class _Avatar extends StatelessWidget {
 
 class _CardInfo extends StatelessWidget {
   final RecipientMatch recipient;
-  final Color color;
 
-  const _CardInfo({required this.recipient, required this.color});
+  const _CardInfo({required this.recipient});
 
   @override
   Widget build(BuildContext context) {
@@ -222,20 +202,20 @@ class _CardInfo extends StatelessWidget {
                 recipient.name,
                 style: const TextStyle(
                   color: AppColors.quinoaDark,
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: -0.3,
+                  letterSpacing: -0.2,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             if (recipient.isKinoaUser) ...[
-              const SizedBox(width: 8),
-              _KinoaBadge(),
+              const SizedBox(width: 7),
+              const _KinoaBadge(),
             ],
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 3),
         _buildMeta(),
       ],
     );
@@ -248,26 +228,26 @@ class _CardInfo extends StatelessWidget {
         Text(
           recipient.phone,
           style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.4),
-            fontSize: 13,
+            color: AppColors.quinoaDark.withValues(alpha: 0.38),
+            fontSize: 12,
             fontWeight: FontWeight.w400,
           ),
         ),
         if (hasChannels) ...[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
             child: Text(
               "·",
               style: TextStyle(
                 color: AppColors.quinoaDark.withValues(alpha: 0.2),
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ),
           Text(
             SendStrings.accountsCountLabel(recipient.channels.length),
             style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.35),
+              color: AppColors.quinoaDark.withValues(alpha: 0.3),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -279,13 +259,15 @@ class _CardInfo extends StatelessWidget {
 }
 
 class _KinoaBadge extends StatelessWidget {
+  const _KinoaBadge();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: AppColors.quinoaGold.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: const Text(
         SendStrings.kinoaUserTag,
@@ -293,7 +275,7 @@ class _KinoaBadge extends StatelessWidget {
           color: AppColors.quinoaGold,
           fontSize: 10,
           fontWeight: FontWeight.w700,
-          letterSpacing: 0.2,
+          letterSpacing: 0.1,
         ),
       ),
     );

@@ -19,6 +19,7 @@ import "package:kinoapay_app/features/send/presentation/widgets/recipient_by_id_
 import "package:kinoapay_app/features/send/presentation/widgets/recipient_by_phone_view.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/search_mode_switcher.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/send_amount_step.dart";
+import "package:kinoapay_app/features/send/presentation/widgets/send_success_step.dart";
 
 enum SendStep { recipient, amount }
 
@@ -222,6 +223,14 @@ class _SendViewState extends State<SendView> {
           return QuoteConfirmationStep(quote: state.quote);
         }
         if (state is SendConfirming) return const ProcessingStep();
+        if (state is SendSuccess) {
+          return SendSuccessStep(
+            onClose: () {
+              context.read<SendBloc>().add(SendReset());
+              _resetAll();
+            },
+          );
+        }
         return Scaffold(
           backgroundColor: AppColors.quinoaCream,
           appBar: const AppHeader(),
@@ -260,14 +269,6 @@ class _SendViewState extends State<SendView> {
   void _onStateChanged(BuildContext context, SendState state) {
     if (state is SendRecipientFound) {
       setState(() => _foundRecipients = state.recipients);
-    } else if (state is SendSuccess) {
-      Navigator.pushNamed(
-        context,
-        AppRoutes.receipt,
-        arguments: state.transaction,
-      );
-      context.read<SendBloc>().add(SendReset());
-      _resetAll();
     } else if (state is SendError) {
       setState(() => _foundRecipients = []);
       AuthSnackBar.showError(context, state.exception.message);
@@ -300,18 +301,34 @@ class _SendViewState extends State<SendView> {
         const SizedBox(height: 20),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: Text(
+          child: Column(
             key: ValueKey(_step),
-            isRecipient
-                ? SendStrings.stepRecipientTitle
-                : SendStrings.stepAmountTitle,
-            style: const TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.6,
-              height: 1.2,
-            ),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isRecipient
+                    ? SendStrings.stepRecipientTitle
+                    : SendStrings.stepAmountTitle,
+                style: const TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.6,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                isRecipient
+                    ? SendStrings.stepRecipientSub
+                    : SendStrings.stepAmountSub,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.4),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ],

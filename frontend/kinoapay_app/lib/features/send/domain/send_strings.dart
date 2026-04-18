@@ -42,7 +42,15 @@ abstract final class SendStrings {
   static const String feeKinoa = "Frais Kinoa";
   static const String feeOperator = "Frais Opérateur";
 
+  static const String totalFeesLabel = "Frais";
+  static const String confirmRecipientLabel = "Destinataire";
+  static const String confirmSourceLabel = "Depuis";
+
   static const String processing = "Traitement sécurisé...";
+  static const String successTitle = "Envoi en cours";
+  static const String successMessage =
+      "Votre transfert est en cours de traitement. Vous serez notifié dès que l'opération sera finalisée.";
+  static const String successBackBtn = "Retour à l'accueil";
 
   static const String errorNoAmount = "Entrez un montant valide.";
   static const String errorNoChannel = "Sélectionnez un canal de destination.";
@@ -60,4 +68,5 @@ abstract final class SendStrings {
   static String accountsCountLabel(int count) =>
       "$count compte${count > 1 ? 's' : ''}";
   static String amountWithUnit(String amount) => "$amount XAF";
+  static String feesEstimateLabel(String fees) => "≈ $fees XAF de frais";
 }

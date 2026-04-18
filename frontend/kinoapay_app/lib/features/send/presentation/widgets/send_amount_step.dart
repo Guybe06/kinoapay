@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
@@ -33,27 +34,37 @@ class SendAmountStep extends StatelessWidget {
     required this.onContinue,
   });
 
+  static const double _feeRate = 0.03;
+
+  bool get _channelsReady {
+    if (selectedSource == null) return false;
+    if (recipient.isKinoaUser && recipient.channels.isNotEmpty) {
+      return selectedDest != null;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RecipientCompactCard(
-          recipient: recipient,
-          onModify: onModifyRecipient,
-        ),
+        RecipientCompactCard(recipient: recipient, onModify: onModifyRecipient),
         const SizedBox(height: 36),
         _buildChannelRow(context),
-        const SizedBox(height: 48),
-        _buildHeroAmount(),
-        const SizedBox(height: 52),
-        _buildContinueButton(),
+        if (_channelsReady) ...[
+          const SizedBox(height: 48),
+          _buildHeroAmount(),
+          const SizedBox(height: 52),
+          _buildContinueButton(),
+        ],
       ],
     );
   }
 
   Widget _buildChannelRow(BuildContext context) {
-    final hasDestChoice = recipient.isKinoaUser && recipient.channels.isNotEmpty;
+    final hasDestChoice =
+        recipient.isKinoaUser && recipient.channels.isNotEmpty;
     return Row(
       children: [
         Expanded(
@@ -126,6 +137,26 @@ class SendAmountStep extends StatelessWidget {
             fontWeight: FontWeight.w400,
             letterSpacing: 3,
           ),
+        ),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: amountCtrl,
+          builder: (_, value, __) {
+            final raw = double.tryParse(value.text.replaceAll(" ", "")) ?? 0;
+            if (raw <= 0) return const SizedBox(height: 16);
+            final fees = (raw * _feeRate).ceil();
+            final fmt = NumberFormat("#,##0", "en_US");
+            return Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                SendStrings.feesEstimateLabel(fmt.format(fees)),
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.35),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -242,8 +273,9 @@ class _ChannelSelector extends StatelessWidget {
                               Text(
                                 ch.value,
                                 style: TextStyle(
-                                  color:
-                                      AppColors.quinoaDark.withValues(alpha: 0.4),
+                                  color: AppColors.quinoaDark.withValues(
+                                    alpha: 0.4,
+                                  ),
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -301,11 +333,12 @@ class _ChannelPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.stone50,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.stone200, width: 1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.quinoaDark.withValues(alpha: 0.05),
+            color: AppColors.quinoaDark.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

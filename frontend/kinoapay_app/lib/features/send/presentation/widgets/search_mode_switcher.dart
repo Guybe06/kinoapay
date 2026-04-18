@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Segmented pill control — glisse entre « Numéro de tél. » et « @ID_KINOAPAY ».
+/// Segmented pill control — fond blanc, bordure stone légère.
 class SearchModeSwitcher extends StatelessWidget {
   final bool isPhoneMode;
   final ValueChanged<bool> onChanged;
@@ -19,8 +19,9 @@ class SearchModeSwitcher extends StatelessWidget {
       height: 40,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: AppColors.stone100,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.stone200, width: 1),
       ),
       child: Stack(
         children: [
@@ -51,7 +52,7 @@ class SearchModeSwitcher extends StatelessWidget {
                       style: TextStyle(
                         color: isPhoneMode
                             ? AppColors.quinoaCream
-                            : AppColors.quinoaDark.withValues(alpha: 0.45),
+                            : AppColors.quinoaDark.withValues(alpha: 0.4),
                         fontSize: 13,
                         fontWeight:
                             isPhoneMode ? FontWeight.w700 : FontWeight.w500,
@@ -70,7 +71,7 @@ class SearchModeSwitcher extends StatelessWidget {
                       style: TextStyle(
                         color: !isPhoneMode
                             ? AppColors.quinoaCream
-                            : AppColors.quinoaDark.withValues(alpha: 0.45),
+                            : AppColors.quinoaDark.withValues(alpha: 0.4),
                         fontSize: 13,
                         fontWeight:
                             !isPhoneMode ? FontWeight.w700 : FontWeight.w500,
