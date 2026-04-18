@@ -184,8 +184,8 @@ class _DashboardContentState extends State<_DashboardContent> {
             ),
           ),
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeInOut,
+            duration: const Duration(milliseconds: 120),
+            curve: Curves.easeIn,
             top: _headerVisible
                 ? 0
                 : -(56 + MediaQuery.of(context).padding.top),
@@ -193,7 +193,7 @@ class _DashboardContentState extends State<_DashboardContent> {
             right: 0,
             child: AnimatedOpacity(
               opacity: _headerVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 140),
+              duration: const Duration(milliseconds: 80),
               curve: Curves.easeIn,
               child: const AppHeader(),
             ),
