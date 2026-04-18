@@ -62,7 +62,7 @@ class DashboardView extends StatelessWidget {
   }
 }
 
-class _DashboardContent extends StatelessWidget {
+class _DashboardContent extends StatefulWidget {
   final DashboardStats stats;
   final List<Transaction> transactions;
   final List<dynamic> channels;
@@ -80,27 +80,61 @@ class _DashboardContent extends StatelessWidget {
   });
 
   @override
+  State<_DashboardContent> createState() => _DashboardContentState();
+}
+
+class _DashboardContentState extends State<_DashboardContent> {
+  final _scrollController = ScrollController();
+  bool _headerVisible = true;
+  double _lastOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    final delta = offset - _lastOffset;
+    _lastOffset = offset;
+
+    if (delta > 4 && _headerVisible) {
+      setState(() => _headerVisible = false);
+    } else if (delta < -4 && !_headerVisible) {
+      setState(() => _headerVisible = true);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
-      appBar: const AppHeader(),
       body: Stack(
+        clipBehavior: Clip.hardEdge,
         children: [
           const DashboardAmbientBackground(),
           SafeArea(
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 68),
                   const DashboardGreetingSection(firstName: "Jean"),
                   const SizedBox(height: 20),
-                  DashboardStatsCard(stats: stats),
+                  DashboardStatsCard(stats: widget.stats),
                   const SizedBox(height: 20),
                   DashboardActionButtons(
-                    onSend: onNavigateToSend ?? () {},
-                    onRequest: onNavigateToRequest ?? () {},
+                    onSend: widget.onNavigateToSend ?? () {},
+                    onRequest: widget.onNavigateToRequest ?? () {},
                   ),
                   const SizedBox(height: 16),
                   DashboardPromoCard(
@@ -115,7 +149,7 @@ class _DashboardContent extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   DashboardRecentContacts(
-                    transactions: transactions,
+                    transactions: widget.transactions,
                     onAdd: () {},
                   ),
                   const SizedBox(height: 24),
@@ -134,7 +168,7 @@ class _DashboardContent extends StatelessWidget {
                           ),
                         ),
                         DashboardVoirToutLink(
-                          onTap: onNavigateToHistory ?? () {},
+                          onTap: widget.onNavigateToHistory ?? () {},
                         ),
                       ],
                     ),
@@ -142,11 +176,26 @@ class _DashboardContent extends StatelessWidget {
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: DashboardTxList(transactions: transactions),
+                    child: DashboardTxList(transactions: widget.transactions),
                   ),
                   const SizedBox(height: 32),
                 ],
               ),
+            ),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeInOut,
+            top: _headerVisible
+                ? 0
+                : -(56 + MediaQuery.of(context).padding.top),
+            left: 0,
+            right: 0,
+            child: AnimatedOpacity(
+              opacity: _headerVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 140),
+              curve: Curves.easeIn,
+              child: const AppHeader(),
             ),
           ),
         ],
