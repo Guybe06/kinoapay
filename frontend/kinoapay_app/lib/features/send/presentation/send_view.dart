@@ -23,7 +23,7 @@ class SendView extends StatefulWidget {
   State<SendView> createState() => _SendViewState();
 }
 
-enum _SendStep { amount, recipient, channel }
+enum _SendStep { amount, chooseMethod, recipient, channel }
 
 class _SendViewState extends State<SendView> {
   final _amountCtrl = TextEditingController(text: "0");
@@ -118,11 +118,51 @@ class _SendViewState extends State<SendView> {
       AuthSnackBar.showError(context, SendStrings.errorNoAmount);
       return;
     }
+    setState(() => _step = _SendStep.chooseMethod);
+  }
+
+  void _chooseSearch() {
     setState(() => _step = _SendStep.recipient);
     Future.delayed(
-      const Duration(milliseconds: 100),
+      const Duration(milliseconds: 200),
       _recipientFocus.requestFocus,
     );
+  }
+
+  void _chooseContacts() async {
+    // Naviguer vers la page contacts pour sélection
+    final result = await Navigator.pushNamed(
+      context,
+      AppRoutes.contacts,
+      arguments: {'mode': 'selection'},
+    );
+
+    // Si un contact a été sélectionné
+    if (result != null && result is Map<String, dynamic>) {
+      _handleContactSelection(result);
+    }
+  }
+
+  void _handleContactSelection(Map<String, dynamic> contact) {
+    // Extraire les infos du contact
+    final name = contact['name'] as String? ?? 'Contact';
+    final phone = contact['phone'] as String?;
+    final kinoaId = contact['kinoaId'] as String?;
+
+    setState(() {
+      _recipientName = name;
+      if (phone != null) {
+        _recipientCtrl.text = phone;
+      } else if (kinoaId != null) {
+        _recipientCtrl.text = '@$kinoaId';
+      }
+      _step = _SendStep.channel;
+    });
+
+    // Si on a un numéro ou ID, lancer la recherche pour récupérer les canaux
+    if (phone != null || kinoaId != null) {
+      context.read<SendBloc>().add(SendRecipientSearched(phone ?? '@$kinoaId'));
+    }
   }
 
   void _selectUser(String name, List<PaymentChannel> channels) {
@@ -219,10 +259,14 @@ class _SendViewState extends State<SendView> {
       });
     } else if (_step == _SendStep.recipient) {
       setState(() {
-        _step = _SendStep.amount;
+        _step = _SendStep.chooseMethod;
         _recipientCtrl.clear();
         _recipientName = null;
         _foundRecipients = [];
+      });
+    } else if (_step == _SendStep.chooseMethod) {
+      setState(() {
+        _step = _SendStep.amount;
       });
     }
   }
@@ -309,6 +353,8 @@ class _SendViewState extends State<SendView> {
                       Text(
                         _step == _SendStep.amount
                             ? SendStrings.stepAmountTitle
+                            : _step == _SendStep.chooseMethod
+                            ? "Comment trouver le destinataire ?"
                             : _step == _SendStep.recipient
                             ? SendStrings.stepRecipientTitle
                             : SendStrings.stepChannelTitle,
@@ -343,6 +389,24 @@ class _SendViewState extends State<SendView> {
                   ),
                 ] else ...[
                   _AmountInput(rawAmount: _rawAmount, enabled: false),
+                ],
+
+                // Étape: Choix de la méthode (recherche ou contacts)
+                if (_step == _SendStep.chooseMethod) ...[
+                  const SizedBox(height: 32),
+                  _MethodChoiceCard(
+                    icon: SolarIconsOutline.magnifier,
+                    title: "Rechercher",
+                    subtitle: "Par numéro ou @ID Kinoa",
+                    onTap: _chooseSearch,
+                  ),
+                  const SizedBox(height: 16),
+                  _MethodChoiceCard(
+                    icon: SolarIconsOutline.usersGroupRounded,
+                    title: "Mes contacts",
+                    subtitle: "Choisir parmi mes contacts",
+                    onTap: _chooseContacts,
+                  ),
                 ],
 
                 if (_step == _SendStep.recipient ||
@@ -562,6 +626,82 @@ class _PhoneSearchFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
+/// Carte de choix de méthode (recherche ou contacts)
+class _MethodChoiceCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _MethodChoiceCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.08),
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: AppColors.quinoaGold.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: AppColors.quinoaGold, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.5),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              SolarIconsOutline.altArrowRight,
+              color: AppColors.quinoaDark,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
