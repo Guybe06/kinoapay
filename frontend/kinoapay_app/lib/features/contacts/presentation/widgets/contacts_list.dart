@@ -11,7 +11,13 @@ import "package:kinoapay_app/features/contacts/presentation/widgets/contact_tile
 /// Liste groupée par statut d'inscription (inscrit / autre).
 class ContactsList extends StatelessWidget {
   final ContactsLoadSuccess state;
-  const ContactsList({super.key, required this.state});
+  final bool selectionMode;
+
+  const ContactsList({
+    super.key,
+    required this.state,
+    this.selectionMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +31,22 @@ class ContactsList extends StatelessWidget {
             label: "${ContactsStrings.sectionOnAppPrefix}${AppStrings.appName}",
             count: state.onApp.length,
           ),
-          _ContactGroup(contacts: state.onApp, actionable: true),
+          _ContactGroup(
+            contacts: state.onApp,
+            actionable: true,
+            selectionMode: selectionMode,
+          ),
         ],
         if (state.others.isNotEmpty) ...[
           _SectionHeader(
             label: ContactsStrings.sectionOthers,
             count: state.others.length,
           ),
-          _ContactGroup(contacts: state.others, actionable: false),
+          _ContactGroup(
+            contacts: state.others,
+            actionable: false,
+            selectionMode: selectionMode,
+          ),
         ],
       ],
     );
@@ -84,7 +98,13 @@ class _SectionHeader extends StatelessWidget {
 class _ContactGroup extends StatelessWidget {
   final List<Contact> contacts;
   final bool actionable;
-  const _ContactGroup({required this.contacts, required this.actionable});
+  final bool selectionMode;
+
+  const _ContactGroup({
+    required this.contacts,
+    required this.actionable,
+    this.selectionMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +122,7 @@ class _ContactGroup extends StatelessWidget {
             children: [
               ContactTile(
                 contact: contact,
-                onTap: actionable
-                    ? () => _showActionSheet(context, contact)
-                    : () => _showInviteSheet(context, contact),
+                onTap: () => _handleTap(context, contact),
               ),
               if (i < contacts.length - 1)
                 Divider(
@@ -119,6 +137,19 @@ class _ContactGroup extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  /// Dispatch du tap selon le mode : sélection renvoie le contact, sinon affiche les sheets.
+  void _handleTap(BuildContext context, Contact contact) {
+    if (selectionMode) {
+      if (actionable) Navigator.pop(context, contact);
+      return;
+    }
+    if (actionable) {
+      _showActionSheet(context, contact);
+    } else {
+      _showInviteSheet(context, contact);
+    }
   }
 
   void _showActionSheet(BuildContext context, Contact contact) {

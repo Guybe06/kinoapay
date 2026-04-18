@@ -8,8 +8,11 @@ import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_lis
 import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 
 /// Liste des contacts : recherche et regroupement inscrits / autres.
+/// En mode [selectionMode], un tap sur un contact inscrit renvoie ce contact via [Navigator.pop].
 class ContactsView extends StatefulWidget {
-  const ContactsView({super.key});
+  final bool selectionMode;
+
+  const ContactsView({super.key, this.selectionMode = false});
 
   @override
   State<ContactsView> createState() => _ContactsViewState();
@@ -48,7 +51,10 @@ class _ContactsViewState extends State<ContactsView> {
                   return _ErrorState(message: state.message);
                 }
                 if (state is ContactsLoadSuccess) {
-                  return ContactsList(state: state);
+                  return ContactsList(
+                    state: state,
+                    selectionMode: widget.selectionMode,
+                  );
                 }
                 return const SizedBox.shrink();
               },

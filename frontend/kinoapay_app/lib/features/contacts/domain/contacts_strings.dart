@@ -16,6 +16,11 @@ abstract final class ContactsStrings {
 
   static const String inviteNotOnAppPrefix = " n'est pas encore sur ";
   static const String inviteSuffix = ".";
-  static const String inviteBody = "Invitez-le à rejoindre l'application pour lui envoyer de l'argent.";
+  static const String inviteBody =
+      "Invitez-le à rejoindre l'application pour lui envoyer de l'argent.";
   static const String inviteBtn = "Inviter";
+
+  static const String selectionTitle = "Choisir un contact";
+  static const String selectionOnlyRegistered =
+      "Seuls les contacts inscrits peuvent recevoir un transfert.";
 }

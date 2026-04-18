@@ -4,6 +4,7 @@
 # Allow only these specific directories
 !/frontend/
 !/backend/
+!/.docs/
 !/README.md
 !.gitignore
 

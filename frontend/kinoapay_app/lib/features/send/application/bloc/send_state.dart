@@ -1,9 +1,8 @@
 import "package:equatable/equatable.dart";
 import "package:kinoapay_app/core/errors/app_exception.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
+import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
-
-import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 
 abstract class SendState extends Equatable {
   const SendState();
@@ -16,17 +15,10 @@ class SendInitial extends SendState {}
 class SendLoading extends SendState {}
 
 class SendRecipientFound extends SendState {
-  final List<RecipientResult> recipients;
+  final List<RecipientMatch> recipients;
   const SendRecipientFound({required this.recipients});
   @override
   List<Object?> get props => [recipients];
-}
-
-/// Résultat de recherche d'un destinataire
-class RecipientResult {
-  final String name;
-  final List<PaymentChannel> channels;
-  const RecipientResult({required this.name, required this.channels});
 }
 
 class SendSimulationReady extends SendState {

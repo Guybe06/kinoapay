@@ -84,7 +84,12 @@ class AppRouter {
         final sArgs = args is ShellArgs ? args : const ShellArgs();
         return RouteTransitions.hero(AppShell(args: sArgs), settings);
       case AppRoutes.contacts:
-        return RouteTransitions.slide(_contactsPage(), settings);
+        final selectionMode =
+            args is Map<String, dynamic> && args["selectionMode"] == true;
+        return RouteTransitions.slide(
+          _contactsPage(selectionMode: selectionMode),
+          settings,
+        );
       case AppRoutes.notifications:
         return RouteTransitions.slide(_notificationsPage(), settings);
       case AppRoutes.receipt:
@@ -102,9 +107,9 @@ class AppRouter {
     }
   }
 
-  static Widget _contactsPage() => BlocProvider(
+  static Widget _contactsPage({bool selectionMode = false}) => BlocProvider(
     create: (_) => ContactsBloc(repository: PhoneContactsRepository()),
-    child: const ContactsView(),
+    child: ContactsView(selectionMode: selectionMode),
   );
 
   static Widget _notificationsPage() => BlocProvider(
