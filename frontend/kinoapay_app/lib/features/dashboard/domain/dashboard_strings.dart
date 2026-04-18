@@ -14,6 +14,7 @@ abstract final class DashboardStrings {
   static const String statsOutgoing = "Sortant";
   static const String statsLegendReceived = "Reçu";
   static const String statsLegendSent = "Envoyé";
+  static const String statsNet = "Net";
   static const String statsLast30 = "30 derniers jours";
   static const String statsCurrency = "XAF";
 

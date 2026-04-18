@@ -102,6 +102,17 @@ class _DashboardContent extends StatelessWidget {
                     onSend: onNavigateToSend ?? () {},
                     onRequest: onNavigateToRequest ?? () {},
                   ),
+                  const SizedBox(height: 16),
+                  DashboardPromoCard(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const DashboardPromoDetailSheet(),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 20),
                   DashboardRecentContacts(
                     transactions: transactions,
@@ -132,17 +143,6 @@ class _DashboardContent extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: DashboardTxList(transactions: transactions),
-                  ),
-                  const SizedBox(height: 24),
-                  DashboardPromoCard(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => const DashboardPromoDetailSheet(),
-                      );
-                    },
                   ),
                   const SizedBox(height: 32),
                 ],

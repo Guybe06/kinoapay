@@ -5,7 +5,6 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
 
-/// Carte solde hero — fond quinoaDark, montant centré w300, stats sortant/entrant.
 class DashboardStatsCard extends StatelessWidget {
   final DashboardStats stats;
 
@@ -16,11 +15,12 @@ class DashboardStatsCard extends StatelessWidget {
     final fmt = NumberFormat("#,##0", "en_US");
     final rawMonth = DateFormat("MMMM yyyy", "fr_FR").format(DateTime.now());
     final month = rawMonth[0].toUpperCase() + rawMonth.substring(1);
-    final balance = stats.totalReceived - stats.totalSent;
+    final net = stats.netFlow;
+    final isPositive = net >= 0;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+      padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
       decoration: BoxDecoration(
         color: AppColors.quinoaDark,
         borderRadius: BorderRadius.circular(28),
@@ -32,68 +32,98 @@ class DashboardStatsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                DashboardStrings.balanceLabel,
+                DashboardStrings.balanceLabel.toUpperCase(),
                 style: TextStyle(
-                  color: AppColors.quinoaCream.withValues(alpha: 0.45),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  color: AppColors.quinoaCream.withValues(alpha: 0.35),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.4,
                 ),
               ),
-              _PeriodChip(label: month),
+              _PeriodTabs(currentMonth: month),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            fmt.format(balance).trim(),
-            style: const TextStyle(
-              color: AppColors.quinoaCream,
-              fontSize: 52,
-              fontWeight: FontWeight.w300,
-              letterSpacing: -2,
-              height: 1.0,
-            ),
+          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Text(
+                  fmt.format(net.abs()),
+                  style: const TextStyle(
+                    color: AppColors.quinoaCream,
+                    fontSize: 52,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: -2,
+                    height: 1.0,
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _DeltaBadge(isPositive: isPositive),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             DashboardStrings.statsCurrency,
             style: TextStyle(
-              color: AppColors.quinoaCream.withValues(alpha: 0.30),
-              fontSize: 14,
+              color: AppColors.quinoaCream.withValues(alpha: 0.28),
+              fontSize: 13,
               fontWeight: FontWeight.w400,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 20),
-          Divider(
-            color: AppColors.quinoaCream.withValues(alpha: 0.08),
-            height: 1,
-          ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              Expanded(
-                child: _StatBlock(
-                  label: DashboardStrings.statsOutgoing,
-                  amount: fmt.format(stats.totalSent).trim(),
-                  icon: SolarIconsOutline.arrowRightUp,
-                  color: AppColors.quinoaCream.withValues(alpha: 0.70),
+          Divider(color: AppColors.quinoaCream.withValues(alpha: 0.07), height: 1),
+          const SizedBox(height: 16),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _StatColumn(
+                    label: DashboardStrings.statsOutgoing,
+                    amount: fmt.format(stats.totalSent),
+                    icon: SolarIconsOutline.arrowRightUp,
+                    color: AppColors.quinoaCream.withValues(alpha: 0.65),
+                  ),
                 ),
-              ),
-              Container(
-                width: 1,
-                height: 38,
-                color: AppColors.quinoaCream.withValues(alpha: 0.08),
-              ),
-              Expanded(
-                child: _StatBlock(
-                  label: DashboardStrings.statsIncoming,
-                  amount: fmt.format(stats.totalReceived).trim(),
-                  icon: SolarIconsOutline.arrowLeftDown,
-                  color: AppColors.quinoaGold,
-                  alignRight: true,
+                VerticalDivider(
+                  color: AppColors.quinoaCream.withValues(alpha: 0.08),
+                  width: 1,
+                  thickness: 1,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: _StatColumn(
+                    label: DashboardStrings.statsIncoming,
+                    amount: fmt.format(stats.totalReceived),
+                    icon: SolarIconsOutline.arrowLeftDown,
+                    color: AppColors.quinoaGold,
+                    center: true,
+                  ),
+                ),
+                VerticalDivider(
+                  color: AppColors.quinoaCream.withValues(alpha: 0.08),
+                  width: 1,
+                  thickness: 1,
+                ),
+                Expanded(
+                  child: _StatColumn(
+                    label: DashboardStrings.statsNet,
+                    amount: "${isPositive ? "+" : "−"}${fmt.format(net.abs())}",
+                    icon: isPositive
+                        ? SolarIconsOutline.graphUp
+                        : SolarIconsOutline.graphDown,
+                    color: isPositive
+                        ? AppColors.quinoaGold
+                        : AppColors.quinoaRed.withValues(alpha: 0.85),
+                    alignRight: true,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -101,89 +131,146 @@ class DashboardStatsCard extends StatelessWidget {
   }
 }
 
-class _PeriodChip extends StatelessWidget {
-  final String label;
-  const _PeriodChip({required this.label});
+class _PeriodTabs extends StatelessWidget {
+  final String currentMonth;
+  const _PeriodTabs({required this.currentMonth});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.quinoaCream.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: AppColors.quinoaCream.withValues(alpha: 0.55),
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
+    return Row(
+      children: [
+        _Tab(label: "M", active: true),
+        const SizedBox(width: 14),
+        _Tab(label: "3M"),
+        const SizedBox(width: 14),
+        _Tab(label: "12M"),
+      ],
+    );
+  }
+}
+
+class _Tab extends StatelessWidget {
+  final String label;
+  final bool active;
+  const _Tab({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: TextStyle(
+        color: active
+            ? AppColors.quinoaCream.withValues(alpha: 0.90)
+            : AppColors.quinoaCream.withValues(alpha: 0.22),
+        fontSize: 11,
+        fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+        letterSpacing: 0.5,
       ),
     );
   }
 }
 
-class _StatBlock extends StatelessWidget {
+class _DeltaBadge extends StatelessWidget {
+  final bool isPositive;
+  const _DeltaBadge({required this.isPositive});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isPositive ? AppColors.quinoaGold : AppColors.quinoaRed;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isPositive ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+            size: 10,
+            color: color,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            isPositive ? "NET +" : "NET −",
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatColumn extends StatelessWidget {
   final String label;
   final String amount;
   final IconData icon;
   final Color color;
+  final bool center;
   final bool alignRight;
 
-  const _StatBlock({
+  const _StatColumn({
     required this.label,
     required this.amount,
     required this.icon,
     required this.color,
+    this.center = false,
     this.alignRight = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cross =
-        alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final mainAlign =
-        alignRight ? MainAxisAlignment.end : MainAxisAlignment.start;
+    final cross = alignRight
+        ? CrossAxisAlignment.end
+        : center
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start;
+
+    final pad = EdgeInsets.only(
+      left: alignRight ? 16 : center ? 0 : 0,
+      right: alignRight ? 0 : center ? 0 : 16,
+    );
 
     return Padding(
-      padding: EdgeInsets.only(
-        left: alignRight ? 20 : 0,
-        right: alignRight ? 0 : 20,
-      ),
+      padding: pad,
       child: Column(
         crossAxisAlignment: cross,
         children: [
           Row(
-            mainAxisAlignment: mainAlign,
+            mainAxisAlignment: alignRight
+                ? MainAxisAlignment.end
+                : center
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
             children: [
-              if (!alignRight) ...[
-                Icon(icon, size: 13, color: color),
-                const SizedBox(width: 5),
-              ],
+              Icon(icon, size: 11, color: color.withValues(alpha: 0.70)),
+              const SizedBox(width: 4),
               Text(
-                label,
+                label.toUpperCase(),
                 style: TextStyle(
-                  color: color.withValues(alpha: 0.7),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
+                  color: color.withValues(alpha: 0.55),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2,
                 ),
               ),
-              if (alignRight) ...[
-                const SizedBox(width: 5),
-                Icon(icon, size: 13, color: color),
-              ],
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 6),
           Text(
             amount,
             style: TextStyle(
               color: color,
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w700,
-              letterSpacing: -0.5,
+              letterSpacing: -0.3,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
         ],
