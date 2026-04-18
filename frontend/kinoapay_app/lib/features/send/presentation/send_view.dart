@@ -51,6 +51,7 @@ class _SendViewState extends State<SendView> {
   PaymentChannel? _selectedSourceChannel;
   PaymentChannel? _selectedDestChannel;
   List<RecipientMatch> _foundRecipients = [];
+  String? _externalRecipientName;
 
   @override
   void initState() {
@@ -176,9 +177,13 @@ class _SendViewState extends State<SendView> {
       return;
     }
     final destType = _selectedDestChannel?.type ?? _selectedSourceChannel!.type;
+    final recipientName = _selectedRecipient?.isKinoaUser == false
+        ? _externalRecipientName
+        : null;
     context.read<SendBloc>().add(
       SendQuoteRequested(
         recipientIdentifier: _activeCtrl.text.trim(),
+        recipientName: recipientName,
         amount: _amount,
         sourceChannel: _selectedSourceChannel!.type,
         destinationChannel: destType,
@@ -220,7 +225,10 @@ class _SendViewState extends State<SendView> {
       listener: _onStateChanged,
       builder: (_, state) {
         if (state is SendQuoteReady) {
-          return QuoteConfirmationStep(quote: state.quote);
+          return QuoteConfirmationStep(
+            quote: state.quote,
+            onBack: () => context.read<SendBloc>().add(SendReset()),
+          );
         }
         if (state is SendConfirming) return const ProcessingStep();
         if (state is SendSuccess) {
@@ -257,6 +265,8 @@ class _SendViewState extends State<SendView> {
                         setState(() => _selectedDestChannel = ch),
                     onModifyRecipient: _clearRecipient,
                     onContinue: _requestQuote,
+                    onExternalNameChanged: (name) =>
+                        setState(() => _externalRecipientName = name),
                   ),
               ],
             ),

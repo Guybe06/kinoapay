@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
@@ -13,58 +14,74 @@ final NumberFormat _fmt = NumberFormat("#,##0", "en_US");
 /// Écran de confirmation — fond blanc, user icon, frais globaux.
 class QuoteConfirmationStep extends StatelessWidget {
   final TransferQuote quote;
+  final VoidCallback onBack;
 
-  const QuoteConfirmationStep({super.key, required this.quote});
+  const QuoteConfirmationStep({
+    super.key,
+    required this.quote,
+    required this.onBack,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 32, 28, 32),
-          child: Column(
-            children: [
-              _buildAvatar(),
-              const SizedBox(height: 14),
-              Text(
-                quote.recipientName,
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.3,
-                ),
+      appBar: const AppHeader(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildBackButton(),
+            const SizedBox(height: 20),
+            _buildHeader(),
+            const SizedBox(height: 20),
+            _buildAvatar(),
+            const SizedBox(height: 10),
+            Text(
+              quote.recipientName,
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
               ),
-              const SizedBox(height: 40),
-              Text(
-                _fmt.format(quote.amount),
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 52,
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: -2,
-                  height: 1,
-                ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "va recevoir",
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.5),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(height: 8),
-              Text(
-                SendStrings.amountUnit,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 3,
-                ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              _fmt.format(quote.amount),
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 52,
+                fontWeight: FontWeight.w300,
+                letterSpacing: -2,
+                height: 1,
               ),
-              const SizedBox(height: 36),
-              _buildSummaryCard(),
-              const Spacer(),
-              _buildConfirmButton(context),
-              const SizedBox(height: 16),
-              _buildCancelLink(context),
-            ],
-          ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              SendStrings.amountUnit,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.3),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 3,
+              ),
+            ),
+            const SizedBox(height: 28),
+            _buildSummaryCard(),
+            const SizedBox(height: 32),
+            _buildConfirmButton(context),
+          ],
         ),
       ),
     );
@@ -75,14 +92,60 @@ class QuoteConfirmationStep extends StatelessWidget {
       width: 64,
       height: 64,
       decoration: const BoxDecoration(
-        color: AppColors.stone100,
+        color: AppColors.white,
         shape: BoxShape.circle,
       ),
       child: const Icon(
         SolarIconsOutline.user,
-        color: AppColors.stone400,
+        color: AppColors.quinoaDark,
         size: 26,
       ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: onBack,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: AppColors.quinoaDark.withValues(alpha: 0.07),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          SolarIconsOutline.altArrowLeft,
+          color: AppColors.quinoaDark,
+          size: 18,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          SendStrings.confirmTitle,
+          style: const TextStyle(
+            color: AppColors.quinoaDark,
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.6,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          "Vérifiez les détails avant d'envoyer",
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.4),
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
@@ -135,20 +198,6 @@ class QuoteConfirmationStep extends StatelessWidget {
         child: const Text(
           SendStrings.confirmBtn,
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCancelLink(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.read<SendBloc>().add(SendReset()),
-      child: Text(
-        SendStrings.cancelBtn,
-        style: TextStyle(
-          color: AppColors.quinoaDark.withValues(alpha: 0.4),
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );

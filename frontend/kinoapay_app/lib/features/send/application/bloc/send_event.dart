@@ -30,19 +30,26 @@ class SendSimulationRequested extends SendEvent {
 
 class SendQuoteRequested extends SendEvent {
   final String recipientIdentifier;
+  final String? recipientName;
   final double amount;
   final String sourceChannel;
   final String destinationChannel;
 
   const SendQuoteRequested({
     required this.recipientIdentifier,
+    this.recipientName,
     required this.amount,
     required this.sourceChannel,
     required this.destinationChannel,
   });
 
   @override
-  List<Object> get props => [recipientIdentifier, amount, sourceChannel, destinationChannel];
+  List<Object> get props => [
+    recipientIdentifier,
+    amount,
+    sourceChannel,
+    destinationChannel,
+  ];
 }
 
 class SendConfirmRequested extends SendEvent {

@@ -10,7 +10,7 @@ import "package:kinoapay_app/features/send/infrastructure/source_accounts_mock.d
 import "package:kinoapay_app/features/send/presentation/widgets/recipient_compact_card.dart";
 
 /// Step 2 : montant en héros centré, sélecteurs de canal slim, pill destinataire.
-class SendAmountStep extends StatelessWidget {
+class SendAmountStep extends StatefulWidget {
   final RecipientMatch recipient;
   final PaymentChannel? selectedSource;
   final PaymentChannel? selectedDest;
@@ -20,6 +20,7 @@ class SendAmountStep extends StatelessWidget {
   final ValueChanged<PaymentChannel?> onDestChanged;
   final VoidCallback onModifyRecipient;
   final VoidCallback onContinue;
+  final ValueChanged<String> onExternalNameChanged;
 
   const SendAmountStep({
     super.key,
@@ -32,14 +33,43 @@ class SendAmountStep extends StatelessWidget {
     required this.onDestChanged,
     required this.onModifyRecipient,
     required this.onContinue,
+    required this.onExternalNameChanged,
   });
+
+  @override
+  State<SendAmountStep> createState() => _SendAmountStepState();
+}
+
+class _SendAmountStepState extends State<SendAmountStep> {
+  late final TextEditingController _externalNameCtrl;
+  late final FocusNode _externalNameFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _externalNameCtrl = TextEditingController();
+    _externalNameFocus = FocusNode();
+    _externalNameCtrl.addListener(() {
+      widget.onExternalNameChanged(_externalNameCtrl.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _externalNameCtrl.dispose();
+    _externalNameFocus.dispose();
+    super.dispose();
+  }
 
   static const double _feeRate = 0.03;
 
   bool get _channelsReady {
-    if (selectedSource == null) return false;
-    if (recipient.isKinoaUser && recipient.channels.isNotEmpty) {
-      return selectedDest != null;
+    if (widget.selectedSource == null) return false;
+    if (widget.recipient.isKinoaUser && widget.recipient.channels.isNotEmpty) {
+      return widget.selectedDest != null;
+    }
+    if (!widget.recipient.isKinoaUser) {
+      return widget.selectedDest != null;
     }
     return true;
   }
@@ -49,8 +79,15 @@ class SendAmountStep extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RecipientCompactCard(recipient: recipient, onModify: onModifyRecipient),
+        RecipientCompactCard(
+          recipient: widget.recipient,
+          onModify: widget.onModifyRecipient,
+        ),
         const SizedBox(height: 36),
+        if (!widget.recipient.isKinoaUser) ...[
+          _buildExternalNameInput(),
+          const SizedBox(height: 24),
+        ],
         _buildChannelRow(context),
         if (_channelsReady) ...[
           const SizedBox(height: 48),
@@ -62,17 +99,50 @@ class SendAmountStep extends StatelessWidget {
     );
   }
 
+  Widget _buildExternalNameInput() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.stone200, width: 1),
+      ),
+      child: TextField(
+        controller: _externalNameCtrl,
+        focusNode: _externalNameFocus,
+        style: const TextStyle(
+          color: AppColors.quinoaDark,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+        decoration: InputDecoration(
+          hintText: "Nom du destinataire",
+          hintStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.3),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: EdgeInsets.zero,
+        ),
+      ),
+    );
+  }
+
   Widget _buildChannelRow(BuildContext context) {
     final hasDestChoice =
-        recipient.isKinoaUser && recipient.channels.isNotEmpty;
+        widget.recipient.isKinoaUser && widget.recipient.channels.isNotEmpty;
+    final isExternal = !widget.recipient.isKinoaUser;
     return Row(
       children: [
         Expanded(
           child: _ChannelSelector(
             label: SendStrings.sourceLabel,
-            selected: selectedSource,
+            selected: widget.selectedSource,
             channels: SourceAccountsMock.list,
-            onChanged: onSourceChanged,
+            onChanged: widget.onSourceChanged,
           ),
         ),
         Padding(
@@ -87,9 +157,16 @@ class SendAmountStep extends StatelessWidget {
           child: hasDestChoice
               ? _ChannelSelector(
                   label: SendStrings.destLabel,
-                  selected: selectedDest,
-                  channels: recipient.channels,
-                  onChanged: onDestChanged,
+                  selected: widget.selectedDest,
+                  channels: widget.recipient.channels,
+                  onChanged: widget.onDestChanged,
+                )
+              : isExternal
+              ? _ChannelSelector(
+                  label: SendStrings.destLabel,
+                  selected: widget.selectedDest,
+                  channels: SourceAccountsMock.list,
+                  onChanged: widget.onDestChanged,
                 )
               : _StaticChannelLabel(label: SendStrings.destLabel),
         ),
@@ -101,8 +178,8 @@ class SendAmountStep extends StatelessWidget {
     return Column(
       children: [
         TextField(
-          controller: amountCtrl,
-          focusNode: amountFocus,
+          controller: widget.amountCtrl,
+          focusNode: widget.amountFocus,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
@@ -139,7 +216,7 @@ class SendAmountStep extends StatelessWidget {
           ),
         ),
         ValueListenableBuilder<TextEditingValue>(
-          valueListenable: amountCtrl,
+          valueListenable: widget.amountCtrl,
           builder: (_, value, __) {
             final raw = double.tryParse(value.text.replaceAll(" ", "")) ?? 0;
             if (raw <= 0) return const SizedBox(height: 16);
@@ -167,7 +244,7 @@ class SendAmountStep extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: onContinue,
+        onPressed: widget.onContinue,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.quinoaDark,
           foregroundColor: AppColors.quinoaCream,
