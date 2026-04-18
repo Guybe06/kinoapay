@@ -9,7 +9,8 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_t
 /// Ligne d’aperçu d’une transaction (liste du tableau de bord).
 class DashboardTxRow extends StatelessWidget {
   final Transaction tx;
-  const DashboardTxRow({super.key, required this.tx});
+  final int index;
+  const DashboardTxRow({super.key, required this.tx, required this.index});
 
   DashboardTxNature get _nature {
     final s = tx.status.toUpperCase();
@@ -47,17 +48,11 @@ class DashboardTxRow extends StatelessWidget {
       onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: !isReceived
-            ? BoxDecoration(
-                color: AppColors.quinoaDark.withValues(alpha: 0.02),
-                border: Border(
-                  left: BorderSide(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.15),
-                    width: 2,
-                  ),
-                ),
-              )
-            : null,
+        decoration: BoxDecoration(
+          color: index % 2 == 0
+              ? AppColors.quinoaDark.withValues(alpha: 0.02)
+              : Colors.transparent,
+        ),
         child: Row(
           children: [
             Expanded(
