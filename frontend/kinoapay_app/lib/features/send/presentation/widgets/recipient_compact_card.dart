@@ -1,10 +1,9 @@
 import "package:flutter/material.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Carte compacte affichant le destinataire résolu avec un bouton Modifier.
+/// Pill sombre affichant le destinataire sélectionné avec initiale et bouton Modifier.
 class RecipientCompactCard extends StatelessWidget {
   final RecipientMatch recipient;
   final VoidCallback onModify;
@@ -17,20 +16,18 @@ class RecipientCompactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final initial =
+        recipient.name.isNotEmpty ? recipient.name[0].toUpperCase() : "?";
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.quinoaDark.withValues(alpha: 0.08),
-          width: 1.5,
-        ),
+        color: AppColors.quinoaDark,
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
-          _buildAvatar(),
-          const SizedBox(width: 14),
+          _buildAvatar(initial),
+          const SizedBox(width: 12),
           Expanded(child: _buildInfo()),
           _buildModifyBtn(),
         ],
@@ -38,18 +35,23 @@ class RecipientCompactCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(String initial) {
     return Container(
-      width: 44,
-      height: 44,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
-        color: AppColors.stone100,
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.quinoaGold,
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: const Icon(
-        SolarIconsOutline.user,
-        color: AppColors.stone400,
-        size: 20,
+      child: Center(
+        child: Text(
+          initial,
+          style: const TextStyle(
+            color: AppColors.quinoaCream,
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
       ),
     );
   }
@@ -64,9 +66,9 @@ class RecipientCompactCard extends StatelessWidget {
               child: Text(
                 recipient.name,
                 style: const TextStyle(
-                  color: AppColors.quinoaDark,
+                  color: AppColors.quinoaCream,
                   fontSize: 15,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -79,7 +81,7 @@ class RecipientCompactCard extends StatelessWidget {
         Text(
           recipient.phone,
           style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.5),
+            color: AppColors.quinoaCream.withValues(alpha: 0.45),
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -91,19 +93,21 @@ class RecipientCompactCard extends StatelessWidget {
   Widget _buildTag() {
     final isKinoa = recipient.isKinoaUser;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         color: isKinoa
-            ? AppColors.quinoaGold.withValues(alpha: 0.12)
-            : AppColors.stone100,
+            ? AppColors.quinoaGold.withValues(alpha: 0.25)
+            : AppColors.quinoaCream.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         isKinoa ? SendStrings.kinoaUserTag : SendStrings.externalUserTag,
         style: TextStyle(
-          color: isKinoa ? AppColors.quinoaGold : AppColors.textMuted,
+          color: isKinoa
+              ? AppColors.quinoaGold
+              : AppColors.quinoaCream.withValues(alpha: 0.5),
           fontSize: 10,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -112,19 +116,12 @@ class RecipientCompactCard extends StatelessWidget {
   Widget _buildModifyBtn() {
     return GestureDetector(
       onTap: onModify,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColors.quinoaDark.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Text(
-          SendStrings.modifyBtn,
-          style: TextStyle(
-            color: AppColors.quinoaDark,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
+      child: Text(
+        SendStrings.modifyBtn,
+        style: TextStyle(
+          color: AppColors.quinoaCream.withValues(alpha: 0.5),
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

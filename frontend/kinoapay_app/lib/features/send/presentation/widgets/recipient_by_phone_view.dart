@@ -6,7 +6,6 @@ import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart"
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/recipients_results_list.dart";
 
-/// Codes pays CEMAC disponibles dans le sélecteur.
 class CountryCode {
   final String isoCode;
   final String dialCode;
@@ -17,11 +16,15 @@ class CountryCode {
     required this.dialCode,
     required this.label,
   });
+
+  String get flag {
+    return isoCode.toUpperCase().split("").map((c) {
+      return String.fromCharCode(0x1F1E6 + c.codeUnitAt(0) - "A".codeUnitAt(0));
+    }).join();
+  }
 }
 
-/// Vue recherche par numéro de téléphone.
-/// Inclut un sélecteur de code pays, un champ numérique (recherche ≥ 4 chiffres),
-/// les résultats, et l'option « Envoyer vers ce numéro » si aucun utilisateur trouvé.
+/// Vue recherche par numéro de téléphone — input sans bordure, shadow, flag emoji.
 class RecipientByPhoneView extends StatelessWidget {
   static const int minPhoneDigits = 4;
 
@@ -86,22 +89,25 @@ class RecipientByPhoneView extends StatelessWidget {
 
   Widget _buildInputRow() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.quinoaDark.withValues(alpha: 0.10),
-          width: 1,
-        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.quinoaDark.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Row(
         children: [
           _buildCountrySelector(),
           Container(
             width: 1,
-            height: 28,
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            height: 26,
+            margin: const EdgeInsets.symmetric(horizontal: 12),
             color: AppColors.quinoaDark.withValues(alpha: 0.08),
           ),
           Expanded(
@@ -115,12 +121,13 @@ class RecipientByPhoneView extends StatelessWidget {
                 FilteringTextInputFormatter.digitsOnly,
                 _PhoneGroupFormatter(),
               ],
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
               decoration: InputDecoration(
                 hintText: SendStrings.phoneHint,
                 hintStyle: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                  fontWeight: FontWeight.w500,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 17,
                 ),
                 border: InputBorder.none,
                 isDense: true,
@@ -141,37 +148,33 @@ class RecipientByPhoneView extends StatelessWidget {
   Widget _buildCountrySelector() {
     return PopupMenuButton<CountryCode>(
       onSelected: onCountryChanged,
-      offset: const Offset(0, 40),
+      offset: const Offset(0, 44),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: AppColors.white,
+      elevation: 8,
+      shadowColor: AppColors.quinoaDark.withValues(alpha: 0.12),
       itemBuilder: (_) => countryCodes.map((c) {
         return PopupMenuItem<CountryCode>(
           value: c,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text(c.flag, style: const TextStyle(fontSize: 18)),
+              const SizedBox(width: 10),
               Text(
-                c.isoCode,
+                c.dialCode,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   fontSize: 13,
                   color: AppColors.quinoaDark,
                 ),
               ),
               const SizedBox(width: 8),
               Text(
-                c.dialCode,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
                 c.label,
                 style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.5),
-                  fontSize: 12,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                  fontSize: 13,
                 ),
               ),
             ],
@@ -181,19 +184,12 @@ class RecipientByPhoneView extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            selectedCountry.isoCode,
-            style: const TextStyle(
-              color: AppColors.quinoaDark,
-              fontWeight: FontWeight.w800,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(width: 4),
+          Text(selectedCountry.flag, style: const TextStyle(fontSize: 20)),
+          const SizedBox(width: 6),
           Text(
             selectedCountry.dialCode,
             style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.5),
+              color: AppColors.quinoaDark.withValues(alpha: 0.6),
               fontWeight: FontWeight.w600,
               fontSize: 13,
             ),
@@ -201,8 +197,8 @@ class RecipientByPhoneView extends StatelessWidget {
           const SizedBox(width: 2),
           Icon(
             SolarIconsOutline.altArrowDown,
-            size: 14,
-            color: AppColors.quinoaDark.withValues(alpha: 0.4),
+            size: 13,
+            color: AppColors.quinoaDark.withValues(alpha: 0.35),
           ),
         ],
       ),
@@ -217,10 +213,13 @@ class RecipientByPhoneView extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: AppColors.quinoaDark.withValues(alpha: 0.06),
-            width: 1,
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.quinoaDark.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -233,7 +232,7 @@ class RecipientByPhoneView extends StatelessWidget {
               ),
               child: const Icon(
                 SolarIconsOutline.phoneCallingRounded,
-                color: AppColors.textMuted,
+                color: AppColors.stone500,
                 size: 18,
               ),
             ),
@@ -245,9 +244,9 @@ class RecipientByPhoneView extends StatelessWidget {
                   Text(
                     SendStrings.notOnKinoaLabel,
                     style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.6),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                      color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -289,7 +288,7 @@ class RecipientByPhoneView extends StatelessWidget {
             style: TextStyle(
               color: AppColors.quinoaGold,
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -302,8 +301,8 @@ class RecipientByPhoneView extends StatelessWidget {
       width: 14,
       height: 14,
       child: CircularProgressIndicator(
-        strokeWidth: 1.6,
-        color: AppColors.quinoaDark.withValues(alpha: 0.5),
+        strokeWidth: 1.5,
+        color: AppColors.quinoaDark.withValues(alpha: 0.4),
       ),
     );
   }

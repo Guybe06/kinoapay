@@ -281,7 +281,7 @@ class _SendViewState extends State<SendView> {
       child: Container(
         width: 36,
         height: 36,
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           color: AppColors.quinoaDark.withValues(alpha: 0.07),
           shape: BoxShape.circle,
@@ -293,47 +293,57 @@ class _SendViewState extends State<SendView> {
 
   Widget _buildHeader() {
     final isRecipient = _step == SendStep.recipient;
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: Column(
-        key: ValueKey(_step),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            SendStrings.pageTitle,
-            style: TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 28,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.8,
-              height: 1.1,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildProgressBar(),
+        const SizedBox(height: 20),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: Text(
+            key: ValueKey(_step),
             isRecipient
                 ? SendStrings.stepRecipientTitle
                 : SendStrings.stepAmountTitle,
             style: const TextStyle(
-              color: AppColors.textMuted,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              height: 1.4,
+              color: AppColors.quinoaDark,
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.6,
+              height: 1.2,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            isRecipient
-                ? SendStrings.stepRecipientSub
-                : SendStrings.stepAmountSub,
-            style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.4),
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProgressBar() {
+    final isAmount = _step == SendStep.amount;
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 3,
+            decoration: BoxDecoration(
+              color: AppColors.quinoaDark,
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Container(
+            height: 3,
+            decoration: BoxDecoration(
+              color: isAmount
+                  ? AppColors.quinoaDark
+                  : AppColors.quinoaDark.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

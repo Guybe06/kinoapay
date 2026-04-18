@@ -1,14 +1,14 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 import "package:kinoapay_app/features/send/infrastructure/source_accounts_mock.dart";
-import "package:kinoapay_app/features/send/presentation/widgets/amount_input_field.dart";
-import "package:kinoapay_app/features/send/presentation/widgets/channel_dropdown.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/recipient_compact_card.dart";
 
-/// Step 2 du flux d'envoi : carte destinataire, sélection canaux, montant, bouton continuer.
+/// Step 2 : montant en héros centré, sélecteurs de canal slim, pill destinataire.
 class SendAmountStep extends StatelessWidget {
   final RecipientMatch recipient;
   final PaymentChannel? selectedSource;
@@ -36,35 +36,97 @@ class SendAmountStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RecipientCompactCard(
           recipient: recipient,
           onModify: onModifyRecipient,
         ),
-        const SizedBox(height: 20),
-        ChannelDropdown(
-          label: SendStrings.sourceLabel,
-          channels: SourceAccountsMock.list,
-          selected: selectedSource,
-          onChanged: onSourceChanged,
-        ),
-        if (recipient.isKinoaUser && recipient.channels.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          ChannelDropdown(
-            label: SendStrings.destLabel,
-            channels: recipient.channels,
-            selected: selectedDest,
-            onChanged: onDestChanged,
+        const SizedBox(height: 36),
+        _buildChannelRow(context),
+        const SizedBox(height: 48),
+        _buildHeroAmount(),
+        const SizedBox(height: 52),
+        _buildContinueButton(),
+      ],
+    );
+  }
+
+  Widget _buildChannelRow(BuildContext context) {
+    final hasDestChoice = recipient.isKinoaUser && recipient.channels.isNotEmpty;
+    return Row(
+      children: [
+        Expanded(
+          child: _ChannelSelector(
+            label: SendStrings.sourceLabel,
+            selected: selectedSource,
+            channels: SourceAccountsMock.list,
+            onChanged: onSourceChanged,
           ),
-        ],
-        const SizedBox(height: 24),
-        AmountInputField(
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Icon(
+            SolarIconsOutline.altArrowRight,
+            size: 16,
+            color: AppColors.quinoaDark.withValues(alpha: 0.3),
+          ),
+        ),
+        Expanded(
+          child: hasDestChoice
+              ? _ChannelSelector(
+                  label: SendStrings.destLabel,
+                  selected: selectedDest,
+                  channels: recipient.channels,
+                  onChanged: onDestChanged,
+                )
+              : _StaticChannelLabel(label: SendStrings.destLabel),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroAmount() {
+    return Column(
+      children: [
+        TextField(
           controller: amountCtrl,
           focusNode: amountFocus,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+          ],
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 64,
+            color: AppColors.quinoaDark,
+            letterSpacing: -2,
+            height: 1.1,
+          ),
+          decoration: InputDecoration(
+            hintText: "0",
+            hintStyle: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.12),
+              fontWeight: FontWeight.w300,
+              fontSize: 64,
+              letterSpacing: -2,
+            ),
+            border: InputBorder.none,
+            isDense: true,
+            contentPadding: EdgeInsets.zero,
+          ),
         ),
-        const SizedBox(height: 32),
-        _buildContinueButton(),
+        const SizedBox(height: 10),
+        Text(
+          SendStrings.amountUnit,
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.3),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 3,
+          ),
+        ),
       ],
     );
   }
@@ -72,14 +134,14 @@ class SendAmountStep extends StatelessWidget {
   Widget _buildContinueButton() {
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: 56,
       child: ElevatedButton(
         onPressed: onContinue,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.quinoaDark,
           foregroundColor: AppColors.quinoaCream,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
           ),
           elevation: 0,
         ),
@@ -87,6 +149,203 @@ class SendAmountStep extends StatelessWidget {
           SendStrings.continueBtn,
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
         ),
+      ),
+    );
+  }
+}
+
+/// Sélecteur de canal : pill cliquable qui ouvre une bottom sheet.
+class _ChannelSelector extends StatelessWidget {
+  final String label;
+  final PaymentChannel? selected;
+  final List<PaymentChannel> channels;
+  final ValueChanged<PaymentChannel?> onChanged;
+
+  const _ChannelSelector({
+    required this.label,
+    required this.selected,
+    required this.channels,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showSheet(context),
+      child: _ChannelPill(
+        label: label,
+        value: selected?.label ?? "—",
+        showChevron: true,
+      ),
+    );
+  }
+
+  void _showSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...channels.map((ch) {
+                final isSelected = ch == selected;
+                return GestureDetector(
+                  onTap: () {
+                    onChanged(ch);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.quinoaDark.withValues(alpha: 0.06)
+                          : AppColors.stone50,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ch.label,
+                                style: TextStyle(
+                                  color: AppColors.quinoaDark,
+                                  fontSize: 14,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                ch.value,
+                                style: TextStyle(
+                                  color:
+                                      AppColors.quinoaDark.withValues(alpha: 0.4),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isSelected)
+                          const Icon(
+                            SolarIconsOutline.checkCircle,
+                            size: 18,
+                            color: AppColors.quinoaGold,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Pill non-interactive affichant un canal fixe (ex. destinataire externe).
+class _StaticChannelLabel extends StatelessWidget {
+  final String label;
+  const _StaticChannelLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return _ChannelPill(
+      label: label,
+      value: SendStrings.externalUserTag,
+      showChevron: false,
+    );
+  }
+}
+
+class _ChannelPill extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool showChevron;
+
+  const _ChannelPill({
+    required this.label,
+    required this.value,
+    required this.showChevron,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.stone50,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.quinoaDark.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.4),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (showChevron)
+                Icon(
+                  SolarIconsOutline.altArrowDown,
+                  size: 14,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.35),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
