@@ -86,6 +86,28 @@ class _SendViewState extends State<SendView> {
         ?.requestNotificationsPermission();
   }
 
+  Future<void> _showNotification() async {
+    if (!mounted) return;
+    const androidDetails = AndroidNotificationDetails(
+      'kinoapay_channel',
+      'KinoaPay Notifications',
+      channelDescription: 'Notifications pour les transactions KinoaPay',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    const iosDetails = DarwinNotificationDetails();
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+    await _notificationsPlugin.show(
+      0,
+      'Envoi confirmé',
+      'Votre envoi a été confirmé avec succès',
+      notificationDetails,
+    );
+  }
+
   @override
   void dispose() {
     _phoneCtrl.dispose();
@@ -317,7 +339,7 @@ class _SendViewState extends State<SendView> {
           context,
           MaterialPageRoute(
             builder: (_) => UssdValidationStep(
-              onValidated: () {
+              onResolved: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -327,6 +349,7 @@ class _SendViewState extends State<SendView> {
                         _resetAll();
                         Navigator.pop(context);
                       },
+                      onShowNotification: _showNotification,
                     ),
                     fullscreenDialog: true,
                   ),
@@ -346,31 +369,11 @@ class _SendViewState extends State<SendView> {
                 _resetAll();
                 Navigator.pop(context);
               },
+              onShowNotification: _showNotification,
             ),
             fullscreenDialog: true,
           ),
         );
-        Future.delayed(const Duration(seconds: 2), () async {
-          if (!mounted) return;
-          const androidDetails = AndroidNotificationDetails(
-            'kinoapay_channel',
-            'KinoaPay Notifications',
-            channelDescription: 'Notifications pour les transactions KinoaPay',
-            importance: Importance.high,
-            priority: Priority.high,
-          );
-          const iosDetails = DarwinNotificationDetails();
-          const notificationDetails = NotificationDetails(
-            android: androidDetails,
-            iOS: iosDetails,
-          );
-          await _notificationsPlugin.show(
-            0,
-            'Envoi confirmé',
-            'Votre envoi a été confirmé avec succès',
-            notificationDetails,
-          );
-        });
       }
     }
   }

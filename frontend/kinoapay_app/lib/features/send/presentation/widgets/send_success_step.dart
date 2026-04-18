@@ -6,8 +6,13 @@ import "package:kinoapay_app/features/send/domain/send_strings.dart";
 /// Écran affiché après confirmation — animation simple d'apparition icône confirm + texte.
 class SendSuccessStep extends StatefulWidget {
   final VoidCallback onClose;
+  final VoidCallback onShowNotification;
 
-  const SendSuccessStep({super.key, required this.onClose});
+  const SendSuccessStep({
+    super.key,
+    required this.onClose,
+    required this.onShowNotification,
+  });
 
   @override
   State<SendSuccessStep> createState() => _SendSuccessStepState();
@@ -47,6 +52,7 @@ class _SendSuccessStepState extends State<SendSuccessStep>
 
     _iconCtrl.forward();
     Future.delayed(const Duration(milliseconds: 400), _textCtrl.forward);
+    Future.delayed(const Duration(seconds: 2), widget.onShowNotification);
   }
 
   @override
