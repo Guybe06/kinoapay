@@ -59,15 +59,15 @@ class DashboardGreetingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             DashboardStrings.greetingPrefix,
             style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.45),
-              fontSize: 13,
+              color: AppColors.quinoaDark.withValues(alpha: 0.40),
+              fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -75,9 +75,9 @@ class DashboardGreetingSection extends StatelessWidget {
             firstName.isNotEmpty ? firstName : DashboardStrings.fallbackName,
             style: const TextStyle(
               color: AppColors.quinoaDark,
-              fontSize: 32,
+              fontSize: 24,
               fontWeight: FontWeight.w800,
-              letterSpacing: -0.8,
+              letterSpacing: -0.6,
               height: 1.1,
             ),
           ),

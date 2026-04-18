@@ -40,7 +40,7 @@ class DashboardTxList extends StatelessWidget {
 
           return Column(
             children: [
-              DashboardTxRow(tx: tx, index: index),
+              DashboardTxRow(tx: tx),
               if (!isLast)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),

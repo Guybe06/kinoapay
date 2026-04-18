@@ -93,27 +93,16 @@ class _DashboardContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   const DashboardGreetingSection(firstName: "Jean"),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   DashboardStatsCard(stats: stats),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   DashboardActionButtons(
                     onSend: onNavigateToSend ?? () {},
                     onRequest: onNavigateToRequest ?? () {},
                   ),
-                  const SizedBox(height: 24),
-                  DashboardPromoCard(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => const DashboardPromoDetailSheet(),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   DashboardRecentContacts(
                     transactions: transactions,
                     onAdd: () {},
@@ -143,6 +132,17 @@ class _DashboardContent extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: DashboardTxList(transactions: transactions),
+                  ),
+                  const SizedBox(height: 24),
+                  DashboardPromoCard(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const DashboardPromoDetailSheet(),
+                      );
+                    },
                   ),
                   const SizedBox(height: 32),
                 ],

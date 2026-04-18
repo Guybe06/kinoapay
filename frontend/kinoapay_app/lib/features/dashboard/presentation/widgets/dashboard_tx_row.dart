@@ -4,148 +4,123 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_models.dart";
-import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_widgets.dart";
 
-/// Ligne d’aperçu d’une transaction (liste du tableau de bord).
+/// Ligne de transaction — 2 colonnes : identité + montant.
 class DashboardTxRow extends StatelessWidget {
   final Transaction tx;
-  final int index;
-  const DashboardTxRow({super.key, required this.tx, required this.index});
 
-  DashboardTxNature get _nature {
-    final s = tx.status.toUpperCase();
-    if (s == "FAILED" || s == "REJECTED" || s == "CANCELLED") {
-      return DashboardTxNature.refused;
-    }
-    if (s == "PROCESSING") return DashboardTxNature.processing;
-    if (s == "PENDING") return DashboardTxNature.pending;
-    return tx.direction == "received"
-        ? DashboardTxNature.received
-        : DashboardTxNature.sent;
-  }
+  const DashboardTxRow({super.key, required this.tx});
 
   @override
   Widget build(BuildContext context) {
     final bool isReceived = tx.direction == "received";
-    final nature = _nature;
-
     final String name = isReceived
         ? (tx.senderName ?? tx.receiverIdentifier)
         : (tx.receiverName ?? tx.receiverIdentifier);
 
     final fmt = NumberFormat("#,##0", "en_US");
     final String timeLabel = dashboardTxRelativeDate(tx.startedAt);
+    final String channel =
+        "${tx.sourceChannel} → ${tx.destinationChannel}";
 
-    final String source = tx.sourceChannel.toUpperCase();
-    final String destination = tx.destinationChannel.toUpperCase();
+    final Color amountColor =
+        isReceived ? AppColors.quinoaGold : AppColors.quinoaDark;
 
-    final Color amountColor = isReceived
-        ? AppColors.quinoaGold
-        : AppColors.quinoaDark;
-    final double amountSize = isReceived ? 14.0 : 16.0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          _TxAvatar(isReceived: isReceived),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  channel,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.38),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  timeLabel,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
+                style: TextStyle(
+                  color: amountColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                tx.currency,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: index % 2 == 0
-              ? AppColors.quinoaDark.withValues(alpha: 0.02)
-              : Colors.transparent,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name.toUpperCase(),
-                    style: TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: isReceived ? 11 : 12,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    tx.receiverIdentifier,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    timeLabel,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.30),
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      DashboardTxChannelBadge(label: source),
-                      Icon(
-                        SolarIconsOutline.arrowRight,
-                        size: 10,
-                        color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                      ),
-                      DashboardTxChannelBadge(label: destination),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  DashboardTxAmlSparkline(
-                    score: (tx.amlScore ?? 0.1).clamp(0.0, 1.0),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
-                    style: TextStyle(
-                      color: amountColor,
-                      fontSize: amountSize,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  DashboardTxCompactStatus(nature: nature),
-                  const SizedBox(height: 2),
-                  Text(
-                    tx.currency,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+class _TxAvatar extends StatelessWidget {
+  final bool isReceived;
+  const _TxAvatar({required this.isReceived});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 42,
+      height: 42,
+      decoration: BoxDecoration(
+        color: isReceived
+            ? AppColors.quinoaGold.withValues(alpha: 0.10)
+            : AppColors.quinoaDark.withValues(alpha: 0.06),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        isReceived
+            ? SolarIconsOutline.arrowLeftDown
+            : SolarIconsOutline.arrowRightUp,
+        size: 18,
+        color: isReceived
+            ? AppColors.quinoaGold
+            : AppColors.quinoaDark.withValues(alpha: 0.55),
       ),
     );
   }

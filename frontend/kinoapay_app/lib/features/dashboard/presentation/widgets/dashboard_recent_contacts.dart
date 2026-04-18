@@ -170,6 +170,8 @@ class _ContactItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firstName = contact.name.split(" ").first;
+    final label =
+        firstName.length > 8 ? "${firstName.substring(0, 7)}." : firstName;
 
     return GestureDetector(
       onTap: () {},
@@ -177,29 +179,23 @@ class _ContactItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 58,
-            height: 58,
+            width: 56,
+            height: 56,
             decoration: BoxDecoration(
-              color: AppColors.quinoaDark.withValues(alpha: 0.06),
+              color: AppColors.stone100,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.quinoaDark.withValues(alpha: 0.10),
-                width: 1.5,
-              ),
+              border: Border.all(color: AppColors.stone200, width: 1),
             ),
             alignment: Alignment.center,
-            child: Text(
-              contact.initials,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.65),
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-              ),
+            child: const Icon(
+              SolarIconsOutline.user,
+              size: 22,
+              color: AppColors.stone400,
             ),
           ),
           const SizedBox(height: 6),
           Text(
-            firstName.length > 8 ? "${firstName.substring(0, 7)}." : firstName,
+            label,
             style: TextStyle(
               color: AppColors.quinoaDark.withValues(alpha: 0.55),
               fontSize: 11,
