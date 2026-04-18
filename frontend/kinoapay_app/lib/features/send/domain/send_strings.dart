@@ -52,6 +52,11 @@ abstract final class SendStrings {
       "Votre transfert est en cours de traitement. Vous serez notifié dès que l'opération sera finalisée.";
   static const String successBackBtn = "Retour à l'accueil";
 
+  static const String ussdTitle = "Confirmation opérateur";
+  static const String ussdMessage =
+      "Pour confirmer le retrait des fonds de votre compte mobile, entrez le code USSD reçu de votre opérateur.";
+  static const String ussdValidateBtn = "Valider";
+
   static const String errorNoAmount = "Entrez un montant valide.";
   static const String errorNoChannel = "Sélectionnez un canal de destination.";
   static const String errorNoSourceAccount =

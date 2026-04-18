@@ -21,6 +21,7 @@ import "package:kinoapay_app/features/send/presentation/widgets/recipient_by_pho
 import "package:kinoapay_app/features/send/presentation/widgets/search_mode_switcher.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/send_amount_step.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/send_success_step.dart";
+import "package:kinoapay_app/features/send/presentation/widgets/ussd_validation_step.dart";
 
 enum SendStep { recipient, amount }
 
@@ -80,7 +81,8 @@ class _SendViewState extends State<SendView> {
 
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
   }
 
@@ -307,40 +309,69 @@ class _SendViewState extends State<SendView> {
         ),
       );
     } else if (state is SendSuccess) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SendSuccessStep(
-            onClose: () {
-              context.read<SendBloc>().add(SendReset());
-              _resetAll();
-              Navigator.pop(context);
-            },
+      final isMobile =
+          _selectedSourceChannel?.type.toLowerCase().contains('mobile') ??
+          false;
+      if (isMobile) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => UssdValidationStep(
+              onValidated: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SendSuccessStep(
+                      onClose: () {
+                        context.read<SendBloc>().add(SendReset());
+                        _resetAll();
+                        Navigator.pop(context);
+                      },
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+            ),
+            fullscreenDialog: true,
           ),
-          fullscreenDialog: true,
-        ),
-      );
-      Future.delayed(const Duration(seconds: 2), () async {
-        if (!mounted) return;
-        const androidDetails = AndroidNotificationDetails(
-          'kinoapay_channel',
-          'KinoaPay Notifications',
-          channelDescription: 'Notifications pour les transactions KinoaPay',
-          importance: Importance.high,
-          priority: Priority.high,
         );
-        const iosDetails = DarwinNotificationDetails();
-        const notificationDetails = NotificationDetails(
-          android: androidDetails,
-          iOS: iosDetails,
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SendSuccessStep(
+              onClose: () {
+                context.read<SendBloc>().add(SendReset());
+                _resetAll();
+                Navigator.pop(context);
+              },
+            ),
+            fullscreenDialog: true,
+          ),
         );
-        await _notificationsPlugin.show(
-          0,
-          'Envoi confirmé',
-          'Votre envoi a été confirmé avec succès',
-          notificationDetails,
-        );
-      });
+        Future.delayed(const Duration(seconds: 2), () async {
+          if (!mounted) return;
+          const androidDetails = AndroidNotificationDetails(
+            'kinoapay_channel',
+            'KinoaPay Notifications',
+            channelDescription: 'Notifications pour les transactions KinoaPay',
+            importance: Importance.high,
+            priority: Priority.high,
+          );
+          const iosDetails = DarwinNotificationDetails();
+          const notificationDetails = NotificationDetails(
+            android: androidDetails,
+            iOS: iosDetails,
+          );
+          await _notificationsPlugin.show(
+            0,
+            'Envoi confirmé',
+            'Votre envoi a été confirmé avec succès',
+            notificationDetails,
+          );
+        });
+      }
     }
   }
 
