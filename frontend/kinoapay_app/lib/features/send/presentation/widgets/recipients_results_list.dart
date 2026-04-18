@@ -31,7 +31,9 @@ class RecipientsResultsList extends StatelessWidget {
         children: [
           _buildHeader(),
           const Divider(height: 1),
-          ...recipients.map((r) => _RecipientTile(recipient: r, onTap: () => onSelect(r))),
+          ...recipients.map(
+            (r) => _RecipientTile(recipient: r, onTap: () => onSelect(r)),
+          ),
         ],
       ),
     );
@@ -76,7 +78,7 @@ class _RecipientTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _Avatar(name: recipient.name),
+            const _Avatar(),
             const SizedBox(width: 14),
             Expanded(child: _InfoColumn(recipient: recipient)),
             const Icon(
@@ -92,8 +94,7 @@ class _RecipientTile extends StatelessWidget {
 }
 
 class _Avatar extends StatelessWidget {
-  final String name;
-  const _Avatar({required this.name});
+  const _Avatar();
 
   @override
   Widget build(BuildContext context) {
@@ -101,24 +102,16 @@ class _Avatar extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: AppColors.quinoaGold.withValues(alpha: 0.15),
+        color: AppColors.stone100,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Center(
-        child: Text(
-          _initial(name),
-          style: const TextStyle(
-            color: AppColors.quinoaGold,
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+      child: const Icon(
+        SolarIconsOutline.user,
+        color: AppColors.stone400,
+        size: 20,
       ),
     );
   }
-
-  String _initial(String value) =>
-      value.isEmpty ? "" : value.substring(0, 1).toUpperCase();
 }
 
 class _InfoColumn extends StatelessWidget {

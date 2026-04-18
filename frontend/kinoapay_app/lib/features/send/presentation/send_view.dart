@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
@@ -14,20 +13,17 @@ import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_state.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
-import "package:kinoapay_app/features/send/infrastructure/source_accounts_mock.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/processing_step.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/quote_confirmation_step.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/recipient_by_id_view.dart";
 import "package:kinoapay_app/features/send/presentation/widgets/recipient_by_phone_view.dart";
-import "package:kinoapay_app/features/send/presentation/widgets/recipient_compact_card.dart";
+import "package:kinoapay_app/features/send/presentation/widgets/search_mode_switcher.dart";
+import "package:kinoapay_app/features/send/presentation/widgets/send_amount_step.dart";
 
-/// Étapes séquentielles du flux d'envoi : destinataire → montant → (confirm via BLoC).
 enum SendStep { recipient, amount }
 
-/// Mode de recherche du destinataire.
 enum RecipientSearchMode { phone, id }
 
-/// Vue racine d'envoi d'argent : orchestre les étapes et délègue l'UI aux widgets dédiés.
 class SendView extends StatefulWidget {
   const SendView({super.key});
 
@@ -72,11 +68,11 @@ class _SendViewState extends State<SendView> {
     super.dispose();
   }
 
-  TextEditingController get _activeCtrl =>
-      _searchMode == RecipientSearchMode.phone ? _phoneCtrl : _idCtrl;
-
   FocusNode get _activeFocus =>
       _searchMode == RecipientSearchMode.phone ? _phoneFocus : _idFocus;
+
+  TextEditingController get _activeCtrl =>
+      _searchMode == RecipientSearchMode.phone ? _phoneCtrl : _idCtrl;
 
   double get _amount =>
       double.tryParse(_amountCtrl.text.replaceAll(" ", "")) ?? 0;
@@ -89,8 +85,9 @@ class _SendViewState extends State<SendView> {
       setState(() => _foundRecipients = []);
       return;
     }
-    final fullQuery = "${_selectedCountry.dialCode}$digits";
-    context.read<SendBloc>().add(SendRecipientSearched(fullQuery));
+    context.read<SendBloc>().add(
+      SendRecipientSearched("${_selectedCountry.dialCode}$digits"),
+    );
   }
 
   void _onIdChanged(String value) {
@@ -129,18 +126,14 @@ class _SendViewState extends State<SendView> {
     final digits = _phoneCtrl.text.replaceAll(RegExp(r"\D"), "");
     if (digits.length < RecipientByPhoneView.minPhoneDigits) return;
     final fullPhone = "${_selectedCountry.dialCode} $digits";
-    setState(() {
-      _selectedRecipient = RecipientMatch(
+    _selectMatch(
+      RecipientMatch(
         name: fullPhone,
         phone: fullPhone,
         channels: const [],
         isKinoaUser: false,
-      );
-      _selectedDestChannel = null;
-      _selectedSourceChannel = null;
-      _foundRecipients = [];
-      _step = SendStep.amount;
-    });
+      ),
+    );
   }
 
   Future<void> _chooseContacts() async {
@@ -149,14 +142,13 @@ class _SendViewState extends State<SendView> {
       AppRoutes.contacts,
       arguments: const {"selectionMode": true},
     );
-    if (result is Contact) _applySelectedContact(result);
-  }
-
-  void _applySelectedContact(Contact contact) {
-    final cleanPhone = contact.phone.replaceAll(" ", "");
-    _phoneCtrl.text = cleanPhone;
-    _switchSearchMode(RecipientSearchMode.phone);
-    context.read<SendBloc>().add(SendRecipientSearched(cleanPhone));
+    if (result is Contact) {
+      final clean = result.phone.replaceAll(" ", "");
+      _phoneCtrl.text = clean;
+      _switchSearchMode(RecipientSearchMode.phone);
+      // ignore: use_build_context_synchronously
+      context.read<SendBloc>().add(SendRecipientSearched(clean));
+    }
   }
 
   void _clearRecipient() {
@@ -194,16 +186,15 @@ class _SendViewState extends State<SendView> {
   }
 
   void _goBack() {
-    if (_step == SendStep.amount) {
-      setState(() {
-        _step = SendStep.recipient;
-        _selectedRecipient = null;
-        _selectedDestChannel = null;
-        _selectedSourceChannel = null;
-      });
-      _amountCtrl.clear();
-      Future.delayed(_refocusDelay, _activeFocus.requestFocus);
-    }
+    if (_step != SendStep.amount) return;
+    setState(() {
+      _step = SendStep.recipient;
+      _selectedRecipient = null;
+      _selectedDestChannel = null;
+      _selectedSourceChannel = null;
+    });
+    _amountCtrl.clear();
+    Future.delayed(_refocusDelay, _activeFocus.requestFocus);
   }
 
   void _resetAll() {
@@ -226,12 +217,11 @@ class _SendViewState extends State<SendView> {
   Widget build(BuildContext context) {
     return BlocConsumer<SendBloc, SendState>(
       listener: _onStateChanged,
-      builder: (context, state) {
+      builder: (_, state) {
         if (state is SendQuoteReady) {
           return QuoteConfirmationStep(quote: state.quote);
         }
         if (state is SendConfirming) return const ProcessingStep();
-
         return Scaffold(
           backgroundColor: AppColors.quinoaCream,
           appBar: const AppHeader(),
@@ -246,7 +236,19 @@ class _SendViewState extends State<SendView> {
                 if (_step == SendStep.recipient)
                   _buildRecipientStep(state)
                 else
-                  _buildAmountStep(),
+                  SendAmountStep(
+                    recipient: _selectedRecipient!,
+                    selectedSource: _selectedSourceChannel,
+                    selectedDest: _selectedDestChannel,
+                    amountCtrl: _amountCtrl,
+                    amountFocus: _amountFocus,
+                    onSourceChanged: (ch) =>
+                        setState(() => _selectedSourceChannel = ch),
+                    onDestChanged: (ch) =>
+                        setState(() => _selectedDestChannel = ch),
+                    onModifyRecipient: _clearRecipient,
+                    onContinue: _requestQuote,
+                  ),
               ],
             ),
           ),
@@ -258,8 +260,7 @@ class _SendViewState extends State<SendView> {
   void _onStateChanged(BuildContext context, SendState state) {
     if (state is SendRecipientFound) {
       setState(() => _foundRecipients = state.recipients);
-    }
-    if (state is SendSuccess) {
+    } else if (state is SendSuccess) {
       Navigator.pushNamed(
         context,
         AppRoutes.receipt,
@@ -336,17 +337,21 @@ class _SendViewState extends State<SendView> {
     );
   }
 
-  // ── Step 1 : Destinataire ──────────────────────────────────────────────
-
   Widget _buildRecipientStep(SendState state) {
+    final isPhone = _searchMode == RecipientSearchMode.phone;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSearchModeSwitcher(),
+        SearchModeSwitcher(
+          isPhoneMode: isPhone,
+          onChanged: (v) => _switchSearchMode(
+            v ? RecipientSearchMode.phone : RecipientSearchMode.id,
+          ),
+        ),
         const SizedBox(height: 16),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: _searchMode == RecipientSearchMode.phone
+          child: isPhone
               ? RecipientByPhoneView(
                   key: const ValueKey("phone"),
                   controller: _phoneCtrl,
@@ -371,324 +376,6 @@ class _SendViewState extends State<SendView> {
                 ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSearchModeSwitcher() {
-    final isPhone = _searchMode == RecipientSearchMode.phone;
-    return GestureDetector(
-      onTap: () => _switchSearchMode(
-        isPhone ? RecipientSearchMode.id : RecipientSearchMode.phone,
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: AppColors.quinoaDark.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Stack(
-          children: [
-            AnimatedAlign(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              alignment: isPhone ? Alignment.centerLeft : Alignment.centerRight,
-              child: FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Container(
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                _buildSwitchLabel(
-                  label: SendStrings.switchPhone,
-                  isActive: isPhone,
-                ),
-                _buildSwitchLabel(
-                  label: SendStrings.switchId,
-                  isActive: !isPhone,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSwitchLabel({required String label, required bool isActive}) {
-    return Expanded(
-      child: SizedBox(
-        height: 36,
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isActive
-                  ? AppColors.quinoaDark
-                  : AppColors.quinoaDark.withValues(alpha: 0.35),
-              fontSize: 13,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── Step 2 : Montant + Canaux ──────────────────────────────────────────
-
-  Widget _buildAmountStep() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (_selectedRecipient != null)
-          RecipientCompactCard(
-            recipient: _selectedRecipient!,
-            onModify: _clearRecipient,
-          ),
-        const SizedBox(height: 20),
-        _buildSourceSelect(),
-        if (_selectedRecipient != null &&
-            _selectedRecipient!.isKinoaUser &&
-            _selectedRecipient!.channels.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          _buildDestSelect(),
-        ],
-        const SizedBox(height: 24),
-        _buildAmountInput(),
-        const SizedBox(height: 32),
-        _buildContinueButton(),
-      ],
-    );
-  }
-
-  Widget _buildSourceSelect() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          SendStrings.sourceLabel,
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.5),
-            fontSize: 11,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.quinoaDark.withValues(alpha: 0.10),
-              width: 1,
-            ),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<PaymentChannel>(
-              value: _selectedSourceChannel,
-              isExpanded: true,
-              icon: Icon(
-                SolarIconsOutline.altArrowDown,
-                size: 16,
-                color: AppColors.quinoaDark.withValues(alpha: 0.4),
-              ),
-              hint: Text(
-                SendStrings.sourceLabel,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-              dropdownColor: AppColors.white,
-              borderRadius: BorderRadius.circular(16),
-              items: SourceAccountsMock.list.map((ch) {
-                return DropdownMenuItem<PaymentChannel>(
-                  value: ch,
-                  child: Text(
-                    "${ch.label}  ${ch.value}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (ch) => setState(() => _selectedSourceChannel = ch),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDestSelect() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          SendStrings.destLabel,
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.5),
-            fontSize: 11,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.quinoaDark.withValues(alpha: 0.10),
-              width: 1,
-            ),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<PaymentChannel>(
-              value: _selectedDestChannel,
-              isExpanded: true,
-              icon: Icon(
-                SolarIconsOutline.altArrowDown,
-                size: 16,
-                color: AppColors.quinoaDark.withValues(alpha: 0.4),
-              ),
-              hint: Text(
-                SendStrings.destLabel,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-              dropdownColor: AppColors.white,
-              borderRadius: BorderRadius.circular(16),
-              items: _selectedRecipient!.channels.map((ch) {
-                return DropdownMenuItem<PaymentChannel>(
-                  value: ch,
-                  child: Text(
-                    "${ch.label}  ${ch.value}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (ch) => setState(() => _selectedDestChannel = ch),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAmountInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          SendStrings.amountDisplayLabel,
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.5),
-            fontSize: 11,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.quinoaDark.withValues(alpha: 0.10),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _amountCtrl,
-                  focusNode: _amountFocus,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-                  ],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 24,
-                    color: AppColors.quinoaDark,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: SendStrings.amountHint,
-                    hintStyle: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.15),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 24,
-                    ),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
-              ),
-              Text(
-                SendStrings.amountUnit,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.35),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContinueButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: ElevatedButton(
-        onPressed: _requestQuote,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.quinoaDark,
-          foregroundColor: AppColors.quinoaCream,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: const Text(
-          SendStrings.continueBtn,
-          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-        ),
-      ),
     );
   }
 }

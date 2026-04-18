@@ -43,28 +43,13 @@ class RecipientCompactCard extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: recipient.isKinoaUser
-            ? AppColors.quinoaGold.withValues(alpha: 0.15)
-            : AppColors.stone100,
+        color: AppColors.stone100,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Center(
-        child: recipient.isKinoaUser
-            ? Text(
-                recipient.name.isNotEmpty
-                    ? recipient.name.substring(0, 1).toUpperCase()
-                    : "",
-                style: const TextStyle(
-                  color: AppColors.quinoaGold,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                ),
-              )
-            : const Icon(
-                SolarIconsOutline.user,
-                color: AppColors.stone400,
-                size: 20,
-              ),
+      child: const Icon(
+        SolarIconsOutline.user,
+        color: AppColors.stone400,
+        size: 20,
       ),
     );
   }
