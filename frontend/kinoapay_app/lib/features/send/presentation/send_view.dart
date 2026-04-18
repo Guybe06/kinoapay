@@ -77,7 +77,7 @@ class _SendViewState extends State<SendView> {
       _searchMode == RecipientSearchMode.phone ? _phoneCtrl : _idCtrl;
 
   double get _amount =>
-      double.tryParse(_amountCtrl.text.replaceAll(" ", "")) ?? 0;
+      double.tryParse(_amountCtrl.text.replaceAll(RegExp(r"[^\d.]"), "")) ?? 0;
 
   // ── Recherche ───────────────────────────────────────────────────────────
 
