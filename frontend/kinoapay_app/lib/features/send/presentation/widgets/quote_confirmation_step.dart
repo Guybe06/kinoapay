@@ -8,7 +8,7 @@ import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Étape de confirmation finale : récapitulatif du devis et actions.
+/// Écran de confirmation finale : récapitulatif complet (destinataire + montant + frais).
 class QuoteConfirmationStep extends StatelessWidget {
   final TransferQuote quote;
 
@@ -27,16 +27,21 @@ class QuoteConfirmationStep extends StatelessWidget {
             children: [
               const Text(
                 SendStrings.confirmTitle,
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                ),
               ),
               const SizedBox(height: 32),
               _buildSummaryCard(fmt),
               const Spacer(),
               PrimaryButton(
-                text: SendStrings.confirmShortBtn,
+                text: SendStrings.confirmBtn,
                 onPressed: () => context.read<SendBloc>().add(
-                      SendConfirmRequested(quote.quoteId),
-                    ),
+                  SendConfirmRequested(quote.quoteId),
+                ),
               ),
               const SizedBox(height: 12),
               PrimaryButton(
@@ -63,6 +68,10 @@ class QuoteConfirmationStep extends StatelessWidget {
           _InfoRow(
             label: SendStrings.confirmToLabel,
             value: quote.recipientName,
+          ),
+          _InfoRow(
+            label: SendStrings.confirmAmountLabel,
+            value: SendStrings.amountWithUnit(fmt.format(quote.amount)),
           ),
           const Divider(height: 32),
           _InfoRow(
@@ -114,6 +123,7 @@ class _InfoRow extends StatelessWidget {
             value,
             style: TextStyle(
               fontWeight: isBold ? FontWeight.w900 : FontWeight.w700,
+              fontSize: isBold ? 16 : 14,
             ),
           ),
         ],

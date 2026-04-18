@@ -160,9 +160,18 @@ class MockRecipientSearchRepository implements RecipientSearchRepository {
     await Future.delayed(_latency);
     final cleanQuery = _normalize(query);
     final isIdSearch = cleanQuery.startsWith(_idPrefix);
-    final matches = _users.where((user) => _matches(user, cleanQuery, isIdSearch));
+    final matches = _users.where(
+      (user) => _matches(user, cleanQuery, isIdSearch),
+    );
     return matches
-        .map((u) => RecipientMatch(name: u.name, channels: u.channels))
+        .map(
+          (u) => RecipientMatch(
+            name: u.name,
+            phone: u.phone,
+            channels: u.channels,
+            isKinoaUser: true,
+          ),
+        )
         .toList();
   }
 
