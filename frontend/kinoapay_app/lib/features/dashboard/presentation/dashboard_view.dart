@@ -195,7 +195,12 @@ class _DashboardContentState extends State<_DashboardContent> {
               opacity: _headerVisible ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 80),
               curve: Curves.easeIn,
-              child: const AppHeader(),
+              child: Material(
+                color: AppColors.quinoaCream,
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                child: const AppHeader(),
+              ),
             ),
           ),
         ],
