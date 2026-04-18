@@ -61,8 +61,6 @@ class _SendAmountStepState extends State<SendAmountStep> {
     super.dispose();
   }
 
-  static const double _feeRate = 0.03;
-
   bool get _channelsReady {
     if (widget.selectedSource == null) return false;
     if (widget.recipient.isKinoaUser && widget.recipient.channels.isNotEmpty) {
@@ -223,7 +221,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
                 double.tryParse(value.text.replaceAll(RegExp(r"[^\d]"), "")) ??
                 0;
             if (raw <= 0) return const SizedBox(height: 16);
-            final fees = (raw * _feeRate).ceil();
+            final fees = (raw * 0.03).ceil();
             final fmt = NumberFormat("#,##0", "en_US");
             return Padding(
               padding: const EdgeInsets.only(top: 12),

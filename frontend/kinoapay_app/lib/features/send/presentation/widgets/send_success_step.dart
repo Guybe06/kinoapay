@@ -1,9 +1,10 @@
+import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Écran affiché après confirmation — animation d'envoi + message de traitement.
+/// Écran affiché après confirmation — animation courbe nombre d'or + cercle await + texte fade-in.
 class SendSuccessStep extends StatefulWidget {
   final VoidCallback onClose;
 
@@ -15,44 +16,58 @@ class SendSuccessStep extends StatefulWidget {
 
 class _SendSuccessStepState extends State<SendSuccessStep>
     with TickerProviderStateMixin {
-  late final AnimationController _iconCtrl;
-  late final AnimationController _contentCtrl;
-  late final Animation<double> _iconScale;
-  late final Animation<double> _iconFade;
-  late final Animation<double> _contentFade;
-  late final Animation<Offset> _contentSlide;
+  late final AnimationController _curveCtrl;
+  late final AnimationController _circleCtrl;
+  late final AnimationController _textCtrl;
+  late final Animation<double> _curveProgress;
+  late final Animation<double> _circleScale;
+  late final Animation<double> _circleFade;
+  late final Animation<double> _textFade;
+  late final Animation<Offset> _textSlide;
 
   @override
   void initState() {
     super.initState();
-    _iconCtrl = AnimationController(
+    _curveCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _circleCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _contentCtrl = AnimationController(
+    _textCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
 
-    _iconScale = Tween<double>(
+    _curveProgress = CurvedAnimation(
+      parent: _curveCtrl,
+      curve: Curves.easeInOut,
+    );
+    _circleScale = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _iconCtrl, curve: Curves.elasticOut));
-    _iconFade = CurvedAnimation(parent: _iconCtrl, curve: Curves.easeOut);
-    _contentFade = CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOut);
-    _contentSlide =
-        Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero).animate(
-          CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOutCubic),
-        );
+    ).animate(CurvedAnimation(parent: _circleCtrl, curve: Curves.elasticOut));
+    _circleFade = CurvedAnimation(parent: _circleCtrl, curve: Curves.easeOut);
+    _textFade = CurvedAnimation(parent: _textCtrl, curve: Curves.easeOut);
+    _textSlide = Tween<Offset>(
+      begin: const Offset(0, -0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _textCtrl, curve: Curves.easeOutCubic));
 
-    _iconCtrl.forward();
-    Future.delayed(const Duration(milliseconds: 400), _contentCtrl.forward);
+    _curveCtrl.forward();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      _circleCtrl.forward();
+      Future.delayed(const Duration(milliseconds: 300), _textCtrl.forward);
+    });
   }
 
   @override
   void dispose() {
-    _iconCtrl.dispose();
-    _contentCtrl.dispose();
+    _curveCtrl.dispose();
+    _circleCtrl.dispose();
+    _textCtrl.dispose();
     super.dispose();
   }
 
@@ -66,7 +81,7 @@ class _SendSuccessStepState extends State<SendSuccessStep>
           child: Column(
             children: [
               const Spacer(flex: 2),
-              _buildIcon(),
+              _buildCurveAnimation(),
               const SizedBox(height: 32),
               _buildContent(),
               const Spacer(flex: 3),
@@ -78,33 +93,47 @@ class _SendSuccessStepState extends State<SendSuccessStep>
     );
   }
 
-  Widget _buildIcon() {
-    return FadeTransition(
-      opacity: _iconFade,
-      child: ScaleTransition(
-        scale: _iconScale,
-        child: Container(
-          width: 88,
-          height: 88,
-          decoration: BoxDecoration(
-            color: AppColors.quinoaGold.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            SolarIconsOutline.sendSquare,
-            color: AppColors.quinoaGold,
-            size: 36,
-          ),
-        ),
+  Widget _buildCurveAnimation() {
+    return SizedBox(
+      width: 120,
+      height: 120,
+      child: AnimatedBuilder(
+        animation: _curveCtrl,
+        builder: (_, __) {
+          return CustomPaint(
+            painter: _GoldenRatioCurvePainter(progress: _curveProgress.value),
+            child: Center(
+              child: FadeTransition(
+                opacity: _circleFade,
+                child: ScaleTransition(
+                  scale: _circleScale,
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: AppColors.quinoaGold.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      SolarIconsOutline.hourglass,
+                      color: AppColors.quinoaGold,
+                      size: 28,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildContent() {
     return FadeTransition(
-      opacity: _contentFade,
+      opacity: _textFade,
       child: SlideTransition(
-        position: _contentSlide,
+        position: _textSlide,
         child: Column(
           children: [
             const Text(
@@ -153,5 +182,44 @@ class _SendSuccessStepState extends State<SendSuccessStep>
         ),
       ),
     );
+  }
+}
+
+class _GoldenRatioCurvePainter extends CustomPainter {
+  final double progress;
+
+  _GoldenRatioCurvePainter({required this.progress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final paint = Paint()
+      ..color = AppColors.quinoaGold.withValues(alpha: 0.4)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final path = Path();
+    final phi = 1.618;
+    final maxAngle = 2 * math.pi * phi;
+    final currentAngle = maxAngle * progress;
+
+    for (double i = 0; i <= currentAngle; i += 0.1) {
+      final radius = 40 * math.pow(i / (2 * math.pi * phi), 0.5);
+      final x = center.dx + radius * math.cos(i);
+      final y = center.dy + radius * math.sin(i);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_GoldenRatioCurvePainter oldDelegate) {
+    return oldDelegate.progress != progress;
   }
 }
