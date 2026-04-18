@@ -182,7 +182,8 @@ class _SendAmountStepState extends State<SendAmountStep> {
           focusNode: widget.amountFocus,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+            FilteringTextInputFormatter.allow(RegExp(r"[0-9]")),
+            _AmountFormatter(),
           ],
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -218,7 +219,9 @@ class _SendAmountStepState extends State<SendAmountStep> {
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: widget.amountCtrl,
           builder: (_, value, __) {
-            final raw = double.tryParse(value.text.replaceAll(" ", "")) ?? 0;
+            final raw =
+                double.tryParse(value.text.replaceAll(RegExp(r"[^\d]"), "")) ??
+                0;
             if (raw <= 0) return const SizedBox(height: 16);
             final fees = (raw * _feeRate).ceil();
             final fmt = NumberFormat("#,##0", "en_US");
@@ -258,6 +261,27 @@ class _SendAmountStepState extends State<SendAmountStep> {
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
         ),
       ),
+    );
+  }
+}
+
+class _AmountFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) return newValue;
+
+    final digits = newValue.text.replaceAll(RegExp(r"[^\d]"), "");
+    if (digits.isEmpty) return TextEditingValue.empty;
+
+    final number = int.parse(digits);
+    final formatted = NumberFormat("#,##0", "en_US").format(number);
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
