@@ -231,14 +231,6 @@ class _SendViewState extends State<SendView> {
           );
         }
         if (state is SendConfirming) return const ProcessingStep();
-        if (state is SendSuccess) {
-          return SendSuccessStep(
-            onClose: () {
-              context.read<SendBloc>().add(SendReset());
-              _resetAll();
-            },
-          );
-        }
         return Scaffold(
           backgroundColor: AppColors.quinoaCream,
           appBar: const AppHeader(),
@@ -282,6 +274,20 @@ class _SendViewState extends State<SendView> {
     } else if (state is SendError) {
       setState(() => _foundRecipients = []);
       AuthSnackBar.showError(context, state.exception.message);
+    } else if (state is SendSuccess) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SendSuccessStep(
+            onClose: () {
+              context.read<SendBloc>().add(SendReset());
+              _resetAll();
+              Navigator.pop(context);
+            },
+          ),
+          fullscreenDialog: true,
+        ),
+      );
     }
   }
 
