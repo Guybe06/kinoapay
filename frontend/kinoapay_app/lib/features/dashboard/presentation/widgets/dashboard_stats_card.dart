@@ -1,21 +1,72 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
+import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
 
-class DashboardStatsCard extends StatelessWidget {
+class DashboardStatsCard extends StatefulWidget {
   final DashboardStats stats;
 
   const DashboardStatsCard({super.key, required this.stats});
 
   @override
+  State<DashboardStatsCard> createState() => _DashboardStatsCardState();
+}
+
+class _DashboardStatsCardState extends State<DashboardStatsCard> {
+  late int _month;
+  late int _year;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _month = now.month;
+    _year = now.year;
+  }
+
+  bool get _isCurrentPeriod {
+    final now = DateTime.now();
+    return _month == now.month && _year == now.year;
+  }
+
+  void _prev() {
+    setState(() {
+      if (_month == 1) {
+        _month = 12;
+        _year--;
+      } else {
+        _month--;
+      }
+    });
+    context.read<DashboardBloc>().add(
+      DashboardStarted(month: _month, year: _year),
+    );
+  }
+
+  void _next() {
+    if (_isCurrentPeriod) return;
+    setState(() {
+      if (_month == 12) {
+        _month = 1;
+        _year++;
+      } else {
+        _month++;
+      }
+    });
+    context.read<DashboardBloc>().add(
+      DashboardStarted(month: _month, year: _year),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final fmt = NumberFormat("#,##0", "en_US");
-    final rawMonth = DateFormat("MMMM yyyy", "fr_FR").format(DateTime.now());
-    final month = rawMonth[0].toUpperCase() + rawMonth.substring(1);
-    final net = stats.netFlow;
+    final net = widget.stats.netFlow;
     final isPositive = net >= 0;
 
     return Container(
@@ -40,7 +91,13 @@ class DashboardStatsCard extends StatelessWidget {
                   letterSpacing: 1.4,
                 ),
               ),
-              _PeriodTabs(currentMonth: month),
+              _MonthNavigator(
+                month: _month,
+                year: _year,
+                canGoNext: !_isCurrentPeriod,
+                onPrev: _prev,
+                onNext: _next,
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -77,7 +134,10 @@ class DashboardStatsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Divider(color: AppColors.quinoaCream.withValues(alpha: 0.07), height: 1),
+          Divider(
+            color: AppColors.quinoaCream.withValues(alpha: 0.07),
+            height: 1,
+          ),
           const SizedBox(height: 16),
           IntrinsicHeight(
             child: Row(
@@ -85,7 +145,7 @@ class DashboardStatsCard extends StatelessWidget {
                 Expanded(
                   child: _StatColumn(
                     label: DashboardStrings.statsOutgoing,
-                    amount: fmt.format(stats.totalSent),
+                    amount: fmt.format(widget.stats.totalSent),
                     icon: SolarIconsOutline.arrowRightUp,
                     color: AppColors.quinoaCream.withValues(alpha: 0.65),
                   ),
@@ -98,7 +158,7 @@ class DashboardStatsCard extends StatelessWidget {
                 Expanded(
                   child: _StatColumn(
                     label: DashboardStrings.statsIncoming,
-                    amount: fmt.format(stats.totalReceived),
+                    amount: fmt.format(widget.stats.totalReceived),
                     icon: SolarIconsOutline.arrowLeftDown,
                     color: AppColors.quinoaGold,
                     center: true,
@@ -131,40 +191,76 @@ class DashboardStatsCard extends StatelessWidget {
   }
 }
 
-class _PeriodTabs extends StatelessWidget {
-  final String currentMonth;
-  const _PeriodTabs({required this.currentMonth});
+class _MonthNavigator extends StatelessWidget {
+  final int month;
+  final int year;
+  final bool canGoNext;
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+
+  const _MonthNavigator({
+    required this.month,
+    required this.year,
+    required this.canGoNext,
+    required this.onPrev,
+    required this.onNext,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final raw = DateFormat("MMM yyyy", "fr_FR").format(DateTime(year, month));
+    final label = raw[0].toUpperCase() + raw.substring(1);
+
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _Tab(label: "M", active: true),
-        const SizedBox(width: 14),
-        _Tab(label: "3M"),
-        const SizedBox(width: 14),
-        _Tab(label: "12M"),
+        _NavArrow(
+          icon: SolarIconsOutline.altArrowLeft,
+          onTap: onPrev,
+          enabled: true,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.quinoaCream.withValues(alpha: 0.70),
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+        const SizedBox(width: 6),
+        _NavArrow(
+          icon: SolarIconsOutline.altArrowRight,
+          onTap: onNext,
+          enabled: canGoNext,
+        ),
       ],
     );
   }
 }
 
-class _Tab extends StatelessWidget {
-  final String label;
-  final bool active;
-  const _Tab({required this.label, this.active = false});
+class _NavArrow extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  const _NavArrow({
+    required this.icon,
+    required this.onTap,
+    required this.enabled,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: TextStyle(
-        color: active
-            ? AppColors.quinoaCream.withValues(alpha: 0.90)
-            : AppColors.quinoaCream.withValues(alpha: 0.22),
-        fontSize: 11,
-        fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-        letterSpacing: 0.5,
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      child: Icon(
+        icon,
+        size: 13,
+        color: enabled
+            ? AppColors.quinoaCream.withValues(alpha: 0.55)
+            : AppColors.quinoaCream.withValues(alpha: 0.15),
       ),
     );
   }
@@ -187,7 +283,9 @@ class _DeltaBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            isPositive ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+            isPositive
+                ? Icons.arrow_upward_rounded
+                : Icons.arrow_downward_rounded,
             size: 10,
             color: color,
           ),
@@ -233,8 +331,8 @@ class _StatColumn extends StatelessWidget {
             : CrossAxisAlignment.start;
 
     final pad = EdgeInsets.only(
-      left: alignRight ? 16 : center ? 0 : 0,
-      right: alignRight ? 0 : center ? 0 : 16,
+      left: center || alignRight ? 16 : 0,
+      right: center || !alignRight ? 16 : 0,
     );
 
     return Padding(
