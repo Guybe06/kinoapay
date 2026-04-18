@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
@@ -254,6 +255,8 @@ class _SendViewState extends State<SendView> {
             _recipientName = null;
           });
         } else if (state is SendError) {
+          // Vide les résultats si recherche infructueuse
+          setState(() => _foundRecipients = []);
           AuthSnackBar.showError(context, state.exception.message);
         }
       },
@@ -536,6 +539,33 @@ class _AccountDropdown extends StatelessWidget {
   }
 }
 
+/// Formate les chiffres : 2 + 3 + 2 + 2 + reste → "06 445 56 61 1"
+class _PhoneSearchFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue old,
+    TextEditingValue next,
+  ) {
+    // Si commence par @ (ID Kinoa), pas de formatage
+    if (next.text.startsWith("@")) return next;
+
+    final digits = next.text.replaceAll(RegExp(r"\D"), "");
+    final buffer = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      // Pattern: espace après positions 2, 5, 7, 9, ...
+      if (i == 2 || i == 5 || i == 7 || (i > 7 && (i - 7) % 2 == 0)) {
+        buffer.write(" ");
+      }
+      buffer.write(digits[i]);
+    }
+    final formatted = buffer.toString();
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
 class _RecipientSearchField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -575,6 +605,8 @@ class _RecipientSearchField extends StatelessWidget {
                   enabled: enabled,
                   onChanged: onChanged,
                   textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [_PhoneSearchFormatter()],
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
