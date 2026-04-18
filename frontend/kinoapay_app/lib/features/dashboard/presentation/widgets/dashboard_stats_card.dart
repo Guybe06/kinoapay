@@ -13,11 +13,7 @@ class DashboardStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat.currency(
-      symbol: "",
-      decimalDigits: 0,
-      locale: "fr_FR",
-    );
+    final fmt = NumberFormat("#,##0", "en_US");
     final rawMonth = DateFormat("MMMM yyyy", "fr_FR").format(DateTime.now());
     final month = rawMonth[0].toUpperCase() + rawMonth.substring(1);
     final balance = stats.totalReceived - stats.totalSent;

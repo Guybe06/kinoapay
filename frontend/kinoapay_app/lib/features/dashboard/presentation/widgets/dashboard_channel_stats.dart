@@ -79,7 +79,7 @@ class _ChannelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = NumberFormat.compact(locale: "fr_FR");
+    final compact = NumberFormat.compact(locale: "en_US");
     final brand = _brandColor;
     final netPositive = stat.net >= 0;
     final netColor = netPositive ? AppColors.accentDark : AppColors.quinoaDark;

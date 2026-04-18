@@ -1,12 +1,16 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_state.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_home_widgets.dart";
-import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_quick_actions.dart";
+import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_promo_detail_sheet.dart";
+import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_promo_widgets.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_recent_contacts.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_stats_card.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list.dart";
@@ -48,7 +52,10 @@ class DashboardView extends StatelessWidget {
             onNavigateToHistory: onNavigateToHistory,
           );
         }
-        context.read<DashboardBloc>().add(DashboardDataRequested());
+        final now = DateTime.now();
+        context.read<DashboardBloc>().add(
+          DashboardStarted(month: now.month, year: now.year),
+        );
         return const _DashboardSkeleton();
       },
     );
@@ -56,8 +63,8 @@ class DashboardView extends StatelessWidget {
 }
 
 class _DashboardContent extends StatelessWidget {
-  final dynamic stats;
-  final List<dynamic> transactions;
+  final DashboardStats stats;
+  final List<Transaction> transactions;
   final List<dynamic> channels;
   final VoidCallback? onNavigateToSend;
   final VoidCallback? onNavigateToRequest;
@@ -76,6 +83,7 @@ class _DashboardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
+      appBar: const AppHeader(),
       body: Stack(
         children: [
           const DashboardAmbientBackground(),
@@ -88,19 +96,28 @@ class _DashboardContent extends StatelessWidget {
                   const SizedBox(height: 16),
                   const DashboardGreetingSection(firstName: "Jean"),
                   const SizedBox(height: 24),
+                  DashboardStatsCard(stats: stats),
+                  const SizedBox(height: 24),
                   DashboardActionButtons(
                     onSend: onNavigateToSend ?? () {},
                     onRequest: onNavigateToRequest ?? () {},
                   ),
                   const SizedBox(height: 24),
-                  DashboardStatsCard(stats: stats),
+                  DashboardPromoCard(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const DashboardPromoDetailSheet(),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 24),
                   DashboardRecentContacts(
                     transactions: transactions,
                     onAdd: () {},
                   ),
-                  const SizedBox(height: 24),
-                  DashboardQuickActions(),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -145,6 +162,7 @@ class _DashboardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
+      appBar: const AppHeader(),
       body: Stack(
         children: [
           const DashboardAmbientBackground(),
@@ -157,13 +175,44 @@ class _DashboardSkeleton extends StatelessWidget {
                   const SizedBox(height: 16),
                   const DashboardGreetingSection(firstName: ""),
                   const SizedBox(height: 24),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(
+                        color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                   DashboardActionButtons(onSend: () {}, onRequest: () {}),
                   const SizedBox(height: 24),
-                  const DashboardStatsCardSkeleton(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: AppColors.quinoaDark,
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 24),
-                  const DashboardRecentContactsSkeleton(),
-                  const SizedBox(height: 24),
-                  const DashboardQuickActions(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      height: 130,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -188,44 +237,6 @@ class _DashboardSkeleton extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DashboardStatsCardSkeleton extends StatelessWidget {
-  const _DashboardStatsCardSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      height: 200,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
-      ),
-    );
-  }
-}
-
-class _DashboardRecentContactsSkeleton extends StatelessWidget {
-  const _DashboardRecentContactsSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        height: 130,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: AppColors.quinoaDark.withValues(alpha: 0.06),
-          ),
-        ),
       ),
     );
   }

@@ -32,11 +32,7 @@ class DashboardTxRow extends StatelessWidget {
         ? (tx.senderName ?? tx.receiverIdentifier)
         : (tx.receiverName ?? tx.receiverIdentifier);
 
-    final fmt = NumberFormat.currency(
-      symbol: "",
-      decimalDigits: 0,
-      locale: "fr_FR",
-    );
+    final fmt = NumberFormat("#,##0", "en_US");
     final String timeLabel = dashboardTxRelativeDate(tx.startedAt);
 
     final String source = tx.sourceChannel.toUpperCase();
