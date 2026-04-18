@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_local_notifications/flutter_local_notifications.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
@@ -43,6 +44,8 @@ class _SendViewState extends State<SendView> {
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _idFocus = FocusNode();
   final FocusNode _amountFocus = FocusNode();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   SendStep _step = SendStep.recipient;
   RecipientSearchMode _searchMode = RecipientSearchMode.phone;
@@ -56,7 +59,20 @@ class _SendViewState extends State<SendView> {
   @override
   void initState() {
     super.initState();
+    _initializeNotifications();
     Future.delayed(_focusDelay, _phoneFocus.requestFocus);
+  }
+
+  Future<void> _initializeNotifications() async {
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    const iosSettings = DarwinInitializationSettings();
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+    await _notificationsPlugin.initialize(initSettings);
   }
 
   @override
@@ -230,7 +246,6 @@ class _SendViewState extends State<SendView> {
             onBack: () => context.read<SendBloc>().add(SendReset()),
           );
         }
-        if (state is SendConfirming) return const ProcessingStep();
         return Scaffold(
           backgroundColor: AppColors.quinoaCream,
           appBar: const AppHeader(),
@@ -274,8 +289,16 @@ class _SendViewState extends State<SendView> {
     } else if (state is SendError) {
       setState(() => _foundRecipients = []);
       AuthSnackBar.showError(context, state.exception.message);
-    } else if (state is SendSuccess) {
+    } else if (state is SendConfirming) {
       Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ProcessingStep(),
+          fullscreenDialog: true,
+        ),
+      );
+    } else if (state is SendSuccess) {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => SendSuccessStep(
@@ -288,6 +311,27 @@ class _SendViewState extends State<SendView> {
           fullscreenDialog: true,
         ),
       );
+      Future.delayed(const Duration(seconds: 2), () async {
+        if (!mounted) return;
+        const androidDetails = AndroidNotificationDetails(
+          'kinoapay_channel',
+          'KinoaPay Notifications',
+          channelDescription: 'Notifications pour les transactions KinoaPay',
+          importance: Importance.high,
+          priority: Priority.high,
+        );
+        const iosDetails = DarwinNotificationDetails();
+        const notificationDetails = NotificationDetails(
+          android: androidDetails,
+          iOS: iosDetails,
+        );
+        await _notificationsPlugin.show(
+          0,
+          'Envoi confirmé',
+          'Votre envoi a été confirmé avec succès',
+          notificationDetails,
+        );
+      });
     }
   }
 
