@@ -21,16 +21,19 @@ class ContactsView extends StatefulWidget {
 
 class _ContactsViewState extends State<ContactsView> {
   final _searchController = TextEditingController();
+  late final ContactsBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-    context.read<ContactsBloc>().add(const ContactsStarted());
+    _bloc = context.read<ContactsBloc>();
+    _bloc.add(const ContactsStarted());
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _bloc.add(const ContactsSearchChanged(""));
     super.dispose();
   }
 
