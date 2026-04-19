@@ -135,9 +135,13 @@ class _DashboardContentState extends State<_DashboardContent> {
                   const SizedBox(height: 68),
                   const DashboardGreetingSection(firstName: "Jean"),
                   const SizedBox(height: 20),
-                  widget.isStatsRefreshing
-                      ? const DashboardStatsCardSkeleton()
-                      : DashboardStatsCard(stats: widget.stats),
+                  IndexedStack(
+                    index: widget.isStatsRefreshing ? 0 : 1,
+                    children: [
+                      const DashboardStatsCardSkeleton(),
+                      DashboardStatsCard(stats: widget.stats),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   DashboardActionButtons(
                     onSend: widget.onNavigateToSend ?? () {},
