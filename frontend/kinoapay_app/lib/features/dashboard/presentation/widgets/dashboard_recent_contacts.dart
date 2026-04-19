@@ -34,7 +34,11 @@ class DashboardRecentContacts extends StatelessWidget {
       final parts = name.trim().split(" ");
       final initials = parts
           .take(2)
-          .map((p) => p.isNotEmpty ? p[0].toUpperCase() : "")
+          .map(
+            (p) => p.isNotEmpty
+                ? String.fromCharCode(p.runes.first).toUpperCase()
+                : "",
+          )
           .join();
       contacts.add(_Contact(name: name, initials: initials));
       if (contacts.length >= 8) break;
@@ -170,8 +174,9 @@ class _ContactItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firstName = contact.name.split(" ").first;
-    final label =
-        firstName.length > 8 ? "${firstName.substring(0, 7)}." : firstName;
+    final label = firstName.length > 8
+        ? "${firstName.substring(0, 7)}."
+        : firstName;
 
     return GestureDetector(
       onTap: () {},
