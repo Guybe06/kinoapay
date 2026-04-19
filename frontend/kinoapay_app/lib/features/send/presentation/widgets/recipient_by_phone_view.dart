@@ -115,7 +115,7 @@ class RecipientByPhoneView extends StatelessWidget {
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                _PhoneGroupFormatter(),
+                const PhoneGroupFormatter(),
               ],
               style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
               decoration: InputDecoration(
@@ -319,21 +319,25 @@ class RecipientByPhoneView extends StatelessWidget {
 }
 
 /// Formatte les chiffres en groupes 2+3+2+2 pour la lisibilité.
-class _PhoneGroupFormatter extends TextInputFormatter {
+class PhoneGroupFormatter extends TextInputFormatter {
+  const PhoneGroupFormatter();
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue old,
     TextEditingValue next,
   ) {
-    final digits = next.text.replaceAll(RegExp(r"\D"), "");
-    final formatted = _format(digits);
+    final formatted = format(next.text);
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 
-  String _format(String digits) {
+  /// Formate une chaîne (avec ou sans espaces) en groupes 2+3+2+2.
+  /// Utilisable en dehors d'un champ de saisie (ex. injection programmatique).
+  static String format(String raw) {
+    final digits = raw.replaceAll(RegExp(r"\D"), "");
     final buf = StringBuffer();
     for (int i = 0; i < digits.length; i++) {
       if (i == 2 || i == 5 || i == 7 || (i > 7 && (i - 7) % 2 == 0)) {
