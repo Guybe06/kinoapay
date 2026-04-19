@@ -195,16 +195,15 @@ class _SendViewState extends State<SendView> {
       arguments: const ContactsArgs(selectionMode: true),
     );
     if (result is Contact) {
-      final phone = result.phone.replaceAll(" ", "");
       final match = RecipientByPhoneView.countryCodes.firstWhere(
-        (c) => phone.startsWith(c.dialCode),
+        (c) => c.dialCode == result.dialCode,
         orElse: () => _selectedCountry,
       );
       setState(() => _selectedCountry = match);
-      _phoneCtrl.text = phone.substring(match.dialCode.length);
+      _phoneCtrl.text = result.localNumber;
       _switchSearchMode(RecipientSearchMode.phone);
       // ignore: use_build_context_synchronously
-      context.read<SendBloc>().add(SendRecipientSearched(phone));
+      context.read<SendBloc>().add(SendRecipientSearched(result.phone));
     }
   }
 
