@@ -45,11 +45,14 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     if (state is ResetOtpSent) {
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(
-        context,
-        AppRoutes.forgotPasswordOtp,
-        arguments: ForgotPasswordArgs(contact: _fullContact, isEmail: _isEmail),
-      ).then((_) => _navigating = false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) { _navigating = false; return; }
+        Navigator.pushNamed(
+          context,
+          AppRoutes.forgotPasswordOtp,
+          arguments: ForgotPasswordArgs(contact: _fullContact, isEmail: _isEmail),
+        ).then((_) => _navigating = false);
+      });
     } else if (state is AuthError) {
       AuthSnackBar.showError(ctx, state.exception.message);
     }

@@ -100,8 +100,11 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(context, AppRoutes.signupCredentials, arguments: _step1)
-          .then((_) => _navigating = false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) { _navigating = false; return; }
+        Navigator.pushNamed(context, AppRoutes.signupCredentials, arguments: _step1)
+            .then((_) => _navigating = false);
+      });
     } else if (state is AuthError) {
       setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);

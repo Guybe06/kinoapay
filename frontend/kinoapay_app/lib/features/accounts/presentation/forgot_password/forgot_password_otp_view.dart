@@ -112,8 +112,11 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(context, AppRoutes.forgotPasswordReset, arguments: state.resetToken)
-          .then((_) => _navigating = false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) { _navigating = false; return; }
+        Navigator.pushNamed(context, AppRoutes.forgotPasswordReset, arguments: state.resetToken)
+            .then((_) => _navigating = false);
+      });
     } else if (state is AuthError) {
       setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);
