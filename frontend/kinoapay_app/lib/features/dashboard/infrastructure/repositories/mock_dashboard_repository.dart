@@ -11,8 +11,22 @@ class MockDashboardRepository implements DashboardRepository {
     await Future.delayed(const Duration(milliseconds: 600));
 
     final now = DateTime.now();
+    final isCurrentMonth = month == now.month && year == now.year;
 
-    // Volumes journaliers — J-7 à J-1 (sans aujourd'hui)
+    /// Périodes passées : aucune donnée (comportement réel d'un compte sans historique).
+    if (!isCurrentMonth) {
+      return DashboardStats(
+        totalSent: 0,
+        totalReceived: 0,
+        currency: "XAF",
+        dailyVolumes: List.generate(7, (i) {
+          final date = DateTime(year, month, 1).add(Duration(days: i));
+          return DailyVolume(date: date, received: 0, sent: 0);
+        }),
+        channelStats: const [],
+      );
+    }
+
     final dailyVolumes = [
       DailyVolume(
         date: now.subtract(const Duration(days: 7)),
