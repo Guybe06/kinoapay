@@ -111,7 +111,7 @@ class _ContactGroup extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),

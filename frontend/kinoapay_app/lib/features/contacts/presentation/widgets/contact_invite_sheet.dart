@@ -78,8 +78,8 @@ class ContactInviteSheet extends StatelessWidget {
               child: const Text(
                 ContactsStrings.inviteBtn,
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
+                  color: AppColors.white,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.w800,
                 ),
               ),
