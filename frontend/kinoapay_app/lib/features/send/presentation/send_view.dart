@@ -207,8 +207,8 @@ class _SendViewState extends State<SendView> {
         orElse: () => _selectedCountry,
       );
       setState(() => _selectedCountry = match);
-      _phoneCtrl.text = result.localNumber;
       _switchSearchMode(RecipientSearchMode.phone);
+      _phoneCtrl.text = result.localNumber;
       // ignore: use_build_context_synchronously
       context.read<SendBloc>().add(SendRecipientSearched(result.phone));
     }
