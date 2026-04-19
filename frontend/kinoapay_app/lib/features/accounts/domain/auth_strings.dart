@@ -93,4 +93,7 @@ abstract final class AuthStrings {
   static const String validatorDateFormat = "Format JJ/MM/AAAA attendu.";
   static const String validatorInvalidDate = "Date invalide.";
   static const String validatorMinAge = "Vous devez avoir au moins 18 ans.";
+
+  static const String stepIndicator1 = "Étape 1 sur 2";
+  static const String noAccountLinked = "Aucun compte associé à cette adresse.";
 }

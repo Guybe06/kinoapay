@@ -2,10 +2,8 @@ import "dart:async";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/widgets/otp_input.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -13,7 +11,10 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart"
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_args.dart";
+import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_step_indicator.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/otp_resend_row.dart";
 
 const int _otpLength = 6;
 const int _countdownSec = 60;
@@ -60,10 +61,7 @@ class _SignupOtpViewState extends State<SignupOtpView> {
     _timer?.cancel();
     setState(() => _countdown = _countdownSec);
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
+      if (!mounted) { t.cancel(); return; }
       if (_countdown <= 1) {
         t.cancel();
         setState(() => _countdown = 0);
@@ -102,16 +100,10 @@ class _SignupOtpViewState extends State<SignupOtpView> {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(
-        context,
-        AppRoutes.signupCredentials,
-        arguments: _step1,
-      ).then((_) => _navigating = false);
+      Navigator.pushNamed(context, AppRoutes.signupCredentials, arguments: _step1)
+          .then((_) => _navigating = false);
     } else if (state is AuthError) {
-      setState(() {
-        _isVerifying = false;
-        _hasError = true;
-      });
+      setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);
       Future.delayed(const Duration(milliseconds: 600), () {
         if (mounted) {
@@ -133,36 +125,12 @@ class _SignupOtpViewState extends State<SignupOtpView> {
             listener: _onState,
             builder: (context, state) => Column(
               children: [
-                _buildHeader(context),
+                const AuthScreenHeader(),
                 Expanded(child: _buildBody()),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              SolarIconsOutline.altArrowLeft,
-              color: AppColors.quinoaDark,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(
-            size: BrandSize.sm,
-            color: AppColors.quinoaDark,
-            iconColor: AppColors.quinoaGold,
-          ),
-          const Spacer(flex: 2),
-        ],
       ),
     );
   }
@@ -174,45 +142,24 @@ class _SignupOtpViewState extends State<SignupOtpView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 32),
-          _buildStepIndicator(),
+          SignupStepIndicator(currentStep: 2, totalSteps: 3, label: AuthStrings.otpStepLabel),
           const SizedBox(height: 24),
           const Text(
             AuthStrings.otpTitle,
-            style: TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 38,
-              fontWeight: FontWeight.w900,
-              height: 1.0,
-              letterSpacing: -1.5,
-            ),
+            style: TextStyle(color: AppColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5),
           ),
           const SizedBox(height: 12),
           RichText(
             text: TextSpan(
               text: "${AuthStrings.otpBody} ",
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               children: [
-                TextSpan(
-                  text: _maskedPhone,
-                  style: const TextStyle(
-                    color: AppColors.quinoaDark,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                TextSpan(text: _maskedPhone, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700)),
               ],
             ),
           ),
           const SizedBox(height: 48),
-          OtpInput(
-            key: _otpKey,
-            length: _otpLength,
-            hasError: _hasError,
-            onCompleted: _onOtpCompleted,
-          ),
+          OtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
           const SizedBox(height: 40),
           PrimaryButton(
             text: AuthStrings.otpVerifyBtn,
@@ -223,78 +170,16 @@ class _SignupOtpViewState extends State<SignupOtpView> {
             },
           ),
           const SizedBox(height: 28),
-          Center(child: _buildResendRow()),
+          Center(
+            child: OtpResendRow(
+              countdown: _countdown,
+              attempt: 1,
+              maxAttempts: 1,
+              onResend: _resend,
+            ),
+          ),
           const SizedBox(height: 32),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStepIndicator() {
-    return Row(
-      children: [
-        _dot(filled: true),
-        const SizedBox(width: 6),
-        _dot(filled: true),
-        const SizedBox(width: 6),
-        _dot(filled: false),
-        const SizedBox(width: 10),
-        Text(
-          AuthStrings.otpStepLabel,
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.4),
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _dot({required bool filled}) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: filled
-            ? AppColors.quinoaGold
-            : AppColors.quinoaDark.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(4),
-      ),
-    );
-  }
-
-  Widget _buildResendRow() {
-    if (_countdown > 0) {
-      return Text.rich(
-        TextSpan(
-          text: "${AuthStrings.otpResendIn} ",
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.4),
-            fontSize: 14,
-          ),
-          children: [
-            TextSpan(
-              text: "${_countdown}s",
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return TextButton(
-      onPressed: _resend,
-      child: const Text(
-        AuthStrings.otpResend,
-        style: TextStyle(
-          color: AppColors.quinoaDark,
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-        ),
       ),
     );
   }

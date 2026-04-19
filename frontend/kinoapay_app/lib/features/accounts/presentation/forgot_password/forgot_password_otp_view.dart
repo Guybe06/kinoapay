@@ -2,10 +2,8 @@ import "dart:async";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/widgets/otp_input.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -13,7 +11,9 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart"
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/forgot_password/forgot_password_args.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/otp_resend_row.dart";
 
 const int _otpLength = 6;
 const List<int> _resendDelays = [30, 60, 120, 120, 120];
@@ -70,15 +70,10 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
 
   void _startCountdown() {
     _timer?.cancel();
-    final delay = _attempt < _resendDelays.length
-        ? _resendDelays[_attempt]
-        : _resendDelays.last;
+    final delay = _attempt < _resendDelays.length ? _resendDelays[_attempt] : _resendDelays.last;
     setState(() => _countdown = delay);
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
+      if (!mounted) { t.cancel(); return; }
       if (_countdown <= 1) {
         t.cancel();
         setState(() => _countdown = 0);
@@ -93,10 +88,7 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
     _attempt++;
     if (_attempt >= _maxAttempts) {
       _timer?.cancel();
-      setState(() {
-        _lockedUntil = DateTime.now().add(_lockoutDuration);
-        _countdown = 0;
-      });
+      setState(() { _lockedUntil = DateTime.now().add(_lockoutDuration); _countdown = 0; });
       AuthSnackBar.showError(context, "${AuthStrings.resetRateLimited} 2h.");
       return;
     }
@@ -104,10 +96,7 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
     setState(() => _hasError = false);
     _startCountdown();
     context.read<AuthBloc>().add(
-      RequestPasswordResetRequested(
-        contact: _args.contact,
-        isEmail: _args.isEmail,
-      ),
+      RequestPasswordResetRequested(contact: _args.contact, isEmail: _args.isEmail),
     );
   }
 
@@ -123,16 +112,10 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
       setState(() => _isVerifying = false);
       if (_navigating) return;
       _navigating = true;
-      Navigator.pushNamed(
-        context,
-        AppRoutes.forgotPasswordReset,
-        arguments: state.resetToken,
-      ).then((_) => _navigating = false);
+      Navigator.pushNamed(context, AppRoutes.forgotPasswordReset, arguments: state.resetToken)
+          .then((_) => _navigating = false);
     } else if (state is AuthError) {
-      setState(() {
-        _isVerifying = false;
-        _hasError = true;
-      });
+      setState(() { _isVerifying = false; _hasError = true; });
       AuthSnackBar.showError(ctx, state.exception.message);
       Future.delayed(const Duration(milliseconds: 600), () {
         if (mounted) {
@@ -154,36 +137,12 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
             listener: _onState,
             builder: (context, state) => Column(
               children: [
-                _buildHeader(context),
+                const AuthScreenHeader(),
                 Expanded(child: _buildBody()),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              SolarIconsOutline.altArrowLeft,
-              color: AppColors.quinoaDark,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(
-            size: BrandSize.sm,
-            color: AppColors.quinoaDark,
-            iconColor: AppColors.quinoaGold,
-          ),
-          const Spacer(flex: 2),
-        ],
       ),
     );
   }
@@ -197,41 +156,20 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
           const SizedBox(height: 32),
           const Text(
             AuthStrings.resetOtpTitle,
-            style: TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 38,
-              fontWeight: FontWeight.w900,
-              height: 1.0,
-              letterSpacing: -1.5,
-            ),
+            style: TextStyle(color: AppColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5),
           ),
           const SizedBox(height: 12),
           RichText(
             text: TextSpan(
               text: "${AuthStrings.resetOtpBody} ",
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
               children: [
-                TextSpan(
-                  text: _maskedContact,
-                  style: const TextStyle(
-                    color: AppColors.quinoaDark,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                TextSpan(text: _maskedContact, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700)),
               ],
             ),
           ),
           const SizedBox(height: 48),
-          OtpInput(
-            key: _otpKey,
-            length: _otpLength,
-            hasError: _hasError,
-            onCompleted: _onOtpCompleted,
-          ),
+          OtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
           const SizedBox(height: 40),
           PrimaryButton(
             text: AuthStrings.otpVerifyBtn,
@@ -242,54 +180,17 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
             },
           ),
           const SizedBox(height: 28),
-          Center(child: _buildResendRow()),
+          Center(
+            child: OtpResendRow(
+              countdown: _countdown,
+              attempt: _attempt + 1,
+              maxAttempts: _maxAttempts,
+              lockedUntil: _lockedUntil,
+              onResend: _resend,
+            ),
+          ),
           const SizedBox(height: 32),
         ],
-      ),
-    );
-  }
-
-  Widget _buildResendRow() {
-    if (_isLockedOut) {
-      final r = _lockedUntil!.difference(DateTime.now());
-      return Text(
-        "${AuthStrings.resetRateLimited} ${r.inHours}h${r.inMinutes.remainder(60).toString().padLeft(2, "0")}",
-        style: TextStyle(
-          color: AppColors.quinoaRed.withValues(alpha: 0.7),
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-      );
-    }
-    if (_countdown > 0) {
-      return Text.rich(
-        TextSpan(
-          text: "${AuthStrings.otpResendIn} ",
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.4),
-            fontSize: 14,
-          ),
-          children: [
-            TextSpan(
-              text: "${_countdown}s",
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return TextButton(
-      onPressed: _resend,
-      child: Text(
-        "${AuthStrings.otpResend} (${_attempt + 1}/$_maxAttempts)",
-        style: const TextStyle(
-          color: AppColors.quinoaDark,
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-        ),
       ),
     );
   }

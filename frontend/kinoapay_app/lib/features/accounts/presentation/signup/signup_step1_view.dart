@@ -1,10 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/core/constants/supported_countries.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/core/widgets/phone_field.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
@@ -64,9 +63,6 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
   void _submit() {
     if (!_formKey.currentState!.validate() || _navigating) return;
     _navigating = true;
-    final y = _selectedYear;
-    final m = _selectedMonth;
-    final d = _selectedDay;
     Navigator.pushNamed(
       context,
       AppRoutes.signupOtp,
@@ -75,8 +71,7 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         lastName: _lastNameCtrl.text.trim(),
         phone: _phoneCtrl.text.replaceAll(" ", ""),
         countryCode: _countryCode,
-        birthDate:
-            "$y-${m.toString().padLeft(2, "0")}-${d.toString().padLeft(2, "0")}",
+        birthDate: "$_selectedYear-${_selectedMonth.toString().padLeft(2, "0")}-${_selectedDay.toString().padLeft(2, "0")}",
       ),
     ).then((_) => _navigating = false);
   }
@@ -90,35 +85,11 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         body: SafeArea(
           child: Column(
             children: [
-              _buildHeader(context),
+              const AuthScreenHeader(),
               Expanded(child: _buildBody()),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              SolarIconsOutline.altArrowLeft,
-              color: AppColors.quinoaDark,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(
-            size: BrandSize.sm,
-            color: AppColors.quinoaDark,
-            iconColor: AppColors.quinoaGold,
-          ),
-          const Spacer(flex: 2),
-        ],
       ),
     );
   }

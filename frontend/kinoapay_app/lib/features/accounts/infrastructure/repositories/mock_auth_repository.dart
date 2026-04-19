@@ -170,7 +170,7 @@ class MockAuthRepository implements AuthRepository {
     final key = contact.trim().toLowerCase();
     if (isEmail && !_store.containsKey(key)) {
       throw AppException(
-        message: "Aucun compte associé à cette adresse.",
+        message: AuthStrings.noAccountLinked,
         code: AuthErrorCodes.invalidCredentials,
         statusCode: 404,
       );

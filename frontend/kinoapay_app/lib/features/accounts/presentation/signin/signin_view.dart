@@ -1,18 +1,20 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_forgot_password_link.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
-import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_button.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_divider.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_row.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_signup_link.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
@@ -33,11 +35,7 @@ class _SignInViewState extends State<SignInView> {
   void _navigateTo(String route, {Object? arguments}) {
     if (_navigating) return;
     _navigating = true;
-    Navigator.pushNamed(
-      context,
-      route,
-      arguments: arguments,
-    ).then((_) => _navigating = false);
+    Navigator.pushNamed(context, route, arguments: arguments).then((_) => _navigating = false);
   }
 
   @override
@@ -52,11 +50,7 @@ class _SignInViewState extends State<SignInView> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signinSuccess);
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.shell,
-          (_) => false,
-        );
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.shell, (_) => false);
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -73,9 +67,7 @@ class _SignInViewState extends State<SignInView> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(
-        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()),
-      );
+      context.read<AuthBloc>().add(SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()));
     }
   }
 
@@ -93,37 +85,13 @@ class _SignInViewState extends State<SignInView> {
               listener: _onState,
               builder: (context, state) => Column(
                 children: [
-                  _buildHeader(context),
+                  AuthScreenHeader(onBack: () => _handleBack(context)),
                   Expanded(child: _buildBody(context, state)),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              SolarIconsOutline.altArrowLeft,
-              color: AppColors.quinoaDark,
-            ),
-            onPressed: () => _handleBack(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(
-            size: BrandSize.sm,
-            color: AppColors.quinoaDark,
-            iconColor: AppColors.quinoaGold,
-          ),
-          const Spacer(flex: 2),
-        ],
       ),
     );
   }
@@ -139,122 +107,38 @@ class _SignInViewState extends State<SignInView> {
             const SizedBox(height: 32),
             StaggeredEntrance(
               index: 0,
-              child: const Text(
-                AuthStrings.signinTitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  height: 1.0,
-                  letterSpacing: -2,
-                ),
-              ),
+              child: const Text(AuthStrings.signinTitle, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
             ),
             const SizedBox(height: 12),
             StaggeredEntrance(
               index: 1,
-              child: Text(
-                AuthStrings.signinSubtitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                  fontSize: 15,
-                  height: 1.4,
-                ),
-              ),
+              child: Text(AuthStrings.signinSubtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
             ),
             const SizedBox(height: 40),
             StaggeredEntrance(
               index: 2,
-              child: AuthTextField(
-                controller: _emailCtrl,
-                label: AuthStrings.emailLabel,
-                hintText: AuthStrings.signinEmailHint,
-                keyboardType: TextInputType.emailAddress,
-                validator: AuthValidator.validateEmailOrPhone,
-              ),
+              child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.signinEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
             ),
             const SizedBox(height: 20),
             StaggeredEntrance(
               index: 3,
-              child: AuthTextField(
-                controller: _passwordCtrl,
-                label: AuthStrings.passwordLabel,
-                hintText: AuthStrings.signinPasswordHint,
-                obscureText: true,
-                validator: AuthValidator.validatePassword,
-              ),
+              child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.signinPasswordHint, obscureText: true, validator: AuthValidator.validatePassword),
             ),
             const SizedBox(height: 16),
-            StaggeredEntrance(index: 4, child: _buildForgotPasswordRow()),
+            StaggeredEntrance(index: 4, child: AuthForgotPasswordLink(onTap: () => _navigateTo(AppRoutes.forgotPassword))),
             const SizedBox(height: 40),
             StaggeredEntrance(
               index: 5,
-              child: PrimaryButton(
-                text: AuthStrings.submitBtn,
-                isLoading: state is AuthLoading,
-                onPressed: _submit,
-              ),
+              child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
             ),
             const SizedBox(height: 32),
-            StaggeredEntrance(index: 6, child: const AuthSocialDivider()),
+            const StaggeredEntrance(index: 6, child: AuthSocialDivider()),
             const SizedBox(height: 20),
-            StaggeredEntrance(index: 7, child: const AuthSocialRow()),
+            const StaggeredEntrance(index: 7, child: AuthSocialRow()),
             const SizedBox(height: 40),
-            StaggeredEntrance(index: 8, child: _buildSignupLink(context)),
+            StaggeredEntrance(index: 8, child: AuthSignupLink(onTap: () => _navigateTo(AppRoutes.signup))),
             const SizedBox(height: 32),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildForgotPasswordRow() {
-    return GestureDetector(
-      onTap: () => _navigateTo(AppRoutes.forgotPassword),
-      child: Text.rich(
-        TextSpan(
-          text: AuthStrings.signinForgotPrefix,
-          style: TextStyle(
-            color: AppColors.quinoaDark.withValues(alpha: 0.5),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-          children: const [
-            TextSpan(
-              text: AuthStrings.signinResetLink,
-              style: TextStyle(
-                color: AppColors.quinoaDark,
-                fontWeight: FontWeight.w800,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignupLink(BuildContext context) {
-    return Center(
-      child: TextButton(
-        onPressed: () => _navigateTo(AppRoutes.signup),
-        child: Text.rich(
-          TextSpan(
-            text: "${AuthStrings.signinNoAccount} ",
-            style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.5),
-              fontWeight: FontWeight.w500,
-            ),
-            children: const [
-              TextSpan(
-                text: AuthStrings.signinSignupLink,
-                style: TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

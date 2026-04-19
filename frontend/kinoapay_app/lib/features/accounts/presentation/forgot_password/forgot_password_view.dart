@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
@@ -75,36 +74,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             listener: _onState,
             builder: (context, state) => Column(
               children: [
-                _buildHeader(context),
+                const AuthScreenHeader(),
                 Expanded(child: _buildBody(state)),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              SolarIconsOutline.altArrowLeft,
-              color: AppColors.quinoaDark,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(
-            size: BrandSize.sm,
-            color: AppColors.quinoaDark,
-            iconColor: AppColors.quinoaGold,
-          ),
-          const Spacer(flex: 2),
-        ],
       ),
     );
   }
