@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_helpers.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
+import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
+import "package:kinoapay_app/features/contacts/presentation/widgets/contact_action_btn.dart";
 
 /// Résultat retourné par le sheet au [Navigator.pop].
 enum ContactAction { send, request }
@@ -14,7 +16,7 @@ class ContactActionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = _initials(contact.fullName);
+    final initials = ContactsHelpers.initials(contact.fullName);
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
       decoration: const BoxDecoration(
@@ -116,7 +118,7 @@ class ContactActionSheet extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _ActionBtn(
+                child: ContactActionBtn(
                   label: ContactsStrings.actionSend,
                   icon: Icons.arrow_upward_rounded,
                   onTap: () => Navigator.pop(context, ContactAction.send),
@@ -124,7 +126,7 @@ class ContactActionSheet extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _ActionBtn(
+                child: ContactActionBtn(
                   label: ContactsStrings.actionRequest,
                   icon: Icons.arrow_downward_rounded,
                   secondary: true,
@@ -136,12 +138,6 @@ class ContactActionSheet extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _initials(String name) {
-    final parts = name.trim().split(" ");
-    if (parts.length >= 2) return "${parts[0][0]}${parts[1][0]}".toUpperCase();
-    return name.isNotEmpty ? name[0].toUpperCase() : "?";
   }
 }
 
@@ -178,54 +174,6 @@ class _ChannelBadge extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ActionBtn extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool secondary;
-  final VoidCallback onTap;
-  const _ActionBtn({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-    this.secondary = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        decoration: BoxDecoration(
-          color: secondary
-              ? AppColors.quinoaDark.withValues(alpha: 0.06)
-              : AppColors.quinoaDark,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 15,
-              color: secondary ? AppColors.quinoaDark : Colors.white,
-            ),
-            const SizedBox(width: 7),
-            Text(
-              label,
-              style: TextStyle(
-                color: secondary ? AppColors.quinoaDark : Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

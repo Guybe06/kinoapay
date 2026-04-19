@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_helpers.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 
 /// Tuile de contact dans la liste, avec avatar, infos et indicateurs de canaux.
@@ -12,7 +13,7 @@ class ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = _initials(contact.fullName);
+    final initials = ContactsHelpers.initials(contact.fullName);
 
     return InkWell(
       onTap: onTap,
@@ -78,12 +79,6 @@ class ContactTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _initials(String name) {
-    final parts = name.trim().split(" ");
-    if (parts.length >= 2) return "${parts[0][0]}${parts[1][0]}".toUpperCase();
-    return name.isNotEmpty ? name[0].toUpperCase() : "?";
   }
 }
 
