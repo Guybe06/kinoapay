@@ -5,7 +5,8 @@ import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_action_sheet.dart";
-import "package:kinoapay_app/features/contacts/presentation/widgets/contact_invite_sheet.dart";
+import "package:kinoapay_app/features/contacts/presentation/widgets/contact_invite_sheet.dart"
+    show ContactInviteAction, ContactInviteSheet;
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_tile.dart";
 
 /// Liste groupée par statut d'inscription (inscrit / autre).
@@ -142,7 +143,11 @@ class _ContactGroup extends StatelessWidget {
   /// Dispatch du tap selon le mode : sélection renvoie le contact, sinon affiche les sheets.
   void _handleTap(BuildContext context, Contact contact) {
     if (selectionMode) {
-      if (actionable) Navigator.pop(context, contact);
+      if (actionable) {
+        Navigator.pop(context, contact);
+      } else {
+        _showInviteSheet(context, contact);
+      }
       return;
     }
     if (actionable) {
@@ -160,12 +165,15 @@ class _ContactGroup extends StatelessWidget {
     );
   }
 
-  void _showInviteSheet(BuildContext context, Contact contact) {
-    showModalBottomSheet(
+  Future<void> _showInviteSheet(BuildContext context, Contact contact) async {
+    final result = await showModalBottomSheet<ContactInviteAction>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => ContactInviteSheet(contact: contact),
     );
+    if (result == ContactInviteAction.send && context.mounted) {
+      Navigator.pop(context, contact);
+    }
   }
 }
 

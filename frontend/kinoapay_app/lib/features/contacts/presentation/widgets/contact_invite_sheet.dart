@@ -3,6 +3,10 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
+import "package:kinoapay_app/features/contacts/presentation/widgets/contact_action_btn.dart";
+
+/// Action renvoyée par [ContactInviteSheet] lors de la fermeture.
+enum ContactInviteAction { invite, send }
 
 /// Sheet d'invitation pour un contact non encore inscrit.
 class ContactInviteSheet extends StatelessWidget {
@@ -65,25 +69,26 @@ class ContactInviteSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                color: AppColors.quinoaDark,
-                borderRadius: BorderRadius.circular(100),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                ContactsStrings.inviteBtn,
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w800,
+          Row(
+            children: [
+              Expanded(
+                child: ContactActionBtn(
+                  label: ContactsStrings.inviteBtn,
+                  icon: Icons.person_add_rounded,
+                  onTap: () =>
+                      Navigator.pop(context, ContactInviteAction.invite),
                 ),
               ),
-            ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ContactActionBtn(
+                  label: ContactsStrings.actionSend,
+                  icon: Icons.arrow_upward_rounded,
+                  secondary: true,
+                  onTap: () => Navigator.pop(context, ContactInviteAction.send),
+                ),
+              ),
+            ],
           ),
         ],
       ),
