@@ -1,3 +1,4 @@
+import "package:kinoapay_app/core/constants/supported_countries.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
 import "package:kinoapay_app/features/contacts/domain/repositories/contacts_repository.dart";
 
@@ -37,10 +38,18 @@ class MockContactsRepository implements ContactsRepository {
 
     final contacts = _phoneBook.map((e) {
       final onApp = _registeredPhones.contains(e.phone);
+      final country = SupportedCountries.all.firstWhere(
+        (c) => e.phone.startsWith(c.dialCode),
+        orElse: () => (iso: "", flag: "", name: "", dialCode: ""),
+      );
       return Contact(
         id: e.id,
         fullName: e.name,
         phone: e.phone,
+        dialCode: country.dialCode,
+        localNumber: country.dialCode.isNotEmpty
+            ? e.phone.substring(country.dialCode.length)
+            : e.phone,
         isRegistered: onApp,
         publicHandle: onApp ? e.phone : null,
       );
