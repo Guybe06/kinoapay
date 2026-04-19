@@ -1,0 +1,192 @@
+import "package:flutter/material.dart";
+import "package:solar_icons/solar_icons.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+
+/// Carte carrée de la grille d'actions rapides.
+class PlusActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String description;
+  final Color color;
+  final VoidCallback onTap;
+
+  const PlusActionCard({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.description,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.quinoaDark.withValues(alpha: 0.03),
+              blurRadius: 40,
+              offset: const Offset(0, 15),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(icon, color: color, size: 36),
+                Icon(
+                  SolarIconsOutline.arrowRightUp,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.10),
+                  size: 24,
+                ),
+              ],
+            ),
+            const Spacer(),
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.8,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Carte horizontale pleine largeur pour les sections sous la grille.
+class PlusListCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String description;
+  final Color color;
+  final VoidCallback onTap;
+  final bool isDestructive;
+
+  const PlusListCard({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.description,
+    required this.color,
+    required this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelColor =
+        isDestructive ? AppColors.quinoaRed : AppColors.quinoaDark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        decoration: BoxDecoration(
+          color: isDestructive
+              ? AppColors.quinoaRed.withValues(alpha: 0.04)
+              : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDestructive
+                ? AppColors.quinoaRed.withValues(alpha: 0.15)
+                : AppColors.quinoaDark.withValues(alpha: 0.06),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: labelColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: labelColor.withValues(alpha: 0.45),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              SolarIconsOutline.altArrowRight,
+              size: 16,
+              color: labelColor.withValues(alpha: 0.25),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// En-tête de section avec label en majuscules espacées.
+class PlusSectionHeader extends StatelessWidget {
+  final String label;
+
+  const PlusSectionHeader({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: AppColors.quinoaDark.withValues(alpha: 0.35),
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.4,
+        ),
+      ),
+    );
+  }
+}

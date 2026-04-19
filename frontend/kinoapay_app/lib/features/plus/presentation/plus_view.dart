@@ -1,15 +1,64 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
+import "package:kinoapay_app/features/plus/presentation/widgets/plus_sections.dart";
+import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
 /// Vue principale de la feature Plus.
-/// Design typographique avec des titres massifs et des cartes épurées.
 class PlusView extends StatelessWidget {
   final int unreadNotifications;
+
   const PlusView({super.key, this.unreadNotifications = 0});
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text(
+          PlusStrings.signOutDialogTitle,
+          style: TextStyle(
+            color: AppColors.quinoaDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+          PlusStrings.signOutDialogMessage,
+          style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(
+              PlusStrings.signOutCancel,
+              style: TextStyle(color: AppColors.textMuted),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              PlusStrings.signOutConfirm,
+              style: TextStyle(
+                color: AppColors.quinoaRed,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && context.mounted) {
+      context.read<AuthBloc>().add(SignOutRequested());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +91,6 @@ class PlusView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -51,42 +99,42 @@ class PlusView extends StatelessWidget {
               crossAxisSpacing: 16,
               childAspectRatio: 1.1,
               children: [
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.scanner,
                   label: PlusStrings.actionScan,
                   description: PlusStrings.descScan,
                   color: AppColors.quinoaDark,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
                 ),
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.cardReceive,
                   label: PlusStrings.actionRequest,
                   description: PlusStrings.descRequest,
                   color: AppColors.pending,
-                  onTap: () {}, 
+                  onTap: () {},
                 ),
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.history,
                   label: PlusStrings.actionHistory,
                   description: PlusStrings.descHistory,
                   color: AppColors.quinoaGold,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.history),
                 ),
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.card2,
                   label: PlusStrings.actionChannels,
                   description: PlusStrings.descChannels,
                   color: AppColors.success,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
                 ),
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.usersGroupTwoRounded,
                   label: PlusStrings.actionContacts,
                   description: PlusStrings.descContacts,
                   color: AppColors.quinoaDark,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
                 ),
-                _PlusActionCard(
+                PlusActionCard(
                   icon: SolarIconsOutline.userCircle,
                   label: PlusStrings.actionProfile,
                   description: PlusStrings.descProfile,
@@ -95,81 +143,21 @@ class PlusView extends StatelessWidget {
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PlusActionCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String description;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _PlusActionCard({
-    required this.icon,
-    required this.label,
-    required this.description,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.quinoaDark.withValues(alpha: 0.03),
-              blurRadius: 40,
-              offset: const Offset(0, 15),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: color, size: 36),
-                Icon(
-                  SolarIconsOutline.arrowRightUp,
-                  color: AppColors.quinoaDark.withValues(alpha: 0.1),
-                  size: 24,
-                ),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                height: 1.2,
-              ),
+            const SizedBox(height: 32),
+            const PlusSectionHeader(label: PlusStrings.sectionAccount),
+            const PlusAccountSection(),
+            const SizedBox(height: 24),
+            const PlusSectionHeader(label: PlusStrings.sectionSupport),
+            const PlusSupportSection(),
+            const SizedBox(height: 24),
+            const PlusSectionHeader(label: PlusStrings.sectionSession),
+            PlusListCard(
+              icon: SolarIconsOutline.logout,
+              label: PlusStrings.actionSignOut,
+              description: PlusStrings.descSignOut,
+              color: AppColors.quinoaRed,
+              isDestructive: true,
+              onTap: () => _confirmSignOut(context),
             ),
           ],
         ),
