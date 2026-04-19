@@ -44,7 +44,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
       }
     });
     context.read<DashboardBloc>().add(
-      DashboardStarted(month: _month, year: _year),
+      DashboardPeriodChanged(month: _month, year: _year),
     );
   }
 
@@ -59,7 +59,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
       }
     });
     context.read<DashboardBloc>().add(
-      DashboardStarted(month: _month, year: _year),
+      DashboardPeriodChanged(month: _month, year: _year),
     );
   }
 

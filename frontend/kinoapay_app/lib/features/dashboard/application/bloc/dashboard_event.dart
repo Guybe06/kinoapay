@@ -19,12 +19,24 @@ class DashboardStarted extends DashboardEvent {
   List<Object?> get props => [month, year];
 }
 
-/// Demande le rafraîchissement des données pour la période actuelle.
+/// Demande le rafraîchissement complet (pull-to-refresh) — invalide le cache.
 class DashboardRefreshRequested extends DashboardEvent {
   final int month;
   final int year;
 
   const DashboardRefreshRequested({required this.month, required this.year});
+
+  @override
+  List<Object?> get props => [month, year];
+}
+
+/// Changement de période : recharge uniquement les stats, sans toucher au cache
+/// des transactions et canaux, et sans passer par DashboardLoading.
+class DashboardPeriodChanged extends DashboardEvent {
+  final int month;
+  final int year;
+
+  const DashboardPeriodChanged({required this.month, required this.year});
 
   @override
   List<Object?> get props => [month, year];
