@@ -14,7 +14,7 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_p
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_recent_contacts.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_stats_card.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list.dart";
-import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list_placeholders.dart";
+import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_skeleton.dart";
 
 class DashboardView extends StatelessWidget {
   final VoidCallback? onNavigateToSend;
@@ -40,7 +40,7 @@ class DashboardView extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is DashboardLoading) {
-          return const _DashboardSkeleton();
+          return const DashboardSkeleton();
         }
         if (state is DashboardLoadSuccess) {
           return _DashboardContent(
@@ -56,7 +56,7 @@ class DashboardView extends StatelessWidget {
         context.read<DashboardBloc>().add(
           DashboardStarted(month: now.month, year: now.year),
         );
-        return const _DashboardSkeleton();
+        return const DashboardSkeleton();
       },
     );
   }
@@ -200,93 +200,6 @@ class _DashboardContentState extends State<_DashboardContent> {
                 elevation: 0,
                 shadowColor: Colors.transparent,
                 child: const AppHeader(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DashboardSkeleton extends StatelessWidget {
-  const _DashboardSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.quinoaCream,
-      appBar: const AppHeader(),
-      body: Stack(
-        children: [
-          const DashboardAmbientBackground(),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  const DashboardGreetingSection(firstName: ""),
-                  const SizedBox(height: 24),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  DashboardActionButtons(onSend: () {}, onRequest: () {}),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: AppColors.quinoaDark,
-                        borderRadius: BorderRadius.circular(32),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      height: 130,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      DashboardStrings.lastTx,
-                      style: TextStyle(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.85),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.4,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: DashboardTxListSkeleton(),
-                  ),
-                  const SizedBox(height: 32),
-                ],
               ),
             ),
           ),

@@ -2,29 +2,38 @@ import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
+import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_card_skeletons.dart";
 
-/// Placeholders alignés sur la hauteur d’une ligne de transaction.
+/// Squelette de la liste de transactions — reproduit [DashboardTxRow] × 5.
 class DashboardTxListSkeleton extends StatelessWidget {
   const DashboardTxListSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(
-        5,
-        (i) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Container(
-            height: 74,
-            decoration: BoxDecoration(
-              color: AppColors.quinoaDark.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: AppColors.quinoaDark.withValues(alpha: 0.06),
-              ),
-            ),
-          ),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.05)),
+      ),
+      child: Column(
+        children: List.generate(5, (i) {
+          final isLast = i == 4;
+          return Column(
+            children: [
+              const DashboardTxRowSkeleton(),
+              if (!isLast)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: AppColors.quinoaDark.withValues(alpha: 0.04),
+                  ),
+                ),
+            ],
+          );
+        }),
       ),
     );
   }
