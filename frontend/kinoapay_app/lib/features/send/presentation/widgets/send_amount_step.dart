@@ -216,7 +216,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
         ),
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: widget.amountCtrl,
-          builder: (_, value, __) {
+          builder: (context, value, child) {
             final raw =
                 double.tryParse(value.text.replaceAll(RegExp(r"[^\d]"), "")) ??
                 0;

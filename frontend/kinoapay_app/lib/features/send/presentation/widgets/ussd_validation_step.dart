@@ -74,7 +74,7 @@ class _UssdValidationStepState extends State<UssdValidationStep>
   Widget _buildPendingIcon() {
     return AnimatedBuilder(
       animation: _pulseCtrl ?? const AlwaysStoppedAnimation(0),
-      builder: (_, __) => Container(
+      builder: (context, child) => Container(
         width: 88,
         height: 88,
         decoration: BoxDecoration(

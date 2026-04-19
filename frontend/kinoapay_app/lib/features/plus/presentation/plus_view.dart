@@ -4,6 +4,7 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
+import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
@@ -103,32 +104,18 @@ class _PlusViewState extends State<PlusView> {
           SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
-              padding: const EdgeInsets.fromLTRB(20, 72, 20, 40),
+              padding: const EdgeInsets.fromLTRB(0, 72, 0, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    PlusStrings.title,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.8,
-                      height: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    PlusStrings.subtitle,
-                    style: TextStyle(
-                      color: AppColors.textMuted,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      height: 1.4,
-                    ),
+                  const AppPageTitle(
+                    title: PlusStrings.pageTitle,
+                    subtitle: PlusStrings.pageSubtitle,
                   ),
                   const SizedBox(height: 32),
-                  GridView.count(
+                  Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
@@ -173,8 +160,12 @@ class _PlusViewState extends State<PlusView> {
                       ),
                     ],
                   ),
+                  ),
                   const SizedBox(height: 32),
-                  _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
+                  ),
                 ],
               ),
             ),

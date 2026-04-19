@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
+import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
@@ -24,47 +25,58 @@ class ProfileView extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 80, 20, 120),
+            padding: const EdgeInsets.fromLTRB(0, 80, 0, 120),
             child: Column(
               children: [
-                StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
-                const SizedBox(height: 14),
-                StaggeredEntrance(
-                  index: 1,
-                  child: Text(
-                    user?.fullName ?? "",
-                    style: const TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
+                AppPageTitle(
+                  title: ProfileStrings.pageTitle,
+                  subtitle: ProfileStrings.pageSubtitle,
                 ),
-                const SizedBox(height: 4),
-                StaggeredEntrance(
-                  index: 2,
-                  child: Text(
-                    user?.email ?? "",
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.45),
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
-                const SizedBox(height: 16),
-                StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
-                const SizedBox(height: 24),
-                StaggeredEntrance(
-                  index: 5,
-                  child: Text(
-                    "${ProfileStrings.version} 1.0.0",
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                      fontSize: 12,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: Column(
+                    children: [
+                      StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
+                      const SizedBox(height: 14),
+                      StaggeredEntrance(
+                        index: 1,
+                        child: Text(
+                          user?.fullName ?? "",
+                          style: const TextStyle(
+                            color: AppColors.quinoaDark,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      StaggeredEntrance(
+                        index: 2,
+                        child: Text(
+                          user?.email ?? "",
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
+                      const SizedBox(height: 16),
+                      StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
+                      const SizedBox(height: 24),
+                      StaggeredEntrance(
+                        index: 5,
+                        child: Text(
+                          "${ProfileStrings.version} 1.0.0",
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
+import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
@@ -63,6 +64,12 @@ class _ContactsViewState extends State<ContactsView> {
                 child: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.quinoaDark),
               ),
             ),
+          ),
+          AppPageTitle(
+            title: widget.selectionMode
+                ? ContactsStrings.pageTitleSelect
+                : ContactsStrings.pageTitle,
+            subtitle: ContactsStrings.pageSubtitle,
           ),
           _buildSearchBar(),
           Expanded(

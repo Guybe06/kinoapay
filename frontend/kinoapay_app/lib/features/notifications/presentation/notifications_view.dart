@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
+import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_event.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_state.dart";
@@ -50,6 +51,10 @@ class _NotificationsViewState extends State<NotificationsView> {
                     )
                   : const SizedBox.shrink(),
             ),
+          ),
+          const AppPageTitle(
+            title: "Restez informé.",
+            subtitle: "Vos alertes en temps réel.",
           ),
           Expanded(
             child: BlocBuilder<NotificationsBloc, NotificationsState>(
