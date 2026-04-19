@@ -1,5 +1,6 @@
 /// Strings UI du feature Contacts.
 abstract final class ContactsStrings {
+  static const String backLabel = "Retour";
   static const String viewTitle = "Contacts";
   static const String searchHint = "Rechercher un contact...";
   static const String errorLoad = "Impossible de charger les contacts.";

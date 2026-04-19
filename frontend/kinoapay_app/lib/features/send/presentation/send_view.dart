@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_local_notifications/flutter_local_notifications.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
-import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart"
@@ -30,7 +29,9 @@ enum SendStep { recipient, amount }
 enum RecipientSearchMode { phone, id }
 
 class SendView extends StatefulWidget {
-  const SendView({super.key});
+  final VoidCallback? onBackToDashboard;
+
+  const SendView({super.key, this.onBackToDashboard});
 
   @override
   State<SendView> createState() => _SendViewState();
@@ -292,35 +293,54 @@ class _SendViewState extends State<SendView> {
         }
         return Scaffold(
           backgroundColor: AppColors.quinoaCream,
-          appBar: const AppHeader(),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildBackButton(),
-                _buildHeader(),
-                const SizedBox(height: 28),
-                if (_step == SendStep.recipient)
-                  _buildRecipientStep(state)
-                else
-                  SendAmountStep(
-                    recipient: _selectedRecipient!,
-                    selectedSource: _selectedSourceChannel,
-                    selectedDest: _selectedDestChannel,
-                    amountCtrl: _amountCtrl,
-                    amountFocus: _amountFocus,
-                    onSourceChanged: (ch) =>
-                        setState(() => _selectedSourceChannel = ch),
-                    onDestChanged: (ch) =>
-                        setState(() => _selectedDestChannel = ch),
-                    onModifyRecipient: _clearRecipient,
-                    onContinue: _requestQuote,
-                    onExternalNameChanged: (name) =>
-                        setState(() => _externalRecipientName = name),
+          body: Stack(
+            clipBehavior: Clip.hardEdge,
+            children: [
+              SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 72, 24, 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(),
+                      const SizedBox(height: 28),
+                      if (_step == SendStep.recipient)
+                        _buildRecipientStep(state)
+                      else
+                        SendAmountStep(
+                          recipient: _selectedRecipient!,
+                          selectedSource: _selectedSourceChannel,
+                          selectedDest: _selectedDestChannel,
+                          amountCtrl: _amountCtrl,
+                          amountFocus: _amountFocus,
+                          onSourceChanged: (ch) =>
+                              setState(() => _selectedSourceChannel = ch),
+                          onDestChanged: (ch) =>
+                              setState(() => _selectedDestChannel = ch),
+                          onModifyRecipient: _clearRecipient,
+                          onContinue: _requestQuote,
+                          onExternalNameChanged: (name) =>
+                              setState(() => _externalRecipientName = name),
+                        ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: AppBackHeader(
+                  onBack: _step == SendStep.amount
+                      ? _goBack
+                      : (widget.onBackToDashboard ?? () {}),
+                  backLabel: _step == SendStep.amount
+                      ? SendStrings.backToRecipient
+                      : SendStrings.backToDashboard,
+                  title: SendStrings.title,
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -389,23 +409,6 @@ class _SendViewState extends State<SendView> {
     }
   }
 
-  Widget _buildBackButton() {
-    if (_step == SendStep.recipient) return const SizedBox.shrink();
-    return GestureDetector(
-      onTap: _goBack,
-      child: Container(
-        width: 36,
-        height: 36,
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: AppColors.quinoaDark.withValues(alpha: 0.07),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(SolarIconsOutline.altArrowLeft, size: 18),
-      ),
-    );
-  }
-
   Widget _buildHeader() {
     final isRecipient = _step == SendStep.recipient;
     return Column(
@@ -425,7 +428,7 @@ class _SendViewState extends State<SendView> {
                     : SendStrings.stepAmountTitle,
                 style: const TextStyle(
                   color: AppColors.quinoaDark,
-                  fontSize: 24,
+                  fontSize: 28,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.6,
                   height: 1.2,
@@ -479,6 +482,7 @@ class _SendViewState extends State<SendView> {
   }
 
   Widget _buildRecipientStep(SendState state) {
+
     final isPhone = _searchMode == RecipientSearchMode.phone;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,7 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
-import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
@@ -13,8 +13,9 @@ import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dar
 /// Vue principale de la feature Plus.
 class PlusView extends StatefulWidget {
   final int unreadNotifications;
+  final VoidCallback? onBackToDashboard;
 
-  const PlusView({super.key, this.unreadNotifications = 0});
+  const PlusView({super.key, this.unreadNotifications = 0, this.onBackToDashboard});
 
   @override
   State<PlusView> createState() => _PlusViewState();
@@ -102,7 +103,7 @@ class _PlusViewState extends State<PlusView> {
           SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
-              padding: const EdgeInsets.fromLTRB(20, 72, 20, 140),
+              padding: const EdgeInsets.fromLTRB(20, 72, 20, 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -186,26 +187,22 @@ class _PlusViewState extends State<PlusView> {
 
   Widget _buildFloatingHeader() {
     final topInset = MediaQuery.of(context).padding.top;
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 120),
-      curve: Curves.easeIn,
-      top: _headerVisible ? 0 : -(56 + topInset),
+    return Positioned(
+      top: 0,
       left: 0,
       right: 0,
-      child: AnimatedOpacity(
-        opacity: _headerVisible ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 80),
-        curve: Curves.easeIn,
-        child: Material(
-          color: AppColors.quinoaCream,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          child: AppHeader(unreadNotifications: widget.unreadNotifications),
-        ),
-      ),
+      child: _headerVisible
+          ? AppBackHeader(
+              onBack: widget.onBackToDashboard ?? () {},
+              backLabel: PlusStrings.backLabel,
+              title: PlusStrings.title,
+              unreadNotifications: widget.unreadNotifications,
+            )
+          : SizedBox(height: topInset),
     );
   }
 }
+
 
 /// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
 class _SectionsBlock extends StatelessWidget {

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
@@ -9,47 +10,74 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart"
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 import "package:kinoapay_app/features/profile/domain/profile_strings.dart";
 
-/// Écran Profil : infos utilisateur et déconnexion.
+/// Écran Profil : informations utilisateur.
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(20, topInset + 80, 20, 120),
-      child: Column(
+    return Scaffold(
+      backgroundColor: AppColors.quinoaCream,
+      body: Stack(
         children: [
-          StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
-          const SizedBox(height: 14),
-          StaggeredEntrance(
-            index: 1,
-            child: Text(
-              user?.fullName ?? "",
-              style: const TextStyle(color: AppColors.quinoaDark, fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5),
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 80, 20, 120),
+            child: Column(
+              children: [
+                StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
+                const SizedBox(height: 14),
+                StaggeredEntrance(
+                  index: 1,
+                  child: Text(
+                    user?.fullName ?? "",
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                StaggeredEntrance(
+                  index: 2,
+                  child: Text(
+                    user?.email ?? "",
+                    style: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
+                const SizedBox(height: 16),
+                StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
+                const SizedBox(height: 24),
+                StaggeredEntrance(
+                  index: 5,
+                  child: Text(
+                    "${ProfileStrings.version} 1.0.0",
+                    style: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          StaggeredEntrance(
-            index: 2,
-            child: Text(
-              user?.email ?? "",
-              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14),
-            ),
-          ),
-          const SizedBox(height: 32),
-          StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
-          const SizedBox(height: 16),
-          StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
-          const SizedBox(height: 24),
-          StaggeredEntrance(
-            index: 5,
-            child: Text(
-              "${ProfileStrings.version} 1.0.0",
-              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.25), fontSize: 12),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AppBackHeader(
+              onBack: () => Navigator.pop(context),
+              backLabel: ProfileStrings.backLabel,
+              title: ProfileStrings.title,
             ),
           ),
         ],
@@ -69,7 +97,11 @@ class ProfileView extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: const TextStyle(color: AppColors.quinoaGold, fontSize: 26, fontWeight: FontWeight.w900),
+        style: const TextStyle(
+          color: AppColors.quinoaGold,
+          fontSize: 26,
+          fontWeight: FontWeight.w900,
+        ),
       ),
     );
   }
@@ -103,7 +135,11 @@ class ProfileView extends StatelessWidget {
             SizedBox(width: 10),
             Text(
               ProfileStrings.signOut,
-              style: TextStyle(color: AppColors.quinoaRed, fontSize: 15, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                color: AppColors.quinoaRed,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ],
         ),
@@ -117,20 +153,33 @@ class ProfileView extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.quinoaCream,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(ProfileStrings.signOutConfirmTitle, style: TextStyle(fontWeight: FontWeight.w800)),
+        title: const Text(
+          ProfileStrings.signOutConfirmTitle,
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
         content: const Text(ProfileStrings.signOutConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text("Annuler", style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5))),
+            child: Text(
+              "Annuler",
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5)),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               context.read<AuthBloc>().add(SignOutRequested());
-              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.signin, (_) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.signin,
+                (_) => false,
+              );
             },
-            child: const Text(ProfileStrings.signOut, style: TextStyle(color: AppColors.quinoaRed, fontWeight: FontWeight.w700)),
+            child: const Text(
+              ProfileStrings.signOut,
+              style: TextStyle(color: AppColors.quinoaRed, fontWeight: FontWeight.w700),
+            ),
           ),
         ],
       ),
@@ -162,7 +211,15 @@ class _Section extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title.toUpperCase(), style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.35), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
+          Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.35),
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
+            ),
+          ),
           const SizedBox(height: 16),
           ...children,
         ],
@@ -183,8 +240,22 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500)),
-          Text(value, style: const TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: FontWeight.w700)),
+          Text(
+            label,
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.5),
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: AppColors.quinoaDark,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );

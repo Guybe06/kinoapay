@@ -1,5 +1,6 @@
 /// Chaînes de caractères pour la feature Plus d'options.
 abstract final class PlusStrings {
+  static const String backLabel = "Accueil";
   static const String title = "Plus d'options";
   static const String subtitle = "Gérez vos outils de paiement et votre compte.";
 

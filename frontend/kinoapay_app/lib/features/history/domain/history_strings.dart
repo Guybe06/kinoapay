@@ -1,5 +1,6 @@
 /// Chaînes de l'interface Historique des transactions.
 abstract final class HistoryStrings {
+  static const String backLabel = "Plus";
   static const String title = "Historique";
   static const String subtitle = "Toutes vos transactions";
   static const String empty = "Aucune transaction sur cette période";

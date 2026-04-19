@@ -56,8 +56,13 @@ class _AppShellState extends State<AppShell> {
         kycVerified: kycVerified,
         onNavigateToSend: () => _onTabChanged(AppRoutes.tabTransfer),
       ),
-      const SendView(),
-      const PlusView(unreadNotifications: 3),
+      SendView(
+        onBackToDashboard: () => _onTabChanged(AppRoutes.tabDashboard),
+      ),
+      PlusView(
+        unreadNotifications: 3,
+        onBackToDashboard: () => _onTabChanged(AppRoutes.tabDashboard),
+      ),
     ];
   }
 
@@ -77,15 +82,16 @@ class _AppShellState extends State<AppShell> {
         body: Stack(
           children: [
             IndexedStack(index: _currentTab, children: _buildPages(context)),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: AppBottomNav(
-                currentIndex: _currentTab,
-                onTabChanged: _onTabChanged,
+            if (_currentTab == AppRoutes.tabDashboard)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: AppBottomNav(
+                  currentIndex: _currentTab,
+                  onTabChanged: _onTabChanged,
+                ),
               ),
-            ),
           ],
         ),
       ),

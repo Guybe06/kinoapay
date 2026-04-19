@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_event.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_state.dart";
@@ -23,13 +24,32 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   Widget build(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
-
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
       body: Column(
         children: [
-          _buildHeader(topInset),
+          BlocBuilder<NotificationsBloc, NotificationsState>(
+            builder: (context, state) => AppBackHeader(
+              onBack: () => Navigator.pop(context),
+              backLabel: "Accueil",
+              title: "Notifications",
+              trailing: state is NotificationsLoadSuccess && state.unreadCount > 0
+                  ? GestureDetector(
+                      onTap: () => context
+                          .read<NotificationsBloc>()
+                          .add(const NotificationsAllMarkedRead()),
+                      child: Text(
+                        "Tout lire",
+                        style: TextStyle(
+                          color: AppColors.quinoaGold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ),
           Expanded(
             child: BlocBuilder<NotificationsBloc, NotificationsState>(
               builder: (context, state) {
@@ -54,62 +74,6 @@ class _NotificationsViewState extends State<NotificationsView> {
     );
   }
 
-  Widget _buildHeader(double topInset) {
-    return Container(
-      color: AppColors.quinoaCream,
-      padding: EdgeInsets.fromLTRB(20, topInset + 16, 16, 12),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 16,
-                color: AppColors.quinoaDark,
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          const Expanded(
-            child: Text(
-              "Notifications",
-              style: TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.5,
-              ),
-            ),
-          ),
-          BlocBuilder<NotificationsBloc, NotificationsState>(
-            builder: (context, state) {
-              if (state is! NotificationsLoadSuccess) return const SizedBox.shrink();
-              if (state.unreadCount == 0) return const SizedBox.shrink();
-              return GestureDetector(
-                onTap: () => context
-                    .read<NotificationsBloc>()
-                    .add(const NotificationsAllMarkedRead()),
-                child: Text(
-                  "Tout lire",
-                  style: TextStyle(
-                    color: AppColors.quinoaGold,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _NotificationsList extends StatelessWidget {

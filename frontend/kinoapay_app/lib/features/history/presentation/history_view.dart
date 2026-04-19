@@ -6,7 +6,7 @@ import "package:kinoapay_app/features/history/application/bloc/history_event.dar
 import "package:kinoapay_app/features/history/application/bloc/history_state.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_filter_bar.dart";
-import "package:kinoapay_app/features/history/presentation/widgets/history_header.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_stats_bar.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_list.dart";
 
@@ -33,7 +33,13 @@ class _HistoryViewState extends State<HistoryView> {
         builder: (context, state) => CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(child: const HistoryHeader()),
+            SliverToBoxAdapter(
+              child: AppBackHeader(
+                onBack: () => Navigator.pop(context),
+                backLabel: HistoryStrings.backLabel,
+                title: HistoryStrings.title,
+              ),
+            ),
             if (state is HistoryLoadSuccess) ...[
               SliverToBoxAdapter(
                 child: HistoryFilterBar(

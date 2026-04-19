@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
@@ -39,19 +40,34 @@ class _ContactsViewState extends State<ContactsView> {
 
   @override
   Widget build(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
-
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
       body: Column(
         children: [
-          _buildHeader(topInset),
+          AppBackHeader(
+            onBack: () => Navigator.pop(context),
+            backLabel: ContactsStrings.backLabel,
+            title: ContactsStrings.viewTitle,
+            trailing: GestureDetector(
+              onTap: () => context.read<ContactsBloc>().add(const ContactsStarted()),
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.quinoaDark),
+              ),
+            ),
+          ),
           _buildSearchBar(),
           Expanded(
             child: BlocBuilder<ContactsBloc, ContactsState>(
               builder: (context, state) {
-                if (state is ContactsLoading)
+                if (state is ContactsLoading) {
                   return const ContactsLoadingWidget();
+                }
                 if (state is ContactsError) {
                   return ContactsErrorWidget(message: state.message);
                 }
@@ -63,60 +79,6 @@ class _ContactsViewState extends State<ContactsView> {
                 }
                 return const SizedBox.shrink();
               },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(double topInset) {
-    return Container(
-      color: AppColors.quinoaCream,
-      padding: EdgeInsets.fromLTRB(20, topInset + 16, 16, 12),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 16,
-                color: AppColors.quinoaDark,
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
-          const Expanded(
-            child: Text(
-              ContactsStrings.viewTitle,
-              style: TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.5,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () =>
-                context.read<ContactsBloc>().add(const ContactsStarted()),
-            child: Container(
-              padding: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.refresh_rounded,
-                size: 18,
-                color: AppColors.quinoaDark,
-              ),
             ),
           ),
         ],
