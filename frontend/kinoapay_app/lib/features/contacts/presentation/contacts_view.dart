@@ -5,6 +5,7 @@ import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.da
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_list.dart";
+import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_state_widgets.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 
 /// Liste des contacts : recherche et regroupement inscrits / autres.
@@ -46,9 +47,10 @@ class _ContactsViewState extends State<ContactsView> {
           Expanded(
             child: BlocBuilder<ContactsBloc, ContactsState>(
               builder: (context, state) {
-                if (state is ContactsLoading) return const _LoadingState();
+                if (state is ContactsLoading)
+                  return const ContactsLoadingWidget();
                 if (state is ContactsError) {
-                  return _ErrorState(message: state.message);
+                  return ContactsErrorWidget(message: state.message);
                 }
                 if (state is ContactsLoadSuccess) {
                   return ContactsList(
@@ -177,35 +179,6 @@ class _ContactsViewState extends State<ContactsView> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _LoadingState extends StatelessWidget {
-  const _LoadingState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CircularProgressIndicator(
-        color: AppColors.quinoaGold,
-        strokeWidth: 2,
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  final String message;
-  const _ErrorState({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        message,
-        style: const TextStyle(color: AppColors.quinoaGold, fontSize: 14),
       ),
     );
   }
