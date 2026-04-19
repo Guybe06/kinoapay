@@ -1,18 +1,17 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 
 /// Lien "Mot de passe oublié ? Réinitialiser" affiché sous le champ mot de passe.
 class AuthForgotPasswordLink extends StatelessWidget {
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
-  const AuthForgotPasswordLink({super.key, this.onTap});
+  const AuthForgotPasswordLink({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () => Navigator.pushNamed(context, AppRoutes.forgotPassword),
+      onTap: onTap,
       child: Text.rich(
         TextSpan(
           text: AuthStrings.signinForgotPrefix,

@@ -1,17 +1,18 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 
 /// Lien "Déjà un compte ? Se connecter" affiché en bas de l'étape 2 d'inscription.
 class AuthSigninLink extends StatelessWidget {
-  const AuthSigninLink({super.key});
+  final VoidCallback onTap;
+
+  const AuthSigninLink({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.signin),
+        onPressed: onTap,
         child: Text.rich(
           TextSpan(
             text: "${AuthStrings.signupHaveAccount} ",
