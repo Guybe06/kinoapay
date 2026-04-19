@@ -29,7 +29,7 @@ class PlusActionCard extends StatelessWidget {
           color: AppColors.white,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(
-            color: AppColors.quinoaDark.withValues(alpha: 0.06),
+            color: AppColors.quinoaDark.withValues(alpha: 0.08),
           ),
           boxShadow: [
             BoxShadow(
@@ -109,14 +109,14 @@ class PlusListCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         decoration: BoxDecoration(
           color: isDestructive ? AppColors.quinoaRed : AppColors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isDestructive
                 ? AppColors.quinoaRed
-                : AppColors.quinoaDark.withValues(alpha: 0.06),
+                : AppColors.quinoaDark.withValues(alpha: 0.08),
           ),
         ),
         child: Row(

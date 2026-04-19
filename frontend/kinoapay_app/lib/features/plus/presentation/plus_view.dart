@@ -10,6 +10,73 @@ import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_sections.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
+/// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
+class _SectionsBlock extends StatelessWidget {
+  final VoidCallback onSignOut;
+  const _SectionsBlock({required this.onSignOut});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _SectionDot(label: PlusStrings.sectionAccount),
+            const SizedBox(width: 16),
+            _SectionDot(label: PlusStrings.sectionSupport),
+            const SizedBox(width: 16),
+            _SectionDot(label: PlusStrings.sectionSession),
+          ],
+        ),
+        const SizedBox(height: 14),
+        PlusAccountSection(),
+        const SizedBox(height: 10),
+        PlusSupportSection(),
+        const SizedBox(height: 10),
+        PlusListCard(
+          icon: SolarIconsOutline.logout,
+          label: PlusStrings.actionSignOut,
+          description: PlusStrings.descSignOut,
+          color: AppColors.quinoaRed,
+          isDestructive: true,
+          onTap: onSignOut,
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionDot extends StatelessWidget {
+  final String label;
+  const _SectionDot({required this.label});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 5,
+        height: 5,
+        decoration: BoxDecoration(
+          color: AppColors.quinoaDark.withValues(alpha: 0.20),
+          shape: BoxShape.circle,
+        ),
+      ),
+      const SizedBox(width: 5),
+      Text(
+        label,
+        style: TextStyle(
+          color: AppColors.quinoaDark.withValues(alpha: 0.35),
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.2,
+        ),
+      ),
+    ],
+  );
+}
+
 /// Vue principale de la feature Plus.
 class PlusView extends StatelessWidget {
   final int unreadNotifications;
@@ -66,7 +133,7 @@ class PlusView extends StatelessWidget {
       backgroundColor: AppColors.quinoaCream,
       appBar: AppHeader(unreadNotifications: unreadNotifications),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 28, 20, 100),
+        padding: const EdgeInsets.fromLTRB(20, 28, 20, 140),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,31 +201,10 @@ class PlusView extends StatelessWidget {
                   color: AppColors.quinoaDark,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
                 ),
-                PlusActionCard(
-                  icon: SolarIconsOutline.userCircle,
-                  label: PlusStrings.actionProfile,
-                  description: PlusStrings.descProfile,
-                  color: AppColors.warning,
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-                ),
               ],
             ),
             const SizedBox(height: 32),
-            const PlusSectionHeader(label: PlusStrings.sectionAccount),
-            const PlusAccountSection(),
-            const SizedBox(height: 24),
-            const PlusSectionHeader(label: PlusStrings.sectionSupport),
-            const PlusSupportSection(),
-            const SizedBox(height: 24),
-            const PlusSectionHeader(label: PlusStrings.sectionSession),
-            PlusListCard(
-              icon: SolarIconsOutline.logout,
-              label: PlusStrings.actionSignOut,
-              description: PlusStrings.descSignOut,
-              color: AppColors.quinoaRed,
-              isDestructive: true,
-              onTap: () => _confirmSignOut(context),
-            ),
+            _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
           ],
         ),
       ),

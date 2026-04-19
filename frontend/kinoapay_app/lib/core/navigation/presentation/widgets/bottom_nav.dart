@@ -33,7 +33,7 @@ class AppBottomNav extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 5),
             child: Container(
               height: itemSize + (padding * 2),
               padding: const EdgeInsets.all(padding),
@@ -42,22 +42,9 @@ class AppBottomNav extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
                 border: Border.all(
                   color: AppColors.quinoaDark.withValues(alpha: 0.08),
-                  width: 1.5,
+                  width: 1,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.18),
-                    blurRadius: 32,
-                    spreadRadius: 2,
-                    offset: const Offset(0, -6),
-                  ),
-                  BoxShadow(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.1),
-                    blurRadius: 48,
-                    spreadRadius: 4,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+
               ),
               child: Stack(
                 clipBehavior: Clip.none,
@@ -102,7 +89,7 @@ class AppBottomNav extends StatelessWidget {
                                     color: active
                                         ? Colors.white
                                         : AppColors.quinoaDark.withValues(
-                                            alpha: 0.35,
+                                            alpha: 0.5,
                                           ),
                                   ),
                                 ),
