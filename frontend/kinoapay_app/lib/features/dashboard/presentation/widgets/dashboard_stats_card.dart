@@ -139,51 +139,50 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
             height: 1,
           ),
           const SizedBox(height: 16),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _StatColumn(
-                    label: DashboardStrings.statsOutgoing,
-                    amount: fmt.format(widget.stats.totalSent),
-                    icon: SolarIconsOutline.arrowRightUp,
-                    color: AppColors.quinoaCream.withValues(alpha: 0.65),
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _StatColumn(
+                  label: DashboardStrings.statsOutgoing,
+                  amount: fmt.format(widget.stats.totalSent),
+                  icon: SolarIconsOutline.arrowRightUp,
+                  color: AppColors.quinoaCream.withValues(alpha: 0.65),
                 ),
-                VerticalDivider(
-                  color: AppColors.quinoaCream.withValues(alpha: 0.08),
-                  width: 1,
-                  thickness: 1,
+              ),
+              Container(
+                width: 1,
+                height: 40,
+                color: AppColors.quinoaCream.withValues(alpha: 0.08),
+              ),
+              Expanded(
+                child: _StatColumn(
+                  label: DashboardStrings.statsIncoming,
+                  amount: fmt.format(widget.stats.totalReceived),
+                  icon: SolarIconsOutline.arrowLeftDown,
+                  color: AppColors.quinoaGold,
+                  center: true,
                 ),
-                Expanded(
-                  child: _StatColumn(
-                    label: DashboardStrings.statsIncoming,
-                    amount: fmt.format(widget.stats.totalReceived),
-                    icon: SolarIconsOutline.arrowLeftDown,
-                    color: AppColors.quinoaGold,
-                    center: true,
-                  ),
+              ),
+              Container(
+                width: 1,
+                height: 40,
+                color: AppColors.quinoaCream.withValues(alpha: 0.08),
+              ),
+              Expanded(
+                child: _StatColumn(
+                  label: DashboardStrings.statsNet,
+                  amount: "${isPositive ? "+" : "−"}${fmt.format(net.abs())}",
+                  icon: isPositive
+                      ? SolarIconsOutline.graphUp
+                      : SolarIconsOutline.graphDown,
+                  color: isPositive
+                      ? AppColors.quinoaGold
+                      : AppColors.quinoaRed.withValues(alpha: 0.85),
+                  alignRight: true,
                 ),
-                VerticalDivider(
-                  color: AppColors.quinoaCream.withValues(alpha: 0.08),
-                  width: 1,
-                  thickness: 1,
-                ),
-                Expanded(
-                  child: _StatColumn(
-                    label: DashboardStrings.statsNet,
-                    amount: "${isPositive ? "+" : "−"}${fmt.format(net.abs())}",
-                    icon: isPositive
-                        ? SolarIconsOutline.graphUp
-                        : SolarIconsOutline.graphDown,
-                    color: isPositive
-                        ? AppColors.quinoaGold
-                        : AppColors.quinoaRed.withValues(alpha: 0.85),
-                    alignRight: true,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

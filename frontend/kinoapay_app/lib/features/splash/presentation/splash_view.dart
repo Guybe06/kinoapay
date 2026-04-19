@@ -134,7 +134,7 @@ class _SplashViewState extends State<SplashView>
 
   /// Résout la route initiale selon l'état d'authentification et navigue.
   Future<void> _redirect() async {
-    final storage = const SecureStorageService();
+    final storage = SecureStorageService();
     final route = await AppRouter.resolveInitialRoute(storage);
     if (!mounted) return;
 

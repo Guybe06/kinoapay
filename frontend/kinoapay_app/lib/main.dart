@@ -25,7 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting("fr_FR", null);
 
-  const storage = SecureStorageService();
+  final storage = SecureStorageService();
 
   runApp(
     MultiBlocProvider(
