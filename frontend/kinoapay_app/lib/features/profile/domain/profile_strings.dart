@@ -1,6 +1,8 @@
 /// Chaînes de caractères pour la feature Profil.
 class ProfileStrings {
   static const String backLabel = "Plus";
+  static const String pageTitle = "C'est vous.";
+  static const String pageSubtitle = "Vos informations et préférences.";
   static const String headerSubtitle = "Informations et préférences";
   static const String title = "Mon Profil";
   static const String personalInfo = "Informations personnelles";

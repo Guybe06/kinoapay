@@ -5,7 +5,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/history/domain/history_filter.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
-/// Barre de filtres : navigation mois, type de transaction, canal.
+/// Barre de filtres compacte : période sur une rangée, direction + canal combinés sur la suivante.
 class HistoryFilterBar extends StatelessWidget {
   final HistoryFilter filter;
   final ValueChanged<HistoryFilter> onChanged;
@@ -18,17 +18,14 @@ class HistoryFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.quinoaCream,
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildPeriodRow(),
           const SizedBox(height: 8),
-          _buildChipRow(_directionChips()),
-          const SizedBox(height: 8),
-          _buildChipRow(_channelChips()),
-          const SizedBox(height: 12),
+          _buildDirectionChannelRow(),
         ],
       ),
     );
@@ -81,58 +78,61 @@ class HistoryFilterBar extends StatelessWidget {
     );
   }
 
-  List<Widget> _directionChips() => [
-    _Chip(
-      label: HistoryStrings.dirAll,
-      active: filter.direction == HistoryDirection.all,
-      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.all)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirSent,
-      active: filter.direction == HistoryDirection.sent,
-      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.sent)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirReceived,
-      active: filter.direction == HistoryDirection.received,
-      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.received)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirPending,
-      active: filter.direction == HistoryDirection.pending,
-      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.pending)),
-    ),
-  ];
-
-  List<Widget> _channelChips() => [
-    _Chip(
-      label: HistoryStrings.channelAll,
-      active: filter.channel == null,
-      onTap: () => onChanged(filter.copyWith(clearChannel: true)),
-    ),
-    _Chip(
-      label: "MTN",
-      active: filter.channel == "MTN",
-      dot: AppColors.mtnYellow,
-      onTap: () => onChanged(filter.copyWith(channel: "MTN")),
-    ),
-    _Chip(
-      label: "Airtel",
-      active: filter.channel == "AIRTEL",
-      dot: AppColors.airtelRed,
-      onTap: () => onChanged(filter.copyWith(channel: "AIRTEL")),
-    ),
-  ];
-
-  Widget _buildChipRow(List<Widget> chips) {
+  Widget _buildDirectionChannelRow() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        children: chips
-            .expand((c) => [c, const SizedBox(width: 8)])
-            .toList()
-          ..removeLast(),
+        children: [
+          _Chip(
+            label: HistoryStrings.dirAll,
+            active: filter.direction == HistoryDirection.all,
+            onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.all)),
+          ),
+          const SizedBox(width: 6),
+          _Chip(
+            label: HistoryStrings.dirSent,
+            active: filter.direction == HistoryDirection.sent,
+            onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.sent)),
+          ),
+          const SizedBox(width: 6),
+          _Chip(
+            label: HistoryStrings.dirReceived,
+            active: filter.direction == HistoryDirection.received,
+            onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.received)),
+          ),
+          const SizedBox(width: 6),
+          _Chip(
+            label: HistoryStrings.dirPending,
+            active: filter.direction == HistoryDirection.pending,
+            onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.pending)),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+            width: 1,
+            height: 16,
+            color: AppColors.quinoaDark.withValues(alpha: 0.12),
+          ),
+          _Chip(
+            label: HistoryStrings.channelAll,
+            active: filter.channel == null,
+            onTap: () => onChanged(filter.copyWith(clearChannel: true)),
+          ),
+          const SizedBox(width: 6),
+          _Chip(
+            label: "MTN",
+            active: filter.channel == "MTN",
+            dot: AppColors.mtnYellow,
+            onTap: () => onChanged(filter.copyWith(channel: "MTN")),
+          ),
+          const SizedBox(width: 6),
+          _Chip(
+            label: "Airtel",
+            active: filter.channel == "AIRTEL",
+            dot: AppColors.airtelRed,
+            onTap: () => onChanged(filter.copyWith(channel: "AIRTEL")),
+          ),
+        ],
       ),
     );
   }
@@ -144,33 +144,46 @@ class _Chip extends StatelessWidget {
   final VoidCallback onTap;
   final Color? dot;
 
-  const _Chip({required this.label, required this.active, required this.onTap, this.dot});
+  const _Chip({
+    required this.label,
+    required this.active,
+    required this.onTap,
+    this.dot,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        duration: const Duration(milliseconds: 140),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6),
         decoration: BoxDecoration(
           color: active ? AppColors.quinoaDark : Colors.white,
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
-            color: active ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.12),
+            color: active
+                ? AppColors.quinoaDark
+                : AppColors.quinoaDark.withValues(alpha: 0.10),
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (dot != null) ...[
-              Container(width: 7, height: 7, decoration: BoxDecoration(color: dot, shape: BoxShape.circle)),
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
+              ),
               const SizedBox(width: 5),
             ],
             Text(
               label,
               style: TextStyle(
-                color: active ? Colors.white : AppColors.quinoaDark.withValues(alpha: 0.60),
+                color: active
+                    ? Colors.white
+                    : AppColors.quinoaDark.withValues(alpha: 0.55),
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
@@ -194,18 +207,20 @@ class _NavArrow extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(7),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.12)),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.10),
+          ),
         ),
         child: Icon(
           icon,
           size: 12,
           color: enabled
-              ? AppColors.quinoaDark.withValues(alpha: 0.60)
-              : AppColors.quinoaDark.withValues(alpha: 0.20),
+              ? AppColors.quinoaDark.withValues(alpha: 0.55)
+              : AppColors.quinoaDark.withValues(alpha: 0.18),
         ),
       ),
     );

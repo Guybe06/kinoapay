@@ -2,6 +2,8 @@
 abstract final class HistoryStrings {
   static const String backLabel = "Plus";
   static const String title = "Historique";
+  static const String pageTitle = "Retracez vos flux.";
+  static const String pageSubtitle = "Chaque mouvement, chaque période.";
   static const String subtitle = "Toutes vos transactions";
   static const String headerSubtitle = "Vos mouvements par période";
   static const String empty = "Aucune transaction sur cette période";

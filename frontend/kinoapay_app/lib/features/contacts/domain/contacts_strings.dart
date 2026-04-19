@@ -2,6 +2,9 @@
 abstract final class ContactsStrings {
   static const String backLabel = "Retour";
   static const String viewTitle = "Contacts";
+  static const String pageTitle = "À qui voulez-vous envoyer ?";
+  static const String pageTitleSelect = "Choisissez un destinataire.";
+  static const String pageSubtitle = "Retrouvez vos contacts de paiement.";
   static const String headerSubtitle = "Vos contacts de paiement";
   static const String headerSubtitleSelect = "Choisissez un destinataire";
   static const String searchHint = "Rechercher un contact...";

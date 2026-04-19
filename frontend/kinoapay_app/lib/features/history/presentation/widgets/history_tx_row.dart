@@ -1,40 +1,32 @@
-import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
+import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_detail_sheet.dart";
 
-/// Ligne d'une transaction avec route canal, identifiant, montant et score AML.
+/// Ligne de transaction épurée — icône directionnelle, nom, route canal, montant et statut.
 class HistoryTxRow extends StatelessWidget {
   final Transaction tx;
 
   const HistoryTxRow({super.key, required this.tx});
 
-  static Color _channelColor(String channel) => switch (channel) {
-    "MTN" => AppColors.mtnYellow,
-    "AIRTEL" => AppColors.airtelRed,
-    _ => AppColors.quinoaGold,
-  };
-
-  static Color _amlColor(double score) {
-    if (score < 0.40) return AppColors.success;
-    if (score < 0.70) return AppColors.warning;
-    return AppColors.quinoaRed;
-  }
-
   @override
   Widget build(BuildContext context) {
     final isSent = tx.direction == "sent";
+    final isFailed = tx.status == "FAILED";
+    final isPending = tx.status == "PENDING" || tx.status == "PROCESSING";
     final fmt = NumberFormat("#,###", "fr_FR");
     final timeFmt = DateFormat("HH:mm", "fr_FR");
     final name = isSent
         ? (tx.receiverName ?? tx.receiverIdentifier)
         : (tx.senderName ?? tx.receiverIdentifier);
-    final identifier = isSent ? tx.receiverIdentifier : tx.receiverIdentifier;
-    final amountColor = isSent ? AppColors.quinoaDark : AppColors.accentDark;
+    final amountColor = isFailed
+        ? AppColors.quinoaDark.withValues(alpha: 0.30)
+        : isSent
+            ? AppColors.quinoaDark
+            : AppColors.accentDark;
     final sign = isSent ? "−" : "+";
-    final aml = tx.amlScore ?? 0.0;
 
     return InkWell(
       onTap: () => showModalBottomSheet(
@@ -45,10 +37,10 @@ class HistoryTxRow extends StatelessWidget {
       ),
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            _ChannelDot(src: tx.sourceChannel, dest: tx.destinationChannel),
+            _DirectionIcon(isSent: isSent, status: tx.status),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -62,42 +54,34 @@ class HistoryTxRow extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.2,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 1),
-                  Text(
-                    identifier,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
-                      Container(
-                        width: 6, height: 6,
-                        decoration: BoxDecoration(
-                          color: _channelColor(tx.sourceChannel),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
                       Text(
                         "${tx.sourceChannel} → ${tx.destinationChannel}",
                         style: TextStyle(
                           color: AppColors.quinoaDark.withValues(alpha: 0.35),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.2,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          "·",
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.18),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
                       Text(
                         timeFmt.format(tx.startedAt),
                         style: TextStyle(
                           color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                          fontSize: 10,
+                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -113,13 +97,15 @@ class HistoryTxRow extends StatelessWidget {
                   "$sign ${fmt.format(tx.amount)} XAF",
                   style: TextStyle(
                     color: amountColor,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
-                _AmlBadge(score: aml, color: _amlColor(aml)),
+                if (isPending || isFailed) ...[
+                  const SizedBox(height: 4),
+                  _StatusPill(status: tx.status),
+                ],
               ],
             ),
           ],
@@ -129,115 +115,81 @@ class HistoryTxRow extends StatelessWidget {
   }
 }
 
-/// Double dot superposé représentant la route source → destination.
-class _ChannelDot extends StatelessWidget {
-  final String src;
-  final String dest;
+/// Icône carrée arrondie indiquant la direction et le statut de la transaction.
+class _DirectionIcon extends StatelessWidget {
+  final bool isSent;
+  final String status;
 
-  const _ChannelDot({required this.src, required this.dest});
-
-  static Color _color(String ch) => switch (ch) {
-    "MTN" => AppColors.mtnYellow,
-    "AIRTEL" => AppColors.airtelRed,
-    _ => AppColors.quinoaGold,
-  };
+  const _DirectionIcon({required this.isSent, required this.status});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0, bottom: 0,
-            child: Container(
-              width: 26, height: 26,
-              decoration: BoxDecoration(
-                color: _color(dest),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
-              ),
-              child: Center(
-                child: Text(dest[0], style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.white)),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0, top: 0,
-            child: Container(
-              width: 26, height: 26,
-              decoration: BoxDecoration(
-                color: _color(src),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
-              ),
-              child: Center(
-                child: Text(src[0], style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.white)),
-              ),
-            ),
-          ),
-        ],
+    final isFailed = status == "FAILED";
+    final isPending = status == "PENDING" || status == "PROCESSING";
+
+    final Color bg;
+    final Color iconColor;
+    final IconData icon;
+
+    if (isFailed) {
+      bg = AppColors.quinoaRed.withValues(alpha: 0.07);
+      iconColor = AppColors.quinoaRed.withValues(alpha: 0.55);
+      icon = Icons.close_rounded;
+    } else if (isPending) {
+      bg = AppColors.warning.withValues(alpha: 0.08);
+      iconColor = AppColors.warning;
+      icon = Icons.schedule_rounded;
+    } else if (isSent) {
+      bg = AppColors.quinoaDark.withValues(alpha: 0.06);
+      iconColor = AppColors.quinoaDark.withValues(alpha: 0.50);
+      icon = Icons.arrow_upward_rounded;
+    } else {
+      bg = AppColors.success.withValues(alpha: 0.08);
+      iconColor = AppColors.success;
+      icon = Icons.arrow_downward_rounded;
+    }
+
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
       ),
+      child: Icon(icon, size: 17, color: iconColor),
     );
   }
 }
 
-/// Badge circulaire AML avec arc de couleur selon le risque.
-class _AmlBadge extends StatelessWidget {
-  final double score;
-  final Color color;
+/// Petit badge de statut non-complété affiché sous le montant.
+class _StatusPill extends StatelessWidget {
+  final String status;
 
-  const _AmlBadge({required this.score, required this.color});
+  const _StatusPill({required this.status});
 
   @override
   Widget build(BuildContext context) {
-    final label = (score * 100).round().toString();
+    final isPending = status == "PENDING" || status == "PROCESSING";
+    final color = isPending ? AppColors.warning : AppColors.quinoaRed;
+    final label = isPending
+        ? HistoryStrings.sheetStatusPending
+        : HistoryStrings.sheetStatusFailed;
 
-    return SizedBox(
-      width: 28,
-      height: 28,
-      child: CustomPaint(
-        painter: _ArcPainter(score: score, color: color),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 8,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.2,
         ),
       ),
     );
   }
-}
-
-class _ArcPainter extends CustomPainter {
-  final double score;
-  final Color color;
-
-  const _ArcPainter({required this.score, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(2, 2, size.width - 4, size.height - 4);
-    final bg = Paint()
-      ..color = color.withValues(alpha: 0.12)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..strokeCap = StrokeCap.round;
-    final fg = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(rect, -math.pi / 2, 2 * math.pi, false, bg);
-    canvas.drawArc(rect, -math.pi / 2, 2 * math.pi * score, false, fg);
-  }
-
-  @override
-  bool shouldRepaint(covariant _ArcPainter old) => old.score != score || old.color != color;
 }

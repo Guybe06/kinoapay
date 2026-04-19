@@ -3,6 +3,8 @@ abstract final class PlusStrings {
   static const String backLabel = "Accueil";
   static const String title = "Plus d'options";
   static const String subtitle = "Gérez vos outils de paiement et votre compte.";
+  static const String pageTitle = "À votre service.";
+  static const String pageSubtitle = "Gérez vos outils et votre compte.";
   static const String headerSubtitle = "Services et paramètres";
 
   static const String actionContacts = "Contacts";

@@ -71,6 +71,7 @@ class _ContactsViewState extends State<ContactsView> {
                 : ContactsStrings.pageTitle,
             subtitle: ContactsStrings.pageSubtitle,
           ),
+          const SizedBox(height: 20),
           _buildSearchBar(),
           Expanded(
             child: BlocBuilder<ContactsBloc, ContactsState>(

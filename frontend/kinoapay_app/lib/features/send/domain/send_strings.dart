@@ -11,6 +11,11 @@ abstract final class SendStrings {
   static const String backToDashboard = "Accueil";
   static const String backToRecipient = "Destinataire";
 
+  static const String headerTitleRecipient = "Envoyer";
+  static const String headerSubRecipient = "Définissez le bénéficiaire";
+  static const String headerTitleAmount = "Montant";
+  static const String headerSubAmount = "Définissez le virement";
+
   static const String recipientHint = "Numéro sans code pays ou @ID Kinoa";
   static const String phoneHint = "Ex: 06 444 55 66";
   static const String idHint = "Identifiant Kinoa";

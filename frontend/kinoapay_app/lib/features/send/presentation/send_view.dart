@@ -338,11 +338,11 @@ class _SendViewState extends State<SendView> {
                       ? SendStrings.backToRecipient
                       : SendStrings.backToDashboard,
                   title: _step == SendStep.amount
-                      ? SendStrings.stepAmountTitle
-                      : SendStrings.stepRecipientTitle,
+                      ? SendStrings.headerTitleAmount
+                      : SendStrings.headerTitleRecipient,
                   subtitle: _step == SendStep.amount
-                      ? SendStrings.stepAmountSub
-                      : SendStrings.stepRecipientSub,
+                      ? SendStrings.headerSubAmount
+                      : SendStrings.headerSubRecipient,
                 ),
               ),
             ],
