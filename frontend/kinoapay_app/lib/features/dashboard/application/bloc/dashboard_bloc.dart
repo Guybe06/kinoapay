@@ -74,6 +74,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       return;
     }
 
+    emit(DashboardLoadSuccess(
+      stats: (state as DashboardLoadSuccess).stats,
+      transactions: transactions,
+      channels: channels,
+      isStatsRefreshing: true,
+    ));
+
     try {
       final stats = await _dashboardRepository.getStats(
         month: event.month,

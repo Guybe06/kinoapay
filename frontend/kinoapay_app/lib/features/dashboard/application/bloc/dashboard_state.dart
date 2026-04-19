@@ -18,19 +18,30 @@ class DashboardInitial extends DashboardState {}
 class DashboardLoading extends DashboardState {}
 
 /// Indique que les données du tableau de bord ont été chargées avec succès.
+/// [isStatsRefreshing] est true pendant un changement de période :
+/// les données précédentes restent visibles, seule la stats card affiche un skeleton.
 class DashboardLoadSuccess extends DashboardState {
   final DashboardStats stats;
   final List<Transaction> transactions;
   final List<PaymentChannel> channels;
+  final bool isStatsRefreshing;
 
   const DashboardLoadSuccess({
     required this.stats,
     required this.transactions,
     required this.channels,
+    this.isStatsRefreshing = false,
   });
 
+  DashboardLoadSuccess copyWithRefreshing() => DashboardLoadSuccess(
+    stats: stats,
+    transactions: transactions,
+    channels: channels,
+    isStatsRefreshing: true,
+  );
+
   @override
-  List<Object?> get props => [stats, transactions, channels];
+  List<Object?> get props => [stats, transactions, channels, isStatsRefreshing];
 }
 
 /// Signale une erreur lors de la récupération des données du tableau de bord.
