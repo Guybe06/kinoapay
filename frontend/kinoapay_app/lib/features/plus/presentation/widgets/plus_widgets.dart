@@ -28,6 +28,9 @@ class PlusActionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.quinoaDark.withValues(alpha: 0.03),
@@ -101,28 +104,28 @@ class PlusListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelColor = isDestructive
-        ? AppColors.quinoaRed
-        : AppColors.quinoaDark;
+    final labelColor = isDestructive ? AppColors.white : AppColors.quinoaDark;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
-          color: isDestructive
-              ? AppColors.quinoaRed.withValues(alpha: 0.04)
-              : AppColors.white,
+          color: isDestructive ? AppColors.quinoaRed : AppColors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isDestructive
-                ? AppColors.quinoaRed.withValues(alpha: 0.15)
+                ? AppColors.quinoaRed
                 : AppColors.quinoaDark.withValues(alpha: 0.06),
           ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 22),
+            Icon(
+              icon,
+              color: isDestructive ? AppColors.white : color,
+              size: 22,
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -141,7 +144,9 @@ class PlusListCard extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(
-                      color: labelColor.withValues(alpha: 0.45),
+                      color: isDestructive
+                          ? AppColors.white.withValues(alpha: 0.75)
+                          : labelColor.withValues(alpha: 0.45),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -152,7 +157,9 @@ class PlusListCard extends StatelessWidget {
             Icon(
               SolarIconsOutline.altArrowRight,
               size: 16,
-              color: labelColor.withValues(alpha: 0.25),
+              color: isDestructive
+                  ? AppColors.white.withValues(alpha: 0.65)
+                  : labelColor.withValues(alpha: 0.25),
             ),
           ],
         ),
