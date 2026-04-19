@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
-/// Section « Mon compte » : profil, KYC, sécurité, préférences.
+/// Section « Mon compte » : KYC, sécurité, préférences.
 class PlusAccountSection extends StatelessWidget {
   const PlusAccountSection({super.key});
 
@@ -13,14 +12,6 @@ class PlusAccountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PlusListCard(
-          icon: SolarIconsOutline.userCircle,
-          label: PlusStrings.actionProfile,
-          description: PlusStrings.descProfile,
-          color: AppColors.warning,
-          onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-        ),
-        const SizedBox(height: 10),
         PlusListCard(
           icon: SolarIconsOutline.shieldCheck,
           label: PlusStrings.actionKyc,

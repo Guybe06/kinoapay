@@ -101,8 +101,9 @@ class PlusListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelColor =
-        isDestructive ? AppColors.quinoaRed : AppColors.quinoaDark;
+    final labelColor = isDestructive
+        ? AppColors.quinoaRed
+        : AppColors.quinoaDark;
 
     return GestureDetector(
       onTap: onTap,
@@ -121,15 +122,7 @@ class PlusListCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
+            Icon(icon, color: color, size: 22),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
