@@ -56,8 +56,8 @@ abstract final class SendStrings {
   static const String ussdMessage =
       "Veuillez confirmer le retrait des fonds via votre opérateur mobile. L'opération sera validée automatiquement.";
 
-  static const String errorUnsupportedCountry =
-      "Ce numéro n'est pas supporté par kinoaPay pour le moment.";
+  static const String infoUnsupportedCountry =
+      "Ce contact n'est pas encore disponible sur kinoaPay.";
   static const String errorNoAmount = "Entrez un montant valide.";
   static const String errorNoChannel = "Sélectionnez un canal de destination.";
   static const String errorNoSourceAccount =

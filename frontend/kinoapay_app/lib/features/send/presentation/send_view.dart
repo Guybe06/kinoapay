@@ -4,6 +4,7 @@ import "package:flutter_local_notifications/flutter_local_notifications.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
@@ -197,9 +198,7 @@ class _SendViewState extends State<SendView> {
     if (result is Contact) {
       if (result.dialCode.isEmpty) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(SendStrings.errorUnsupportedCountry)),
-        );
+        AppSnackBar.showInfo(context, SendStrings.infoUnsupportedCountry);
         return;
       }
       final match = RecipientByPhoneView.countryCodes.firstWhere(
