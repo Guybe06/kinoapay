@@ -18,6 +18,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     ContactsStarted event,
     Emitter<ContactsState> emit,
   ) async {
+    if (state is ContactsLoadSuccess) return;
     emit(const ContactsLoading());
     try {
       final contacts = await _repository.getContacts();

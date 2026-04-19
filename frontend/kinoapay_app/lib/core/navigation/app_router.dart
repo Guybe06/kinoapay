@@ -107,9 +107,14 @@ class AppRouter {
     }
   }
 
-  static Widget _contactsPage({bool selectionMode = false}) => BlocProvider(
-    create: (_) => ContactsBloc(repository: PhoneContactsRepository()),
+  static Widget _contactsPage({bool selectionMode = false}) => BlocProvider.value(
+    value: _contactsBloc,
     child: ContactsView(selectionMode: selectionMode),
+  );
+
+  /// Instance unique du BLoC contacts — persiste le cache en mémoire pour toute la session.
+  static final ContactsBloc _contactsBloc = ContactsBloc(
+    repository: PhoneContactsRepository(),
   );
 
   static Widget _notificationsPage() => BlocProvider(
