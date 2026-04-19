@@ -72,6 +72,7 @@ class MockDashboardRepository implements DashboardRepository {
         totalSent: 75000,
         totalReceived: 330000,
         txCount: 8,
+        sparkPoints: [18000, 45000, 22000, 120000, 80000, 35000, 50000],
       ),
       ChannelStat(
         type: "AIRTEL",
@@ -79,6 +80,7 @@ class MockDashboardRepository implements DashboardRepository {
         totalSent: 50000,
         totalReceived: 120000,
         txCount: 5,
+        sparkPoints: [5000, 0, 20000, 15000, 40000, 0, 25000],
       ),
     ];
 

@@ -1,8 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/bottom_nav.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/dashboard/presentation/dashboard_view.dart";
 import "package:kinoapay_app/features/plus/presentation/plus_view.dart";
 import "package:kinoapay_app/features/send/presentation/send_view.dart";
@@ -41,8 +44,16 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<Widget> _buildPages(BuildContext context) {
+    final authState = context.read<AuthBloc>().state;
+    final firstName =
+        authState is Authenticated ? (authState.user.firstName ?? "") : "";
+    final kycVerified =
+        authState is Authenticated ? authState.user.kycVerified : false;
+
     return [
       DashboardView(
+        firstName: firstName,
+        kycVerified: kycVerified,
         onNavigateToSend: () => _onTabChanged(AppRoutes.tabTransfer),
       ),
       const SendView(),

@@ -15,6 +15,8 @@ abstract final class DashboardStrings {
   static const String statsLegendReceived = "Reçu";
   static const String statsLegendSent = "Envoyé";
   static const String statsNet = "Net";
+  static const String netPositiveBadge = "NET +";
+  static const String netNegativeBadge = "NET −";
   static const String statsLast30 = "30 derniers jours";
   static const String statsCurrency = "XAF";
 
@@ -62,6 +64,11 @@ abstract final class DashboardStrings {
   static const String quickSend = "Envoyer";
   static const String quickConvert = "Convertir";
   static const String quickMore = "Plus";
+
+  static const String kycBannerTitle = "Vérification requise";
+  static const String kycBannerMessage =
+      "Complétez votre vérification d'identité pour débloquer toutes les fonctionnalités.";
+  static const String kycBannerCta = "Vérifier mon identité";
 
   static const String errorLoad =
       "Impossible de charger les données du tableau de bord";

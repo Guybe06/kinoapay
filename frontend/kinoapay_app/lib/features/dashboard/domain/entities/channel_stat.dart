@@ -7,6 +7,8 @@ class ChannelStat extends Equatable {
   final double totalSent;
   final double totalReceived;
   final int txCount;
+  /// Volumes journaliers pour la sparkline (du plus ancien au plus récent).
+  final List<double> sparkPoints;
 
   const ChannelStat({
     required this.type,
@@ -14,11 +16,14 @@ class ChannelStat extends Equatable {
     required this.totalSent,
     required this.totalReceived,
     required this.txCount,
+    this.sparkPoints = const [],
   });
 
   double get total => totalSent + totalReceived;
   double get net => totalReceived - totalSent;
 
   @override
-  List<Object?> get props => [type, label, totalSent, totalReceived, txCount];
+  List<Object?> get props => [
+    type, label, totalSent, totalReceived, txCount, sparkPoints,
+  ];
 }
