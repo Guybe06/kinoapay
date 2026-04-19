@@ -16,7 +16,6 @@ import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_social_row.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_signup_link.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Gère l'authentification des utilisateurs existants.
 class SignInView extends StatefulWidget {
@@ -32,10 +31,10 @@ class _SignInViewState extends State<SignInView> {
   final _formKey = GlobalKey<FormState>();
   bool _navigating = false;
 
-  void _navigateTo(String route, {Object? arguments}) {
-    if (_navigating) return;
+  void _navigateTo(String route) {
+    if (_navigating || !mounted) return;
     _navigating = true;
-    Navigator.pushNamed(context, route, arguments: arguments).then((_) => _navigating = false);
+    Navigator.pushNamed(context, route).then((_) => _navigating = false);
   }
 
   @override
@@ -57,14 +56,6 @@ class _SignInViewState extends State<SignInView> {
     }
   }
 
-  void _handleBack(BuildContext context) {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
-    }
-  }
-
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()));
@@ -73,22 +64,18 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, r) => _handleBack(context),
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Scaffold(
-          backgroundColor: AppColors.quinoaCream,
-          body: SafeArea(
-            child: BlocConsumer<AuthBloc, AuthState>(
-              listener: _onState,
-              builder: (context, state) => Column(
-                children: [
-                  AuthScreenHeader(onBack: () => _handleBack(context)),
-                  Expanded(child: _buildBody(context, state)),
-                ],
-              ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: AppColors.quinoaCream,
+        body: SafeArea(
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: _onState,
+            builder: (context, state) => Column(
+              children: [
+                const AuthScreenHeader(),
+                Expanded(child: _buildBody(context, state)),
+              ],
             ),
           ),
         ),
@@ -105,38 +92,23 @@ class _SignInViewState extends State<SignInView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 0,
-              child: const Text(AuthStrings.signinTitle, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
-            ),
+            const Text(AuthStrings.signinTitle, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
             const SizedBox(height: 12),
-            StaggeredEntrance(
-              index: 1,
-              child: Text(AuthStrings.signinSubtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
-            ),
+            Text(AuthStrings.signinSubtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 2,
-              child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.signinEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
-            ),
+            AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.signinEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 3,
-              child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.signinPasswordHint, obscureText: true, validator: AuthValidator.validatePassword),
-            ),
+            AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.signinPasswordHint, obscureText: true, validator: AuthValidator.validatePassword),
             const SizedBox(height: 16),
-            StaggeredEntrance(index: 4, child: AuthForgotPasswordLink(onTap: () => _navigateTo(AppRoutes.forgotPassword))),
+            AuthForgotPasswordLink(onTap: () => _navigateTo(AppRoutes.forgotPassword)),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 5,
-              child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
-            ),
+            PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
             const SizedBox(height: 32),
-            const StaggeredEntrance(index: 6, child: AuthSocialDivider()),
+            const AuthSocialDivider(),
             const SizedBox(height: 20),
-            const StaggeredEntrance(index: 7, child: AuthSocialRow()),
+            const AuthSocialRow(),
             const SizedBox(height: 40),
-            StaggeredEntrance(index: 8, child: AuthSignupLink(onTap: () => _navigateTo(AppRoutes.signup))),
+            AuthSignupLink(onTap: () => _navigateTo(AppRoutes.signup)),
             const SizedBox(height: 32),
           ],
         ),
