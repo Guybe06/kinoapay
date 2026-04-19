@@ -8,7 +8,6 @@
     "description": "KINOPAY P2P mobile money client app",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
-    "permissions": ["camera"],
     "icons": [
         {
             "src": "icons/Icon-192.png",

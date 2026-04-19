@@ -1,12 +1,8 @@
-import "package:flutter/foundation.dart" show kIsWeb;
 import "package:flutter_secure_storage/flutter_secure_storage.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
 /// Stockage sécurisé persistant (tokens, identifiants, préférences).
-/// Sur mobile : flutter_secure_storage (chiffrement natif).
-/// Sur web : shared_preferences (localStorage — Web Crypto non disponible sur HTTP).
 class SecureStorageService {
-  final FlutterSecureStorage _mobileStorage;
+  final FlutterSecureStorage _storage;
 
   static const String _accessTokenKey = "access_token";
   static const String _refreshTokenKey = "refresh_token";
@@ -14,46 +10,14 @@ class SecureStorageService {
   static const String _firstOpenAppKey = "first_open_app";
   static const String _channelsSetupKey = "channels_setup_done";
 
-  SecureStorageService({
+  const SecureStorageService({
     FlutterSecureStorage storage = const FlutterSecureStorage(),
-  }) : _mobileStorage = storage;
+  }) : _storage = storage;
 
-  Future<SharedPreferences> get _webPrefs => SharedPreferences.getInstance();
-
-  Future<void> write(String key, String value) async {
-    if (kIsWeb) {
-      final prefs = await _webPrefs;
-      await prefs.setString(key, value);
-    } else {
-      await _mobileStorage.write(key: key, value: value);
-    }
-  }
-
-  Future<String?> read(String key) async {
-    if (kIsWeb) {
-      final prefs = await _webPrefs;
-      return prefs.getString(key);
-    }
-    return _mobileStorage.read(key: key);
-  }
-
-  Future<void> delete(String key) async {
-    if (kIsWeb) {
-      final prefs = await _webPrefs;
-      await prefs.remove(key);
-    } else {
-      await _mobileStorage.delete(key: key);
-    }
-  }
-
-  Future<void> clearAll() async {
-    if (kIsWeb) {
-      final prefs = await _webPrefs;
-      await prefs.clear();
-    } else {
-      await _mobileStorage.deleteAll();
-    }
-  }
+  Future<void> write(String key, String value) => _storage.write(key: key, value: value);
+  Future<String?> read(String key) => _storage.read(key: key);
+  Future<void> delete(String key) => _storage.delete(key: key);
+  Future<void> clearAll() => _storage.deleteAll();
 
   Future<void> saveTokens({required String accessToken, required String refreshToken}) async {
     await write(_accessTokenKey, accessToken);

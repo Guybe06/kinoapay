@@ -1,4 +1,3 @@
-import "package:flutter/foundation.dart" show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
@@ -99,10 +98,7 @@ class DashboardRecentContacts extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  if (!kIsWeb &&
-                    (defaultTargetPlatform == TargetPlatform.android ||
-                      defaultTargetPlatform == TargetPlatform.iOS))
-                    _AddContactBtn(onTap: onAdd),
+                  _AddContactBtn(onTap: onAdd),
                   const SizedBox(width: 12),
                   ...contacts.asMap().entries.map(
                     (entry) => Padding(
