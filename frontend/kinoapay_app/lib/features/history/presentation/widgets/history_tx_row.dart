@@ -1,11 +1,12 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_detail_sheet.dart";
 
-/// Ligne de transaction épurée — icône directionnelle, nom, route canal, montant et statut.
+/// Ligne de transaction style terminal — dense, statut toujours visible, identifiant affiché.
 class HistoryTxRow extends StatelessWidget {
   final Transaction tx;
 
@@ -15,14 +16,12 @@ class HistoryTxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSent = tx.direction == "sent";
     final isFailed = tx.status == "FAILED";
-    final isPending = tx.status == "PENDING" || tx.status == "PROCESSING";
-    final fmt = NumberFormat("#,###", "fr_FR");
     final timeFmt = DateFormat("HH:mm", "fr_FR");
     final name = isSent
         ? (tx.receiverName ?? tx.receiverIdentifier)
         : (tx.senderName ?? tx.receiverIdentifier);
     final amountColor = isFailed
-        ? AppColors.quinoaDark.withValues(alpha: 0.30)
+        ? AppColors.quinoaDark.withValues(alpha: 0.28)
         : isSent
             ? AppColors.quinoaDark
             : AppColors.accentDark;
@@ -37,8 +36,9 @@ class HistoryTxRow extends StatelessWidget {
       ),
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _DirectionIcon(isSent: isSent, status: tx.status),
             const SizedBox(width: 12),
@@ -46,67 +46,65 @@ class HistoryTxRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.2,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(
-                        "${tx.sourceChannel} → ${tx.destinationChannel}",
-                        style: TextStyle(
-                          color: AppColors.quinoaDark.withValues(alpha: 0.35),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                      Expanded(
                         child: Text(
-                          "·",
-                          style: TextStyle(
-                            color: AppColors.quinoaDark.withValues(alpha: 0.18),
-                            fontSize: 11,
+                          name,
+                          style: const TextStyle(
+                            color: AppColors.quinoaDark,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.2,
                           ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
-                        timeFmt.format(tx.startedAt),
+                        "$sign ${AmountFormatter.format(tx.amount)} ${HistoryStrings.currency}",
                         style: TextStyle(
-                          color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                          fontSize: 11,
+                          color: amountColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.4,
+                          fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          tx.receiverIdentifier,
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.50),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _StatusDot(status: tx.status),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "${tx.sourceChannel} → ${tx.destinationChannel}  ·  ${timeFmt.format(tx.startedAt)}",
+                    style: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "$sign ${fmt.format(tx.amount)} XAF",
-                  style: TextStyle(
-                    color: amountColor,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                if (isPending || isFailed) ...[
-                  const SizedBox(height: 4),
-                  _StatusPill(status: tx.status),
-                ],
-              ],
             ),
           ],
         ),
@@ -115,7 +113,7 @@ class HistoryTxRow extends StatelessWidget {
   }
 }
 
-/// Icône carrée arrondie indiquant la direction et le statut de la transaction.
+/// Icône directionnelle — carrée arrondie, couleur selon direction et statut.
 class _DirectionIcon extends StatelessWidget {
   final bool isSent;
   final String status;
@@ -133,63 +131,75 @@ class _DirectionIcon extends StatelessWidget {
 
     if (isFailed) {
       bg = AppColors.quinoaRed.withValues(alpha: 0.07);
-      iconColor = AppColors.quinoaRed.withValues(alpha: 0.55);
+      iconColor = AppColors.quinoaRed.withValues(alpha: 0.50);
       icon = Icons.close_rounded;
     } else if (isPending) {
       bg = AppColors.warning.withValues(alpha: 0.08);
       iconColor = AppColors.warning;
       icon = Icons.schedule_rounded;
     } else if (isSent) {
-      bg = AppColors.quinoaDark.withValues(alpha: 0.06);
-      iconColor = AppColors.quinoaDark.withValues(alpha: 0.50);
-      icon = Icons.arrow_upward_rounded;
+      bg = AppColors.quinoaDark.withValues(alpha: 0.05);
+      iconColor = AppColors.quinoaDark.withValues(alpha: 0.45);
+      icon = Icons.north_rounded;
     } else {
-      bg = AppColors.success.withValues(alpha: 0.08);
+      bg = AppColors.success.withValues(alpha: 0.07);
       iconColor = AppColors.success;
-      icon = Icons.arrow_downward_rounded;
+      icon = Icons.south_rounded;
     }
 
     return Container(
-      width: 40,
-      height: 40,
+      width: 36,
+      height: 36,
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Icon(icon, size: 17, color: iconColor),
+      child: Icon(icon, size: 15, color: iconColor),
     );
   }
 }
 
-/// Petit badge de statut non-complété affiché sous le montant.
-class _StatusPill extends StatelessWidget {
+/// Point de statut coloré — toujours visible pour toutes les transactions.
+class _StatusDot extends StatelessWidget {
   final String status;
 
-  const _StatusPill({required this.status});
+  const _StatusDot({required this.status});
+
+  Color get _color => switch (status) {
+        "COMPLETED" => AppColors.success,
+        "PENDING" || "PROCESSING" => AppColors.warning,
+        _ => AppColors.quinoaRed,
+      };
+
+  String get _label => switch (status) {
+        "COMPLETED" => HistoryStrings.sheetStatusCompleted,
+        "PENDING" => HistoryStrings.sheetStatusPending,
+        "PROCESSING" => HistoryStrings.sheetStatusProcessing,
+        _ => HistoryStrings.sheetStatusFailed,
+      };
 
   @override
-  Widget build(BuildContext context) {
-    final isPending = status == "PENDING" || status == "PROCESSING";
-    final color = isPending ? AppColors.warning : AppColors.quinoaRed;
-    final label = isPending
-        ? HistoryStrings.sheetStatusPending
-        : HistoryStrings.sheetStatusFailed;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: color,
-          fontSize: 9,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.2,
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(
+              color: _color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            _label,
+            style: TextStyle(
+              color: _color,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      );
 }

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_state.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
@@ -12,7 +12,6 @@ class HistoryStatsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat.compact(locale: "fr_FR");
     final isPositive = state.net >= 0;
     final netColor = isPositive ? AppColors.accentDark : AppColors.quinoaRed;
 
@@ -27,14 +26,14 @@ class HistoryStatsBar extends StatelessWidget {
         children: [
           _StatCell(
             label: HistoryStrings.statsSent,
-            value: "${fmt.format(state.totalSent)} XAF",
+            value: AmountFormatter.compactWithCurrency(state.totalSent),
             icon: "↑",
             color: AppColors.quinoaCream.withValues(alpha: 0.65),
           ),
           _Divider(),
           _StatCell(
             label: HistoryStrings.statsReceived,
-            value: "${fmt.format(state.totalReceived)} XAF",
+            value: AmountFormatter.compactWithCurrency(state.totalReceived),
             icon: "↓",
             color: AppColors.quinoaGold,
             center: true,
@@ -42,7 +41,7 @@ class HistoryStatsBar extends StatelessWidget {
           _Divider(),
           _StatCell(
             label: HistoryStrings.statsNet,
-            value: "${isPositive ? "+" : "−"}${fmt.format(state.net.abs())} XAF",
+            value: "${isPositive ? "+" : "−"}${AmountFormatter.compactWithCurrency(state.net.abs())}",
             icon: "=",
             color: netColor,
             alignRight: true,

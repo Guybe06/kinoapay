@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
@@ -99,7 +100,7 @@ class ReceiptView extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "$sign ${NumberFormat("#,###", "fr_FR").format(tx.amount)} ${tx.currency}",
+          "$sign ${AmountFormatter.withCurrency(tx.amount, tx.currency)}",
           style: TextStyle(color: color, fontSize: 36, fontWeight: FontWeight.w900, letterSpacing: -1.5),
         ),
         const SizedBox(height: 4),
@@ -120,12 +121,11 @@ class ReceiptView extends StatelessWidget {
   }
 
   Widget _buildFeesCard(Transaction tx) {
-    final fmt = NumberFormat("#,###", "fr_FR");
     return _Card(children: [
-      _Row(label: "Montant envoyé", value: "${fmt.format(tx.fees.amountDebited)} ${tx.currency}"),
-      _Row(label: "Frais kinoaPay", value: "${fmt.format(tx.fees.platformFee)} ${tx.currency}"),
-      _Row(label: "Frais opérateur", value: "${fmt.format(tx.fees.sourceOperatorFee + tx.fees.destinationOperatorFee)} ${tx.currency}"),
-      _Row(label: "Montant reçu", value: "${fmt.format(tx.fees.amountReceived)} ${tx.currency}", bold: true),
+      _Row(label: "Montant envoyé", value: AmountFormatter.withCurrency(tx.fees.amountDebited, tx.currency)),
+      _Row(label: "Frais kinoaPay", value: AmountFormatter.withCurrency(tx.fees.platformFee, tx.currency)),
+      _Row(label: "Frais opérateur", value: AmountFormatter.withCurrency(tx.fees.sourceOperatorFee + tx.fees.destinationOperatorFee, tx.currency)),
+      _Row(label: "Montant reçu", value: AmountFormatter.withCurrency(tx.fees.amountReceived, tx.currency), bold: true),
     ]);
   }
 

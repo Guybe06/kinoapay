@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_models.dart";
@@ -18,7 +18,6 @@ class DashboardTxRow extends StatelessWidget {
         ? (tx.senderName ?? tx.receiverIdentifier)
         : (tx.receiverName ?? tx.receiverIdentifier);
 
-    final fmt = NumberFormat("#,##0", "en_US");
     final String timeLabel = dashboardTxRelativeDate(tx.startedAt);
     final String channel =
         "${tx.sourceChannel} → ${tx.destinationChannel}";
@@ -73,7 +72,7 @@ class DashboardTxRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${isReceived ? "+" : "−"} ${fmt.format(tx.amount).trim()}",
+                "${isReceived ? "+" : "−"} ${AmountFormatter.format(tx.amount)}",
                 style: TextStyle(
                   color: amountColor,
                   fontSize: 15,

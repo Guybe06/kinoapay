@@ -1,7 +1,7 @@
 import "dart:math" as math;
 import "package:flutter/material.dart";
-import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/channel_stat.dart";
 
@@ -25,7 +25,6 @@ class DashboardChannelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = NumberFormat.compact(locale: "fr_FR");
     final brand = brandColor(stat.type);
     final isPositive = stat.net >= 0;
     final netColor = isPositive
@@ -103,7 +102,7 @@ class DashboardChannelCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            "${compact.format(stat.total)} XAF",
+            AmountFormatter.compactWithCurrency(stat.total),
             style: const TextStyle(
               color: AppColors.quinoaDark,
               fontSize: 15,

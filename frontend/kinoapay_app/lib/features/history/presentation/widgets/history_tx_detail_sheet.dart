@@ -1,9 +1,9 @@
-import "dart:convert";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:intl/intl.dart";
+import "package:intl/intl.dart" show DateFormat;
 import "package:qr_flutter/qr_flutter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
@@ -16,14 +16,30 @@ class HistoryTxDetailSheet extends StatelessWidget {
 
   const HistoryTxDetailSheet({super.key, required this.tx});
 
-  String get _qrData => jsonEncode({
-        "id": tx.transactionId,
-        "amt": tx.amount.toInt(),
-        "dir": tx.direction,
-        "from": tx.sourceChannel,
-        "to": tx.destinationChannel,
-        "ts": tx.startedAt.toIso8601String(),
-      });
+  String get _qrData {
+    final isSent = tx.direction == "sent";
+    final dateFmt = DateFormat("d MMMM yyyy à HH:mm", "fr_FR");
+    final status = switch (tx.status) {
+      "COMPLETED" => HistoryStrings.sheetStatusCompleted,
+      "PENDING" => HistoryStrings.sheetStatusPending,
+      "PROCESSING" => HistoryStrings.sheetStatusProcessing,
+      _ => HistoryStrings.sheetStatusFailed,
+    };
+    final dir = isSent ? "Envoyé à" : "Reçu de";
+    final who = isSent
+        ? (tx.receiverName ?? tx.receiverIdentifier)
+        : (tx.senderName ?? tx.receiverIdentifier);
+
+    return [
+      "REÇU KINOAPAY",
+      "Réf: ${tx.transactionId}",
+      "Montant: ${AmountFormatter.withCurrency(tx.amount)}",
+      "$dir: $who (${tx.receiverIdentifier})",
+      "Canal: ${tx.sourceChannel} → ${tx.destinationChannel}",
+      "Date: ${dateFmt.format(tx.startedAt)}",
+      "Statut: $status",
+    ].join("\n");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +115,6 @@ class _AmountHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSent = tx.direction == "sent";
-    final fmt = NumberFormat("#,###", "fr_FR");
     final sign = isSent ? "−" : "+";
     final amtColor = tx.status == "FAILED"
         ? AppColors.quinoaDark.withValues(alpha: 0.35)
@@ -170,7 +185,7 @@ class _AmountHeader extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "$sign ${fmt.format(tx.amount)} ${HistoryStrings.currency}",
+          "$sign ${AmountFormatter.format(tx.amount)} ${HistoryStrings.currency}",
           style: TextStyle(
             color: amtColor,
             fontSize: 38,
@@ -229,7 +244,6 @@ class _FeeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat("#,###", "fr_FR");
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -242,7 +256,7 @@ class _FeeRow extends StatelessWidget {
           ),
         ),
         Text(
-          "${fmt.format(fees.totalFee)} ${HistoryStrings.currency}",
+          "${AmountFormatter.withCurrency(fees.totalFee)}",
           style: const TextStyle(
             color: AppColors.quinoaDark,
             fontSize: 12,

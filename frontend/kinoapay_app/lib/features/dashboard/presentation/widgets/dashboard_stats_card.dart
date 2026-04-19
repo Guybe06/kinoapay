@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
+import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
@@ -67,7 +67,6 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat("#,##0", "en_US");
     final net = widget.stats.netFlow;
     final isPositive = net >= 0;
 
@@ -108,7 +107,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
             children: [
               Expanded(
                 child: Text(
-                  fmt.format(net.abs()),
+                  AmountFormatter.format(net.abs()),
                   style: const TextStyle(
                     color: AppColors.quinoaCream,
                     fontSize: 52,
@@ -147,7 +146,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsOutgoing,
-                  amount: fmt.format(widget.stats.totalSent),
+                  amount: AmountFormatter.format(widget.stats.totalSent),
                   icon: SolarIconsOutline.arrowRightUp,
                   color: AppColors.quinoaCream.withValues(alpha: 0.65),
                 ),
@@ -160,7 +159,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsIncoming,
-                  amount: fmt.format(widget.stats.totalReceived),
+                  amount: AmountFormatter.format(widget.stats.totalReceived),
                   icon: SolarIconsOutline.arrowLeftDown,
                   color: AppColors.quinoaGold,
                   center: true,
@@ -175,7 +174,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsNet,
                   amount:
-                      "${isPositive ? "+" : "−"}${fmt.format(net.abs())}",
+                      "${isPositive ? "+" : "−"}${AmountFormatter.format(net.abs())}",
                   icon: isPositive
                       ? SolarIconsOutline.graphUp
                       : SolarIconsOutline.graphDown,
