@@ -195,6 +195,13 @@ class _SendViewState extends State<SendView> {
       arguments: const ContactsArgs(selectionMode: true),
     );
     if (result is Contact) {
+      if (result.dialCode.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(SendStrings.errorUnsupportedCountry)),
+        );
+        return;
+      }
       final match = RecipientByPhoneView.countryCodes.firstWhere(
         (c) => c.dialCode == result.dialCode,
         orElse: () => _selectedCountry,
