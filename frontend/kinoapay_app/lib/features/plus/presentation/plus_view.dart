@@ -10,78 +10,43 @@ import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_sections.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
-/// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
-class _SectionsBlock extends StatelessWidget {
-  final VoidCallback onSignOut;
-  const _SectionsBlock({required this.onSignOut});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            _SectionDot(label: PlusStrings.sectionAccount),
-            const SizedBox(width: 16),
-            _SectionDot(label: PlusStrings.sectionSupport),
-            const SizedBox(width: 16),
-            _SectionDot(label: PlusStrings.sectionSession),
-          ],
-        ),
-        const SizedBox(height: 14),
-        PlusAccountSection(),
-        const SizedBox(height: 10),
-        PlusSupportSection(),
-        const SizedBox(height: 10),
-        PlusListCard(
-          icon: SolarIconsOutline.logout,
-          label: PlusStrings.actionSignOut,
-          description: PlusStrings.descSignOut,
-          color: AppColors.quinoaRed,
-          isDestructive: true,
-          onTap: onSignOut,
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionDot extends StatelessWidget {
-  final String label;
-  const _SectionDot({required this.label});
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        width: 5,
-        height: 5,
-        decoration: BoxDecoration(
-          color: AppColors.quinoaDark.withValues(alpha: 0.20),
-          shape: BoxShape.circle,
-        ),
-      ),
-      const SizedBox(width: 5),
-      Text(
-        label,
-        style: TextStyle(
-          color: AppColors.quinoaDark.withValues(alpha: 0.35),
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-        ),
-      ),
-    ],
-  );
-}
-
 /// Vue principale de la feature Plus.
-class PlusView extends StatelessWidget {
+class PlusView extends StatefulWidget {
   final int unreadNotifications;
 
   const PlusView({super.key, this.unreadNotifications = 0});
+
+  @override
+  State<PlusView> createState() => _PlusViewState();
+}
+
+class _PlusViewState extends State<PlusView> {
+  final _scrollController = ScrollController();
+  bool _headerVisible = true;
+  double _lastOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    final delta = offset - _lastOffset;
+    _lastOffset = offset;
+    if (delta > 4 && _headerVisible) {
+      setState(() => _headerVisible = false);
+    } else if (delta < -4 && !_headerVisible) {
+      setState(() => _headerVisible = true);
+    }
+  }
 
   Future<void> _confirmSignOut(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -131,83 +96,180 @@ class PlusView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
-      appBar: AppHeader(unreadNotifications: unreadNotifications),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 28, 20, 140),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              PlusStrings.title,
-              style: TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
-                height: 1.1,
+      body: Stack(
+        clipBehavior: Clip.hardEdge,
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.fromLTRB(20, 72, 20, 140),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    PlusStrings.title,
+                    style: TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.8,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    PlusStrings.subtitle,
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 1.1,
+                    children: [
+                      PlusActionCard(
+                        icon: SolarIconsOutline.scanner,
+                        label: PlusStrings.actionScan,
+                        description: PlusStrings.descScan,
+                        color: AppColors.quinoaDark,
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
+                      ),
+                      PlusActionCard(
+                        icon: SolarIconsOutline.cardReceive,
+                        label: PlusStrings.actionRequest,
+                        description: PlusStrings.descRequest,
+                        color: AppColors.pending,
+                        onTap: () {},
+                      ),
+                      PlusActionCard(
+                        icon: SolarIconsOutline.history,
+                        label: PlusStrings.actionHistory,
+                        description: PlusStrings.descHistory,
+                        color: AppColors.quinoaGold,
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.history),
+                      ),
+                      PlusActionCard(
+                        icon: SolarIconsOutline.card2,
+                        label: PlusStrings.actionChannels,
+                        description: PlusStrings.descChannels,
+                        color: AppColors.success,
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
+                      ),
+                      PlusActionCard(
+                        icon: SolarIconsOutline.usersGroupTwoRounded,
+                        label: PlusStrings.actionContacts,
+                        description: PlusStrings.descContacts,
+                        color: AppColors.quinoaDark,
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              PlusStrings.subtitle,
-              style: TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 32),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 1.1,
-              children: [
-                PlusActionCard(
-                  icon: SolarIconsOutline.scanner,
-                  label: PlusStrings.actionScan,
-                  description: PlusStrings.descScan,
-                  color: AppColors.quinoaDark,
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
-                ),
-                PlusActionCard(
-                  icon: SolarIconsOutline.cardReceive,
-                  label: PlusStrings.actionRequest,
-                  description: PlusStrings.descRequest,
-                  color: AppColors.pending,
-                  onTap: () {},
-                ),
-                PlusActionCard(
-                  icon: SolarIconsOutline.history,
-                  label: PlusStrings.actionHistory,
-                  description: PlusStrings.descHistory,
-                  color: AppColors.quinoaGold,
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.history),
-                ),
-                PlusActionCard(
-                  icon: SolarIconsOutline.card2,
-                  label: PlusStrings.actionChannels,
-                  description: PlusStrings.descChannels,
-                  color: AppColors.success,
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
-                ),
-                PlusActionCard(
-                  icon: SolarIconsOutline.usersGroupTwoRounded,
-                  label: PlusStrings.actionContacts,
-                  description: PlusStrings.descContacts,
-                  color: AppColors.quinoaDark,
-                  onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
-          ],
+          ),
+          _buildFloatingHeader(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloatingHeader() {
+    final topInset = MediaQuery.of(context).padding.top;
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeIn,
+      top: _headerVisible ? 0 : -(56 + topInset),
+      left: 0,
+      right: 0,
+      child: AnimatedOpacity(
+        opacity: _headerVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 80),
+        curve: Curves.easeIn,
+        child: Material(
+          color: AppColors.quinoaCream,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          child: AppHeader(unreadNotifications: widget.unreadNotifications),
         ),
       ),
     );
   }
+}
+
+/// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
+class _SectionsBlock extends StatelessWidget {
+  final VoidCallback onSignOut;
+  const _SectionsBlock({required this.onSignOut});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _SectionDot(label: PlusStrings.sectionAccount),
+            const SizedBox(width: 16),
+            _SectionDot(label: PlusStrings.sectionSupport),
+            const SizedBox(width: 16),
+            _SectionDot(label: PlusStrings.sectionSession),
+          ],
+        ),
+        const SizedBox(height: 14),
+        const PlusAccountSection(),
+        const SizedBox(height: 10),
+        const PlusSupportSection(),
+        const SizedBox(height: 10),
+        PlusListCard(
+          icon: SolarIconsOutline.logout,
+          label: PlusStrings.actionSignOut,
+          description: PlusStrings.descSignOut,
+          color: AppColors.quinoaRed,
+          isDestructive: true,
+          onTap: onSignOut,
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionDot extends StatelessWidget {
+  final String label;
+  const _SectionDot({required this.label});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 5,
+        height: 5,
+        decoration: BoxDecoration(
+          color: AppColors.quinoaDark.withValues(alpha: 0.20),
+          shape: BoxShape.circle,
+        ),
+      ),
+      const SizedBox(width: 5),
+      Text(
+        label,
+        style: TextStyle(
+          color: AppColors.quinoaDark.withValues(alpha: 0.35),
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.2,
+        ),
+      ),
+    ],
+  );
 }
