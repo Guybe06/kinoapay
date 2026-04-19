@@ -16,7 +16,10 @@ class MockAuthRepository implements AuthRepository {
       account: const UserAccount(
         id: "seed_1",
         email: "test@kinoapay.com",
-        fullName: "Compte test kinoaPay",
+        fullName: "Jean Dupont",
+        firstName: "Jean",
+        lastName: "Dupont",
+        kycVerified: true,
       ),
     ),
   };
