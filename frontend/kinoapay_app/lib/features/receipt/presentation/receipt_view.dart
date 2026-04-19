@@ -8,12 +8,54 @@ import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/core/widgets/brand_logo_row.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
+import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 
-
 /// Écran reçu de transaction : détail complet + partage.
-class ReceiptView extends StatelessWidget {
+class ReceiptView extends StatefulWidget {
   const ReceiptView({super.key});
+
+  @override
+  State<ReceiptView> createState() => _ReceiptViewState();
+}
+
+class _ReceiptViewState extends State<ReceiptView> {
+  final _scrollController = ScrollController();
+  bool _headerVisible = true;
+  double _lastOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+
+    // Si on est en haut de la page (ou en overscroll), on force le header visible
+    if (offset <= 0) {
+      if (!_headerVisible) setState(() => _headerVisible = true);
+      _lastOffset = offset;
+      return;
+    }
+
+    final delta = offset - _lastOffset;
+    _lastOffset = offset;
+
+    // Réaction immédiate sans délai d'offset
+    if (delta > 4 && _headerVisible) {
+      setState(() => _headerVisible = false);
+    } else if (delta < -4 && !_headerVisible) {
+      setState(() => _headerVisible = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,53 +68,64 @@ class ReceiptView extends StatelessWidget {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: AppColors.quinoaCream,
-        body: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(context),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      StaggeredEntrance(index: 0, child: _buildStatusBadge(statusLabel, statusColor)),
-                      const SizedBox(height: 20),
-                      StaggeredEntrance(index: 1, child: _buildAmount(tx, isOutgoing)),
-                      const SizedBox(height: 28),
-                      StaggeredEntrance(index: 2, child: _buildDetailsCard(tx, isOutgoing)),
-                      const SizedBox(height: 16),
-                      StaggeredEntrance(index: 3, child: _buildFeesCard(tx)),
-                      const SizedBox(height: 16),
-                      StaggeredEntrance(index: 4, child: _buildRefCard(tx)),
-                      const SizedBox(height: 32),
-                      StaggeredEntrance(index: 5, child: PrimaryButton(text: "Fermer", onPressed: () => Navigator.pop(context))),
-                      const SizedBox(height: 32),
-                    ],
-                  ),
+        body: Stack(
+          children: [
+            // Contenu principal
+            SafeArea(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.fromLTRB(24, 80, 24, 32),
+                child: Column(
+                  children: [
+                    StaggeredEntrance(index: 0, child: _buildStatusBadge(statusLabel, statusColor)),
+                    const SizedBox(height: 20),
+                    StaggeredEntrance(index: 1, child: _buildAmount(tx, isOutgoing)),
+                    const SizedBox(height: 28),
+                    StaggeredEntrance(index: 2, child: _buildDetailsCard(tx, isOutgoing)),
+                    const SizedBox(height: 16),
+                    StaggeredEntrance(index: 3, child: _buildFeesCard(tx)),
+                    const SizedBox(height: 16),
+                    StaggeredEntrance(index: 4, child: _buildRefCard(tx)),
+                    const SizedBox(height: 32),
+                    StaggeredEntrance(
+                      index: 5,
+                      child: PrimaryButton(
+                        text: "Fermer",
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // Header Flottant
+            _buildFloatingHeader(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(SolarIconsOutline.altArrowLeft, color: AppColors.quinoaDark),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const Spacer(),
-          const BrandLogoRow(size: BrandSize.sm, color: AppColors.quinoaDark, iconColor: AppColors.quinoaGold),
-          const Spacer(flex: 2),
-        ],
-      ),
+  Widget _buildFloatingHeader() {
+    final topInset = MediaQuery.of(context).padding.top;
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: _headerVisible
+          ? AppBackHeader(
+              onBack: () => Navigator.pop(context),
+              backLabel: "Retour",
+              title: "Reçu",
+              subtitle: "Détails de la transaction",
+              trailing: const BrandLogoRow(
+                size: BrandSize.sm,
+                color: AppColors.quinoaDark,
+                iconColor: AppColors.quinoaGold,
+              ),
+            )
+          : SizedBox(height: topInset),
     );
   }
 
@@ -168,13 +221,26 @@ class _Row extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(child: Text(label, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5), fontSize: 13, fontWeight: FontWeight.w500))),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.5),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
           const SizedBox(width: 12),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: TextStyle(color: AppColors.quinoaDark, fontSize: 14, fontWeight: bold ? FontWeight.w900 : FontWeight.w700),
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 14,
+                fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
+              ),
             ),
           ),
         ],

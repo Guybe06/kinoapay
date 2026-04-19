@@ -40,6 +40,14 @@ class _HistoryViewState extends State<HistoryView> {
 
   void _onScroll() {
     final offset = _scrollController.offset;
+
+    // Si on est en haut de la page (ou en overscroll), on force le header visible
+    if (offset <= 0) {
+      if (!_headerVisible) setState(() => _headerVisible = true);
+      _lastOffset = offset;
+      return;
+    }
+
     final delta = offset - _lastOffset;
     _lastOffset = offset;
     if (delta > 4 && _headerVisible) {
@@ -83,7 +91,7 @@ class _HistoryViewState extends State<HistoryView> {
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                const SliverToBoxAdapter(child: SizedBox(height: 72)),
+                const SliverToBoxAdapter(child: SizedBox(height: 52)),
               const SliverToBoxAdapter(
                 child: AppPageTitle(
                   title: HistoryStrings.pageTitle,
