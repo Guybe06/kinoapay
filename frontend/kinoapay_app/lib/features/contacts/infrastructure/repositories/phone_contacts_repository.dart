@@ -5,9 +5,18 @@ import "package:kinoapay_app/features/contacts/domain/repositories/contacts_repo
 import "package:kinoapay_app/features/contacts/infrastructure/users_seed.dart";
 
 /// Lit le répertoire téléphonique et marque comme inscrits les numéros présents dans [usersByNormalizedPhone] (normalisés).
+/// Cache statique en mémoire : les contacts ne sont lus qu'une seule fois par session.
+/// Appeler [clearCache] pour forcer un rechargement (ex. pull-to-refresh).
 class PhoneContactsRepository implements ContactsRepository {
+  static List<Contact>? _cache;
+
+  /// Vide le cache pour forcer le rechargement au prochain appel de [getContacts].
+  static void clearCache() => _cache = null;
+
   @override
   Future<List<Contact>> getContacts() async {
+    if (_cache != null) return _cache!;
+
     try {
       final status = await Permission.contacts.request();
       if (!status.isGranted) return [];
@@ -45,6 +54,7 @@ class PhoneContactsRepository implements ContactsRepository {
         return a.fullName.compareTo(b.fullName);
       });
 
+      _cache = contacts;
       return contacts;
     } catch (_) {
       return [];
