@@ -12,7 +12,6 @@ import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart"
 import "package:kinoapay_app/features/accounts/domain/auth_strings.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Écran 3 : saisie du nouveau mot de passe + confirmation.
 class ForgotPasswordResetView extends StatefulWidget {
@@ -98,61 +97,46 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 0,
-              child: const Text(
-                AuthStrings.resetNewPassTitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  height: 1.0,
-                  letterSpacing: -2,
-                ),
+            const Text(
+              AuthStrings.resetNewPassTitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 42,
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: -2,
               ),
             ),
             const SizedBox(height: 12),
-            StaggeredEntrance(
-              index: 1,
-              child: Text(
-                AuthStrings.resetNewPassSubtitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                  fontSize: 15,
-                  height: 1.4,
-                ),
+            Text(
+              AuthStrings.resetNewPassSubtitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 15,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 2,
-              child: AuthTextField(
-                controller: _passCtrl,
-                label: AuthStrings.resetNewPassLabel,
-                hintText: AuthStrings.resetNewPassHint,
-                obscureText: true,
-                validator: AuthValidator.validatePassword,
-              ),
+            AuthTextField(
+              controller: _passCtrl,
+              label: AuthStrings.resetNewPassLabel,
+              hintText: AuthStrings.resetNewPassHint,
+              obscureText: true,
+              validator: AuthValidator.validatePassword,
             ),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 3,
-              child: AuthTextField(
-                controller: _confirmCtrl,
-                label: AuthStrings.resetConfirmPassLabel,
-                hintText: AuthStrings.resetConfirmPassHint,
-                obscureText: true,
-                validator: AuthValidator.validatePassword,
-              ),
+            AuthTextField(
+              controller: _confirmCtrl,
+              label: AuthStrings.resetConfirmPassLabel,
+              hintText: AuthStrings.resetConfirmPassHint,
+              obscureText: true,
+              validator: AuthValidator.validatePassword,
             ),
             const SizedBox(height: 48),
-            StaggeredEntrance(
-              index: 4,
-              child: PrimaryButton(
-                text: AuthStrings.submitBtn,
-                isLoading: state is AuthLoading,
-                onPressed: _submit,
-              ),
+            PrimaryButton(
+              text: AuthStrings.submitBtn,
+              isLoading: state is AuthLoading,
+              onPressed: _submit,
             ),
             const SizedBox(height: 32),
           ],

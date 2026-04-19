@@ -16,7 +16,6 @@ import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_signin_link.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Étape 2 de l'inscription : adresse email et mot de passe, puis soumission.
 class SignUpStep2View extends StatefulWidget {
@@ -30,6 +29,13 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _navigating = false;
+
+  void _navigateTo(String route) {
+    if (_navigating || !mounted) return;
+    _navigating = true;
+    Navigator.pushNamed(context, route).then((_) => _navigating = false);
+  }
 
   @override
   void dispose() {
@@ -101,36 +107,21 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            StaggeredEntrance(index: 0, child: SignupStepIndicator(currentStep: 2, totalSteps: 2, label: AuthStrings.stepIndicator2)),
+            SignupStepIndicator(currentStep: 2, totalSteps: 2, label: AuthStrings.stepIndicator2),
             const SizedBox(height: 24),
-            StaggeredEntrance(
-              index: 1,
-              child: const Text(AuthStrings.signupStep2Title, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
-            ),
+            const Text(AuthStrings.signupStep2Title, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
             const SizedBox(height: 12),
-            StaggeredEntrance(
-              index: 2,
-              child: Text(AuthStrings.signupStep2Subtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
-            ),
+            Text(AuthStrings.signupStep2Subtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 3,
-              child: AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.emailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
-            ),
+            AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.emailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 4,
-              child: AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.passwordHint, obscureText: true, validator: AuthValidator.validatePassword),
-            ),
+            AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.passwordHint, obscureText: true, validator: AuthValidator.validatePassword),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 5,
-              child: PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1)),
-            ),
+            PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1)),
             const SizedBox(height: 32),
-            const StaggeredEntrance(index: 6, child: AuthSigninLink()),
+            AuthSigninLink(onTap: () => _navigateTo(AppRoutes.signin)),
             const SizedBox(height: 16),
-            const StaggeredEntrance(index: 7, child: AuthLegalTerms()),
+            const AuthLegalTerms(),
             const SizedBox(height: 32),
           ],
         ),

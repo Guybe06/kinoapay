@@ -15,7 +15,6 @@ import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_b
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
 import "package:kinoapay_app/core/constants/supported_countries.dart";
 import "package:kinoapay_app/core/widgets/phone_field.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Écran 1 : choix du canal (email / téléphone) et saisie du contact.
 class ForgotPasswordView extends StatefulWidget {
@@ -93,59 +92,47 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 0,
-              child: const Text(
-                AuthStrings.resetTitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  height: 1.0,
-                  letterSpacing: -2,
-                ),
+            const Text(
+              AuthStrings.resetTitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 42,
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: -2,
               ),
             ),
             const SizedBox(height: 12),
-            StaggeredEntrance(
-              index: 1,
-              child: Text(
-                AuthStrings.resetSubtitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                  fontSize: 15,
-                  height: 1.4,
-                ),
+            Text(
+              AuthStrings.resetSubtitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 15,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: 32),
-            StaggeredEntrance(index: 2, child: _buildChannelToggle()),
+            _buildChannelToggle(),
             const SizedBox(height: 28),
-            StaggeredEntrance(
-              index: 3,
-              child: _isEmail
-                  ? AuthTextField(
-                      controller: _contactCtrl,
-                      label: AuthStrings.emailLabel,
-                      hintText: AuthStrings.resetEmailHint,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: AuthValidator.validateEmailOrPhone,
-                    )
-                  : PhoneField(
-                      controller: _contactCtrl,
-                      onCountryChanged: (code) =>
-                          setState(() => _countryCode = code),
-                      validator: AuthValidator.validatePhone,
-                    ),
-            ),
+            _isEmail
+                ? AuthTextField(
+                    controller: _contactCtrl,
+                    label: AuthStrings.emailLabel,
+                    hintText: AuthStrings.resetEmailHint,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: AuthValidator.validateEmailOrPhone,
+                  )
+                : PhoneField(
+                    controller: _contactCtrl,
+                    onCountryChanged: (code) =>
+                        setState(() => _countryCode = code),
+                    validator: AuthValidator.validatePhone,
+                  ),
             const SizedBox(height: 48),
-            StaggeredEntrance(
-              index: 4,
-              child: PrimaryButton(
-                text: AuthStrings.resetSendCode,
-                isLoading: state is AuthLoading,
-                onPressed: _submit,
-              ),
+            PrimaryButton(
+              text: AuthStrings.resetSendCode,
+              isLoading: state is AuthLoading,
+              onPressed: _submit,
             ),
             const SizedBox(height: 32),
           ],

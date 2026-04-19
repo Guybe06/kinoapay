@@ -13,7 +13,6 @@ import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_date_utils.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_step_indicator.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
-import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 
 /// Étape 1 de l’inscription : identité, date de naissance, téléphone.
 class SignUpStep1View extends StatefulWidget {
@@ -104,91 +103,67 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            const StaggeredEntrance(
-              index: 0,
-              child: SignupStep1StepIndicator(),
-            ),
+            const SignupStep1StepIndicator(),
             const SizedBox(height: 24),
-            const StaggeredEntrance(
-              index: 1,
-              child: Text(
-                AuthStrings.signupStep1Title,
-                style: TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  height: 1.0,
-                  letterSpacing: -2,
-                ),
+            const Text(
+              AuthStrings.signupStep1Title,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 42,
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: -2,
               ),
             ),
             const SizedBox(height: 12),
-            StaggeredEntrance(
-              index: 2,
-              child: Text(
-                AuthStrings.signupStep1Subtitle,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                  fontSize: 15,
-                  height: 1.4,
-                ),
+            Text(
+              AuthStrings.signupStep1Subtitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 15,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: 40),
-            StaggeredEntrance(
-              index: 3,
-              child: AuthTextField(
-                controller: _firstNameCtrl,
-                label: AuthStrings.firstNameLabel,
-                hintText: AuthStrings.firstNameHint,
-                validator: AuthValidator.validateName,
-              ),
+            AuthTextField(
+              controller: _firstNameCtrl,
+              label: AuthStrings.firstNameLabel,
+              hintText: AuthStrings.firstNameHint,
+              validator: AuthValidator.validateName,
             ),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 4,
-              child: AuthTextField(
-                controller: _lastNameCtrl,
-                label: AuthStrings.lastNameLabel,
-                hintText: AuthStrings.lastNameHint,
-                validator: AuthValidator.validateName,
-              ),
+            AuthTextField(
+              controller: _lastNameCtrl,
+              label: AuthStrings.lastNameLabel,
+              hintText: AuthStrings.lastNameHint,
+              validator: AuthValidator.validateName,
             ),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 5,
-              child: SignupBirthDateField(
-                formFieldKey: _birthDateFieldKey,
-                selectedDay: _selectedDay,
-                selectedMonth: _selectedMonth,
-                selectedYear: _selectedYear,
-                onDayChanged: (d) => setState(() => _selectedDay = d),
-                onMonthChanged: (m) => setState(() {
-                  _selectedMonth = m;
-                  _clampDayToValidRange();
-                }),
-                onYearChanged: (y) => setState(() {
-                  _selectedYear = y;
-                  _clampDayToValidRange();
-                }),
-              ),
+            SignupBirthDateField(
+              formFieldKey: _birthDateFieldKey,
+              selectedDay: _selectedDay,
+              selectedMonth: _selectedMonth,
+              selectedYear: _selectedYear,
+              onDayChanged: (d) => setState(() => _selectedDay = d),
+              onMonthChanged: (m) => setState(() {
+                _selectedMonth = m;
+                _clampDayToValidRange();
+              }),
+              onYearChanged: (y) => setState(() {
+                _selectedYear = y;
+                _clampDayToValidRange();
+              }),
             ),
             const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 6,
-              child: PhoneField(
-                controller: _phoneCtrl,
-                onCountryChanged: (code) => setState(() => _countryCode = code),
-                validator: AuthValidator.validatePhone,
-              ),
+            PhoneField(
+              controller: _phoneCtrl,
+              onCountryChanged: (code) => setState(() => _countryCode = code),
+              validator: AuthValidator.validatePhone,
             ),
             const SizedBox(height: 48),
-            StaggeredEntrance(
-              index: 7,
-              child: PrimaryButton(
-                text: AuthStrings.submitBtn,
-                onPressed: _submit,
-              ),
+            PrimaryButton(
+              text: AuthStrings.submitBtn,
+              onPressed: _submit,
             ),
             const SizedBox(height: 32),
           ],
