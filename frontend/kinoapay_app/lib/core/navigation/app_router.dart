@@ -15,6 +15,7 @@ import "package:kinoapay_app/features/accounts/presentation/signup/signup_otp_vi
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_view.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step2_view.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
 import "package:kinoapay_app/features/contacts/infrastructure/repositories/phone_contacts_repository.dart";
 import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
@@ -84,10 +85,9 @@ class AppRouter {
         final sArgs = args is ShellArgs ? args : const ShellArgs();
         return RouteTransitions.hero(AppShell(args: sArgs), settings);
       case AppRoutes.contacts:
-        final selectionMode =
-            args is Map<String, dynamic> && args["selectionMode"] == true;
+        final cArgs = args is ContactsArgs ? args : const ContactsArgs();
         return RouteTransitions.slide(
-          _contactsPage(selectionMode: selectionMode),
+          _contactsPage(selectionMode: cArgs.selectionMode),
           settings,
         );
       case AppRoutes.notifications:

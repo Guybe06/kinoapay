@@ -6,6 +6,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
+import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart"
     hide PaymentChannel;
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
@@ -191,7 +192,7 @@ class _SendViewState extends State<SendView> {
     final result = await Navigator.pushNamed(
       context,
       AppRoutes.contacts,
-      arguments: const {"selectionMode": true},
+      arguments: const ContactsArgs(selectionMode: true),
     );
     if (result is Contact) {
       final clean = result.phone.replaceAll(" ", "");
