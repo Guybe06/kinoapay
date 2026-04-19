@@ -1,0 +1,213 @@
+import "package:flutter/material.dart";
+import "package:intl/intl.dart";
+import "package:solar_icons/solar_icons.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/features/history/domain/history_filter.dart";
+import "package:kinoapay_app/features/history/domain/history_strings.dart";
+
+/// Barre de filtres : navigation mois, type de transaction, canal.
+class HistoryFilterBar extends StatelessWidget {
+  final HistoryFilter filter;
+  final ValueChanged<HistoryFilter> onChanged;
+
+  const HistoryFilterBar({
+    super.key,
+    required this.filter,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.quinoaCream,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPeriodRow(),
+          const SizedBox(height: 8),
+          _buildChipRow(_directionChips()),
+          const SizedBox(height: 8),
+          _buildChipRow(_channelChips()),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPeriodRow() {
+    final isMonth = filter.period == HistoryPeriod.month;
+    final raw = DateFormat("MMM yyyy", "fr_FR").format(DateTime(filter.year, filter.month));
+    final monthLabel = raw[0].toUpperCase() + raw.substring(1);
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          if (isMonth) ...[
+            _NavArrow(
+              icon: SolarIconsOutline.altArrowLeft,
+              onTap: () => onChanged(filter.prevMonth()),
+            ),
+            const SizedBox(width: 4),
+          ],
+          _Chip(
+            label: isMonth ? monthLabel : HistoryStrings.periodMonth,
+            active: isMonth,
+            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.month)),
+          ),
+          if (isMonth) ...[
+            const SizedBox(width: 4),
+            _NavArrow(
+              icon: SolarIconsOutline.altArrowRight,
+              onTap: filter.isCurrentMonth ? null : () => onChanged(filter.nextMonth()),
+              enabled: !filter.isCurrentMonth,
+            ),
+          ],
+          const SizedBox(width: 8),
+          _Chip(
+            label: HistoryStrings.period3Months,
+            active: filter.period == HistoryPeriod.last3Months,
+            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.last3Months)),
+          ),
+          const SizedBox(width: 8),
+          _Chip(
+            label: HistoryStrings.periodYear,
+            active: filter.period == HistoryPeriod.thisYear,
+            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.thisYear)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _directionChips() => [
+    _Chip(
+      label: HistoryStrings.dirAll,
+      active: filter.direction == HistoryDirection.all,
+      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.all)),
+    ),
+    _Chip(
+      label: HistoryStrings.dirSent,
+      active: filter.direction == HistoryDirection.sent,
+      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.sent)),
+    ),
+    _Chip(
+      label: HistoryStrings.dirReceived,
+      active: filter.direction == HistoryDirection.received,
+      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.received)),
+    ),
+    _Chip(
+      label: HistoryStrings.dirPending,
+      active: filter.direction == HistoryDirection.pending,
+      onTap: () => onChanged(filter.copyWith(direction: HistoryDirection.pending)),
+    ),
+  ];
+
+  List<Widget> _channelChips() => [
+    _Chip(
+      label: HistoryStrings.channelAll,
+      active: filter.channel == null,
+      onTap: () => onChanged(filter.copyWith(clearChannel: true)),
+    ),
+    _Chip(
+      label: "MTN",
+      active: filter.channel == "MTN",
+      dot: AppColors.mtnYellow,
+      onTap: () => onChanged(filter.copyWith(channel: "MTN")),
+    ),
+    _Chip(
+      label: "Airtel",
+      active: filter.channel == "AIRTEL",
+      dot: AppColors.airtelRed,
+      onTap: () => onChanged(filter.copyWith(channel: "AIRTEL")),
+    ),
+  ];
+
+  Widget _buildChipRow(List<Widget> chips) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: chips
+            .expand((c) => [c, const SizedBox(width: 8)])
+            .toList()
+          ..removeLast(),
+      ),
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  final Color? dot;
+
+  const _Chip({required this.label, required this.active, required this.onTap, this.dot});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: active ? AppColors.quinoaDark : Colors.white,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(
+            color: active ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.12),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (dot != null) ...[
+              Container(width: 7, height: 7, decoration: BoxDecoration(color: dot, shape: BoxShape.circle)),
+              const SizedBox(width: 5),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                color: active ? Colors.white : AppColors.quinoaDark.withValues(alpha: 0.60),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavArrow extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onTap;
+  final bool enabled;
+
+  const _NavArrow({required this.icon, this.onTap, this.enabled = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(7),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.12)),
+        ),
+        child: Icon(
+          icon,
+          size: 12,
+          color: enabled
+              ? AppColors.quinoaDark.withValues(alpha: 0.60)
+              : AppColors.quinoaDark.withValues(alpha: 0.20),
+        ),
+      ),
+    );
+  }
+}
