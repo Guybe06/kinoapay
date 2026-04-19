@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:intl/intl.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
