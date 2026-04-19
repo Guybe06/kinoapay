@@ -136,7 +136,7 @@ class _DashboardContentState extends State<DashboardContent> {
           widget.isStatsRefreshing
               ? const DashboardChannelStatsSkeleton()
               : DashboardChannelStats(stats: widget.stats.channelStats),
-          const SizedBox(height: 4),
+          const SizedBox(height: 20),
         ],
         DashboardPromoCard(
           onTap: () => showModalBottomSheet(
