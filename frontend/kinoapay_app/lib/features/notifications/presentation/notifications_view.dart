@@ -33,6 +33,7 @@ class _NotificationsViewState extends State<NotificationsView> {
               onBack: () => Navigator.pop(context),
               backLabel: "Accueil",
               title: "Notifications",
+              subtitle: "Vos alertes et mises à jour",
               trailing: state is NotificationsLoadSuccess && state.unreadCount > 0
                   ? GestureDetector(
                       onTap: () => context

@@ -337,7 +337,12 @@ class _SendViewState extends State<SendView> {
                   backLabel: _step == SendStep.amount
                       ? SendStrings.backToRecipient
                       : SendStrings.backToDashboard,
-                  title: SendStrings.title,
+                  title: _step == SendStep.amount
+                      ? SendStrings.stepAmountTitle
+                      : SendStrings.stepRecipientTitle,
+                  subtitle: _step == SendStep.amount
+                      ? SendStrings.stepAmountSub
+                      : SendStrings.stepRecipientSub,
                 ),
               ),
             ],

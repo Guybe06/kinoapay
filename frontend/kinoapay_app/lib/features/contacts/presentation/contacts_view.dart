@@ -48,6 +48,9 @@ class _ContactsViewState extends State<ContactsView> {
             onBack: () => Navigator.pop(context),
             backLabel: ContactsStrings.backLabel,
             title: ContactsStrings.viewTitle,
+            subtitle: widget.selectionMode
+                ? ContactsStrings.headerSubtitleSelect
+                : ContactsStrings.headerSubtitle,
             trailing: GestureDetector(
               onTap: () => context.read<ContactsBloc>().add(const ContactsStarted()),
               child: Container(

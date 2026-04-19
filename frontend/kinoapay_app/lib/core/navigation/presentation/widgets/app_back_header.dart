@@ -13,6 +13,7 @@ class AppBackHeader extends StatelessWidget {
   final VoidCallback onBack;
   final String? backLabel;
   final String? title;
+  final String? subtitle;
   final int unreadNotifications;
   final Widget? trailing;
 
@@ -21,6 +22,7 @@ class AppBackHeader extends StatelessWidget {
     required this.onBack,
     this.backLabel,
     this.title,
+    this.subtitle,
     this.unreadNotifications = 0,
     this.trailing,
   });
@@ -39,14 +41,30 @@ class AppBackHeader extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             if (title != null)
-              Text(
-                title!,
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.3,
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title!,
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 1),
+                    Text(
+                      subtitle!,
+                      style: TextStyle(
+                        color: AppColors.quinoaDark.withValues(alpha: 0.35),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

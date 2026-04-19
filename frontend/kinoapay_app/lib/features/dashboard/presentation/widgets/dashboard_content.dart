@@ -69,8 +69,11 @@ class _DashboardContentState extends State<DashboardContent> {
     final offset = _scrollController.offset;
     final delta = offset - _lastOffset;
     _lastOffset = offset;
-    if (delta > 4 && _headerVisible) setState(() => _headerVisible = false);
-    else if (delta < -4 && !_headerVisible) setState(() => _headerVisible = true);
+    if (delta > 4 && _headerVisible) {
+      setState(() => _headerVisible = false);
+    } else if (delta < -4 && !_headerVisible) {
+      setState(() => _headerVisible = true);
+    }
   }
 
   Future<void> _onRefresh() async {
@@ -159,23 +162,19 @@ class _DashboardContentState extends State<DashboardContent> {
   }
 
   Widget _buildFloatingHeader(BuildContext context) {
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 120),
-      curve: Curves.easeIn,
-      top: _headerVisible ? 0 : -(56 + MediaQuery.of(context).padding.top),
+    final topInset = MediaQuery.of(context).padding.top;
+    return Positioned(
+      top: 0,
       left: 0,
       right: 0,
-      child: AnimatedOpacity(
-        opacity: _headerVisible ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 80),
-        curve: Curves.easeIn,
-        child: Material(
-          color: AppColors.quinoaCream,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          child: const AppHeader(),
-        ),
-      ),
+      child: _headerVisible
+          ? const Material(
+              color: AppColors.quinoaCream,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              child: AppHeader(),
+            )
+          : SizedBox(height: topInset),
     );
   }
 }

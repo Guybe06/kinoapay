@@ -58,6 +58,10 @@ abstract final class SendStrings {
   static const String ussdTitle = "Validation en cours";
   static const String ussdMessage =
       "Veuillez confirmer le retrait des fonds via votre opérateur mobile. L'opération sera validée automatiquement.";
+  static const String ussdConfirmBtn = "J'ai confirmé";
+  static const String ussdBackLabel = "Envoi";
+
+  static const String processingTitle = "Traitement";
 
   static const String infoUnsupportedCountry =
       "Ce contact n'est pas encore disponible sur kinoaPay.";

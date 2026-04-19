@@ -38,6 +38,7 @@ class _HistoryViewState extends State<HistoryView> {
                 onBack: () => Navigator.pop(context),
                 backLabel: HistoryStrings.backLabel,
                 title: HistoryStrings.title,
+                subtitle: HistoryStrings.headerSubtitle,
               ),
             ),
             if (state is HistoryLoadSuccess) ...[

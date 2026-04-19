@@ -78,6 +78,7 @@ class ProfileView extends StatelessWidget {
               onBack: () => Navigator.pop(context),
               backLabel: ProfileStrings.backLabel,
               title: ProfileStrings.title,
+              subtitle: ProfileStrings.headerSubtitle,
             ),
           ),
         ],

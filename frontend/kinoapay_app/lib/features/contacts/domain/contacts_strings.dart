@@ -2,6 +2,8 @@
 abstract final class ContactsStrings {
   static const String backLabel = "Retour";
   static const String viewTitle = "Contacts";
+  static const String headerSubtitle = "Vos contacts de paiement";
+  static const String headerSubtitleSelect = "Choisissez un destinataire";
   static const String searchHint = "Rechercher un contact...";
   static const String errorLoad = "Impossible de charger les contacts.";
 

@@ -196,6 +196,7 @@ class _PlusViewState extends State<PlusView> {
               onBack: widget.onBackToDashboard ?? () {},
               backLabel: PlusStrings.backLabel,
               title: PlusStrings.title,
+              subtitle: PlusStrings.headerSubtitle,
               unreadNotifications: widget.unreadNotifications,
             )
           : SizedBox(height: topInset),
