@@ -28,20 +28,46 @@ abstract final class RouteTransitions {
     );
   }
 
-  /// Glissement bas vers haut avec fondu (contacts, notifs, scanner…).
+  /// Slide horizontal droite + scale + fade entrant uniquement.
+  /// Page entrante : slide de droite, scale 0.95->1.0, fade 0.0->1.0 sur les 40% initiaux.
+  /// Page sortante : poussée à gauche, légèrement réduite, reste opaque.
   static PageRouteBuilder slide(Widget page, RouteSettings settings) {
     return PageRouteBuilder(
       settings: settings,
+      transitionDuration: const Duration(milliseconds: 320),
+      reverseTransitionDuration: const Duration(milliseconds: 280),
       pageBuilder: (_, a, b) => page,
-      transitionsBuilder: (_, animation, b, child) {
-        final slide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
-            .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-        return FadeTransition(
-          opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-          child: SlideTransition(position: slide, child: child),
+      transitionsBuilder: (_, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        final curvedSecondary = CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInCubic);
+
+        final slideIn = Tween<Offset>(begin: const Offset(1.0, 0), end: Offset.zero)
+            .animate(curved);
+        final slideOut = Tween<Offset>(begin: Offset.zero, end: const Offset(-0.25, 0))
+            .animate(curvedSecondary);
+        final scaleIn = Tween<double>(begin: 0.95, end: 1.0).animate(curved);
+        final scaleOut = Tween<double>(begin: 1.0, end: 0.95).animate(curvedSecondary);
+        final fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
+          ),
+        );
+
+        return SlideTransition(
+          position: slideOut,
+          child: ScaleTransition(
+            scale: scaleOut,
+            child: SlideTransition(
+              position: slideIn,
+              child: ScaleTransition(
+                scale: scaleIn,
+                child: FadeTransition(opacity: fadeIn, child: child),
+              ),
+            ),
+          ),
         );
       },
-      transitionDuration: const Duration(milliseconds: 350),
     );
   }
 
