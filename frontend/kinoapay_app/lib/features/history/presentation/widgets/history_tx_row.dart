@@ -92,22 +92,28 @@ class HistoryTxRow extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      if (tx.counterpartType.badgeLabel != null)
-                        _UserTypeBadge(type: tx.counterpartType),
-                      if (tx.counterpartType.badgeLabel != null)
-                        const SizedBox(width: 6),
                       _StatusDot(status: tx.status),
                     ],
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    "${tx.sourceChannel} → ${tx.destinationChannel}  ·  ${timeFmt.format(tx.startedAt)}",
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "${tx.sourceChannel} → ${tx.destinationChannel}  ·  ${timeFmt.format(tx.startedAt)}",
+                          style: TextStyle(
+                            color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (tx.counterpartType.badgeLabel != null) ...[
+                        const SizedBox(width: 6),
+                        _UserTypeBadge(type: tx.counterpartType),
+                      ],
+                    ],
                   ),
                 ],
               ),

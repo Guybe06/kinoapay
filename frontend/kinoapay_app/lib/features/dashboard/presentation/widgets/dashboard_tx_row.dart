@@ -52,10 +52,6 @@ class DashboardTxRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Row(
                   children: [
-                    if (tx.counterpartType.badgeLabel != null) ...[
-                      _DashboardUserTypeBadge(type: tx.counterpartType),
-                      const SizedBox(width: 6),
-                    ],
                     Text(
                       channel,
                       style: TextStyle(
@@ -64,6 +60,10 @@ class DashboardTxRow extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
+                    if (tx.counterpartType.badgeLabel != null) ...[
+                      const SizedBox(width: 6),
+                      _DashboardUserTypeBadge(type: tx.counterpartType),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 2),
