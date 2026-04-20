@@ -4,6 +4,7 @@ import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
+import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
@@ -23,6 +24,9 @@ class SendAmountStep extends StatefulWidget {
   final VoidCallback onContinue;
   final ValueChanged<String> onExternalNameChanged;
 
+  /// Contexte hérité du scan ou du flow classique.
+  final TransactionContext context;
+
   const SendAmountStep({
     super.key,
     required this.recipient,
@@ -35,6 +39,7 @@ class SendAmountStep extends StatefulWidget {
     required this.onModifyRecipient,
     required this.onContinue,
     required this.onExternalNameChanged,
+    this.context = TransactionContext.send,
   });
 
   @override
@@ -255,9 +260,11 @@ class _SendAmountStepState extends State<SendAmountStep> {
           ),
           elevation: 0,
         ),
-        child: const Text(
-          SendStrings.continueBtn,
-          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+        child: Text(
+          widget.context.isPay
+              ? SendStrings.payContinueBtn
+              : SendStrings.continueBtn,
+          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
         ),
       ),
     );

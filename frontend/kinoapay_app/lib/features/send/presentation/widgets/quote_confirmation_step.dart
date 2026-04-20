@@ -9,6 +9,7 @@ import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
+import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 
 final NumberFormat _fmt = NumberFormat("#,##0", "en_US");
 
@@ -16,11 +17,13 @@ final NumberFormat _fmt = NumberFormat("#,##0", "en_US");
 class QuoteConfirmationStep extends StatefulWidget {
   final TransferQuote quote;
   final VoidCallback onBack;
+  final TransactionContext context;
 
   const QuoteConfirmationStep({
     super.key,
     required this.quote,
     required this.onBack,
+    this.context = TransactionContext.send,
   });
 
   @override
@@ -34,8 +37,12 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
       header: AppBackHeader(
         onBack: widget.onBack,
         backLabel: SendStrings.backLabel,
-        title: SendStrings.confirmTitle,
-        subtitle: SendStrings.confirmSubtitle,
+        title: widget.context.isPay
+            ? SendStrings.payConfirmTitle
+            : SendStrings.confirmTitle,
+        subtitle: widget.context.isPay
+            ? SendStrings.payConfirmSubtitle
+            : SendStrings.confirmSubtitle,
       ),
       builder: (_, ctrl) => SingleChildScrollView(
         controller: ctrl,
@@ -104,10 +111,12 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
-          SendStrings.quoteVerifyTitle,
+        Text(
+          widget.context.isPay
+              ? SendStrings.payQuoteVerifyTitle
+              : SendStrings.quoteVerifyTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: AppColors.quinoaDark,
             fontSize: 28,
             fontWeight: FontWeight.w900,
@@ -117,7 +126,9 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
         ),
         const SizedBox(height: 8),
         Text(
-          SendStrings.quoteVerifySubtitle,
+          widget.context.isPay
+              ? SendStrings.payQuoteVerifySubtitle
+              : SendStrings.quoteVerifySubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.quinoaDark.withValues(alpha: 0.40),
