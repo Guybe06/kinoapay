@@ -99,8 +99,9 @@ class _HistoryViewState extends State<HistoryView> {
                 ),
               ),
               if (state is HistoryLoadSuccess) ...[
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
                 SliverToBoxAdapter(child: HistoryStatsBar(state: state)),
-                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                const SliverToBoxAdapter(child: SizedBox(height: 8)),
                 HistoryTxList(transactions: state.transactions),
               ] else if (state is HistoryLoading) ...[
                 const SliverFillRemaining(

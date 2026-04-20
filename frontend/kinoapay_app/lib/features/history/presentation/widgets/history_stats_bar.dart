@@ -29,14 +29,14 @@ class HistoryStatsBar extends StatelessWidget {
           _StatCell(
             label: HistoryStrings.statsSent,
             value: "${_compact.format(state.totalSent)} ${HistoryStrings.currency}",
-            icon: "↑",
+            icon: "↗",
             color: AppColors.quinoaCream.withValues(alpha: 0.65),
           ),
           _Divider(),
           _StatCell(
             label: HistoryStrings.statsReceived,
             value: "${_compact.format(state.totalReceived)} ${HistoryStrings.currency}",
-            icon: "↓",
+            icon: "↙",
             color: AppColors.quinoaGold,
             center: true,
           ),
@@ -44,7 +44,7 @@ class HistoryStatsBar extends StatelessWidget {
           _StatCell(
             label: HistoryStrings.statsNet,
             value: "${isPositive ? "+" : "−"}${_compact.format(state.net.abs())} ${HistoryStrings.currency}",
-            icon: "=",
+            icon: isPositive ? "↗" : "↙",
             color: netColor,
             alignRight: true,
           ),
