@@ -35,7 +35,7 @@ workflows:
         script: pod install
         working_directory: frontend/kinoapay_app/ios
       - name: Build IPA
-        script: flutter build ipa --release
+        script: flutter build ipa --release --no-codesign
         working_directory: frontend/kinoapay_app
     artifacts:
       - frontend/kinoapay_app/build/ios/ipa/*.ipa
