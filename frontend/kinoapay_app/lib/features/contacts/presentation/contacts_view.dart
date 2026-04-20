@@ -144,7 +144,7 @@ class _ContactsViewState extends State<ContactsView> {
                 : const SizedBox.shrink(),
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: AppColors.white,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 14,

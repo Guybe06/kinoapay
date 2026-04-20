@@ -20,6 +20,8 @@ import "package:kinoapay_app/features/contacts/infrastructure/repositories/phone
 import "package:kinoapay_app/features/contacts/presentation/contacts_view.dart";
 import "package:kinoapay_app/features/notifications/application/bloc/notifications_bloc.dart";
 import "package:kinoapay_app/features/request/presentation/request_view.dart";
+import "package:kinoapay_app/features/send/domain/send_args.dart";
+import "package:kinoapay_app/features/send/presentation/send_view.dart";
 import "package:kinoapay_app/features/notifications/infrastructure/repositories/mock_notifications_repository.dart";
 import "package:kinoapay_app/features/notifications/presentation/notifications_view.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_bloc.dart";
@@ -100,6 +102,12 @@ class AppRouter {
         return RouteTransitions.slide(const ProfileView(), settings);
       case AppRoutes.history:
         return RouteTransitions.slide(_historyPage(), settings);
+      case AppRoutes.send:
+        final sArgs = args is SendArgs ? args : const SendArgs();
+        return RouteTransitions.slide(
+          SendView(prefilledContact: sArgs.prefilledContact),
+          settings,
+        );
       case AppRoutes.request:
         return RouteTransitions.slide(const RequestView(), settings);
       case AppRoutes.channels:

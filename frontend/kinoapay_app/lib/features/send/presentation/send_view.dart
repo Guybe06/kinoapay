@@ -12,6 +12,7 @@ import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_b
 import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart"
     hide PaymentChannel;
+import "package:kinoapay_app/features/send/domain/send_args.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
@@ -34,7 +35,10 @@ enum RecipientSearchMode { phone, id }
 class SendView extends StatefulWidget {
   final VoidCallback? onBackToDashboard;
 
-  const SendView({super.key, this.onBackToDashboard});
+  /// Contact pré-rempli automatiquement à l'ouverture (depuis la liste de contacts).
+  final Contact? prefilledContact;
+
+  const SendView({super.key, this.onBackToDashboard, this.prefilledContact});
 
   @override
   State<SendView> createState() => _SendViewState();
@@ -64,7 +68,13 @@ class _SendViewState extends State<SendView> {
   void initState() {
     super.initState();
     SendNotificationService.initialize();
-    Future.delayed(_focusDelay, _phoneFocus.requestFocus);
+    if (widget.prefilledContact != null) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _importContact(widget.prefilledContact!),
+      );
+    } else {
+      Future.delayed(_focusDelay, _phoneFocus.requestFocus);
+    }
   }
 
   Future<void> _showNotification() async {
@@ -147,27 +157,31 @@ class _SendViewState extends State<SendView> {
     );
   }
 
+  /// Pré-remplit le champ destinataire avec un contact depuis le répertoire.
+  /// Partagé entre la sélection in-app et le pre-fill via [SendArgs].
+  void _importContact(Contact contact) {
+    if (contact.dialCode.isEmpty) {
+      AppSnackBar.showInfo(context, SendStrings.infoUnsupportedCountry);
+      return;
+    }
+    final match = RecipientByPhoneView.countryCodes.firstWhere(
+      (c) => c.dialCode == contact.dialCode,
+      orElse: () => _selectedCountry,
+    );
+    setState(() => _selectedCountry = match);
+    _switchSearchMode(RecipientSearchMode.phone);
+    _phoneCtrl.text = PhoneGroupFormatter.format(contact.localNumber);
+    context.read<SendBloc>().add(SendRecipientSearched(contact.phone));
+  }
+
   Future<void> _chooseContacts() async {
     final result = await Navigator.pushNamed(
       context,
       AppRoutes.contacts,
       arguments: const ContactsArgs(selectionMode: true),
     );
-    if (result is Contact) {
-      if (result.dialCode.isEmpty) {
-        if (!mounted) return;
-        AppSnackBar.showInfo(context, SendStrings.infoUnsupportedCountry);
-        return;
-      }
-      final match = RecipientByPhoneView.countryCodes.firstWhere(
-        (c) => c.dialCode == result.dialCode,
-        orElse: () => _selectedCountry,
-      );
-      setState(() => _selectedCountry = match);
-      _switchSearchMode(RecipientSearchMode.phone);
-      _phoneCtrl.text = PhoneGroupFormatter.format(result.localNumber);
-      if (!mounted) return;
-      context.read<SendBloc>().add(SendRecipientSearched(result.phone));
+    if (result is Contact && mounted) {
+      _importContact(result);
     }
   }
 
@@ -295,7 +309,7 @@ class _SendViewState extends State<SendView> {
                   child: AppBackHeader(
                     onBack: _step == SendStep.amount
                         ? _goBack
-                        : (widget.onBackToDashboard ?? () {}),
+                        : (widget.onBackToDashboard ?? () => Navigator.pop(context)),
                     backLabel: _step == SendStep.amount
                         ? SendStrings.backToRecipient
                         : SendStrings.backToDashboard,

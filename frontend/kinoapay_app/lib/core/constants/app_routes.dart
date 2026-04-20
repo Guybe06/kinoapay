@@ -17,6 +17,7 @@ abstract final class AppRoutes {
   static const String scanner = "/app/scanner";
   static const String profile = "/app/profile";
   static const String history = "/app/history";
+  static const String send = "/app/send";
   static const String channels = "/app/channels";
   static const String request = "/app/request";
 

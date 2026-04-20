@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
@@ -12,6 +13,7 @@ import "package:kinoapay_app/features/contacts/presentation/widgets/contact_invi
     show ContactInviteAction, ContactInviteSheet;
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_tile.dart";
 import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_state_widgets.dart";
+import "package:kinoapay_app/features/send/domain/send_args.dart";
 
 /// Liste groupée par statut d'inscription, avec pagination au scroll.
 /// Dispatche [ContactsMoreRequested] quand l'utilisateur approche du bas.
@@ -192,12 +194,23 @@ class _ContactGroup extends StatelessWidget {
     }
   }
 
-  void _showActionSheet(BuildContext context, Contact contact) {
-    showModalBottomSheet(
+  /// Affiche le sheet d'actions et navigue selon le choix : Envoyer ou Demander.
+  Future<void> _showActionSheet(BuildContext context, Contact contact) async {
+    final action = await showModalBottomSheet<ContactAction>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => ContactActionSheet(contact: contact),
     );
+    if (!context.mounted) return;
+    if (action == ContactAction.send) {
+      Navigator.pushNamed(
+        context,
+        AppRoutes.send,
+        arguments: SendArgs(prefilledContact: contact),
+      );
+    } else if (action == ContactAction.request) {
+      Navigator.pushNamed(context, AppRoutes.request);
+    }
   }
 
   Future<void> _showInviteSheet(BuildContext context, Contact contact) async {
