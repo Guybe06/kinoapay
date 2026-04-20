@@ -20,3 +20,8 @@ class HistoryFilterChanged extends HistoryEvent {
   @override
   List<Object?> get props => [filter];
 }
+
+/// Demande l'affichage de la page suivante (pagination en mémoire).
+class HistoryMoreRequested extends HistoryEvent {
+  const HistoryMoreRequested();
+}

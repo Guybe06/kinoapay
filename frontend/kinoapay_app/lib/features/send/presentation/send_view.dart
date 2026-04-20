@@ -68,8 +68,9 @@ class _SendViewState extends State<SendView> {
   }
 
   Future<void> _initializeNotifications() async {
+    // Icone monochrome obligatoire depuis Android 5 : blanc sur transparent.
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_stat_notification',
     );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -97,6 +98,7 @@ class _SendViewState extends State<SendView> {
       channelDescription: 'Notifications pour les transactions KinoaPay',
       importance: Importance.high,
       priority: Priority.high,
+      icon: 'ic_stat_notification',
     );
     const iosDetails = DarwinNotificationDetails();
     const notificationDetails = NotificationDetails(

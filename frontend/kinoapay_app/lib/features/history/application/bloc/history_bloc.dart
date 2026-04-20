@@ -6,7 +6,7 @@ import "package:kinoapay_app/features/history/domain/history_filter.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/domain/repositories/history_repository.dart";
 
-/// Gère le chargement et le filtrage client-side de l'historique des transactions.
+/// Gère le chargement, le filtrage et la pagination de l'historique.
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final HistoryRepository _repository;
   List<Transaction>? _cache;
@@ -16,6 +16,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         super(HistoryInitial()) {
     on<HistoryStarted>(_onStarted);
     on<HistoryFilterChanged>(_onFilterChanged);
+    on<HistoryMoreRequested>(_onMoreRequested);
   }
 
   Future<void> _onStarted(HistoryStarted event, Emitter<HistoryState> emit) async {
@@ -35,6 +36,20 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   void _onFilterChanged(HistoryFilterChanged event, Emitter<HistoryState> emit) {
     final cache = _cache;
     if (cache == null) return;
-    emit(HistoryLoadSuccess(all: cache, filter: event.filter));
+    emit(HistoryLoadSuccess(
+      all: cache,
+      filter: event.filter,
+      displayCount: HistoryLoadSuccess.pageSize,
+    ));
+  }
+
+  /// Augmente le nombre de transactions affichées d'une page supplémentaire.
+  void _onMoreRequested(HistoryMoreRequested event, Emitter<HistoryState> emit) {
+    final current = state;
+    if (current is! HistoryLoadSuccess) return;
+    if (!current.hasMore) return;
+    emit(current.copyWith(
+      displayCount: current.displayCount + HistoryLoadSuccess.pageSize,
+    ));
   }
 }

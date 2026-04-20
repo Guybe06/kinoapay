@@ -12,17 +12,32 @@ class HistoryInitial extends HistoryState {}
 
 class HistoryLoading extends HistoryState {}
 
-/// Données chargées — le filtrage est calculé à la demande depuis [_all].
+/// Données chargées : filtrage et pagination calculés depuis [_all].
+/// Les stats portent sur toutes les transactions filtrées.
+/// Seules [displayed] remonte à l'écran jusqu'à [displayCount].
 class HistoryLoadSuccess extends HistoryState {
+  static const int pageSize = 30;
+
   final List<Transaction> _all;
   final HistoryFilter filter;
+
+  /// Nombre de transactions affichées à l'écran (pagination en mémoire).
+  final int displayCount;
 
   const HistoryLoadSuccess({
     required List<Transaction> all,
     required this.filter,
+    this.displayCount = pageSize,
   }) : _all = all;
 
+  /// Toutes les transactions correspondant au filtre actif.
   List<Transaction> get transactions => _applyFilter(_all, filter);
+
+  /// Tranche visible à l'écran selon [displayCount].
+  List<Transaction> get displayed => transactions.take(displayCount).toList();
+
+  /// Indique si des transactions supplémentaires peuvent être chargées.
+  bool get hasMore => transactions.length > displayCount;
 
   double get totalSent => transactions
       .where((t) => t.direction == "sent")
@@ -33,6 +48,17 @@ class HistoryLoadSuccess extends HistoryState {
       .fold(0, (s, t) => s + t.amount);
 
   double get net => totalReceived - totalSent;
+
+  HistoryLoadSuccess copyWith({
+    List<Transaction>? all,
+    HistoryFilter? filter,
+    int? displayCount,
+  }) =>
+      HistoryLoadSuccess(
+        all: all ?? _all,
+        filter: filter ?? this.filter,
+        displayCount: displayCount ?? this.displayCount,
+      );
 
   static List<Transaction> _applyFilter(
     List<Transaction> all,
@@ -71,7 +97,7 @@ class HistoryLoadSuccess extends HistoryState {
   }
 
   @override
-  List<Object?> get props => [_all, filter];
+  List<Object?> get props => [_all, filter, displayCount];
 }
 
 class HistoryLoadFailure extends HistoryState {

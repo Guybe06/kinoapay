@@ -11,7 +11,9 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     : _repository = repository,
       super(const ContactsInitial()) {
     on<ContactsStarted>(_onStarted);
+    on<ContactsRefreshed>(_onRefreshed);
     on<ContactsSearchChanged>(_onSearchChanged);
+    on<ContactsMoreRequested>(_onMoreRequested);
   }
 
   Future<void> _onStarted(
@@ -19,6 +21,20 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     Emitter<ContactsState> emit,
   ) async {
     if (state is ContactsLoadSuccess) return;
+    emit(const ContactsLoading());
+    try {
+      final contacts = await _repository.getContacts();
+      emit(ContactsLoadSuccess(all: contacts, filtered: contacts));
+    } catch (_) {
+      emit(const ContactsError(ContactsStrings.errorLoad));
+    }
+  }
+
+  /// Recharge les contacts depuis zéro, affiche le skeleton pendant le fetch.
+  Future<void> _onRefreshed(
+    ContactsRefreshed event,
+    Emitter<ContactsState> emit,
+  ) async {
     emit(const ContactsLoading());
     try {
       final contacts = await _repository.getContacts();
@@ -40,11 +56,24 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
         : _repository.search(current.all, event.query);
 
     emit(
-      ContactsLoadSuccess(
-        all: current.all,
+      current.copyWith(
         filtered: filtered,
         query: event.query,
+        displayCount: ContactsLoadSuccess.pageSize,
       ),
     );
+  }
+
+  /// Augmente le nombre de contacts affichés d'une page supplémentaire.
+  void _onMoreRequested(
+    ContactsMoreRequested event,
+    Emitter<ContactsState> emit,
+  ) {
+    final current = state;
+    if (current is! ContactsLoadSuccess) return;
+    if (!current.hasMore) return;
+    emit(current.copyWith(
+      displayCount: current.displayCount + ContactsLoadSuccess.pageSize,
+    ));
   }
 }

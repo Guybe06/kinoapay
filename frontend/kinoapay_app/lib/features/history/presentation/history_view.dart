@@ -12,7 +12,7 @@ import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_stats_bar.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_list.dart";
 
-/// Écran Historique : header scroll-hide, filtres via sheet, stats et liste.
+/// Écran Historique : header scroll-hide, filtres via sheet, stats et liste paginée.
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
 
@@ -41,7 +41,6 @@ class _HistoryViewState extends State<HistoryView> {
   void _onScroll() {
     final offset = _scrollController.offset;
 
-    // Si on est en haut de la page (ou en overscroll), on force le header visible
     if (offset <= 0) {
       if (!_headerVisible) setState(() => _headerVisible = true);
       _lastOffset = offset;
@@ -54,6 +53,11 @@ class _HistoryViewState extends State<HistoryView> {
       setState(() => _headerVisible = false);
     } else if (delta < -4 && !_headerVisible) {
       setState(() => _headerVisible = true);
+    }
+
+    final pos = _scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 200) {
+      context.read<HistoryBloc>().add(const HistoryMoreRequested());
     }
   }
 
@@ -92,43 +96,46 @@ class _HistoryViewState extends State<HistoryView> {
               physics: const BouncingScrollPhysics(),
               slivers: [
                 const SliverToBoxAdapter(child: SizedBox(height: 52)),
-              const SliverToBoxAdapter(
-                child: AppPageTitle(
-                  title: HistoryStrings.pageTitle,
-                  subtitle: HistoryStrings.pageSubtitle,
-                ),
-              ),
-              if (state is HistoryLoadSuccess) ...[
-                const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                SliverToBoxAdapter(child: HistoryStatsBar(state: state)),
-                const SliverToBoxAdapter(child: SizedBox(height: 8)),
-                HistoryTxList(transactions: state.transactions),
-              ] else if (state is HistoryLoading) ...[
-                const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.quinoaDark,
-                      strokeWidth: 2,
-                    ),
+                const SliverToBoxAdapter(
+                  child: AppPageTitle(
+                    title: HistoryStrings.pageTitle,
+                    subtitle: HistoryStrings.pageSubtitle,
                   ),
                 ),
-              ] else if (state is HistoryLoadFailure) ...[
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: Text(
-                      HistoryStrings.errorLoad,
-                      style: TextStyle(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                        fontSize: 14,
+                if (state is HistoryLoadSuccess) ...[
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                  SliverToBoxAdapter(child: HistoryStatsBar(state: state)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                  HistoryTxList(
+                    transactions: state.displayed,
+                    hasMore: state.hasMore,
+                  ),
+                ] else if (state is HistoryLoading) ...[
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.quinoaDark,
+                        strokeWidth: 2,
                       ),
                     ),
                   ),
-                ),
+                ] else if (state is HistoryLoadFailure) ...[
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text(
+                        HistoryStrings.errorLoad,
+                        style: TextStyle(
+                          color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
-          ),
+            ),
           ),
           Positioned(
             top: 0,

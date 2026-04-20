@@ -1,6 +1,9 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_strings.dart";
+import "package:kinoapay_app/features/contacts/application/bloc/contacts_bloc.dart";
+import "package:kinoapay_app/features/contacts/application/bloc/contacts_event.dart";
 import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 import "package:kinoapay_app/features/contacts/application/bloc/contacts_state.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart";
@@ -8,23 +11,54 @@ import "package:kinoapay_app/features/contacts/presentation/widgets/contact_acti
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_invite_sheet.dart"
     show ContactInviteAction, ContactInviteSheet;
 import "package:kinoapay_app/features/contacts/presentation/widgets/contact_tile.dart";
+import "package:kinoapay_app/features/contacts/presentation/widgets/contacts_state_widgets.dart";
 
-/// Liste groupée par statut d'inscription (inscrit / autre).
-class ContactsList extends StatelessWidget {
+/// Liste groupée par statut d'inscription, avec pagination au scroll.
+/// Dispatche [ContactsMoreRequested] quand l'utilisateur approche du bas.
+class ContactsList extends StatefulWidget {
   final ContactsLoadSuccess state;
   final bool selectionMode;
+  final ScrollController scrollController;
 
   const ContactsList({
     super.key,
     required this.state,
+    required this.scrollController,
     this.selectionMode = false,
   });
 
   @override
+  State<ContactsList> createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = widget.scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 200 && widget.state.hasMore) {
+      context.read<ContactsBloc>().add(const ContactsMoreRequested());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
+
     if (state.filtered.isEmpty) return const _EmptySearchState();
 
     return ListView(
+      controller: widget.scrollController,
       padding: const EdgeInsets.only(bottom: 40),
       children: [
         if (state.onApp.isNotEmpty) ...[
@@ -35,7 +69,7 @@ class ContactsList extends StatelessWidget {
           _ContactGroup(
             contacts: state.onApp,
             actionable: true,
-            selectionMode: selectionMode,
+            selectionMode: widget.selectionMode,
           ),
         ],
         if (state.others.isNotEmpty) ...[
@@ -46,9 +80,10 @@ class ContactsList extends StatelessWidget {
           _ContactGroup(
             contacts: state.others,
             actionable: false,
-            selectionMode: selectionMode,
+            selectionMode: widget.selectionMode,
           ),
         ],
+        if (state.hasMore) const ContactsLoadMoreSkeleton(),
       ],
     );
   }
@@ -140,7 +175,7 @@ class _ContactGroup extends StatelessWidget {
     );
   }
 
-  /// Dispatch du tap selon le mode : sélection renvoie le contact, sinon affiche les sheets.
+  /// Dispatch selon le mode : sélection renvoie le contact, sinon affiche les sheets.
   void _handleTap(BuildContext context, Contact contact) {
     if (selectionMode) {
       if (actionable) {

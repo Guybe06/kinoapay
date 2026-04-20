@@ -12,6 +12,7 @@ import "package:kinoapay_app/features/contacts/domain/contacts_strings.dart";
 
 /// Liste des contacts : recherche et regroupement inscrits / autres.
 /// En mode [selectionMode], un tap sur un contact inscrit renvoie ce contact via [Navigator.pop].
+/// Le scroll charge les contacts par tranches de 25 (pagination en mémoire).
 class ContactsView extends StatefulWidget {
   final bool selectionMode;
 
@@ -23,6 +24,7 @@ class ContactsView extends StatefulWidget {
 
 class _ContactsViewState extends State<ContactsView> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
   late final ContactsBloc _bloc;
 
   @override
@@ -35,6 +37,7 @@ class _ContactsViewState extends State<ContactsView> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     _bloc.add(const ContactsSearchChanged(""));
     super.dispose();
   }
@@ -53,7 +56,7 @@ class _ContactsViewState extends State<ContactsView> {
                 ? ContactsStrings.headerSubtitleSelect
                 : ContactsStrings.headerSubtitle,
             trailing: GestureDetector(
-              onTap: () => context.read<ContactsBloc>().add(const ContactsStarted()),
+              onTap: () => _bloc.add(const ContactsRefreshed()),
               child: Container(
                 width: 36,
                 height: 36,
@@ -61,7 +64,11 @@ class _ContactsViewState extends State<ContactsView> {
                   color: AppColors.quinoaDark.withValues(alpha: 0.06),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.quinoaDark),
+                child: const Icon(
+                  Icons.refresh_rounded,
+                  size: 16,
+                  color: AppColors.quinoaDark,
+                ),
               ),
             ),
           ),
@@ -85,6 +92,7 @@ class _ContactsViewState extends State<ContactsView> {
                 if (state is ContactsLoadSuccess) {
                   return ContactsList(
                     state: state,
+                    scrollController: _scrollController,
                     selectionMode: widget.selectionMode,
                   );
                 }

@@ -7,11 +7,17 @@ import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_row.dart";
 
 /// Liste des transactions groupées par date, retourne plusieurs slivers.
-/// Utilisation : placer directement dans un [CustomScrollView] via [buildSlivers].
+/// Placer directement dans un [CustomScrollView].
+/// [hasMore] active l'affichage d'un squelette en bas de liste.
 class HistoryTxList extends StatelessWidget {
   final List<Transaction> transactions;
+  final bool hasMore;
 
-  const HistoryTxList({super.key, required this.transactions});
+  const HistoryTxList({
+    super.key,
+    required this.transactions,
+    this.hasMore = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +34,15 @@ class HistoryTxList extends StatelessWidget {
       items.add(_DateLabel(label: entry.key));
       items.add(_TxGroup(transactions: entry.value));
     }
-    items.add(const SizedBox(height: 120));
 
-    return SliverList(
-      delegate: SliverChildListDelegate(items),
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverList(delegate: SliverChildListDelegate(items)),
+        if (hasMore)
+          const SliverToBoxAdapter(child: _LoadMoreSkeleton())
+        else
+          const SliverToBoxAdapter(child: SizedBox(height: 120)),
+      ],
     );
   }
 
@@ -104,6 +115,80 @@ class _TxGroup extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// Squelette affiché en bas de liste quand une page supplémentaire se charge.
+class _LoadMoreSkeleton extends StatelessWidget {
+  const _LoadMoreSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
+        ),
+        child: Column(
+          children: List.generate(3, (i) {
+            return Column(
+              children: [
+                if (i > 0)
+                  Divider(
+                    height: 1,
+                    indent: 60,
+                    endIndent: 16,
+                    color: AppColors.quinoaDark.withValues(alpha: 0.05),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      _Bone(width: 40, height: 40, radius: 14),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Bone(width: 120, height: 12, radius: 5),
+                            const SizedBox(height: 6),
+                            _Bone(width: 80, height: 10, radius: 4),
+                          ],
+                        ),
+                      ),
+                      _Bone(width: 64, height: 13, radius: 5),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class _Bone extends StatelessWidget {
+  final double width;
+  final double height;
+  final double radius;
+
+  const _Bone({required this.width, required this.height, required this.radius});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: AppColors.quinoaDark.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
 }
 
 class _EmptyState extends StatelessWidget {
