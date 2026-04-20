@@ -13,7 +13,6 @@ abstract final class AppRoutes {
   static const String paymentSetup = "/payment-setup";
   static const String shell = "/app";
   static const String contacts = "/app/contacts";
-  static const String receipt = "/app/receipt";
   static const String notifications = "/app/notifications";
   static const String scanner = "/app/scanner";
   static const String profile = "/app/profile";

@@ -25,7 +25,6 @@ import "package:kinoapay_app/features/history/application/bloc/history_bloc.dart
 import "package:kinoapay_app/features/history/infrastructure/repositories/mock_history_repository.dart";
 import "package:kinoapay_app/features/history/presentation/history_view.dart";
 import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
-import "package:kinoapay_app/features/receipt/presentation/receipt_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/domain/welcome_args.dart";
@@ -94,8 +93,6 @@ class AppRouter {
         );
       case AppRoutes.notifications:
         return RouteTransitions.slide(_notificationsPage(), settings);
-      case AppRoutes.receipt:
-        return RouteTransitions.authStep(const ReceiptView(), settings);
       case AppRoutes.scanner:
         return RouteTransitions.slide(const ScannerView(), settings);
       case AppRoutes.profile:

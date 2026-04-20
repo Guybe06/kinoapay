@@ -256,7 +256,7 @@ class _FeeRow extends StatelessWidget {
           ),
         ),
         Text(
-          "${AmountFormatter.withCurrency(fees.totalFee)}",
+          AmountFormatter.withCurrency(fees.totalFee),
           style: const TextStyle(
             color: AppColors.quinoaDark,
             fontSize: 12,
