@@ -8,8 +8,7 @@ import "package:kinoapay_app/features/history/application/bloc/history_state.dar
 import "package:kinoapay_app/features/history/domain/history_filter.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
-/// Panneau de filtres — période, direction et canal.
-///
+/// Panneau de filtres, période, direction et canal.
 /// Design monochrome, pas de couleurs opérateur.
 /// Lit le filtre courant depuis [HistoryBloc] et l'actualise via [HistoryFilterChanged].
 class HistoryFilterSheet extends StatelessWidget {

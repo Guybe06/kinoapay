@@ -6,7 +6,7 @@ import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
 final _compact = NumberFormat.compact(locale: "en_US");
 
-/// Barre de résumé financier pour la période filtrée — style terminal.
+/// Barre de résumé financier pour la période filtrée, style terminal.
 class HistoryStatsBar extends StatelessWidget {
   final HistoryLoadSuccess state;
 

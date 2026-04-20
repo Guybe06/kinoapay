@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/notifications/domain/entities/notification_record.dart";
+import "package:kinoapay_app/features/notifications/domain/notifications_strings.dart";
 
 class NotificationTile extends StatelessWidget {
   final NotificationRecord notification;
@@ -117,8 +118,8 @@ class NotificationTile extends StatelessWidget {
   String _formatTime(DateTime dt) {
     final now = DateTime.now();
     final diff = now.difference(dt);
-    if (diff.inMinutes < 60) return "${diff.inMinutes}min";
-    if (diff.inHours < 24) return "${diff.inHours}h";
+    if (diff.inMinutes < 60) return "${diff.inMinutes}${NotificationsStrings.timeMin}";
+    if (diff.inHours < 24) return "${diff.inHours}${NotificationsStrings.timeHour}";
     return DateFormat("d MMM", "fr_FR").format(dt);
   }
 }

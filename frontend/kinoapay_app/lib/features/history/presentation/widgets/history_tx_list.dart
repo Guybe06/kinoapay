@@ -6,8 +6,7 @@ import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_row.dart";
 
-/// Liste des transactions groupées par date — retourne plusieurs slivers.
-///
+/// Liste des transactions groupées par date, retourne plusieurs slivers.
 /// Utilisation : placer directement dans un [CustomScrollView] via [buildSlivers].
 class HistoryTxList extends StatelessWidget {
   final List<Transaction> transactions;

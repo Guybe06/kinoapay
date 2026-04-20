@@ -6,8 +6,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
-/// Fiche récap compacte d'une transaction — bottom sheet.
-///
+/// Fiche récap compacte d'une transaction, bottom sheet.
 /// Le QR code encode les données essentielles de la transaction,
 /// scannable pour une vérification ou un reçu complet.
 final _fmt = NumberFormat("#,##0", "en_US");

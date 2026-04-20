@@ -7,7 +7,7 @@ import "package:kinoapay_app/features/history/presentation/widgets/history_tx_de
 
 final _fmt = NumberFormat("#,##0", "en_US");
 
-/// Ligne de transaction style terminal — dense, statut toujours visible, identifiant affiché.
+/// Ligne de transaction style terminal, dense, statut toujours visible, identifiant affiché.
 class HistoryTxRow extends StatelessWidget {
   final Transaction tx;
 
