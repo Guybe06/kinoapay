@@ -1,15 +1,15 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_bloc.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_event.dart";
 import "package:kinoapay_app/features/history/domain/history_filter.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
-/// Sheet de filtrage — période, direction et canal.
+/// Panneau de filtres — période, direction et canal.
 ///
+/// Design monochrome, pas de couleurs opérateur.
 /// Chaque sélection est appliquée immédiatement via [HistoryFilterChanged].
 class HistoryFilterSheet extends StatelessWidget {
   final HistoryFilter filter;
@@ -20,334 +20,395 @@ class HistoryFilterSheet extends StatelessWidget {
     context.read<HistoryBloc>().add(HistoryFilterChanged(next));
   }
 
+  bool get _isDefault =>
+      filter.direction == HistoryDirection.all &&
+      filter.channel == null &&
+      filter.isCurrentMonth;
+
   @override
   Widget build(BuildContext context) {
-    final isDefaultFilter = filter.direction == HistoryDirection.all &&
-        filter.channel == null &&
-        filter.isCurrentMonth;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom + 24,
-      ),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, bottomInset + 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Handle(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 16, 20),
-            child: Row(
-              children: [
-                const Text(
-                  "Filtres",
-                  style: TextStyle(
-                    color: AppColors.quinoaDark,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.4,
-                  ),
-                ),
-                const Spacer(),
-                if (!isDefaultFilter)
-                  GestureDetector(
-                    onTap: () => _dispatch(context, HistoryFilter.now()),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Text(
-                        "Réinitialiser",
-                        style: TextStyle(
-                          color: AppColors.quinoaDark.withValues(alpha: 0.55),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.06),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: 16,
-                      color: AppColors.quinoaDark.withValues(alpha: 0.50),
-                    ),
-                  ),
-                ),
+          _Header(
+            isDefault: _isDefault,
+            onReset: () => _dispatch(context, HistoryFilter.now()),
+            onClose: () => Navigator.pop(context),
+          ),
+          const SizedBox(height: 24),
+          _PeriodSection(
+            filter: filter,
+            onChanged: (f) => _dispatch(context, f),
+          ),
+          const SizedBox(height: 24),
+          _FilterSection(
+            label: "Direction",
+            child: _SegmentedSelector(
+              options: [
+                HistoryStrings.dirAll,
+                HistoryStrings.dirSent,
+                HistoryStrings.dirReceived,
+                HistoryStrings.dirPending,
               ],
+              activeIndex: filter.direction.index,
+              onSelect: (i) => _dispatch(
+                context,
+                filter.copyWith(direction: HistoryDirection.values[i]),
+              ),
             ),
           ),
-          _Section(label: "Période", child: _PeriodRow(filter: filter, onChanged: (f) => _dispatch(context, f))),
-          const SizedBox(height: 20),
-          _Section(label: "Direction", child: _ChipRow(children: _directionChips(context))),
-          const SizedBox(height: 20),
-          _Section(label: "Canal", child: _ChipRow(children: _channelChips(context))),
-          const SizedBox(height: 8),
+          const SizedBox(height: 24),
+          _FilterSection(
+            label: "Canal",
+            child: _SegmentedSelector(
+              options: const ["Tous", "MTN", "Airtel"],
+              activeIndex: filter.channel == null
+                  ? 0
+                  : filter.channel == "MTN"
+                      ? 1
+                      : 2,
+              onSelect: (i) => _dispatch(
+                context,
+                i == 0
+                    ? filter.copyWith(clearChannel: true)
+                    : filter.copyWith(channel: i == 1 ? "MTN" : "AIRTEL"),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-
-  List<Widget> _directionChips(BuildContext context) => [
-    _Chip(
-      label: HistoryStrings.dirAll,
-      active: filter.direction == HistoryDirection.all,
-      onTap: () => _dispatch(context, filter.copyWith(direction: HistoryDirection.all)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirSent,
-      active: filter.direction == HistoryDirection.sent,
-      onTap: () => _dispatch(context, filter.copyWith(direction: HistoryDirection.sent)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirReceived,
-      active: filter.direction == HistoryDirection.received,
-      onTap: () => _dispatch(context, filter.copyWith(direction: HistoryDirection.received)),
-    ),
-    _Chip(
-      label: HistoryStrings.dirPending,
-      active: filter.direction == HistoryDirection.pending,
-      onTap: () => _dispatch(context, filter.copyWith(direction: HistoryDirection.pending)),
-    ),
-  ];
-
-  List<Widget> _channelChips(BuildContext context) => [
-    _Chip(
-      label: HistoryStrings.channelAll,
-      active: filter.channel == null,
-      onTap: () => _dispatch(context, filter.copyWith(clearChannel: true)),
-    ),
-    _Chip(
-      label: "MTN",
-      active: filter.channel == "MTN",
-      dot: AppColors.mtnYellow,
-      onTap: () => _dispatch(context, filter.copyWith(channel: "MTN")),
-    ),
-    _Chip(
-      label: "Airtel",
-      active: filter.channel == "AIRTEL",
-      dot: AppColors.airtelRed,
-      onTap: () => _dispatch(context, filter.copyWith(channel: "AIRTEL")),
-    ),
-  ];
 }
 
 class _Handle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Container(
-          margin: const EdgeInsets.only(top: 12, bottom: 8),
-          width: 36,
-          height: 4,
+          margin: const EdgeInsets.only(top: 12, bottom: 4),
+          width: 32,
+          height: 3,
           decoration: BoxDecoration(
-            color: AppColors.quinoaDark.withValues(alpha: 0.10),
+            color: AppColors.quinoaDark.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
       );
 }
 
-class _Section extends StatelessWidget {
+class _Header extends StatelessWidget {
+  final bool isDefault;
+  final VoidCallback onReset;
+  final VoidCallback onClose;
+
+  const _Header({
+    required this.isDefault,
+    required this.onReset,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Row(
+          children: [
+            const Text(
+              "Filtres",
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const Spacer(),
+            if (!isDefault)
+              GestureDetector(
+                onTap: onReset,
+                child: Text(
+                  "Réinitialiser",
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            if (!isDefault) const SizedBox(width: 16),
+            GestureDetector(
+              onTap: onClose,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 15,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+/// Section avec label CAPS + contenu.
+class _FilterSection extends StatelessWidget {
   final String label;
   final Widget child;
-  const _Section({required this.label, required this.child});
+
+  const _FilterSection({required this.label, required this.child});
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-            child: Text(
-              label.toUpperCase(),
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.35),
-                fontSize: 10,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.2,
-              ),
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.30),
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.4,
             ),
           ),
+          const SizedBox(height: 10),
           child,
         ],
       );
 }
 
-/// Navigation période avec flèches mois + chips.
-class _PeriodRow extends StatelessWidget {
-  final HistoryFilter filter;
-  final ValueChanged<HistoryFilter> onChanged;
-  const _PeriodRow({required this.filter, required this.onChanged});
+/// Sélecteur segmenté monochrome — fond clair, segment actif en dark.
+class _SegmentedSelector extends StatelessWidget {
+  final List<String> options;
+  final int activeIndex;
+  final ValueChanged<int> onSelect;
+
+  const _SegmentedSelector({
+    required this.options,
+    required this.activeIndex,
+    required this.onSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isMonth = filter.period == HistoryPeriod.month;
-    final raw = DateFormat("MMM yyyy", "fr_FR")
-        .format(DateTime(filter.year, filter.month));
-    final monthLabel = raw[0].toUpperCase() + raw.substring(1);
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: AppColors.quinoaDark.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(14),
+      ),
       child: Row(
-        children: [
-          if (isMonth) ...[
-            _NavArrow(
-              icon: SolarIconsOutline.altArrowLeft,
-              onTap: () => onChanged(filter.prevMonth()),
+        children: List.generate(options.length, (i) {
+          final isActive = i == activeIndex;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onSelect(i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                decoration: BoxDecoration(
+                  color: isActive ? AppColors.quinoaDark : Colors.transparent,
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  options[i],
+                  style: TextStyle(
+                    color: isActive
+                        ? Colors.white
+                        : AppColors.quinoaDark.withValues(alpha: 0.45),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
-            const SizedBox(width: 4),
-          ],
-          _Chip(
-            label: isMonth ? monthLabel : HistoryStrings.periodMonth,
-            active: isMonth,
-            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.month)),
-          ),
-          if (isMonth) ...[
-            const SizedBox(width: 4),
-            _NavArrow(
-              icon: SolarIconsOutline.altArrowRight,
-              onTap: filter.isCurrentMonth ? null : () => onChanged(filter.nextMonth()),
-              enabled: !filter.isCurrentMonth,
-            ),
-          ],
-          const SizedBox(width: 8),
-          _Chip(
-            label: HistoryStrings.period3Months,
-            active: filter.period == HistoryPeriod.last3Months,
-            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.last3Months)),
-          ),
-          const SizedBox(width: 8),
-          _Chip(
-            label: HistoryStrings.periodYear,
-            active: filter.period == HistoryPeriod.thisYear,
-            onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.thisYear)),
-          ),
-        ],
+          );
+        }),
       ),
     );
   }
 }
 
-class _ChipRow extends StatelessWidget {
-  final List<Widget> children;
-  const _ChipRow({required this.children});
+/// Section période : navigation mois en haut, options 3 mois / année en bas.
+class _PeriodSection extends StatelessWidget {
+  final HistoryFilter filter;
+  final ValueChanged<HistoryFilter> onChanged;
+
+  const _PeriodSection({required this.filter, required this.onChanged});
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          children: children
-              .expand((c) => [c, const SizedBox(width: 8)])
-              .toList()
-            ..removeLast(),
+  Widget build(BuildContext context) {
+    final isMonth = filter.period == HistoryPeriod.month;
+    final raw = DateFormat("MMMM yyyy", "fr_FR")
+        .format(DateTime(filter.year, filter.month));
+    final monthLabel = raw[0].toUpperCase() + raw.substring(1);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Période".toUpperCase(),
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.30),
+            fontSize: 10,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.4,
+          ),
         ),
-      );
+        const SizedBox(height: 10),
+        /// Navigateur mois
+        GestureDetector(
+          onTap: () => onChanged(filter.copyWith(period: HistoryPeriod.month)),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+            decoration: BoxDecoration(
+              color: isMonth
+                  ? AppColors.quinoaDark
+                  : AppColors.quinoaDark.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                _MonthArrow(
+                  icon: Icons.chevron_left_rounded,
+                  enabled: isMonth,
+                  onTap: () => onChanged(filter.prevMonth()),
+                  white: isMonth,
+                ),
+                Expanded(
+                  child: Text(
+                    isMonth ? monthLabel : HistoryStrings.periodMonth,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: isMonth
+                          ? Colors.white
+                          : AppColors.quinoaDark.withValues(alpha: 0.45),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ),
+                _MonthArrow(
+                  icon: Icons.chevron_right_rounded,
+                  enabled: isMonth && !filter.isCurrentMonth,
+                  onTap: filter.isCurrentMonth
+                      ? null
+                      : () => onChanged(filter.nextMonth()),
+                  white: isMonth,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        /// Options alternatives
+        Row(
+          children: [
+            Expanded(
+              child: _PeriodCard(
+                label: HistoryStrings.period3Months,
+                active: filter.period == HistoryPeriod.last3Months,
+                onTap: () => onChanged(
+                  filter.copyWith(period: HistoryPeriod.last3Months),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _PeriodCard(
+                label: HistoryStrings.periodYear,
+                active: filter.period == HistoryPeriod.thisYear,
+                onTap: () => onChanged(
+                  filter.copyWith(period: HistoryPeriod.thisYear),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
-class _Chip extends StatelessWidget {
+class _PeriodCard extends StatelessWidget {
   final String label;
   final bool active;
   final VoidCallback onTap;
-  final Color? dot;
 
-  const _Chip({
+  const _PeriodCard({
     required this.label,
     required this.active,
     required this.onTap,
-    this.dot,
   });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(vertical: 13),
           decoration: BoxDecoration(
-            color: active ? AppColors.quinoaDark : AppColors.quinoaDark.withValues(alpha: 0.04),
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              color: active
-                  ? AppColors.quinoaDark
-                  : AppColors.quinoaDark.withValues(alpha: 0.08),
-            ),
+            color: active
+                ? AppColors.quinoaDark
+                : AppColors.quinoaDark.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(14),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (dot != null) ...[
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: active ? Colors.white.withValues(alpha: 0.7) : dot,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 5),
-              ],
-              Text(
-                label,
-                style: TextStyle(
-                  color: active
-                      ? Colors.white
-                      : AppColors.quinoaDark.withValues(alpha: 0.55),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: active
+                  ? Colors.white
+                  : AppColors.quinoaDark.withValues(alpha: 0.45),
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       );
 }
 
-class _NavArrow extends StatelessWidget {
+class _MonthArrow extends StatelessWidget {
   final IconData icon;
-  final VoidCallback? onTap;
   final bool enabled;
+  final VoidCallback? onTap;
+  final bool white;
 
-  const _NavArrow({required this.icon, this.onTap, this.enabled = true});
+  const _MonthArrow({
+    required this.icon,
+    required this.enabled,
+    this.onTap,
+    this.white = false,
+  });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            color: AppColors.quinoaDark.withValues(alpha: 0.04),
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              color: AppColors.quinoaDark.withValues(alpha: 0.08),
-            ),
-          ),
-          child: Icon(
-            icon,
-            size: 13,
-            color: enabled
-                ? AppColors.quinoaDark.withValues(alpha: 0.55)
-                : AppColors.quinoaDark.withValues(alpha: 0.18),
-          ),
+        onTap: enabled ? onTap : null,
+        child: Icon(
+          icon,
+          size: 20,
+          color: white
+              ? Colors.white.withValues(alpha: enabled ? 0.80 : 0.20)
+              : AppColors.quinoaDark.withValues(alpha: enabled ? 0.40 : 0.15),
         ),
       );
 }
