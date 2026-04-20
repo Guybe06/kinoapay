@@ -3,6 +3,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
+import "package:kinoapay_app/features/send/domain/send_args.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
@@ -103,8 +105,19 @@ class PlusView extends StatelessWidget {
                     label: PlusStrings.actionScan,
                     description: PlusStrings.descScan,
                     color: AppColors.quinoaDark,
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.scanner),
+                    onTap: () async {
+                      final result = await Navigator.pushNamed(
+                        context,
+                        AppRoutes.scanner,
+                      );
+                      if (result is ScanResult && context.mounted) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.send,
+                          arguments: SendArgs(context: result.context),
+                        );
+                      }
+                    },
                   ),
                   PlusActionCard(
                     icon: SolarIconsOutline.cardReceive,

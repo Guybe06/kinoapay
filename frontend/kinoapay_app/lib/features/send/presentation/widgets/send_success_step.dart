@@ -2,16 +2,21 @@ import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
+import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 
 /// Écran affiché après confirmation — animation simple d'apparition icône confirm + texte.
 class SendSuccessStep extends StatefulWidget {
   final VoidCallback onClose;
   final VoidCallback onShowNotification;
 
+  /// Contexte hérité : adapte le titre et le message selon send ou pay.
+  final TransactionContext context;
+
   const SendSuccessStep({
     super.key,
     required this.onClose,
     required this.onShowNotification,
+    this.context = TransactionContext.send,
   });
 
   @override
@@ -114,9 +119,11 @@ class _SendSuccessStepState extends State<SendSuccessStep>
         position: _textSlide,
         child: Column(
           children: [
-            const Text(
-              SendStrings.successTitle,
-              style: TextStyle(
+            Text(
+              widget.context.isPay
+                  ? SendStrings.paySuccessTitle
+                  : SendStrings.successTitle,
+              style: const TextStyle(
                 color: AppColors.quinoaDark,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
@@ -125,7 +132,9 @@ class _SendSuccessStepState extends State<SendSuccessStep>
             ),
             const SizedBox(height: 12),
             Text(
-              SendStrings.successMessage,
+              widget.context.isPay
+                  ? SendStrings.paySuccessMessage
+                  : SendStrings.successMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.quinoaDark.withValues(alpha: 0.5),

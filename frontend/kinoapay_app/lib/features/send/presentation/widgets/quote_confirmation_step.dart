@@ -211,9 +211,9 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        child: const Text(
-          SendStrings.confirmBtn,
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+        child: Text(
+          widget.context.isPay ? SendStrings.payConfirmBtn : SendStrings.confirmBtn,
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
         ),
       ),
     );

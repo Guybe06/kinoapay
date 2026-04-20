@@ -110,7 +110,9 @@ class AppRouter {
       case AppRoutes.send:
         final sArgs = args is SendArgs ? args : const SendArgs();
         return RouteTransitions.slide(
-          SendView(prefilledContact: sArgs.prefilledContact),
+          SendView(
+            prefilledContact: sArgs.prefilledContact,
+          ),
           settings,
         );
       case AppRoutes.request:

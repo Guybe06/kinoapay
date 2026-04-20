@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:qr_flutter/qr_flutter.dart";
+import "package:share_plus/share_plus.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
@@ -9,11 +11,12 @@ import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
+import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/request/domain/request_strings.dart";
+import "package:kinoapay_app/features/send/infrastructure/source_accounts_mock.dart";
 
-/// Écran de demande de paiement : génère un QR code et un lien copiable.
-/// Le montant est optionnel : sans montant, le QR contient uniquement le KinoaID.
-/// Avec montant, le QR encode une demande de paiement complète.
+/// Écran de demande de paiement : QR code + lien partageable via share sheet natif.
+/// Le montant est optionnel. Le canal de réception est sélectionnable.
 class RequestView extends StatefulWidget {
   const RequestView({super.key});
 
@@ -24,6 +27,7 @@ class RequestView extends StatefulWidget {
 class _RequestViewState extends State<RequestView> {
   final _amountCtrl = TextEditingController();
   double? _amount;
+  PaymentChannel? _selectedChannel;
 
   @override
   void initState() {
@@ -49,11 +53,36 @@ class _RequestViewState extends State<RequestView> {
     AppSnackBar.showInfo(context, RequestStrings.idCopied);
   }
 
+  /// Ouvre le share sheet natif (WhatsApp, Messages, Mail, etc.).
+  Future<void> _shareLink(String handle) async {
+    final message = RequestStrings.shareMessage(
+      handle,
+      _amount,
+      _selectedChannel?.type,
+    );
+    final link = RequestStrings.payLink(
+      handle,
+      _amount,
+      _selectedChannel?.type,
+    );
+    await SharePlus.instance.share(
+      ShareParams(
+        text: message,
+        uri: Uri.parse(link),
+        subject: RequestStrings.shareSubject,
+      ),
+    );
+  }
+
   Future<void> _copyLink(String handle) async {
-    final text = RequestStrings.shareMessage(handle, _amount);
-    await Clipboard.setData(ClipboardData(text: text));
+    final link = RequestStrings.payLink(
+      handle,
+      _amount,
+      _selectedChannel?.type,
+    );
+    await Clipboard.setData(ClipboardData(text: link));
     if (!mounted) return;
-    AppSnackBar.showSuccess(context, RequestStrings.shareCopied);
+    AppSnackBar.showSuccess(context, RequestStrings.linkCopied);
   }
 
   @override
@@ -83,6 +112,11 @@ class _RequestViewState extends State<RequestView> {
             ),
             const SizedBox(height: 36),
             _AmountField(controller: _amountCtrl),
+            const SizedBox(height: 16),
+            _ChannelSelector(
+              selected: _selectedChannel,
+              onChanged: (ch) => setState(() => _selectedChannel = ch),
+            ),
             const SizedBox(height: 40),
             if (handle != null) ...[
               _QrCard(
@@ -90,11 +124,159 @@ class _RequestViewState extends State<RequestView> {
                 amount: _amount,
                 onCopyId: () => _copyId(handle),
               ),
-              const SizedBox(height: 32),
-              _ShareButton(onTap: () => _copyLink(handle)),
+              const SizedBox(height: 28),
+              _ShareButton(onTap: () => _shareLink(handle)),
+              const SizedBox(height: 12),
+              _CopyLinkButton(onTap: () => _copyLink(handle)),
             ] else
               const _NoHandleState(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Sélecteur du canal de réception souhaité (MTN, Airtel…).
+class _ChannelSelector extends StatelessWidget {
+  final PaymentChannel? selected;
+  final ValueChanged<PaymentChannel?> onChanged;
+
+  const _ChannelSelector({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showSheet(context),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: AppColors.quinoaDark.withValues(alpha: 0.08),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              SolarIconsOutline.cardReceive,
+              size: 18,
+              color: AppColors.quinoaDark.withValues(alpha: 0.45),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                selected?.label ?? RequestStrings.channelHint,
+                style: TextStyle(
+                  color: selected != null
+                      ? AppColors.quinoaDark
+                      : AppColors.quinoaDark.withValues(alpha: 0.35),
+                  fontSize: 15,
+                  fontWeight:
+                      selected != null ? FontWeight.w700 : FontWeight.w400,
+                ),
+              ),
+            ),
+            Icon(
+              SolarIconsOutline.altArrowDown,
+              size: 16,
+              color: AppColors.quinoaDark.withValues(alpha: 0.3),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                RequestStrings.channelLabel,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...SourceAccountsMock.list.map((ch) {
+                final isSelected = ch == selected;
+                return GestureDetector(
+                  onTap: () {
+                    onChanged(ch);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.quinoaDark.withValues(alpha: 0.06)
+                          : AppColors.stone50,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ch.label,
+                                style: TextStyle(
+                                  color: AppColors.quinoaDark,
+                                  fontSize: 14,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                ch.value,
+                                style: TextStyle(
+                                  color:
+                                      AppColors.quinoaDark.withValues(alpha: 0.4),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isSelected)
+                          const Icon(
+                            SolarIconsOutline.checkCircle,
+                            size: 18,
+                            color: AppColors.quinoaGold,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -208,7 +390,6 @@ class _QrCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        // KinoaID copiable sous le QR.
         GestureDetector(
           onTap: onCopyId,
           child: Row(
@@ -247,7 +428,7 @@ class _QrCard extends StatelessWidget {
   }
 }
 
-/// Bouton principal de partage du lien de paiement.
+/// Bouton principal : ouvre le share sheet natif (WhatsApp, Messages, Mail…).
 class _ShareButton extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -264,14 +445,65 @@ class _ShareButton extends StatelessWidget {
           color: AppColors.quinoaDark,
           borderRadius: BorderRadius.circular(18),
         ),
-        child: const Text(
-          RequestStrings.shareBtn,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppColors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              SolarIconsOutline.shareCircle,
+              color: AppColors.white,
+              size: 18,
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              RequestStrings.shareBtn,
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bouton secondaire : copie le lien brut dans le presse-papier.
+class _CopyLinkButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _CopyLinkButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.copy_rounded,
+              size: 16,
+              color: AppColors.quinoaDark.withValues(alpha: 0.6),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              RequestStrings.copyLinkBtn,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.7),
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );

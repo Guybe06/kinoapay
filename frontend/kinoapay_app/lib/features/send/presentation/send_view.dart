@@ -14,6 +14,7 @@ import "package:kinoapay_app/features/contacts/domain/contacts_args.dart";
 import "package:kinoapay_app/features/contacts/domain/entities/contact.dart"
     hide PaymentChannel;
 import "package:kinoapay_app/features/send/domain/send_args.dart";
+import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
@@ -58,12 +59,28 @@ class _SendViewState extends State<SendView> {
   final FocusNode _amountFocus = FocusNode();
   SendStep _step = SendStep.recipient;
   RecipientSearchMode _searchMode = RecipientSearchMode.phone;
+  TransactionContext _context = TransactionContext.send;
   CountryCode _selectedCountry = RecipientByPhoneView.countryCodes.first;
   RecipientMatch? _selectedRecipient;
   PaymentChannel? _selectedSourceChannel;
   PaymentChannel? _selectedDestChannel;
   List<RecipientMatch> _foundRecipients = [];
   String? _externalRecipientName;
+
+  bool _dependenciesInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_dependenciesInitialized) {
+      _dependenciesInitialized = true;
+      // Contexte hérité depuis SendArgs (scan QR ou navigation contacts).
+      final routeArgs = ModalRoute.of(context)?.settings.arguments;
+      if (routeArgs is SendArgs) {
+        _context = routeArgs.context;
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -266,6 +283,7 @@ class _SendViewState extends State<SendView> {
             return QuoteConfirmationStep(
               quote: state.quote,
               onBack: () => context.read<SendBloc>().add(SendReset()),
+              context: _context,
             );
           }
           return Scaffold(
@@ -298,6 +316,7 @@ class _SendViewState extends State<SendView> {
                             onContinue: _requestQuote,
                             onExternalNameChanged: (name) =>
                                 setState(() => _externalRecipientName = name),
+                            context: _context,
                           ),
                       ],
                     ),
@@ -315,10 +334,14 @@ class _SendViewState extends State<SendView> {
                         ? SendStrings.backToRecipient
                         : SendStrings.backToDashboard,
                     title: _step == SendStep.amount
-                        ? SendStrings.headerTitleAmount
+                        ? (_context.isPay
+                            ? SendStrings.payHeaderTitle
+                            : SendStrings.headerTitleAmount)
                         : SendStrings.headerTitleRecipient,
                     subtitle: _step == SendStep.amount
-                        ? SendStrings.headerSubAmount
+                        ? (_context.isPay
+                            ? SendStrings.payHeaderSub
+                            : SendStrings.headerSubAmount)
                         : SendStrings.headerSubRecipient,
                   ),
                 ),
@@ -364,6 +387,7 @@ class _SendViewState extends State<SendView> {
                         Navigator.pop(context);
                       },
                       onShowNotification: _showNotification,
+                      context: _context,
                     ),
                     fullscreenDialog: true,
                   ),
@@ -384,6 +408,7 @@ class _SendViewState extends State<SendView> {
                 Navigator.pop(context);
               },
               onShowNotification: _showNotification,
+              context: _context,
             ),
             fullscreenDialog: true,
           ),
@@ -408,7 +433,9 @@ class _SendViewState extends State<SendView> {
               Text(
                 isRecipient
                     ? SendStrings.stepRecipientTitle
-                    : SendStrings.stepAmountTitle,
+                    : (_context.isPay
+                        ? SendStrings.payStepAmountTitle
+                        : SendStrings.stepAmountTitle),
                 style: const TextStyle(
                   color: AppColors.quinoaDark,
                   fontSize: 28,
@@ -421,7 +448,9 @@ class _SendViewState extends State<SendView> {
               Text(
                 isRecipient
                     ? SendStrings.stepRecipientSub
-                    : SendStrings.stepAmountSub,
+                    : (_context.isPay
+                        ? SendStrings.payStepAmountSub
+                        : SendStrings.stepAmountSub),
                 style: TextStyle(
                   color: AppColors.quinoaDark.withValues(alpha: 0.4),
                   fontSize: 13,
