@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:intl/intl.dart" show DateFormat;
+import "package:intl/intl.dart";
 import "package:qr_flutter/qr_flutter.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
@@ -11,6 +10,8 @@ import "package:kinoapay_app/features/history/domain/history_strings.dart";
 ///
 /// Le QR code encode les données essentielles de la transaction,
 /// scannable pour une vérification ou un reçu complet.
+final _fmt = NumberFormat("#,##0", "en_US");
+
 class HistoryTxDetailSheet extends StatelessWidget {
   final Transaction tx;
 
@@ -35,7 +36,7 @@ class HistoryTxDetailSheet extends StatelessWidget {
     return [
       HistoryStrings.qrHeader,
       "${HistoryStrings.qrLabelRef}: ${tx.transactionId}",
-      "${HistoryStrings.qrLabelAmount}: ${AmountFormatter.withCurrency(tx.amount)}",
+      "${HistoryStrings.qrLabelAmount}: ${_fmt.format(tx.amount)} ${HistoryStrings.currency}",
       "$dir: $who (${tx.receiverIdentifier})",
       "${HistoryStrings.qrLabelChannel}: ${tx.sourceChannel} → ${tx.destinationChannel}",
       "${HistoryStrings.qrLabelDate}: ${dateFmt.format(tx.startedAt)}",
@@ -187,7 +188,7 @@ class _AmountHeader extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "$sign ${AmountFormatter.format(tx.amount)} ${HistoryStrings.currency}",
+          "$sign ${_fmt.format(tx.amount)} ${HistoryStrings.currency}",
           style: TextStyle(
             color: amtColor,
             fontSize: 38,
@@ -258,7 +259,7 @@ class _FeeRow extends StatelessWidget {
           ),
         ),
         Text(
-          AmountFormatter.withCurrency(fees.totalFee),
+          "${_fmt.format(fees.totalFee)} ${HistoryStrings.currency}",
           style: const TextStyle(
             color: AppColors.quinoaDark,
             fontSize: 12,

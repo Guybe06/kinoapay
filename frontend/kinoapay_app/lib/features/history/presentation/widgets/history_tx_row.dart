@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_detail_sheet.dart";
+
+final _fmt = NumberFormat("#,##0", "en_US");
 
 /// Ligne de transaction style terminal — dense, statut toujours visible, identifiant affiché.
 class HistoryTxRow extends StatelessWidget {
@@ -64,7 +65,7 @@ class HistoryTxRow extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        "$sign ${AmountFormatter.format(tx.amount)} ${HistoryStrings.currency}",
+                        "$sign ${_fmt.format(tx.amount)} ${HistoryStrings.currency}",
                         style: TextStyle(
                           color: amountColor,
                           fontSize: 13,

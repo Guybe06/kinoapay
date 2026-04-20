@@ -1,12 +1,14 @@
 import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
+import "package:intl/intl.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/channel_stat.dart";
 
 /// Carte d'un canal de paiement — style terminal financier.
 /// Affiche une sparkline, le volume total, le ratio et le nombre d'opérations.
+final _fmt = NumberFormat("#,##0", "en_US");
+
 class DashboardChannelCard extends StatelessWidget {
   final ChannelStat stat;
   final double sharePercent;
@@ -102,7 +104,7 @@ class DashboardChannelCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            AmountFormatter.compactWithCurrency(stat.total),
+            "${_fmt.format(stat.total)} XAF",
             style: const TextStyle(
               color: AppColors.quinoaDark,
               fontSize: 15,

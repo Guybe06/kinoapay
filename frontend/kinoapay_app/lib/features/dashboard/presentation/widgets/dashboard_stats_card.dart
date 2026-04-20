@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
+import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
@@ -10,6 +10,8 @@ import "package:kinoapay_app/features/dashboard/domain/entities/dashboard_stats.
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_stats_card_controls.dart";
 
 /// Carte principale des statistiques mensuelles avec navigation de période.
+final _fmt = NumberFormat("#,##0", "en_US");
+
 class DashboardStatsCard extends StatefulWidget {
   final DashboardStats stats;
 
@@ -107,7 +109,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
             children: [
               Expanded(
                 child: Text(
-                  AmountFormatter.format(net.abs()),
+                  _fmt.format(net.abs()),
                   style: const TextStyle(
                     color: AppColors.quinoaCream,
                     fontSize: 52,
@@ -146,7 +148,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsOutgoing,
-                  amount: AmountFormatter.format(widget.stats.totalSent),
+                  amount: _fmt.format(widget.stats.totalSent),
                   icon: SolarIconsOutline.arrowRightUp,
                   color: AppColors.quinoaCream.withValues(alpha: 0.65),
                 ),
@@ -159,7 +161,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsIncoming,
-                  amount: AmountFormatter.format(widget.stats.totalReceived),
+                  amount: _fmt.format(widget.stats.totalReceived),
                   icon: SolarIconsOutline.arrowLeftDown,
                   color: AppColors.quinoaGold,
                   center: true,
@@ -174,7 +176,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsNet,
                   amount:
-                      "${isPositive ? "+" : "−"}${AmountFormatter.format(net.abs())}",
+                      "${isPositive ? "+" : "−"}${_fmt.format(net.abs())}",
                   icon: isPositive
                       ? SolarIconsOutline.graphUp
                       : SolarIconsOutline.graphDown,

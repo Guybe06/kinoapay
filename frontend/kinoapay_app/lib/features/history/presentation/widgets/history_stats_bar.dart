@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_state.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
+
+final _fmt = NumberFormat("#,##0", "en_US");
 
 /// Barre de résumé financier pour la période filtrée — style terminal.
 class HistoryStatsBar extends StatelessWidget {
@@ -26,14 +28,14 @@ class HistoryStatsBar extends StatelessWidget {
         children: [
           _StatCell(
             label: HistoryStrings.statsSent,
-            value: AmountFormatter.compactWithCurrency(state.totalSent),
+            value: "${_fmt.format(state.totalSent)} ${HistoryStrings.currency}",
             icon: "↑",
             color: AppColors.quinoaCream.withValues(alpha: 0.65),
           ),
           _Divider(),
           _StatCell(
             label: HistoryStrings.statsReceived,
-            value: AmountFormatter.compactWithCurrency(state.totalReceived),
+            value: "${_fmt.format(state.totalReceived)} ${HistoryStrings.currency}",
             icon: "↓",
             color: AppColors.quinoaGold,
             center: true,
@@ -41,7 +43,7 @@ class HistoryStatsBar extends StatelessWidget {
           _Divider(),
           _StatCell(
             label: HistoryStrings.statsNet,
-            value: "${isPositive ? "+" : "−"}${AmountFormatter.compactWithCurrency(state.net.abs())}",
+            value: "${isPositive ? "+" : "−"}${_fmt.format(state.net.abs())} ${HistoryStrings.currency}",
             icon: "=",
             color: netColor,
             alignRight: true,

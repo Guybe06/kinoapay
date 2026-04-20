@@ -1,11 +1,13 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
-import "package:kinoapay_app/core/utils/amount_formatter.dart";
+import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_models.dart";
 
 /// Ligne de transaction — 2 colonnes : identité + montant.
+final _fmt = NumberFormat("#,##0", "en_US");
+
 class DashboardTxRow extends StatelessWidget {
   final Transaction tx;
 
@@ -72,7 +74,7 @@ class DashboardTxRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${isReceived ? "+" : "−"} ${AmountFormatter.format(tx.amount)}",
+                "${isReceived ? "+" : "−"} ${_fmt.format(tx.amount)}",
                 style: TextStyle(
                   color: amountColor,
                   fontSize: 15,

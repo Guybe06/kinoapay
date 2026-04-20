@@ -246,7 +246,7 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
           ),
         ),
         child: const Text(
-          "Confirmer l'envoi",
+          SendStrings.confirmBtn,
           style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
         ),
       ),
