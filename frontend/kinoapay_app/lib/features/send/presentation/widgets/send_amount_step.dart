@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
@@ -63,10 +64,10 @@ class _SendAmountStepState extends State<SendAmountStep> {
 
   bool get _channelsReady {
     if (widget.selectedSource == null) return false;
-    if (widget.recipient.isKinoaUser && widget.recipient.channels.isNotEmpty) {
+    if (widget.recipient.userType.isOnKinoa && widget.recipient.channels.isNotEmpty) {
       return widget.selectedDest != null;
     }
-    if (!widget.recipient.isKinoaUser) {
+    if (widget.recipient.userType == KinoaUserType.external) {
       return widget.selectedDest != null;
     }
     return true;
@@ -82,7 +83,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
           onModify: widget.onModifyRecipient,
         ),
         const SizedBox(height: 36),
-        if (!widget.recipient.isKinoaUser) ...[
+        if (widget.recipient.userType == KinoaUserType.external) ...[
           _buildExternalNameInput(),
           const SizedBox(height: 24),
         ],
@@ -131,8 +132,8 @@ class _SendAmountStepState extends State<SendAmountStep> {
 
   Widget _buildChannelRow(BuildContext context) {
     final hasDestChoice =
-        widget.recipient.isKinoaUser && widget.recipient.channels.isNotEmpty;
-    final isExternal = !widget.recipient.isKinoaUser;
+        widget.recipient.userType.isOnKinoa && widget.recipient.channels.isNotEmpty;
+    final isExternal = widget.recipient.userType == KinoaUserType.external;
     return Row(
       children: [
         Expanded(

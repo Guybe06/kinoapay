@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
@@ -145,7 +146,7 @@ class _ResultCardState extends State<_ResultCard> {
           ),
           child: Row(
             children: [
-              _AvatarIcon(isKinoa: widget.recipient.isKinoaUser),
+              _AvatarIcon(type: widget.recipient.userType),
               const SizedBox(width: 12),
               Expanded(child: _CardInfo(recipient: widget.recipient)),
             ],
@@ -159,17 +160,18 @@ class _ResultCardState extends State<_ResultCard> {
 // ── Avatar icône user ──────────────────────────────────────────────────────────
 
 class _AvatarIcon extends StatelessWidget {
-  final bool isKinoa;
+  final KinoaUserType type;
 
-  const _AvatarIcon({required this.isKinoa});
+  const _AvatarIcon({required this.type});
 
   @override
   Widget build(BuildContext context) {
+    final isOnKinoa = type.isOnKinoa;
     return Container(
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: isKinoa
+        color: isOnKinoa
             ? AppColors.quinoaGold.withValues(alpha: 0.10)
             : AppColors.stone100,
         shape: BoxShape.circle,
@@ -177,7 +179,7 @@ class _AvatarIcon extends StatelessWidget {
       child: Icon(
         SolarIconsOutline.user,
         size: 18,
-        color: isKinoa ? AppColors.quinoaGold : AppColors.stone400,
+        color: isOnKinoa ? AppColors.quinoaGold : AppColors.stone400,
       ),
     );
   }
@@ -209,9 +211,9 @@ class _CardInfo extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (recipient.isKinoaUser) ...[
+            if (recipient.userType.isOnKinoa) ...[
               const SizedBox(width: 7),
-              const _KinoaBadge(),
+              _KinoaBadge(type: recipient.userType),
             ],
           ],
         ),
@@ -259,20 +261,27 @@ class _CardInfo extends StatelessWidget {
 }
 
 class _KinoaBadge extends StatelessWidget {
-  const _KinoaBadge();
+  final KinoaUserType type;
+  const _KinoaBadge({required this.type});
 
   @override
   Widget build(BuildContext context) {
+    final label = type == KinoaUserType.merchant
+        ? SendStrings.merchantUserTag
+        : SendStrings.kinoaUserTag;
+    final color = type == KinoaUserType.merchant
+        ? AppColors.success
+        : AppColors.quinoaGold;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.quinoaGold.withValues(alpha: 0.10),
+        color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: const Text(
-        SendStrings.kinoaUserTag,
+      child: Text(
+        label,
         style: TextStyle(
-          color: AppColors.quinoaGold,
+          color: color,
           fontSize: 10,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.1,

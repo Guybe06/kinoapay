@@ -98,7 +98,7 @@ class _AppScrollScaffoldState extends State<AppScrollScaffold> {
               ignoring: !_headerVisible,
               child: AnimatedOpacity(
                 opacity: _headerVisible ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 180),
+                duration: const Duration(milliseconds: 0),
                 child: widget.header,
               ),
             ),

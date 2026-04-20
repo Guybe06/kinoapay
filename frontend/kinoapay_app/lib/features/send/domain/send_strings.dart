@@ -25,6 +25,7 @@ abstract final class SendStrings {
   static const String recentContactsLabel = "CONTACTS RÉCENTS";
   static const String contactsBtn = "Tous les contacts";
   static const String kinoaUserTag = "kinoaPay";
+  static const String merchantUserTag = "Marchand";
   static const String externalUserTag = "Externe";
   static const String notOnKinoaLabel =
       "Pas sur kinoaPay ? Envoyez directement.";

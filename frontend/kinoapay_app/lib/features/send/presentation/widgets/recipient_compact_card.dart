@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
@@ -85,21 +86,32 @@ class RecipientCompactCard extends StatelessWidget {
   }
 
   Widget _buildTag() {
-    final isKinoa = recipient.isKinoaUser;
+    final type = recipient.userType;
+    final label = switch (type) {
+      KinoaUserType.individual => SendStrings.kinoaUserTag,
+      KinoaUserType.merchant => SendStrings.merchantUserTag,
+      KinoaUserType.external => SendStrings.externalUserTag,
+    };
+    final color = switch (type) {
+      KinoaUserType.individual => AppColors.quinoaGold,
+      KinoaUserType.merchant => AppColors.success,
+      KinoaUserType.external => AppColors.quinoaCream.withValues(alpha: 0.5),
+    };
+    final bg = switch (type) {
+      KinoaUserType.individual => AppColors.quinoaGold.withValues(alpha: 0.25),
+      KinoaUserType.merchant => AppColors.success.withValues(alpha: 0.20),
+      KinoaUserType.external => AppColors.quinoaCream.withValues(alpha: 0.10),
+    };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
-        color: isKinoa
-            ? AppColors.quinoaGold.withValues(alpha: 0.25)
-            : AppColors.quinoaCream.withValues(alpha: 0.10),
+        color: bg,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        isKinoa ? SendStrings.kinoaUserTag : SendStrings.externalUserTag,
+        label,
         style: TextStyle(
-          color: isKinoa
-              ? AppColors.quinoaGold
-              : AppColors.quinoaCream.withValues(alpha: 0.5),
+          color: color,
           fontSize: 10,
           fontWeight: FontWeight.w700,
         ),

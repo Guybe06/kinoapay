@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/send/presentation/send_notification_service.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
@@ -152,7 +153,7 @@ class _SendViewState extends State<SendView> {
         name: fullPhone,
         phone: fullPhone,
         channels: const [],
-        isKinoaUser: false,
+        userType: KinoaUserType.external,
       ),
     );
   }
@@ -209,7 +210,7 @@ class _SendViewState extends State<SendView> {
       return;
     }
     final destType = _selectedDestChannel?.type ?? _selectedSourceChannel!.type;
-    final recipientName = _selectedRecipient?.isKinoaUser == false
+    final recipientName = _selectedRecipient?.userType == KinoaUserType.external
         ? _externalRecipientName
         : null;
     context.read<SendBloc>().add(

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row_models.dart";
 
@@ -49,13 +50,21 @@ class DashboardTxRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
-                Text(
-                  channel,
-                  style: TextStyle(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.38),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
+                Row(
+                  children: [
+                    if (tx.counterpartType.badgeLabel != null) ...[
+                      _DashboardUserTypeBadge(type: tx.counterpartType),
+                      const SizedBox(width: 6),
+                    ],
+                    Text(
+                      channel,
+                      style: TextStyle(
+                        color: AppColors.quinoaDark.withValues(alpha: 0.38),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -94,6 +103,38 @@ class DashboardTxRow extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Badge type utilisateur — même logique que dans history_tx_row.
+class _DashboardUserTypeBadge extends StatelessWidget {
+  final KinoaUserType type;
+  const _DashboardUserTypeBadge({required this.type});
+
+  Color get _color => type == KinoaUserType.merchant
+      ? AppColors.quinoaGold
+      : AppColors.quinoaDark.withValues(alpha: 0.35);
+
+  @override
+  Widget build(BuildContext context) {
+    final label = type.badgeLabel;
+    if (label == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: _color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: _color,
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.2,
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_detail_sheet.dart";
@@ -91,6 +92,10 @@ class HistoryTxRow extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      if (tx.counterpartType.badgeLabel != null)
+                        _UserTypeBadge(type: tx.counterpartType),
+                      if (tx.counterpartType.badgeLabel != null)
+                        const SizedBox(width: 6),
                       _StatusDot(status: tx.status),
                     ],
                   ),
@@ -156,6 +161,38 @@ class _DirectionIcon extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(icon, size: 15, color: iconColor),
+    );
+  }
+}
+
+/// Badge discret indiquant le type du participant (marchand ou externe uniquement).
+class _UserTypeBadge extends StatelessWidget {
+  final KinoaUserType type;
+  const _UserTypeBadge({required this.type});
+
+  Color get _color => type == KinoaUserType.merchant
+      ? AppColors.quinoaGold
+      : AppColors.quinoaDark.withValues(alpha: 0.35);
+
+  @override
+  Widget build(BuildContext context) {
+    final label = type.badgeLabel;
+    if (label == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: _color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: _color,
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.2,
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import "package:equatable/equatable.dart";
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 
 /// Transaction financière (données mock ou futures données API).
 class Transaction extends Equatable {
@@ -19,6 +20,9 @@ class Transaction extends Equatable {
   /// Score de risque AML — 0.0 = très faible, 1.0 = très élevé.
   final double? amlScore;
 
+  /// Type du participant externe à la transaction (destinataire si sent, émetteur si received).
+  final KinoaUserType counterpartType;
+
   const Transaction({
     required this.transactionId,
     required this.status,
@@ -34,6 +38,7 @@ class Transaction extends Equatable {
     this.completedAt,
     required this.direction,
     this.amlScore,
+    this.counterpartType = KinoaUserType.individual,
   });
 
   @override
@@ -52,6 +57,7 @@ class Transaction extends Equatable {
         completedAt,
         direction,
         amlScore,
+        counterpartType,
       ];
 }
 

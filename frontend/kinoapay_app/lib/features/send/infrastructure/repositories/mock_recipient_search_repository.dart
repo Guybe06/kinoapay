@@ -1,3 +1,4 @@
+import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
 import "package:kinoapay_app/features/send/domain/repositories/recipient_search_repository.dart";
@@ -169,7 +170,7 @@ class MockRecipientSearchRepository implements RecipientSearchRepository {
             name: u.name,
             phone: u.phone,
             channels: u.channels,
-            isKinoaUser: true,
+            userType: KinoaUserType.individual,
           ),
         )
         .toList();
