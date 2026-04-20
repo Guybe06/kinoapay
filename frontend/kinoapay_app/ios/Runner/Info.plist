@@ -6,6 +6,8 @@
 	<string>kinoaPay accède à vos contacts pour détecter ceux qui utilisent l'application.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>kinoaPay utilise la caméra pour scanner les QR codes de paiement.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>kinoaPay vous envoie des notifications pour confirmer vos transactions.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
