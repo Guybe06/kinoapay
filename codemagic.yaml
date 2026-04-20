@@ -5,8 +5,13 @@ workflows:
       flutter: stable
       xcode: latest
     scripts:
-      - flutter build ios --simulator
-      - mkdir -p frontend/kinoapay_app/build/ios/ipa
-      - zip -r frontend/kinoapay_app/build/ios/ipa/Runner.app.zip frontend/kinoapay_app/build/ios/iphonesimulator/Runner.app
+      - name: Build iOS Simulator
+        script: flutter build ios --simulator
+        working_directory: frontend/kinoapay_app
+      - name: Package Simulator App
+        script: |
+          mkdir -p build/ios/ipa
+          zip -r build/ios/ipa/Runner.app.zip build/ios/iphonesimulator/Runner.app
+        working_directory: frontend/kinoapay_app
     artifacts:
       - frontend/kinoapay_app/build/ios/ipa/Runner.app.zip
