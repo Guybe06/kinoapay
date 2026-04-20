@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/transaction.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_list_placeholders.dart";
-import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_tx_row.dart";
+import "package:kinoapay_app/features/history/presentation/widgets/history_tx_row.dart";
 
 /// Liste des transactions récentes dans une carte blanche arrondie.
 class DashboardTxList extends StatelessWidget {
@@ -40,7 +40,7 @@ class DashboardTxList extends StatelessWidget {
 
           return Column(
             children: [
-              DashboardTxRow(tx: tx),
+              HistoryTxRow(tx: tx),
               if (!isLast)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),

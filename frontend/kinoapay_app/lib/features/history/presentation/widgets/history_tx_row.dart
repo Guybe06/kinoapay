@@ -140,11 +140,11 @@ class _DirectionIcon extends StatelessWidget {
     } else if (isSent) {
       bg = AppColors.quinoaDark.withValues(alpha: 0.05);
       iconColor = AppColors.quinoaDark.withValues(alpha: 0.45);
-      icon = Icons.north_rounded;
+      icon = Icons.north_east_rounded;
     } else {
       bg = AppColors.success.withValues(alpha: 0.07);
       iconColor = AppColors.success;
-      icon = Icons.south_rounded;
+      icon = Icons.south_west_rounded;
     }
 
     return Container(
