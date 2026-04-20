@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 
 /// Bloc titre + sous-titre en haut du corps d'une page secondaire.
-///
 /// À placer après le header, avant le contenu principal.
 class AppPageTitle extends StatelessWidget {
   final String title;

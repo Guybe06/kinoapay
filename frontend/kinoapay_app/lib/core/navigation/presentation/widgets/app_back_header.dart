@@ -3,12 +3,11 @@ import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 
-/// En-tête partagée : bouton retour à gauche, titre centré, cloche à droite.
-///
-/// [backLabel] — affiché à côté de la flèche pour indiquer la zone de retour.
-/// [title] — titre de la page courante, affiché au centre.
-/// [trailing] — remplace la cloche par un widget personnalisé si fourni.
-/// Utilisée sur toutes les pages secondaires (Plus, Envoi, Historique, etc.).
+/// En-tête partagée : bouton retour à gauche, titre centré, trailing à droite.
+/// [backLabel] : affiché à côté de la flèche pour indiquer la zone de retour.
+/// [title] : titre de la page courante.
+/// [trailing] : remplace le widget de droite par un widget personnalisé si fourni.
+/// Utilisée sur toutes les pages secondaires.
 class AppBackHeader extends StatelessWidget {
   final VoidCallback onBack;
   final String? backLabel;

@@ -8,8 +8,7 @@ import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 import "package:kinoapay_app/features/dashboard/domain/repositories/dashboard_repository.dart";
 
 /// Gère la logique métier et les états du tableau de bord utilisateur.
-///
-/// Cache en mémoire : transactions et canaux sont chargés une seule fois par session.
+/// Cache en mémoire : transactions et canaux chargés une seule fois par session.
 /// Seules les stats sont rechargées lors d'un changement de période.
 /// [DashboardRefreshRequested] invalide le cache et recharge tout.
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {

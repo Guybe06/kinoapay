@@ -4,9 +4,8 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 
-/// Étape de validation USSD — l'utilisateur confirme via son opérateur mobile.
-///
-/// Si la validation automatique ne passe pas, [onResolved] peut être déclenché
+/// Étape de validation USSD : l'utilisateur confirme via son opérateur mobile.
+/// Si la validation automatique échoue, [onResolved] peut être déclenché
 /// manuellement via le bouton "J'ai confirmé".
 class UssdValidationStep extends StatefulWidget {
   final VoidCallback onResolved;

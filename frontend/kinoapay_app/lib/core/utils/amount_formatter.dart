@@ -1,8 +1,7 @@
 import "package:intl/intl.dart";
 
-/// Formateur de montants KinoaPay — source unique pour tous les écrans.
-///
-/// Utilise la locale en_US pour obtenir la virgule comme séparateur de milliers : 95,000.
+/// Formateur de montants KinoaPay, source unique pour tous les écrans.
+/// Utilise la locale en_US : séparateur de milliers virgule, ex. 95,000.
 abstract final class AmountFormatter {
   static final _fmt = NumberFormat("#,##0", "en_US");
   static final _compact = NumberFormat.compact(locale: "en_US");
