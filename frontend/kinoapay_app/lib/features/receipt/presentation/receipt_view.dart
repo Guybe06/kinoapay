@@ -73,24 +73,42 @@ class _ReceiptViewState extends State<ReceiptView> {
             SafeArea(
               child: SingleChildScrollView(
                 controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(24, 80, 24, 32),
+                padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
                 child: Column(
                   children: [
-                    StaggeredEntrance(index: 0, child: _buildStatusBadge(statusLabel, statusColor)),
-                    const SizedBox(height: 20),
+                    StaggeredEntrance(
+                      index: 0,
+                      child: _buildMainHeader(),
+                    ),
+                    const SizedBox(height: 32),
                     StaggeredEntrance(index: 1, child: _buildAmount(tx, isOutgoing)),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 40),
                     StaggeredEntrance(index: 2, child: _buildDetailsCard(tx, isOutgoing)),
                     const SizedBox(height: 16),
                     StaggeredEntrance(index: 3, child: _buildFeesCard(tx)),
                     const SizedBox(height: 16),
                     StaggeredEntrance(index: 4, child: _buildRefCard(tx)),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
                     StaggeredEntrance(
                       index: 5,
-                      child: PrimaryButton(
-                        text: "Fermer",
-                        onPressed: () => Navigator.pop(context),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 60,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.quinoaDark,
+                            foregroundColor: AppColors.quinoaCream,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: const Text(
+                            "Terminer",
+                            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -128,21 +146,31 @@ class _ReceiptViewState extends State<ReceiptView> {
     );
   }
 
-  Widget _buildStatusBadge(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check_circle_rounded, size: 16, color: color),
-          const SizedBox(width: 6),
-          Text(label, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w800)),
-        ],
-      ),
+  Widget _buildMainHeader() {
+    return const Column(
+      children: [
+        Text(
+          "Transaction effectuée",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppColors.quinoaDark,
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.8,
+            height: 1.1,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          "Votre transfert a été traité avec succès",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Color(0x661D2125), // quinoaDark with values alpha 0.4
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
@@ -153,12 +181,22 @@ class _ReceiptViewState extends State<ReceiptView> {
       children: [
         Text(
           "$sign ${AmountFormatter.withCurrency(tx.amount, tx.currency)}",
-          style: TextStyle(color: color, fontSize: 36, fontWeight: FontWeight.w900, letterSpacing: -1.5),
+          style: TextStyle(
+            color: color,
+            fontSize: 56,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -2,
+            height: 1,
+          ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Text(
           DateFormat("d MMMM yyyy à HH:mm", "fr_FR").format(tx.startedAt),
-          style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.4), fontSize: 13),
+          style: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.4),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -196,13 +234,20 @@ class _Card extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
       ),
-      child: Column(children: children),
+      child: Column(
+        children: List.generate(children.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: index == children.length - 1 ? 0 : 16),
+            child: children[index],
+          );
+        }),
+      ),
     );
   }
 }
@@ -215,35 +260,33 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.5),
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: bold ? 0.8 : 0.45),
+              fontSize: 14,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-              style: TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 14,
-                fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
-              ),
+        ),
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: AppColors.quinoaDark,
+              fontSize: bold ? 16 : 14,
+              fontWeight: bold ? FontWeight.w900 : FontWeight.w700,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
