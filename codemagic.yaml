@@ -10,10 +10,12 @@ workflows:
     scripts:
       - name: Get packages
         script: flutter pub get
+        working_directory: frontend/kinoapay_app
       - name: Build APK
         script: flutter build apk --release
+        working_directory: frontend/kinoapay_app
     artifacts:
-      - build/app/outputs/apk/release/*.apk
+      - frontend/kinoapay_app/build/app/outputs/apk/release/*.apk
 
   ios-release:
     name: iOS Release
@@ -28,10 +30,12 @@ workflows:
     scripts:
       - name: Get packages
         script: flutter pub get
+        working_directory: frontend/kinoapay_app
       - name: Install pods
         script: pod install
-        working_directory: ios
+        working_directory: frontend/kinoapay_app/ios
       - name: Build IPA
         script: flutter build ipa --release
+        working_directory: frontend/kinoapay_app
     artifacts:
-      - build/ios/ipa/*.ipa
+      - frontend/kinoapay_app/build/ios/ipa/*.ipa
