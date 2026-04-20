@@ -54,9 +54,9 @@ class HistoryFilterSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _FilterSection(
-            label: "Direction",
+            label: HistoryStrings.filterLabelDirection,
             child: _SegmentedSelector(
-              options: [
+              options: const [
                 HistoryStrings.dirAll,
                 HistoryStrings.dirSent,
                 HistoryStrings.dirReceived,
@@ -71,9 +71,13 @@ class HistoryFilterSheet extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _FilterSection(
-            label: "Canal",
+            label: HistoryStrings.filterLabelCanal,
             child: _SegmentedSelector(
-              options: const ["Tous", "MTN", "Airtel"],
+              options: const [
+                HistoryStrings.channelAll,
+                HistoryStrings.channelMtn,
+                HistoryStrings.channelAirtel,
+              ],
               activeIndex: filter.channel == null
                   ? 0
                   : filter.channel == "MTN"
@@ -125,7 +129,7 @@ class _Header extends StatelessWidget {
         child: Row(
           children: [
             const Text(
-              "Filtres",
+              HistoryStrings.filterTitle,
               style: TextStyle(
                 color: AppColors.quinoaDark,
                 fontSize: 20,
@@ -138,7 +142,7 @@ class _Header extends StatelessWidget {
               GestureDetector(
                 onTap: onReset,
                 child: Text(
-                  "Réinitialiser",
+                  HistoryStrings.filterReset,
                   style: TextStyle(
                     color: AppColors.quinoaDark.withValues(alpha: 0.40),
                     fontSize: 13,
@@ -266,7 +270,7 @@ class _PeriodSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Période".toUpperCase(),
+          HistoryStrings.filterLabelPeriod.toUpperCase(),
           style: TextStyle(
             color: AppColors.quinoaDark.withValues(alpha: 0.30),
             fontSize: 10,

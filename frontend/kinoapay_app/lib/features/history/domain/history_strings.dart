@@ -22,6 +22,14 @@ abstract final class HistoryStrings {
   static const String dirPending = "En attente";
 
   static const String channelAll = "Tous";
+  static const String channelMtn = "MTN";
+  static const String channelAirtel = "Airtel";
+
+  static const String filterTitle = "Filtres";
+  static const String filterReset = "Réinitialiser";
+  static const String filterLabelPeriod = "Période";
+  static const String filterLabelDirection = "Direction";
+  static const String filterLabelCanal = "Canal";
 
   static const String statsSent = "ENVOYÉ";
   static const String statsReceived = "REÇU";
@@ -47,6 +55,14 @@ abstract final class HistoryStrings {
 
   static const String sheetQrTitle = "Reçu numérique";
   static const String sheetQrSub = "Référence unique de la transaction";
+  static const String qrHeader = "REÇU KINOAPAY";
+  static const String qrLabelRef = "Réf";
+  static const String qrLabelAmount = "Montant";
+  static const String qrLabelSentTo = "Envoyé à";
+  static const String qrLabelReceivedFrom = "Reçu de";
+  static const String qrLabelChannel = "Canal";
+  static const String qrLabelDate = "Date";
+  static const String qrLabelStatus = "Statut";
   static const String copyRef = "Copier la référence";
   static const String copiedRef = "Référence copiée !";
 

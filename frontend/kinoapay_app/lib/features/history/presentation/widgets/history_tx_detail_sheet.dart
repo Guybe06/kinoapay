@@ -25,19 +25,21 @@ class HistoryTxDetailSheet extends StatelessWidget {
       "PROCESSING" => HistoryStrings.sheetStatusProcessing,
       _ => HistoryStrings.sheetStatusFailed,
     };
-    final dir = isSent ? "Envoyé à" : "Reçu de";
+    final dir = isSent
+        ? HistoryStrings.qrLabelSentTo
+        : HistoryStrings.qrLabelReceivedFrom;
     final who = isSent
         ? (tx.receiverName ?? tx.receiverIdentifier)
         : (tx.senderName ?? tx.receiverIdentifier);
 
     return [
-      "REÇU KINOAPAY",
-      "Réf: ${tx.transactionId}",
-      "Montant: ${AmountFormatter.withCurrency(tx.amount)}",
+      HistoryStrings.qrHeader,
+      "${HistoryStrings.qrLabelRef}: ${tx.transactionId}",
+      "${HistoryStrings.qrLabelAmount}: ${AmountFormatter.withCurrency(tx.amount)}",
       "$dir: $who (${tx.receiverIdentifier})",
-      "Canal: ${tx.sourceChannel} → ${tx.destinationChannel}",
-      "Date: ${dateFmt.format(tx.startedAt)}",
-      "Statut: $status",
+      "${HistoryStrings.qrLabelChannel}: ${tx.sourceChannel} → ${tx.destinationChannel}",
+      "${HistoryStrings.qrLabelDate}: ${dateFmt.format(tx.startedAt)}",
+      "${HistoryStrings.qrLabelStatus}: $status",
     ].join("\n");
   }
 
@@ -319,11 +321,11 @@ class _QrBlock extends StatelessWidget {
                 size: 152,
                 eyeStyle: const QrEyeStyle(
                   eyeShape: QrEyeShape.square,
-                  color: Color(0xFF1A1A2E),
+                  color: AppColors.quinoaDark,
                 ),
                 dataModuleStyle: const QrDataModuleStyle(
                   dataModuleShape: QrDataModuleShape.square,
-                  color: Color(0xFF1A1A2E),
+                  color: AppColors.quinoaDark,
                 ),
                 backgroundColor: Colors.white,
               ),
