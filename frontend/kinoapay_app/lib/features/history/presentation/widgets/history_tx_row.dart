@@ -114,7 +114,7 @@ class HistoryTxRow extends StatelessWidget {
   }
 }
 
-/// Icône directionnelle — carrée arrondie, couleur selon direction et statut.
+/// Icône directionnelle : carrée arrondie, couleur selon direction et statut.
 class _DirectionIcon extends StatelessWidget {
   final bool isSent;
   final String status;
@@ -160,7 +160,7 @@ class _DirectionIcon extends StatelessWidget {
   }
 }
 
-/// Point de statut coloré — toujours visible pour toutes les transactions.
+/// Point de statut coloré : toujours visible pour toutes les transactions.
 class _StatusDot extends StatelessWidget {
   final String status;
 

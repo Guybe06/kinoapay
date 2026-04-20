@@ -251,7 +251,7 @@ class _EmptyState extends StatelessWidget {
       );
 }
 
-/// Squelette de chargement — 4 tiles placeholder.
+/// Squelette de chargement : 4 tiles placeholder.
 class _NotificationsSkeleton extends StatelessWidget {
   const _NotificationsSkeleton();
 

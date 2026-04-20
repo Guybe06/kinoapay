@@ -197,7 +197,7 @@ class _FilterSection extends StatelessWidget {
       );
 }
 
-/// Sélecteur segmenté monochrome — fond clair, segment actif en dark.
+/// Sélecteur segmenté monochrome : fond clair, segment actif en dark.
 class _SegmentedSelector extends StatelessWidget {
   final List<String> options;
   final int activeIndex;

@@ -96,7 +96,7 @@ class _Handle extends StatelessWidget {
       );
 }
 
-/// Bloc montant + statut + route canal — zone principale de lecture rapide.
+/// Bloc montant + statut + route canal : zone principale de lecture rapide.
 class _AmountHeader extends StatelessWidget {
   final Transaction tx;
   const _AmountHeader({required this.tx});
@@ -270,7 +270,7 @@ class _FeeRow extends StatelessWidget {
   }
 }
 
-/// Bloc QR code réel — scannable pour vérification du reçu.
+/// Bloc QR code réel : scannable pour vérification du reçu.
 class _QrBlock extends StatelessWidget {
   final String data;
   final String ref;

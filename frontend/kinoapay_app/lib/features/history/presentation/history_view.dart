@@ -12,7 +12,7 @@ import "package:kinoapay_app/core/widgets/app_page_title.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_stats_bar.dart";
 import "package:kinoapay_app/features/history/presentation/widgets/history_tx_list.dart";
 
-/// Écran Historique — header scroll-hide, filtres via sheet, stats et liste.
+/// Écran Historique : header scroll-hide, filtres via sheet, stats et liste.
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
 
