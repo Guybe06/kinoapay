@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 import "package:kinoapay_app/features/scanner/domain/scanner_strings.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_overlay.dart";
@@ -36,6 +37,108 @@ class _ScannerViewState extends State<ScannerView> {
 
     final result = ScanResult.parse(raw);
     _showResultSheet(result);
+  }
+
+  /// Ouvre un bottom sheet avec un champ texte pour saisir un lien manuellement.
+  void _showLinkInput() {
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 36),
+          decoration: const BoxDecoration(
+            color: AppColors.quinoaCream,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: ctrl,
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                style: const TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                cursorColor: AppColors.quinoaGold,
+                decoration: InputDecoration(
+                  hintText: ScannerStrings.linkFallbackHint,
+                  hintStyle: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.30),
+                    fontSize: 14,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.quinoaDark.withValues(alpha: 0.05),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: GestureDetector(
+                  onTap: () {
+                    final raw = ctrl.text.trim();
+                    final result = ScanResult.parse(raw);
+                    if (result.type == ScanResultType.unknown) {
+                      AppSnackBar.showInfo(
+                        ctx,
+                        ScannerStrings.linkFallbackError,
+                      );
+                      return;
+                    }
+                    Navigator.pop(ctx);
+                    _showResultSheet(result);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.quinoaDark,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      ScannerStrings.linkFallbackOpen,
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _showResultSheet(ScanResult result) {
@@ -130,44 +233,61 @@ class _ScannerViewState extends State<ScannerView> {
             top: (size.height + frameSize) / 2 + 24,
             left: 0,
             right: 0,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    width: 0.5,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        ScannerStrings.hintLine1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        ScannerStrings.hintLine2,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.45),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      ScannerStrings.hintLine1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.85),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: _showLinkInput,
+                  child: Text(
+                    ScannerStrings.linkFallbackBtn,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.45),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white.withValues(alpha: 0.25),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      ScannerStrings.hintLine2,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.45),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],

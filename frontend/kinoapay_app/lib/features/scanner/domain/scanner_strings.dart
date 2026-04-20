@@ -14,6 +14,12 @@ abstract final class ScannerStrings {
   static const String actionPay = "Payer";
   static const String actionOk = "OK";
 
+  // Fallback lien de paiement
+  static const String linkFallbackBtn = "Entrer un lien de paiement";
+  static const String linkFallbackHint = "https://pay.kinoapay.com/r/...";
+  static const String linkFallbackOpen = "Ouvrir";
+  static const String linkFallbackError = "Lien non reconnu. Vérifiez l'URL.";
+
   static String resultHandleBody(String handle) =>
       "Envoyer de l'argent à $handle";
 

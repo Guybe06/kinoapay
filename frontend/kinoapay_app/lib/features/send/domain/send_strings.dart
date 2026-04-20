@@ -96,6 +96,22 @@ abstract final class SendStrings {
   static const String quoteVerifySubtitle = "Dernière étape avant la confirmation";
   static const String quoteWillReceive = "va recevoir";
 
+  // Contexte paiement (scan QR / lien)
+  static const String payStepAmountTitle = "Combien payez-vous ?";
+  static const String payStepAmountSub = "Vérifiez le montant et les canaux.";
+  static const String payHeaderTitle = "Payer";
+  static const String payHeaderSub = "Confirmez le paiement";
+  static const String payContinueBtn = "Continuer vers le paiement";
+  static const String payConfirmBtn = "Confirmer le paiement";
+  static const String payConfirmTitle = "Vérification";
+  static const String payConfirmSubtitle = "Confirmez votre paiement";
+  static const String payProcessing = "Paiement en cours...";
+  static const String paySuccessTitle = "Paiement en cours";
+  static const String paySuccessMessage =
+      "Votre paiement est en cours de traitement. Vous serez notifié dès que l'opération sera finalisée.";
+  static const String payQuoteVerifyTitle = "Vérifiez le paiement";
+  static const String payQuoteVerifySubtitle = "Dernière étape avant la confirmation";
+
   static const String backspaceSymbol = "⌫";
 
   static String feeOperatorWithRate(String operator) => "Frais $operator (3%)";
