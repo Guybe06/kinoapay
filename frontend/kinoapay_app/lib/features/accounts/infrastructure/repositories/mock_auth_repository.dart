@@ -20,6 +20,7 @@ class MockAuthRepository implements AuthRepository {
         firstName: "Jean",
         lastName: "Dupont",
         kycVerified: true,
+        publicHandle: "384291",
       ),
     ),
   };
@@ -44,6 +45,7 @@ class MockAuthRepository implements AuthRepository {
     "countryCode": u.countryCode,
     "birthDate": u.birthDate,
     "kycVerified": u.kycVerified,
+    "publicHandle": u.publicHandle,
   };
 
   UserAccount _userFromMap(Map<String, dynamic> d) => UserAccount(
@@ -56,6 +58,7 @@ class MockAuthRepository implements AuthRepository {
     countryCode: d["countryCode"] as String?,
     birthDate: d["birthDate"] as String?,
     kycVerified: (d["kycVerified"] as bool?) ?? false,
+    publicHandle: d["publicHandle"] as String?,
   );
 
   /// Persiste toujours access + refresh tokens et le profil utilisateur.
@@ -118,6 +121,7 @@ class MockAuthRepository implements AuthRepository {
       phone: phone,
       countryCode: countryCode,
       birthDate: birthDate,
+      publicHandle: "${firstName.toLowerCase()}.${lastName.toLowerCase()}",
     );
 
     _store[key] = _MockCredentials(password: password, account: account);

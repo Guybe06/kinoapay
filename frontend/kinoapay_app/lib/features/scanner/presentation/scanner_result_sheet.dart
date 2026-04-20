@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
+import "package:kinoapay_app/features/scanner/domain/scanner_strings.dart";
 
 /// Feuille modale après lecture d’un QR (confirmation ou retour caméra).
 class ScannerResultBottomSheet extends StatelessWidget {
@@ -82,7 +83,7 @@ class ScannerResultBottomSheet extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: const Text(
-                      "Annuler",
+                      ScannerStrings.cancel,
                       style: TextStyle(
                         color: AppColors.quinoaDark,
                         fontSize: 14,
@@ -106,7 +107,7 @@ class ScannerResultBottomSheet extends StatelessWidget {
                     child: Text(
                       _actionLabel(),
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
                       ),
@@ -122,22 +123,26 @@ class ScannerResultBottomSheet extends StatelessWidget {
   }
 
   String _title() => switch (result.type) {
-        ScanResultType.publicHandle => "KinoaID détecté",
-        ScanResultType.paymentRequest => "Demande de paiement",
-        ScanResultType.unknown => "QR non reconnu",
-      };
+    ScanResultType.publicHandle => ScannerStrings.resultHandleTitle,
+    ScanResultType.paymentRequest => ScannerStrings.resultPayTitle,
+    ScanResultType.unknown => ScannerStrings.resultUnknownTitle,
+  };
 
   String _subtitle() => switch (result.type) {
-        ScanResultType.publicHandle =>
-          "Envoyer de l'argent à ${result.publicHandle ?? result.raw}",
-        ScanResultType.paymentRequest =>
-          "Payer ${result.amount?.toStringAsFixed(0) ?? "?"} ${result.currency ?? "XAF"} à ${result.publicHandle ?? ""}",
-        ScanResultType.unknown => "Ce QR code n'est pas reconnu par kinoaPay.",
-      };
+    ScanResultType.publicHandle => ScannerStrings.resultHandleBody(
+      result.publicHandle ?? result.raw,
+    ),
+    ScanResultType.paymentRequest => ScannerStrings.resultPayBody(
+      result.amount?.toStringAsFixed(0) ?? "?",
+      result.currency ?? "XAF",
+      result.publicHandle ?? "",
+    ),
+    ScanResultType.unknown => ScannerStrings.resultUnknownBody,
+  };
 
   String _actionLabel() => switch (result.type) {
-        ScanResultType.publicHandle => "Envoyer",
-        ScanResultType.paymentRequest => "Payer",
-        ScanResultType.unknown => "OK",
-      };
+    ScanResultType.publicHandle => ScannerStrings.actionSend,
+    ScanResultType.paymentRequest => ScannerStrings.actionPay,
+    ScanResultType.unknown => ScannerStrings.actionOk,
+  };
 }

@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
@@ -11,6 +14,10 @@ class PlusAccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state;
+    final kycVerified =
+        authState is Authenticated && authState.user.kycVerified;
+
     return Column(
       children: [
         PlusListCard(
@@ -25,8 +32,9 @@ class PlusAccountSection extends StatelessWidget {
           icon: SolarIconsOutline.shieldCheck,
           label: PlusStrings.actionKyc,
           description: PlusStrings.descKyc,
-          color: AppColors.success,
-          onTap: () {},
+          color: kycVerified ? AppColors.success : AppColors.quinoaGold,
+          trailing: _KycBadge(verified: kycVerified),
+          onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
         ),
         const SizedBox(height: 10),
         PlusListCard(
@@ -81,6 +89,37 @@ class PlusSupportSection extends StatelessWidget {
           onTap: () {},
         ),
       ],
+    );
+  }
+}
+
+/// Badge pill indiquant le statut KYC de l'utilisateur.
+class _KycBadge extends StatelessWidget {
+  final bool verified;
+
+  const _KycBadge({required this.verified});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = verified ? AppColors.success : AppColors.quinoaGold;
+    final label = verified
+        ? PlusStrings.kycStatusVerified
+        : PlusStrings.kycStatusPending;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
+        ),
+      ),
     );
   }
 }

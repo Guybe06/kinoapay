@@ -5,6 +5,7 @@ import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_page_title.dart";
+import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/plus/domain/plus_strings.dart";
@@ -12,43 +13,15 @@ import "package:kinoapay_app/features/plus/presentation/widgets/plus_sections.da
 import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dart";
 
 /// Vue principale de la feature Plus.
-class PlusView extends StatefulWidget {
+class PlusView extends StatelessWidget {
   final int unreadNotifications;
   final VoidCallback? onBackToDashboard;
 
-  const PlusView({super.key, this.unreadNotifications = 0, this.onBackToDashboard});
-
-  @override
-  State<PlusView> createState() => _PlusViewState();
-}
-
-class _PlusViewState extends State<PlusView> {
-  final _scrollController = ScrollController();
-  bool _headerVisible = true;
-  double _lastOffset = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final offset = _scrollController.offset;
-    final delta = offset - _lastOffset;
-    _lastOffset = offset;
-    if (delta > 4 && _headerVisible) {
-      setState(() => _headerVisible = false);
-    } else if (delta < -4 && !_headerVisible) {
-      setState(() => _headerVisible = true);
-    }
-  }
+  const PlusView({
+    super.key,
+    this.unreadNotifications = 0,
+    this.onBackToDashboard,
+  });
 
   Future<void> _confirmSignOut(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -96,105 +69,89 @@ class _PlusViewState extends State<PlusView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.quinoaCream,
-      body: Stack(
-        clipBehavior: Clip.hardEdge,
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.fromLTRB(0, 72, 0, 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return AppScrollScaffold(
+      header: AppBackHeader(
+        onBack: onBackToDashboard ?? () {},
+        backLabel: PlusStrings.backLabel,
+        title: PlusStrings.title,
+        subtitle: PlusStrings.headerSubtitle,
+        unreadNotifications: unreadNotifications,
+      ),
+      builder: (_, ctrl) => SingleChildScrollView(
+        controller: ctrl,
+        padding: const EdgeInsets.fromLTRB(0, 72, 0, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AppPageTitle(
+              title: PlusStrings.pageTitle,
+              subtitle: PlusStrings.pageSubtitle,
+            ),
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1.1,
                 children: [
-                  const AppPageTitle(
-                    title: PlusStrings.pageTitle,
-                    subtitle: PlusStrings.pageSubtitle,
+                  PlusActionCard(
+                    icon: SolarIconsOutline.scanner,
+                    label: PlusStrings.actionScan,
+                    description: PlusStrings.descScan,
+                    color: AppColors.quinoaDark,
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.scanner),
                   ),
-                  const SizedBox(height: 32),
-                  Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.1,
-                    children: [
-                      PlusActionCard(
-                        icon: SolarIconsOutline.scanner,
-                        label: PlusStrings.actionScan,
-                        description: PlusStrings.descScan,
-                        color: AppColors.quinoaDark,
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.scanner),
-                      ),
-                      PlusActionCard(
-                        icon: SolarIconsOutline.cardReceive,
-                        label: PlusStrings.actionRequest,
-                        description: PlusStrings.descRequest,
-                        color: AppColors.pending,
-                        onTap: () {},
-                      ),
-                      PlusActionCard(
-                        icon: SolarIconsOutline.history,
-                        label: PlusStrings.actionHistory,
-                        description: PlusStrings.descHistory,
-                        color: AppColors.quinoaGold,
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.history),
-                      ),
-                      PlusActionCard(
-                        icon: SolarIconsOutline.card2,
-                        label: PlusStrings.actionChannels,
-                        description: PlusStrings.descChannels,
-                        color: AppColors.success,
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.channels),
-                      ),
-                      PlusActionCard(
-                        icon: SolarIconsOutline.usersGroupTwoRounded,
-                        label: PlusStrings.actionContacts,
-                        description: PlusStrings.descContacts,
-                        color: AppColors.quinoaDark,
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.contacts),
-                      ),
-                    ],
+                  PlusActionCard(
+                    icon: SolarIconsOutline.cardReceive,
+                    label: PlusStrings.actionRequest,
+                    description: PlusStrings.descRequest,
+                    color: AppColors.pending,
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.request),
                   ),
+                  PlusActionCard(
+                    icon: SolarIconsOutline.history,
+                    label: PlusStrings.actionHistory,
+                    description: PlusStrings.descHistory,
+                    color: AppColors.quinoaGold,
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.history),
                   ),
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
+                  PlusActionCard(
+                    icon: SolarIconsOutline.card2,
+                    label: PlusStrings.actionChannels,
+                    description: PlusStrings.descChannels,
+                    color: AppColors.success,
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.channels),
+                  ),
+                  PlusActionCard(
+                    icon: SolarIconsOutline.usersGroupTwoRounded,
+                    label: PlusStrings.actionContacts,
+                    description: PlusStrings.descContacts,
+                    color: AppColors.quinoaDark,
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.contacts),
                   ),
                 ],
               ),
             ),
-          ),
-          _buildFloatingHeader(),
-        ],
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
+            ),
+          ],
+        ),
       ),
     );
   }
-
-  Widget _buildFloatingHeader() {
-    final topInset = MediaQuery.of(context).padding.top;
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: _headerVisible
-          ? AppBackHeader(
-              onBack: widget.onBackToDashboard ?? () {},
-              backLabel: PlusStrings.backLabel,
-              title: PlusStrings.title,
-              subtitle: PlusStrings.headerSubtitle,
-              unreadNotifications: widget.unreadNotifications,
-            )
-          : SizedBox(height: topInset),
-    );
-  }
 }
-
 
 /// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
 class _SectionsBlock extends StatelessWidget {

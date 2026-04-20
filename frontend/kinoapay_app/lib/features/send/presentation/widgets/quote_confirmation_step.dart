@@ -4,6 +4,7 @@ import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
+import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_event.dart";
 import "package:kinoapay_app/features/send/domain/entities/transfer_quote.dart";
@@ -27,138 +28,84 @@ class QuoteConfirmationStep extends StatefulWidget {
 }
 
 class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
-  final _scrollController = ScrollController();
-  bool _headerVisible = true;
-  double _lastOffset = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final offset = _scrollController.offset;
-
-    if (offset <= 0) {
-      if (!_headerVisible) setState(() => _headerVisible = true);
-      _lastOffset = offset;
-      return;
-    }
-
-    final delta = offset - _lastOffset;
-    _lastOffset = offset;
-
-    if (delta > 4 && _headerVisible) {
-      setState(() => _headerVisible = false);
-    } else if (delta < -4 && !_headerVisible) {
-      setState(() => _headerVisible = true);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.quinoaCream,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 32),
-                  _buildAvatar(),
-                  const SizedBox(height: 12),
-                  Text(
-                    widget.quote.recipientName,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.3,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "va recevoir",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.5),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Text(
-                    _fmt.format(widget.quote.amount),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 56,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -2,
-                      height: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    SendStrings.amountUnit,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 4,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildSummaryCard(),
-                  const SizedBox(height: 40),
-                  _buildConfirmButton(context),
-                ],
+    return AppScrollScaffold(
+      header: AppBackHeader(
+        onBack: widget.onBack,
+        backLabel: SendStrings.backLabel,
+        title: SendStrings.confirmTitle,
+        subtitle: SendStrings.confirmSubtitle,
+      ),
+      builder: (_, ctrl) => SingleChildScrollView(
+        controller: ctrl,
+        padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 32),
+            _buildAvatar(),
+            const SizedBox(height: 12),
+            Text(
+              widget.quote.recipientName,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.3,
               ),
             ),
-          ),
-          _buildFloatingHeader(),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              SendStrings.quoteWillReceive,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.5),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 28),
+            Text(
+              _fmt.format(widget.quote.amount),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: 56,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2,
+                height: 1,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              SendStrings.amountUnit,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.3),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 4,
+              ),
+            ),
+            const SizedBox(height: 40),
+            _buildSummaryCard(),
+            const SizedBox(height: 40),
+            _buildConfirmButton(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildFloatingHeader() {
-    final topInset = MediaQuery.of(context).padding.top;
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: _headerVisible
-          ? AppBackHeader(
-              onBack: widget.onBack,
-              backLabel: "Retour",
-              title: "Vérification",
-              subtitle: "Confirmez votre transaction",
-            )
-          : SizedBox(height: topInset),
-    );
-  }
-
   Widget _buildHeader() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          "Vérifiez l'envoi",
+        const Text(
+          SendStrings.quoteVerifyTitle,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.quinoaDark,
@@ -168,12 +115,12 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
             height: 1.1,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
-          "Dernière étape avant la confirmation",
+          SendStrings.quoteVerifySubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color(0x661D2125), // quinoaDark with values alpha 0.4
+            color: AppColors.quinoaDark.withValues(alpha: 0.40),
             fontSize: 14,
             fontWeight: FontWeight.w500,
             height: 1.4,
@@ -206,13 +153,18 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06), width: 1),
+        border: Border.all(
+          color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
           _SummaryRow(
             label: SendStrings.totalFeesLabel,
-            value: SendStrings.amountWithUnit(_fmt.format(widget.quote.totalFee)),
+            value: SendStrings.amountWithUnit(
+              _fmt.format(widget.quote.totalFee),
+            ),
           ),
           const SizedBox(height: 16),
           Divider(
@@ -222,7 +174,9 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
           const SizedBox(height: 16),
           _SummaryRow(
             label: SendStrings.confirmTotalLabel,
-            value: SendStrings.amountWithUnit(_fmt.format(widget.quote.amountDebited)),
+            value: SendStrings.amountWithUnit(
+              _fmt.format(widget.quote.amountDebited),
+            ),
             isBold: true,
           ),
         ],
@@ -235,8 +189,9 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
       width: double.infinity,
       height: 60,
       child: ElevatedButton(
-        onPressed: () =>
-            context.read<SendBloc>().add(SendConfirmRequested(widget.quote.quoteId)),
+        onPressed: () => context.read<SendBloc>().add(
+          SendConfirmRequested(widget.quote.quoteId),
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.quinoaDark,
           foregroundColor: AppColors.quinoaCream,

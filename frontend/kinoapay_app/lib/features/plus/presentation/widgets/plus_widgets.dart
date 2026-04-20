@@ -91,6 +91,7 @@ class PlusListCard extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   final bool isDestructive;
+  final Widget? trailing;
 
   const PlusListCard({
     super.key,
@@ -100,6 +101,7 @@ class PlusListCard extends StatelessWidget {
     required this.color,
     required this.onTap,
     this.isDestructive = false,
+    this.trailing,
   });
 
   @override
@@ -154,13 +156,14 @@ class PlusListCard extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              SolarIconsOutline.altArrowRight,
-              size: 16,
-              color: isDestructive
-                  ? AppColors.white.withValues(alpha: 0.65)
-                  : labelColor.withValues(alpha: 0.25),
-            ),
+            trailing ??
+                Icon(
+                  SolarIconsOutline.altArrowRight,
+                  size: 16,
+                  color: isDestructive
+                      ? AppColors.white.withValues(alpha: 0.65)
+                      : labelColor.withValues(alpha: 0.25),
+                ),
           ],
         ),
       ),

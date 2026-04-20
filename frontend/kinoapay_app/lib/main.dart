@@ -11,6 +11,7 @@ import "package:kinoapay_app/core/storage/secure_storage_service.dart";
 import "package:kinoapay_app/core/theme/app_theme.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/onboarding/application/bloc/payment_setup_bloc.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_auth_repository.dart";
 import "package:kinoapay_app/features/accounts/infrastructure/repositories/mock_payment_channel_repository.dart";
@@ -61,28 +62,45 @@ void main() async {
   );
 }
 
+/// Clé globale du navigateur : permet au [BlocListener] racine de déclencher
+/// la navigation vers signin sans dépendre d'un [BuildContext] local.
+final _navigatorKey = GlobalKey<NavigatorState>();
+
 /// Widget racine [MaterialApp] : thème clair global ; [WelcomeView] conserve un fond sombre local.
+/// Un [BlocListener] global écoute [Unauthenticated] pour rediriger vers signin
+/// depuis n'importe quel écran de l'application.
 class RootApp extends StatelessWidget {
   const RootApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.light,
-      locale: const Locale("fr"),
-      supportedLocales: const [Locale("fr"), Locale("en")],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      navigatorObservers: [appRouteObserver, NavThrottle()],
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRouter.generateRoute,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Unauthenticated) {
+          _navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            AppRoutes.signin,
+            (_) => false,
+          );
+        }
+      },
+      child: MaterialApp(
+        navigatorKey: _navigatorKey,
+        title: AppStrings.appName,
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.light,
+        locale: const Locale("fr"),
+        supportedLocales: const [Locale("fr"), Locale("en")],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        navigatorObservers: [appRouteObserver, NavThrottle()],
+        initialRoute: AppRoutes.splash,
+        onGenerateRoute: AppRouter.generateRoute,
+      ),
     );
   }
 }

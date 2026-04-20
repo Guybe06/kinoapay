@@ -1,8 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_local_notifications/flutter_local_notifications.dart";
+import "package:kinoapay_app/features/send/presentation/send_notification_service.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/widgets/kyc_gate.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
+import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_snack_bar.dart";
@@ -48,9 +51,6 @@ class _SendViewState extends State<SendView> {
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _idFocus = FocusNode();
   final FocusNode _amountFocus = FocusNode();
-  final FlutterLocalNotificationsPlugin _notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   SendStep _step = SendStep.recipient;
   RecipientSearchMode _searchMode = RecipientSearchMode.phone;
   CountryCode _selectedCountry = RecipientByPhoneView.countryCodes.first;
@@ -63,54 +63,13 @@ class _SendViewState extends State<SendView> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    SendNotificationService.initialize();
     Future.delayed(_focusDelay, _phoneFocus.requestFocus);
-  }
-
-  Future<void> _initializeNotifications() async {
-    // Icone monochrome obligatoire depuis Android 5 : blanc sur transparent.
-    const androidSettings = AndroidInitializationSettings(
-      '@drawable/ic_stat_notification',
-    );
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-    await _notificationsPlugin.initialize(initSettings);
-
-    await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
   }
 
   Future<void> _showNotification() async {
     if (!mounted) return;
-    const androidDetails = AndroidNotificationDetails(
-      'kinoapay_channel',
-      'KinoaPay Notifications',
-      channelDescription: 'Notifications pour les transactions KinoaPay',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: 'ic_stat_notification',
-    );
-    const iosDetails = DarwinNotificationDetails();
-    const notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-    await _notificationsPlugin.show(
-      0,
-      'Envoi confirmé',
-      'Votre envoi a été confirmé avec succès',
-      notificationDetails,
-    );
+    await SendNotificationService.showSuccess();
   }
 
   @override
@@ -132,8 +91,6 @@ class _SendViewState extends State<SendView> {
 
   double get _amount =>
       double.tryParse(_amountCtrl.text.replaceAll(RegExp(r"[^\d.]"), "")) ?? 0;
-
-  // ── Recherche ───────────────────────────────────────────────────────────
 
   void _onPhoneChanged(String value) {
     final digits = value.replaceAll(RegExp(r"\D"), "");
@@ -165,8 +122,6 @@ class _SendViewState extends State<SendView> {
     _idCtrl.clear();
     Future.delayed(_refocusDelay, _activeFocus.requestFocus);
   }
-
-  // ── Sélection ───────────────────────────────────────────────────────────
 
   void _selectMatch(RecipientMatch match) {
     setState(() {
@@ -211,7 +166,7 @@ class _SendViewState extends State<SendView> {
       setState(() => _selectedCountry = match);
       _switchSearchMode(RecipientSearchMode.phone);
       _phoneCtrl.text = PhoneGroupFormatter.format(result.localNumber);
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       context.read<SendBloc>().add(SendRecipientSearched(result.phone));
     }
   }
@@ -280,77 +235,83 @@ class _SendViewState extends State<SendView> {
     });
   }
 
-  // ── Build ───────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SendBloc, SendState>(
-      listener: _onStateChanged,
-      builder: (_, state) {
-        if (state is SendQuoteReady) {
-          return QuoteConfirmationStep(
-            quote: state.quote,
-            onBack: () => context.read<SendBloc>().add(SendReset()),
-          );
-        }
-        return Scaffold(
-          backgroundColor: AppColors.quinoaCream,
-          body: Stack(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              SafeArea(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 72, 24, 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeader(),
-                      const SizedBox(height: 28),
-                      if (_step == SendStep.recipient)
-                        _buildRecipientStep(state)
-                      else
-                        SendAmountStep(
-                          recipient: _selectedRecipient!,
-                          selectedSource: _selectedSourceChannel,
-                          selectedDest: _selectedDestChannel,
-                          amountCtrl: _amountCtrl,
-                          amountFocus: _amountFocus,
-                          onSourceChanged: (ch) =>
-                              setState(() => _selectedSourceChannel = ch),
-                          onDestChanged: (ch) =>
-                              setState(() => _selectedDestChannel = ch),
-                          onModifyRecipient: _clearRecipient,
-                          onContinue: _requestQuote,
-                          onExternalNameChanged: (name) =>
-                              setState(() => _externalRecipientName = name),
-                        ),
-                    ],
+    final authState = context.watch<AuthBloc>().state;
+    final kycVerified =
+        authState is Authenticated && authState.user.kycVerified;
+
+    return KycGate(
+      kycVerified: kycVerified,
+      onClose: widget.onBackToDashboard ?? () => Navigator.pop(context),
+      child: BlocConsumer<SendBloc, SendState>(
+        listener: _onStateChanged,
+        builder: (_, state) {
+          if (state is SendQuoteReady) {
+            return QuoteConfirmationStep(
+              quote: state.quote,
+              onBack: () => context.read<SendBloc>().add(SendReset()),
+            );
+          }
+          return Scaffold(
+            backgroundColor: AppColors.quinoaCream,
+            body: Stack(
+              clipBehavior: Clip.hardEdge,
+              children: [
+                SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(24, 72, 24, 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildHeader(),
+                        const SizedBox(height: 28),
+                        if (_step == SendStep.recipient)
+                          _buildRecipientStep(state)
+                        else
+                          SendAmountStep(
+                            recipient: _selectedRecipient!,
+                            selectedSource: _selectedSourceChannel,
+                            selectedDest: _selectedDestChannel,
+                            amountCtrl: _amountCtrl,
+                            amountFocus: _amountFocus,
+                            onSourceChanged: (ch) =>
+                                setState(() => _selectedSourceChannel = ch),
+                            onDestChanged: (ch) =>
+                                setState(() => _selectedDestChannel = ch),
+                            onModifyRecipient: _clearRecipient,
+                            onContinue: _requestQuote,
+                            onExternalNameChanged: (name) =>
+                                setState(() => _externalRecipientName = name),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: AppBackHeader(
-                  onBack: _step == SendStep.amount
-                      ? _goBack
-                      : (widget.onBackToDashboard ?? () {}),
-                  backLabel: _step == SendStep.amount
-                      ? SendStrings.backToRecipient
-                      : SendStrings.backToDashboard,
-                  title: _step == SendStep.amount
-                      ? SendStrings.headerTitleAmount
-                      : SendStrings.headerTitleRecipient,
-                  subtitle: _step == SendStep.amount
-                      ? SendStrings.headerSubAmount
-                      : SendStrings.headerSubRecipient,
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: AppBackHeader(
+                    onBack: _step == SendStep.amount
+                        ? _goBack
+                        : (widget.onBackToDashboard ?? () {}),
+                    backLabel: _step == SendStep.amount
+                        ? SendStrings.backToRecipient
+                        : SendStrings.backToDashboard,
+                    title: _step == SendStep.amount
+                        ? SendStrings.headerTitleAmount
+                        : SendStrings.headerTitleRecipient,
+                    subtitle: _step == SendStep.amount
+                        ? SendStrings.headerSubAmount
+                        : SendStrings.headerSubRecipient,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -489,7 +450,6 @@ class _SendViewState extends State<SendView> {
   }
 
   Widget _buildRecipientStep(SendState state) {
-
     final isPhone = _searchMode == RecipientSearchMode.phone;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

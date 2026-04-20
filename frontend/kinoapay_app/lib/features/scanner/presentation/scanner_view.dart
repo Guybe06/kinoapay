@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
+import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
+import "package:kinoapay_app/features/scanner/domain/scanner_strings.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_overlay.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_result_sheet.dart";
 
@@ -71,11 +73,9 @@ class _ScannerViewState extends State<ScannerView> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-          ),
+          MobileScanner(controller: _controller, onDetect: _onDetect),
           ScannerViewfinderOverlay(frameSize: frameSize, screenSize: size),
+          _ScanLine(frameSize: frameSize, screenSize: size),
           Positioned(
             top: topInset + 12,
             left: 16,
@@ -99,7 +99,7 @@ class _ScannerViewState extends State<ScannerView> {
                 ),
                 const SizedBox(width: 14),
                 const Text(
-                  "Scanner un QR",
+                  ScannerStrings.title,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -127,33 +127,114 @@ class _ScannerViewState extends State<ScannerView> {
             ),
           ),
           Positioned(
-            bottom: size.height * 0.20,
+            top: (size.height + frameSize) / 2 + 24,
             left: 0,
             right: 0,
-            child: Column(
-              children: [
-                Text(
-                  "Pointez vers un QR kinoaPay",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    width: 0.5,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  "ou le KinoaID d'un contact",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.45),
-                    fontSize: 12,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      ScannerStrings.hintLine1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      ScannerStrings.hintLine2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.45),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Ligne de scan animée qui se déplace verticalement dans le cadre du viewfinder.
+class _ScanLine extends StatefulWidget {
+  final double frameSize;
+  final Size screenSize;
+
+  const _ScanLine({required this.frameSize, required this.screenSize});
+
+  @override
+  State<_ScanLine> createState() => _ScanLineState();
+}
+
+class _ScanLineState extends State<_ScanLine>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _pos;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+    _pos = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cx = widget.screenSize.width / 2;
+    final cy = widget.screenSize.height / 2;
+    final half = widget.frameSize / 2;
+    final frameTop = cy - half;
+    final frameLeft = cx - half;
+
+    return AnimatedBuilder(
+      animation: _pos,
+      builder: (_, __) => Positioned(
+        top: frameTop + 8 + (_pos.value * (widget.frameSize - 16)),
+        left: frameLeft + 12,
+        right: widget.screenSize.width - frameLeft - widget.frameSize + 12,
+        height: 2,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.quinoaRed.withValues(alpha: 0),
+                AppColors.quinoaRed.withValues(alpha: 0.85),
+                AppColors.quinoaRed.withValues(alpha: 0),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(1),
+          ),
+        ),
       ),
     );
   }

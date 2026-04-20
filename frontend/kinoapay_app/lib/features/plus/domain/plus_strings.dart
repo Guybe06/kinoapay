@@ -2,7 +2,8 @@
 abstract final class PlusStrings {
   static const String backLabel = "Accueil";
   static const String title = "Plus d'options";
-  static const String subtitle = "Gérez vos outils de paiement et votre compte.";
+  static const String subtitle =
+      "Gérez vos outils de paiement et votre compte.";
   static const String pageTitle = "À votre service.";
   static const String pageSubtitle = "Gérez vos outils et votre compte.";
   static const String headerSubtitle = "Services et paramètres";
@@ -28,6 +29,8 @@ abstract final class PlusStrings {
   static const String sectionAccount = "MON COMPTE";
   static const String actionKyc = "Vérification KYC";
   static const String descKyc = "Statut et niveau de vérification";
+  static const String kycStatusVerified = "Vérifié";
+  static const String kycStatusPending = "À compléter";
   static const String actionPreferences = "Préférences";
   static const String descPreferences = "Langue, notifications, sécurité";
   static const String actionSecurity = "Sécurité";
@@ -40,6 +43,9 @@ abstract final class PlusStrings {
   static const String descContact = "Notre équipe est disponible";
   static const String actionReport = "Signaler un problème";
   static const String descReport = "Aidez-nous à améliorer l'app";
+
+  /// Message affiché pour les fonctionnalités en cours de développement.
+  static const String comingSoon = "Bientôt disponible.";
 
   static const String sectionSession = "SESSION";
   static const String actionSignOut = "Se déconnecter";

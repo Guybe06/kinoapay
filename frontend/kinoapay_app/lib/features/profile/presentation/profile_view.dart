@@ -1,17 +1,20 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
-import "package:kinoapay_app/core/widgets/app_page_title.dart";
+import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
+import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/core/widgets/staggered_entrance.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
-import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_state.dart";
 import "package:kinoapay_app/features/accounts/domain/entities/user_account.dart";
 import "package:kinoapay_app/features/profile/domain/profile_strings.dart";
+import "package:kinoapay_app/features/profile/presentation/widgets/profile_widgets.dart";
 
-/// Écran Profil : informations utilisateur.
+/// Écran Profil : informations utilisateur, KinoaID et statut KYC.
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
@@ -19,139 +22,119 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
+    final kycVerified = authState is Authenticated
+        ? authState.user.kycVerified
+        : false;
 
-    return Scaffold(
-      backgroundColor: AppColors.quinoaCream,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(0, 80, 0, 120),
-            child: Column(
-              children: [
-                AppPageTitle(
-                  title: ProfileStrings.pageTitle,
-                  subtitle: ProfileStrings.pageSubtitle,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Column(
-                    children: [
-                      StaggeredEntrance(index: 0, child: _buildAvatar(user?.fullName)),
-                      const SizedBox(height: 14),
-                      StaggeredEntrance(
-                        index: 1,
-                        child: Text(
-                          user?.fullName ?? "",
-                          style: const TextStyle(
-                            color: AppColors.quinoaDark,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      StaggeredEntrance(
-                        index: 2,
-                        child: Text(
-                          user?.email ?? "",
-                          style: TextStyle(
-                            color: AppColors.quinoaDark.withValues(alpha: 0.45),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      StaggeredEntrance(index: 3, child: _buildInfoSection(user)),
-                      const SizedBox(height: 16),
-                      StaggeredEntrance(index: 4, child: _buildSignOutBtn(context)),
-                      const SizedBox(height: 24),
-                      StaggeredEntrance(
-                        index: 5,
-                        child: Text(
-                          "${ProfileStrings.version} 1.0.0",
-                          style: TextStyle(
-                            color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBackHeader(
-              onBack: () => Navigator.pop(context),
-              backLabel: ProfileStrings.backLabel,
-              title: ProfileStrings.title,
-              subtitle: ProfileStrings.headerSubtitle,
-            ),
-          ),
-        ],
+    return AppScrollScaffold(
+      header: AppBackHeader(
+        onBack: () => Navigator.pop(context),
+        backLabel: ProfileStrings.backLabel,
+        title: ProfileStrings.title,
+        subtitle: ProfileStrings.headerSubtitle,
       ),
-    );
-  }
-
-  Widget _buildAvatar(String? name) {
-    final initials = _initials(name ?? "");
-    return Container(
-      width: 72,
-      height: 72,
-      decoration: BoxDecoration(
-        color: AppColors.quinoaGold.withValues(alpha: 0.15),
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        initials,
-        style: const TextStyle(
-          color: AppColors.quinoaGold,
-          fontSize: 26,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoSection(UserAccount? user) {
-    return _Section(
-      title: ProfileStrings.personalInfo,
-      children: [
-        _InfoRow(label: ProfileStrings.email, value: user?.email ?? "—"),
-        _InfoRow(label: ProfileStrings.phone, value: user?.phone ?? "—"),
-        _InfoRow(label: ProfileStrings.birthDate, value: user?.birthDate ?? "—"),
-      ],
-    );
-  }
-
-  Widget _buildSignOutBtn(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _confirmSignOut(context),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
-          color: AppColors.quinoaRed.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.quinoaRed.withValues(alpha: 0.15)),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      builder: (_, ctrl) => SingleChildScrollView(
+        controller: ctrl,
+        padding: const EdgeInsets.fromLTRB(20, 72, 20, 120),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.logout_rounded, size: 18, color: AppColors.quinoaRed),
-            SizedBox(width: 10),
-            Text(
-              ProfileStrings.signOut,
-              style: TextStyle(
-                color: AppColors.quinoaRed,
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
+            const SizedBox(height: 8),
+            StaggeredEntrance(
+              index: 0,
+              child: Text(
+                ProfileStrings.pageTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                  height: 1.1,
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            StaggeredEntrance(
+              index: 1,
+              child: Text(
+                ProfileStrings.pageSubtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            StaggeredEntrance(
+              index: 2,
+              child: ProfileAvatar(name: user?.fullName),
+            ),
+            const SizedBox(height: 14),
+            StaggeredEntrance(
+              index: 3,
+              child: Text(
+                user?.fullName ?? "",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            StaggeredEntrance(
+              index: 4,
+              child: Text(
+                user?.email ?? "",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            // KinoaID : affiché comme le email, copiable au tap.
+            StaggeredEntrance(
+              index: 5,
+              child: _KinoaIdInline(
+                handle: user?.publicHandle,
+                onCopied: () => AppSnackBar.showInfo(
+                  context,
+                  ProfileStrings.kinoaIdCopied,
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            StaggeredEntrance(
+              index: 6,
+              child: _buildInfoSection(user),
+            ),
+            const SizedBox(height: 20),
+            StaggeredEntrance(
+              index: 7,
+              child: _KycSection(
+                verified: kycVerified,
+                onVerify: () =>
+                    Navigator.pushNamed(context, AppRoutes.profile),
+              ),
+            ),
+            const SizedBox(height: 32),
+            StaggeredEntrance(
+              index: 8,
+              child: Text(
+                "${ProfileStrings.version} ${ProfileStrings.appVersion}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                  fontSize: 12,
+                ),
               ),
             ),
           ],
@@ -160,117 +143,128 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  void _confirmSignOut(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.quinoaCream,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          ProfileStrings.signOutConfirmTitle,
-          style: TextStyle(fontWeight: FontWeight.w800),
+  Widget _buildInfoSection(UserAccount? user) {
+    return ProfileSection(
+      title: ProfileStrings.personalInfo,
+      children: [
+        ProfileInfoRow(
+          label: ProfileStrings.email,
+          value: user?.email ?? ProfileStrings.empty,
         ),
-        content: const Text(ProfileStrings.signOutConfirmBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              "Annuler",
-              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.5)),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context.read<AuthBloc>().add(SignOutRequested());
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.signin,
-                (_) => false,
-              );
-            },
-            child: const Text(
-              ProfileStrings.signOut,
-              style: TextStyle(color: AppColors.quinoaRed, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _initials(String name) {
-    final parts = name.trim().split(" ");
-    if (parts.length >= 2) return "${parts[0][0]}${parts[1][0]}".toUpperCase();
-    return name.isNotEmpty ? name[0].toUpperCase() : "?";
-  }
-}
-
-class _Section extends StatelessWidget {
-  final String title;
-  final List<Widget> children;
-  const _Section({required this.title, required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.06)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title.toUpperCase(),
-            style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.35),
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.8,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ...children,
-        ],
-      ),
+        ProfileInfoRow(
+          label: ProfileStrings.phone,
+          value: user?.phone ?? ProfileStrings.empty,
+        ),
+        ProfileInfoRow(
+          label: ProfileStrings.birthDate,
+          value: user?.birthDate ?? ProfileStrings.empty,
+        ),
+      ],
     );
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  const _InfoRow({required this.label, required this.value});
+/// KinoaID affiché en texte simple sous l'email, copiable au tap.
+class _KinoaIdInline extends StatelessWidget {
+  final String? handle;
+  final VoidCallback onCopied;
+
+  const _KinoaIdInline({required this.handle, required this.onCopied});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+    final hasHandle = handle != null && handle!.isNotEmpty;
+
+    return GestureDetector(
+      onTap: hasHandle
+          ? () async {
+              await Clipboard.setData(ClipboardData(text: handle!));
+              onCopied();
+            }
+          : null,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            label,
+            hasHandle ? handle! : ProfileStrings.empty,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.quinoaDark.withValues(alpha: 0.5),
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+              color: AppColors.quinoaDark.withValues(alpha: 0.45),
+              fontSize: 14,
             ),
           ),
+          if (hasHandle) ...[
+            const SizedBox(width: 6),
+            Icon(
+              SolarIconsOutline.copy,
+              size: 13,
+              color: AppColors.quinoaDark.withValues(alpha: 0.25),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Section KYC : affiche le statut et un CTA si l'identité n'est pas vérifiée.
+class _KycSection extends StatelessWidget {
+  final bool verified;
+  final VoidCallback onVerify;
+
+  const _KycSection({required this.verified, required this.onVerify});
+
+  @override
+  Widget build(BuildContext context) {
+    return ProfileSection(
+      title: ProfileStrings.kycSection,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ProfileKycBadge(
+              verified: verified,
+              label: verified
+                  ? ProfileStrings.kycVerifiedStatus
+                  : ProfileStrings.kycPendingStatus,
+            ),
+            if (!verified)
+              GestureDetector(
+                onTap: onVerify,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.quinoaDark,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    ProfileStrings.kycCta,
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        if (!verified) ...[
+          const SizedBox(height: 10),
           Text(
-            value,
-            style: const TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
+            ProfileStrings.kycBody,
+            style: TextStyle(
+              color: AppColors.quinoaDark.withValues(alpha: 0.45),
+              fontSize: 13,
+              height: 1.5,
             ),
           ),
         ],
-      ),
+      ],
     );
   }
 }

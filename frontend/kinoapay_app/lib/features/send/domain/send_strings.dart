@@ -43,7 +43,9 @@ abstract final class SendStrings {
   static const String confirmBtn = "Confirmer l'envoi";
   static const String simulateBtn = "Simuler les frais";
 
+  static const String backLabel = "Retour";
   static const String confirmTitle = "Vérification";
+  static const String confirmSubtitle = "Confirmez votre transaction";
   static const String confirmToLabel = "Vers";
   static const String confirmAmountLabel = "Montant";
   static const String confirmTotalLabel = "Total à débiter";
@@ -77,6 +79,21 @@ abstract final class SendStrings {
   static const String errorMinLength = "Entrez au moins 3 caractères";
   static const String errorMinPhoneLength = "Entrez au moins 4 chiffres";
   static const String errorUserNotFound = "Utilisateur non trouvé";
+
+  static const String notifChannelId = "kinoapay_channel";
+  static const String notifChannelName = "KinoaPay Notifications";
+  static const String notifChannelDesc =
+      "Notifications pour les transactions KinoaPay";
+  static const String notifIconResource = "@drawable/ic_stat_notification";
+  static const String notifIconName = "ic_stat_notification";
+  static const String notifSuccessTitle = "Envoi confirmé";
+  static const String notifSuccessBody =
+      "Votre envoi a été confirmé avec succès";
+
+  // Étape de confirmation du devis
+  static const String quoteVerifyTitle = "Vérifiez l'envoi";
+  static const String quoteVerifySubtitle = "Dernière étape avant la confirmation";
+  static const String quoteWillReceive = "va recevoir";
 
   static const String backspaceSymbol = "⌫";
 
