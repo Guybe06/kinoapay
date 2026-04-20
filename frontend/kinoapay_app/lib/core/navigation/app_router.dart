@@ -27,7 +27,12 @@ import "package:kinoapay_app/features/notifications/presentation/notifications_v
 import "package:kinoapay_app/features/history/application/bloc/history_bloc.dart";
 import "package:kinoapay_app/features/history/infrastructure/repositories/mock_history_repository.dart";
 import "package:kinoapay_app/features/history/presentation/history_view.dart";
+import "package:kinoapay_app/features/profile/presentation/preferences_view.dart";
 import "package:kinoapay_app/features/profile/presentation/profile_view.dart";
+import "package:kinoapay_app/features/profile/presentation/security_view.dart";
+import "package:kinoapay_app/features/support/presentation/contact_support_view.dart";
+import "package:kinoapay_app/features/support/presentation/help_view.dart";
+import "package:kinoapay_app/features/support/presentation/report_issue_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/domain/welcome_args.dart";
@@ -110,6 +115,16 @@ class AppRouter {
         );
       case AppRoutes.request:
         return RouteTransitions.slide(const RequestView(), settings);
+      case AppRoutes.security:
+        return RouteTransitions.slide(const SecurityView(), settings);
+      case AppRoutes.preferences:
+        return RouteTransitions.slide(const PreferencesView(), settings);
+      case AppRoutes.help:
+        return RouteTransitions.slide(const HelpView(), settings);
+      case AppRoutes.contactSupport:
+        return RouteTransitions.slide(const ContactSupportView(), settings);
+      case AppRoutes.reportIssue:
+        return RouteTransitions.slide(const ReportIssueView(), settings);
       case AppRoutes.channels:
         return RouteTransitions.slide(const PaymentSetupView(), settings);
       default:
@@ -117,10 +132,11 @@ class AppRouter {
     }
   }
 
-  static Widget _contactsPage({bool selectionMode = false}) => BlocProvider.value(
-    value: _contactsBloc,
-    child: ContactsView(selectionMode: selectionMode),
-  );
+  static Widget _contactsPage({bool selectionMode = false}) =>
+      BlocProvider.value(
+        value: _contactsBloc,
+        child: ContactsView(selectionMode: selectionMode),
+      );
 
   /// Instance unique du BLoC contacts — persiste le cache en mémoire pour toute la session.
   static final ContactsBloc _contactsBloc = ContactsBloc(

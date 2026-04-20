@@ -42,7 +42,7 @@ class PlusAccountSection extends StatelessWidget {
           label: PlusStrings.actionSecurity,
           description: PlusStrings.descSecurity,
           color: AppColors.quinoaDark,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, AppRoutes.security),
         ),
         const SizedBox(height: 10),
         PlusListCard(
@@ -50,7 +50,7 @@ class PlusAccountSection extends StatelessWidget {
           label: PlusStrings.actionPreferences,
           description: PlusStrings.descPreferences,
           color: AppColors.textMuted,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, AppRoutes.preferences),
         ),
       ],
     );
@@ -70,7 +70,7 @@ class PlusSupportSection extends StatelessWidget {
           label: PlusStrings.actionHelp,
           description: PlusStrings.descHelp,
           color: AppColors.quinoaGold,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, AppRoutes.help),
         ),
         const SizedBox(height: 10),
         PlusListCard(
@@ -78,7 +78,7 @@ class PlusSupportSection extends StatelessWidget {
           label: PlusStrings.actionContact,
           description: PlusStrings.descContact,
           color: AppColors.pending,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, AppRoutes.contactSupport),
         ),
         const SizedBox(height: 10),
         PlusListCard(
@@ -86,7 +86,7 @@ class PlusSupportSection extends StatelessWidget {
           label: PlusStrings.actionReport,
           description: PlusStrings.descReport,
           color: AppColors.quinoaRed,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, AppRoutes.reportIssue),
         ),
       ],
     );

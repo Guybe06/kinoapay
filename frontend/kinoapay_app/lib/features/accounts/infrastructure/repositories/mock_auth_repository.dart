@@ -20,7 +20,19 @@ class MockAuthRepository implements AuthRepository {
         firstName: "Jean",
         lastName: "Dupont",
         kycVerified: true,
-        publicHandle: "384291",
+        publicHandle: "jean.dupont",
+      ),
+    ),
+    "delphy@kinoapay.com": _MockCredentials(
+      password: "password123",
+      account: const UserAccount(
+        id: "seed_2",
+        email: "delphy@kinoapay.com",
+        fullName: "Delphy Banzouzi",
+        firstName: "Delphy",
+        lastName: "Banzouzi",
+        kycVerified: true,
+        publicHandle: "delphy.banzouzi",
       ),
     ),
   };

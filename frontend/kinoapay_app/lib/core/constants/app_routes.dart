@@ -20,6 +20,11 @@ abstract final class AppRoutes {
   static const String send = "/app/send";
   static const String channels = "/app/channels";
   static const String request = "/app/request";
+  static const String security = "/app/security";
+  static const String preferences = "/app/preferences";
+  static const String help = "/app/help";
+  static const String contactSupport = "/app/contact-support";
+  static const String reportIssue = "/app/report-issue";
 
   static const int tabDashboard = 0;
   static const int tabTransfer = 1;
