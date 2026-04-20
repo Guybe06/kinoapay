@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/widgets/skeleton_box.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Halos décoratifs derrière le contenu scrollable du tableau de bord.
@@ -54,7 +55,12 @@ class DashboardAmbientBackground extends StatelessWidget {
 /// En-tête texte (prénom utilisateur).
 class DashboardGreetingSection extends StatelessWidget {
   final String firstName;
-  const DashboardGreetingSection({super.key, required this.firstName});
+  final bool isLoading;
+  const DashboardGreetingSection({
+    super.key,
+    required this.firstName,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +77,21 @@ class DashboardGreetingSection extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-          Text(
-            firstName.isNotEmpty ? firstName : DashboardStrings.fallbackName,
-            style: const TextStyle(
-              color: AppColors.quinoaDark,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.6,
-              height: 1.1,
-            ),
-          ),
+          const SizedBox(height: 4),
+          isLoading
+              ? const SkeletonBox(width: 130, height: 26, borderRadius: 6)
+              : Text(
+                  firstName.isNotEmpty
+                      ? firstName
+                      : DashboardStrings.fallbackName,
+                  style: const TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.6,
+                    height: 1.1,
+                  ),
+                ),
         ],
       ),
     );

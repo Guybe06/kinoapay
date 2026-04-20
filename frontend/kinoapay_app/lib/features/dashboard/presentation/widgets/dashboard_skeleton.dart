@@ -26,7 +26,10 @@ class DashboardSkeleton extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  const DashboardGreetingSection(firstName: ""),
+                  const DashboardGreetingSection(
+                    firstName: "",
+                    isLoading: true,
+                  ),
                   const SizedBox(height: 24),
                   const DashboardStatsCardSkeleton(),
                   const SizedBox(height: 20),
