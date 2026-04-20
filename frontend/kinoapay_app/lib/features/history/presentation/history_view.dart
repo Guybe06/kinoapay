@@ -57,14 +57,14 @@ class _HistoryViewState extends State<HistoryView> {
     }
   }
 
-  void _openFilterSheet(BuildContext context, HistoryFilter filter) {
+  void _openFilterSheet(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
         value: context.read<HistoryBloc>(),
-        child: HistoryFilterSheet(filter: filter),
+        child: const HistoryFilterSheet(),
       ),
     );
   }
@@ -140,7 +140,7 @@ class _HistoryViewState extends State<HistoryView> {
                     subtitle: HistoryStrings.headerSubtitle,
                     trailing: _FilterButton(
                       active: filtersActive,
-                      onTap: () => _openFilterSheet(context, filter),
+                      onTap: () => _openFilterSheet(context),
                     ),
                   )
                 : SizedBox(height: topInset),

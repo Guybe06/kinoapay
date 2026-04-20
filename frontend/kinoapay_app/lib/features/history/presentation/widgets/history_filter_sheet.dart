@@ -4,29 +4,31 @@ import "package:intl/intl.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_bloc.dart";
 import "package:kinoapay_app/features/history/application/bloc/history_event.dart";
+import "package:kinoapay_app/features/history/application/bloc/history_state.dart";
 import "package:kinoapay_app/features/history/domain/history_filter.dart";
 import "package:kinoapay_app/features/history/domain/history_strings.dart";
 
 /// Panneau de filtres — période, direction et canal.
 ///
 /// Design monochrome, pas de couleurs opérateur.
-/// Chaque sélection est appliquée immédiatement via [HistoryFilterChanged].
+/// Lit le filtre courant depuis [HistoryBloc] et l'actualise via [HistoryFilterChanged].
 class HistoryFilterSheet extends StatelessWidget {
-  final HistoryFilter filter;
-
-  const HistoryFilterSheet({super.key, required this.filter});
+  const HistoryFilterSheet({super.key});
 
   void _dispatch(BuildContext context, HistoryFilter next) {
     context.read<HistoryBloc>().add(HistoryFilterChanged(next));
   }
 
-  bool get _isDefault =>
-      filter.direction == HistoryDirection.all &&
-      filter.channel == null &&
-      filter.isCurrentMonth;
-
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<HistoryBloc>().state;
+    final filter =
+        state is HistoryLoadSuccess ? state.filter : HistoryFilter.now();
+
+    final isDefault = filter.direction == HistoryDirection.all &&
+        filter.channel == null &&
+        filter.isCurrentMonth;
+
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Container(
@@ -41,7 +43,7 @@ class HistoryFilterSheet extends StatelessWidget {
         children: [
           _Handle(),
           _Header(
-            isDefault: _isDefault,
+            isDefault: isDefault,
             onReset: () => _dispatch(context, HistoryFilter.now()),
             onClose: () => Navigator.pop(context),
           ),
