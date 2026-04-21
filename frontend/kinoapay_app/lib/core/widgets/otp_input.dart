@@ -62,14 +62,16 @@ class OtpInputState extends State<OtpInput> {
     }
   }
 
-  void _onKeyEvent(int i, KeyEvent event) {
+  KeyEventResult _onKeyEvent(int i, KeyEvent event) {
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace &&
         _ctrls[i].text.isEmpty &&
         i > 0) {
       _ctrls[i - 1].clear();
       _nodes[i - 1].requestFocus();
+      return KeyEventResult.handled;
     }
+    return KeyEventResult.ignored;
   }
 
   @override
@@ -82,9 +84,10 @@ class OtpInputState extends State<OtpInput> {
 
   Widget _buildBox(int i) {
     final err = widget.hasError;
-    return KeyboardListener(
-      focusNode: _nodes[i],
-      onKeyEvent: (e) => _onKeyEvent(i, e),
+    // Focus.onKeyEvent reçoit les événements de ses descendants sans conflit
+    // de FocusNode — contrairement à KeyboardListener qui partageait _nodes[i].
+    return Focus(
+      onKeyEvent: (_, e) => _onKeyEvent(i, e),
       child: SizedBox(
         width: 48,
         height: 60,
