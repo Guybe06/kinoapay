@@ -101,7 +101,7 @@ class _RequestViewState extends State<RequestView> {
         subtitle: RequestStrings.headerSubtitle,
       ),
       builder: (_, ctrl) {
-        final compact = ScreenSizeHelper.isCompact(context);
+        final compact = ScreenSizeHelper.isSmallOrLess(context);
         return SingleChildScrollView(
           controller: ctrl,
           padding: EdgeInsets.fromLTRB(

@@ -81,7 +81,7 @@ class PlusView extends StatelessWidget {
         unreadNotifications: unreadNotifications,
       ),
       builder: (_, ctrl) {
-        final compact = ScreenSizeHelper.isCompact(context);
+        final compact = ScreenSizeHelper.isSmallOrLess(context);
         return SingleChildScrollView(
           controller: ctrl,
           padding: EdgeInsets.fromLTRB(
@@ -90,7 +90,7 @@ class PlusView extends StatelessWidget {
             0,
             ScreenSizeHelper.adaptiveValue(
               context,
-              compact: 16,
+              compact: 12,
               small: 32,
               medium: 36,
               large: 40,
@@ -103,16 +103,16 @@ class PlusView extends StatelessWidget {
                 title: PlusStrings.pageTitle,
                 subtitle: PlusStrings.pageSubtitle,
               ),
-              SizedBox(height: compact ? 12 : 32),
+              SizedBox(height: compact ? 10 : 32),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
                 child: GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 2,
-                  mainAxisSpacing: compact ? 8 : 16,
-                  crossAxisSpacing: compact ? 8 : 16,
-                  childAspectRatio: compact ? 1.6 : 1.1,
+                  mainAxisSpacing: compact ? 6 : 16,
+                  crossAxisSpacing: compact ? 6 : 16,
+                  childAspectRatio: compact ? 1.65 : 1.1,
                   children: [
                     PlusActionCard(
                       icon: SolarIconsOutline.scanner,
@@ -173,7 +173,7 @@ class PlusView extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: compact ? 16 : 32),
+              SizedBox(height: compact ? 14 : 32),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
                 child: _SectionsBlock(

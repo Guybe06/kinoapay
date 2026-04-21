@@ -363,7 +363,7 @@ class _ChannelSelector extends StatelessWidget {
   }
 
   void _showSheet(BuildContext context) {
-    final compact = ScreenSizeHelper.isCompact(context);
+    final compact = ScreenSizeHelper.isSmallOrLess(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
