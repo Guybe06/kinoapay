@@ -162,14 +162,22 @@ class _PhoneFieldState extends State<PhoneField> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(_selected.flag, style: const TextStyle(fontSize: 20)),
+                  Text(
+                    _selected.iso,
+                    style: const TextStyle(
+                      color: AppColors.quinoaDark,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     _selected.dialCode,
-                    style: const TextStyle(
-                      color: AppColors.quinoaDark,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    style: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(width: 4),

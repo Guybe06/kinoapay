@@ -71,37 +71,28 @@ abstract final class RouteTransitions {
     );
   }
 
-  /// Transition inter-étapes auth : slide droite→centre + fade in ; retour sans fade.
+  /// Transition inter-étapes auth : slide droite→centre + fade entrant.
+  /// Pas de secondary animation pour éviter la corruption du layer tree.
   static PageRouteBuilder authStep(Widget page, RouteSettings settings) {
     return PageRouteBuilder(
       settings: settings,
-      transitionDuration: const Duration(milliseconds: 400),
-      reverseTransitionDuration: const Duration(milliseconds: 300),
+      transitionDuration: const Duration(milliseconds: 350),
+      reverseTransitionDuration: const Duration(milliseconds: 280),
       pageBuilder: (_, a, b) => page,
-      transitionsBuilder: (_, animation, secondaryAnimation, child) {
-        final isForward = animation.status == AnimationStatus.forward ||
-            animation.status == AnimationStatus.completed;
+      transitionsBuilder: (_, animation, secondary, child) {
+        final slide = Tween<Offset>(
+          begin: const Offset(0.20, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
 
-        if (!isForward) return child;
-
-        final slide = Tween<Offset>(begin: const Offset(0.25, 0), end: Offset.zero)
-            .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-
-        final pushBack = Tween<Offset>(begin: Offset.zero, end: const Offset(-0.15, 0))
-            .animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInCubic));
+        final fade = CurvedAnimation(
+          parent: animation,
+          curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        );
 
         return SlideTransition(
-          position: pushBack,
-          child: SlideTransition(
-            position: slide,
-            child: FadeTransition(
-              opacity: CurvedAnimation(
-                parent: animation,
-                curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-              ),
-              child: child,
-            ),
-          ),
+          position: slide,
+          child: FadeTransition(opacity: fade, child: child),
         );
       },
     );
