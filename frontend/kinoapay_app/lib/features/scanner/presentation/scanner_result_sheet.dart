@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 import "package:kinoapay_app/features/scanner/domain/scanner_strings.dart";
 
@@ -18,8 +19,20 @@ class ScannerResultBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isSmallOrLess(context);
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        compact ? 16 : 20,
+        24,
+        ScreenSizeHelper.adaptiveValue(
+          context,
+          compact: 28,
+          small: 32,
+          medium: 36,
+          large: 40,
+        ),
+      ),
       decoration: const BoxDecoration(
         color: AppColors.quinoaCream,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
@@ -35,31 +48,31 @@ class ScannerResultBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: compact ? 20 : 24),
           Container(
-            width: 56,
-            height: 56,
+            width: compact ? 48 : 56,
+            height: compact ? 48 : 56,
             decoration: BoxDecoration(
               color: AppColors.quinoaRed.withValues(alpha: 0.10),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.qr_code_scanner_rounded,
-              size: 28,
+              size: compact ? 24 : 28,
               color: AppColors.quinoaRed,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: compact ? 12 : 16),
           Text(
             _title(),
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.quinoaDark,
-              fontSize: 18,
+              fontSize: compact ? 16 : 18,
               fontWeight: FontWeight.w900,
               letterSpacing: -0.4,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: compact ? 4 : 6),
           Text(
             _subtitle(),
             textAlign: TextAlign.center,
@@ -69,14 +82,22 @@ class ScannerResultBottomSheet extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          const SizedBox(height: 28),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 20,
+              small: 24,
+              medium: 26,
+              large: 28,
+            ),
+          ),
           Row(
             children: [
               Expanded(
                 child: GestureDetector(
                   onTap: onCancel,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: compact ? 12 : 15),
                     decoration: BoxDecoration(
                       color: AppColors.quinoaDark.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(100),
@@ -98,7 +119,7 @@ class ScannerResultBottomSheet extends StatelessWidget {
                 child: GestureDetector(
                   onTap: onConfirm,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: compact ? 12 : 15),
                     decoration: BoxDecoration(
                       color: AppColors.quinoaDark,
                       borderRadius: BorderRadius.circular(100),

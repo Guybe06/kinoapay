@@ -4,6 +4,7 @@ import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 import "package:kinoapay_app/features/dashboard/domain/entities/payment_channel.dart";
 import "package:kinoapay_app/features/send/domain/entities/recipient_match.dart";
@@ -69,7 +70,8 @@ class _SendAmountStepState extends State<SendAmountStep> {
 
   bool get _channelsReady {
     if (widget.selectedSource == null) return false;
-    if (widget.recipient.userType.isOnKinoa && widget.recipient.channels.isNotEmpty) {
+    if (widget.recipient.userType.isOnKinoa &&
+        widget.recipient.channels.isNotEmpty) {
       return widget.selectedDest != null;
     }
     if (widget.recipient.userType == KinoaUserType.external) {
@@ -80,6 +82,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isSmallOrLess(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -87,17 +90,49 @@ class _SendAmountStepState extends State<SendAmountStep> {
           recipient: widget.recipient,
           onModify: widget.onModifyRecipient,
         ),
-        const SizedBox(height: 36),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 20,
+            small: 28,
+            medium: 32,
+            large: 36,
+          ),
+        ),
         if (widget.recipient.userType == KinoaUserType.external) ...[
           _buildExternalNameInput(),
-          const SizedBox(height: 24),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 12,
+              small: 16,
+              medium: 20,
+              large: 24,
+            ),
+          ),
         ],
         _buildChannelRow(context),
         if (_channelsReady) ...[
-          const SizedBox(height: 48),
-          _buildHeroAmount(),
-          const SizedBox(height: 52),
-          _buildContinueButton(),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 28,
+              small: 36,
+              medium: 42,
+              large: 48,
+            ),
+          ),
+          _buildHeroAmount(compact: compact),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 24,
+              small: 36,
+              medium: 44,
+              large: 52,
+            ),
+          ),
+          _buildContinueButton(compact: compact),
         ],
       ],
     );
@@ -137,7 +172,8 @@ class _SendAmountStepState extends State<SendAmountStep> {
 
   Widget _buildChannelRow(BuildContext context) {
     final hasDestChoice =
-        widget.recipient.userType.isOnKinoa && widget.recipient.channels.isNotEmpty;
+        widget.recipient.userType.isOnKinoa &&
+        widget.recipient.channels.isNotEmpty;
     final isExternal = widget.recipient.userType == KinoaUserType.external;
     return Row(
       children: [
@@ -178,7 +214,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
     );
   }
 
-  Widget _buildHeroAmount() {
+  Widget _buildHeroAmount({required bool compact}) {
     return Column(
       children: [
         TextField(
@@ -190,9 +226,9 @@ class _SendAmountStepState extends State<SendAmountStep> {
             _AmountFormatter(),
           ],
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w300,
-            fontSize: 64,
+            fontSize: compact ? 48 : 64,
             color: AppColors.quinoaDark,
             letterSpacing: -2,
             height: 1.1,
@@ -202,7 +238,7 @@ class _SendAmountStepState extends State<SendAmountStep> {
             hintStyle: TextStyle(
               color: AppColors.quinoaDark.withValues(alpha: 0.12),
               fontWeight: FontWeight.w300,
-              fontSize: 64,
+              fontSize: compact ? 48 : 64,
               letterSpacing: -2,
             ),
             border: InputBorder.none,
@@ -210,7 +246,15 @@ class _SendAmountStepState extends State<SendAmountStep> {
             contentPadding: EdgeInsets.zero,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 6,
+            small: 8,
+            medium: 9,
+            large: 10,
+          ),
+        ),
         Text(
           SendStrings.amountUnit,
           style: TextStyle(
@@ -246,10 +290,10 @@ class _SendAmountStepState extends State<SendAmountStep> {
     );
   }
 
-  Widget _buildContinueButton() {
+  Widget _buildContinueButton({required bool compact}) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: compact ? 52 : 56,
       child: ElevatedButton(
         onPressed: widget.onContinue,
         style: ElevatedButton.styleFrom(

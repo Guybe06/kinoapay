@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/kyc/domain/kyc_strings.dart";
 
 /// Étape 2 : capture de la photo recto du document d'identité.
@@ -35,32 +36,65 @@ class _KycPhotoStepState extends State<KycPhotoStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(),
-        const SizedBox(height: 32),
-        _buildPhotoZone(),
-        const SizedBox(height: 16),
+        _buildHeader(context),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 20,
+            small: 24,
+            medium: 28,
+            large: 32,
+          ),
+        ),
+        _buildPhotoZone(context),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 12,
+            small: 14,
+            medium: 16,
+            large: 16,
+          ),
+        ),
         _buildHint(),
-        const SizedBox(height: 32),
-        _buildActions(),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 24,
+            small: 28,
+            medium: 30,
+            large: 32,
+          ),
+        ),
+        _buildActions(context),
       ],
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           KycStrings.stepPhotoTitle,
           style: TextStyle(
             color: AppColors.quinoaDark,
-            fontSize: 26,
+            fontSize: compact ? 22 : 26,
             fontWeight: FontWeight.w900,
             letterSpacing: -0.6,
             height: 1.15,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 6,
+            small: 7,
+            medium: 8,
+            large: 8,
+          ),
+        ),
         Text(
           KycStrings.stepPhotoSubtitle,
           style: TextStyle(
@@ -74,12 +108,13 @@ class _KycPhotoStepState extends State<KycPhotoStep> {
     );
   }
 
-  Widget _buildPhotoZone() {
+  Widget _buildPhotoZone(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return GestureDetector(
       onTap: () => _pickImage(ImageSource.camera),
       child: Container(
         width: double.infinity,
-        height: 200,
+        height: compact ? 160 : 200,
         decoration: BoxDecoration(
           color: _imagePath != null
               ? Colors.transparent
@@ -162,12 +197,13 @@ class _KycPhotoStepState extends State<KycPhotoStep> {
     );
   }
 
-  Widget _buildActions() {
+  Widget _buildActions(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       children: [
         SizedBox(
           width: double.infinity,
-          height: 56,
+          height: compact ? 48 : 56,
           child: ElevatedButton.icon(
             onPressed: () => _pickImage(ImageSource.camera),
             icon: const Icon(SolarIconsOutline.camera, size: 18),
@@ -187,10 +223,10 @@ class _KycPhotoStepState extends State<KycPhotoStep> {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         SizedBox(
           width: double.infinity,
-          height: 48,
+          height: compact ? 44 : 48,
           child: TextButton.icon(
             onPressed: () => _pickImage(ImageSource.gallery),
             icon: Icon(

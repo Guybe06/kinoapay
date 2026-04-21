@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:mobile_scanner/mobile_scanner.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 import "package:kinoapay_app/features/scanner/domain/scanner_strings.dart";
@@ -46,31 +47,44 @@ class _ScannerViewState extends State<ScannerView> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(ctx).viewInsets.bottom,
-        ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 36),
-          decoration: const BoxDecoration(
-            color: AppColors.quinoaCream,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      builder: (ctx) {
+        final compact = ScreenSizeHelper.isSmallOrLess(ctx);
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(2),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(
+              24,
+              compact ? 16 : 20,
+              24,
+              ScreenSizeHelper.adaptiveValue(
+                ctx,
+                compact: 24,
+                small: 28,
+                medium: 32,
+                large: 36,
+              ),
+            ),
+            decoration: const BoxDecoration(
+              color: AppColors.quinoaCream,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                SizedBox(height: compact ? 16 : 20),
               TextField(
                 controller: ctrl,
                 autofocus: true,
@@ -137,9 +151,10 @@ class _ScannerViewState extends State<ScannerView> {
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
   void _showResultSheet(ScanResult result) {
     showModalBottomSheet(

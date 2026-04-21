@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/domain/kinoa_user_type.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/send/presentation/send_notification_service.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
@@ -293,12 +294,31 @@ class _SendViewState extends State<SendView> {
               children: [
                 SafeArea(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 72, 24, 40),
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      72,
+                      24,
+                      ScreenSizeHelper.adaptiveValue(
+                        context,
+                        compact: 16,
+                        small: 20,
+                        medium: 28,
+                        large: 40,
+                      ),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildHeader(),
-                        const SizedBox(height: 28),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 16,
+                            small: 20,
+                            medium: 24,
+                            large: 28,
+                          ),
+                        ),
                         if (_step == SendStep.recipient)
                           _buildRecipientStep(state)
                         else
@@ -329,19 +349,20 @@ class _SendViewState extends State<SendView> {
                   child: AppBackHeader(
                     onBack: _step == SendStep.amount
                         ? _goBack
-                        : (widget.onBackToDashboard ?? () => Navigator.pop(context)),
+                        : (widget.onBackToDashboard ??
+                              () => Navigator.pop(context)),
                     backLabel: _step == SendStep.amount
                         ? SendStrings.backToRecipient
                         : SendStrings.backToDashboard,
                     title: _step == SendStep.amount
                         ? (_context.isPay
-                            ? SendStrings.payHeaderTitle
-                            : SendStrings.headerTitleAmount)
+                              ? SendStrings.payHeaderTitle
+                              : SendStrings.headerTitleAmount)
                         : SendStrings.headerTitleRecipient,
                     subtitle: _step == SendStep.amount
                         ? (_context.isPay
-                            ? SendStrings.payHeaderSub
-                            : SendStrings.headerSubAmount)
+                              ? SendStrings.payHeaderSub
+                              : SendStrings.headerSubAmount)
                         : SendStrings.headerSubRecipient,
                   ),
                 ),
@@ -434,8 +455,8 @@ class _SendViewState extends State<SendView> {
                 isRecipient
                     ? SendStrings.stepRecipientTitle
                     : (_context.isPay
-                        ? SendStrings.payStepAmountTitle
-                        : SendStrings.stepAmountTitle),
+                          ? SendStrings.payStepAmountTitle
+                          : SendStrings.stepAmountTitle),
                 style: const TextStyle(
                   color: AppColors.quinoaDark,
                   fontSize: 28,
@@ -449,8 +470,8 @@ class _SendViewState extends State<SendView> {
                 isRecipient
                     ? SendStrings.stepRecipientSub
                     : (_context.isPay
-                        ? SendStrings.payStepAmountSub
-                        : SendStrings.stepAmountSub),
+                          ? SendStrings.payStepAmountSub
+                          : SendStrings.stepAmountSub),
                 style: TextStyle(
                   color: AppColors.quinoaDark.withValues(alpha: 0.4),
                   fontSize: 13,

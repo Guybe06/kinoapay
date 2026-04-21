@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/features/kyc/application/bloc/kyc_bloc.dart";
 import "package:kinoapay_app/features/kyc/application/bloc/kyc_event.dart";
@@ -68,7 +69,18 @@ class _KycContent extends StatelessWidget {
             children: [
               SafeArea(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 88, 24, 40),
+                  padding: EdgeInsets.fromLTRB(
+                    24,
+                    88,
+                    24,
+                    ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 24,
+                      small: 32,
+                      medium: 36,
+                      large: 40,
+                    ),
+                  ),
                   child: _buildStep(context, state),
                 ),
               ),
@@ -127,5 +139,4 @@ class _KycContent extends StatelessWidget {
     if (state is KycInitial) return () => Navigator.pop(context);
     return () => bloc.add(const KycReset());
   }
-
 }

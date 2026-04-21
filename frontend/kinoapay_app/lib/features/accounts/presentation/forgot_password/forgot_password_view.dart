@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
@@ -46,11 +47,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       if (_navigating) return;
       _navigating = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) { _navigating = false; return; }
+        if (!mounted) {
+          _navigating = false;
+          return;
+        }
         Navigator.pushNamed(
           context,
           AppRoutes.forgotPasswordOtp,
-          arguments: ForgotPasswordArgs(contact: _fullContact, isEmail: _isEmail),
+          arguments: ForgotPasswordArgs(
+            contact: _fullContact,
+            isEmail: _isEmail,
+          ),
         ).then((_) => _navigating = false);
       });
     } else if (state is AuthError) {
@@ -94,18 +101,40 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            const Text(
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
+            Text(
               AuthStrings.resetTitle,
               style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 42,
+                fontSize: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 40,
+                  large: 42,
+                ),
                 fontWeight: FontWeight.w900,
                 height: 1.0,
                 letterSpacing: -2,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 8,
+                small: 10,
+                medium: 11,
+                large: 12,
+              ),
+            ),
             Text(
               AuthStrings.resetSubtitle,
               style: TextStyle(
@@ -114,9 +143,25 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
             _buildChannelToggle(),
-            const SizedBox(height: 28),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 16,
+                small: 20,
+                medium: 24,
+                large: 28,
+              ),
+            ),
             _isEmail
                 ? AuthTextField(
                     controller: _contactCtrl,
@@ -131,13 +176,29 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         setState(() => _countryCode = code),
                     validator: AuthValidator.validatePhone,
                   ),
-            const SizedBox(height: 48),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 36,
+                medium: 42,
+                large: 48,
+              ),
+            ),
             PrimaryButton(
               text: AuthStrings.resetSendCode,
               isLoading: state is AuthLoading,
               onPressed: _submit,
             ),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 26,
+                medium: 32,
+                large: 32,
+              ),
+            ),
           ],
         ),
       ),

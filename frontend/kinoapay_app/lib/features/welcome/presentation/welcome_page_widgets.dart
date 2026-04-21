@@ -35,15 +35,16 @@ class WelcomeBackdropGlow extends StatelessWidget {
 /// Logo en-tête ; [heroTag] non null pour la transition depuis le splash.
 class WelcomeBrandHeader extends StatelessWidget {
   final String? heroTag;
+  final bool compact;
 
-  const WelcomeBrandHeader({super.key, this.heroTag});
+  const WelcomeBrandHeader({super.key, this.heroTag, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 20, 28, 0),
+      padding: EdgeInsets.fromLTRB(28, compact ? 12 : 20, 28, 0),
       child: BrandLogoRow(
-        size: BrandSize.lg,
+        size: compact ? BrandSize.md : BrandSize.lg,
         color: AppColors.white,
         iconColor: AppColors.quinoaGold,
         alignment: MainAxisAlignment.start,
@@ -55,7 +56,9 @@ class WelcomeBrandHeader extends StatelessWidget {
 
 /// Titre principal du hero (animation séparée du sous-titre).
 class WelcomeHeroTitle extends StatelessWidget {
-  const WelcomeHeroTitle({super.key});
+  final bool compact;
+
+  const WelcomeHeroTitle({super.key, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +66,12 @@ class WelcomeHeroTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Text(
         WelcomeStrings.heroTitle,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.white,
-          fontSize: 48,
+          fontSize: compact ? 36 : 48,
           fontWeight: FontWeight.w900,
           height: 1.0,
-          letterSpacing: -2.5,
+          letterSpacing: -2.0,
         ),
       ),
     );
@@ -101,23 +104,29 @@ class WelcomeIllustrationAnimated extends StatelessWidget {
   final Animation<double> opacity;
   final Animation<double> scale;
   final Listenable listenable;
+  final bool compact;
 
   const WelcomeIllustrationAnimated({
     super.key,
     required this.opacity,
     required this.scale,
     required this.listenable,
+    this.compact = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final screenW = MediaQuery.of(context).size.width;
     return AnimatedBuilder(
       animation: listenable,
       builder: (_, child) => Opacity(
         opacity: opacity.value.clamp(0.0, 1.0),
         child: Transform.scale(scale: scale.value, child: child),
       ),
-      child: const WelcomeIllustration(),
+      child: SizedBox(
+        height: compact ? screenW * 0.55 : null,
+        child: const WelcomeIllustration(),
+      ),
     );
   }
 }
@@ -125,8 +134,13 @@ class WelcomeIllustrationAnimated extends StatelessWidget {
 /// Bouton principal « Créer un compte ».
 class WelcomeSignupCta extends StatelessWidget {
   final VoidCallback onTap;
+  final bool compact;
 
-  const WelcomeSignupCta({super.key, required this.onTap});
+  const WelcomeSignupCta({
+    super.key,
+    required this.onTap,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +150,7 @@ class WelcomeSignupCta extends StatelessWidget {
         onTap: onTap,
         child: Container(
           width: double.infinity,
-          height: 68,
+          height: compact ? 56 : 68,
           decoration: BoxDecoration(
             color: AppColors.quinoaGold,
             borderRadius: BorderRadius.circular(24),
@@ -155,7 +169,11 @@ class WelcomeSignupCta extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              const Icon(CupertinoIcons.arrow_right, color: AppColors.quinoaDark, size: 18),
+              const Icon(
+                CupertinoIcons.arrow_right,
+                color: AppColors.quinoaDark,
+                size: 18,
+              ),
             ],
           ),
         ),
@@ -186,7 +204,10 @@ class WelcomeSigninLink extends StatelessWidget {
             children: const [
               TextSpan(
                 text: AuthStrings.signupSigninLink,
-                style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
@@ -206,7 +227,11 @@ class WelcomeTrustLabel extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(CupertinoIcons.checkmark_shield_fill, color: AppColors.quinoaGold, size: 14),
+          const Icon(
+            CupertinoIcons.checkmark_shield_fill,
+            color: AppColors.quinoaGold,
+            size: 14,
+          ),
           const SizedBox(width: 8),
           Text(
             WelcomeStrings.trustLabel,

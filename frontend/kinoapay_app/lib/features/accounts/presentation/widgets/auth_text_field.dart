@@ -1,6 +1,7 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 
 /// Champ de saisie standardisé pour les formulaires d'authentification.
 class AuthTextField extends StatefulWidget {
@@ -35,7 +36,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
   void initState() {
     super.initState();
     _obscure = widget.obscureText;
-    _focusNode.addListener(() => setState(() => _hasFocus = _focusNode.hasFocus));
+    _focusNode.addListener(
+      () => setState(() => _hasFocus = _focusNode.hasFocus),
+    );
   }
 
   @override
@@ -46,6 +49,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     const borderRadius = BorderRadius.only(
       topRight: Radius.circular(24),
       bottomLeft: Radius.circular(24),
@@ -74,7 +78,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
         focusNode: _focusNode,
         obscureText: _obscure,
         keyboardType: widget.keyboardType,
-        onChanged: (_) { if (_hasError) setState(() => _hasError = false); },
+        onChanged: (_) {
+          if (_hasError) setState(() => _hasError = false);
+        },
         validator: (value) {
           final result = widget.validator?.call(value);
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -84,19 +90,38 @@ class _AuthTextFieldState extends State<AuthTextField> {
           });
           return result;
         },
-        style: const TextStyle(color: AppColors.quinoaDark, fontSize: 16, fontWeight: FontWeight.w600),
+        style: const TextStyle(
+          color: AppColors.quinoaDark,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
         cursorColor: AppColors.quinoaGold,
         decoration: InputDecoration(
           labelText: widget.label,
-          labelStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.45), fontSize: 14, fontWeight: FontWeight.w500),
+          labelStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.45),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.25), fontSize: 14),
-          floatingLabelStyle: const TextStyle(color: AppColors.quinoaGold, fontWeight: FontWeight.w700),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+          hintStyle: TextStyle(
+            color: AppColors.quinoaDark.withValues(alpha: 0.25),
+            fontSize: 14,
+          ),
+          floatingLabelStyle: const TextStyle(
+            color: AppColors.quinoaGold,
+            fontWeight: FontWeight.w700,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: compact ? 20 : 24,
+            vertical: compact ? 16 : 22,
+          ),
           suffixIcon: widget.obscureText
               ? IconButton(
                   icon: Icon(
-                    _obscure ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+                    _obscure
+                        ? CupertinoIcons.eye_slash_fill
+                        : CupertinoIcons.eye_fill,
                     color: AppColors.quinoaDark.withValues(alpha: 0.4),
                     size: 20,
                   ),
@@ -104,24 +129,42 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 )
               : null,
           filled: true,
-          fillColor: _hasFocus ? AppColors.white : AppColors.white.withValues(alpha: 0.65),
+          fillColor: _hasFocus
+              ? AppColors.white
+              : AppColors.white.withValues(alpha: 0.65),
           enabledBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaDark.withValues(alpha: 0.12), width: 1),
+            borderSide: BorderSide(
+              color: AppColors.quinoaDark.withValues(alpha: 0.12),
+              width: 1,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaGold.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.quinoaGold.withValues(alpha: 0.6),
+              width: 1.5,
+            ),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.35), width: 1),
+            borderSide: BorderSide(
+              color: AppColors.quinoaRed.withValues(alpha: 0.35),
+              width: 1,
+            ),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: borderRadius,
-            borderSide: BorderSide(color: AppColors.quinoaRed.withValues(alpha: 0.6), width: 1.5),
+            borderSide: BorderSide(
+              color: AppColors.quinoaRed.withValues(alpha: 0.6),
+              width: 1.5,
+            ),
           ),
-          errorStyle: const TextStyle(color: AppColors.quinoaRed, fontSize: 12, fontWeight: FontWeight.w500),
+          errorStyle: const TextStyle(
+            color: AppColors.quinoaRed,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

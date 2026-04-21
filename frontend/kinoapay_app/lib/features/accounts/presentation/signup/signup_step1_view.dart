@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/constants/supported_countries.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/core/widgets/phone_field.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
@@ -71,7 +72,8 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         lastName: _lastNameCtrl.text.trim(),
         phone: _phoneCtrl.text.replaceAll(" ", ""),
         countryCode: _countryCode,
-        birthDate: "$_selectedYear-${_selectedMonth.toString().padLeft(2, "0")}-${_selectedDay.toString().padLeft(2, "0")}",
+        birthDate:
+            "$_selectedYear-${_selectedMonth.toString().padLeft(2, "0")}-${_selectedDay.toString().padLeft(2, "0")}",
       ),
     ).then((_) => _navigating = false);
   }
@@ -103,20 +105,50 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
             const SignupStep1StepIndicator(),
-            const SizedBox(height: 24),
-            const Text(
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 16,
+                small: 20,
+                medium: 22,
+                large: 24,
+              ),
+            ),
+            Text(
               AuthStrings.signupStep1Title,
               style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 42,
+                fontSize: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 40,
+                  large: 42,
+                ),
                 fontWeight: FontWeight.w900,
                 height: 1.0,
                 letterSpacing: -2,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 8,
+                small: 10,
+                medium: 11,
+                large: 12,
+              ),
+            ),
             Text(
               AuthStrings.signupStep1Subtitle,
               style: TextStyle(
@@ -125,21 +157,45 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 24,
+                small: 30,
+                medium: 36,
+                large: 40,
+              ),
+            ),
             AuthTextField(
               controller: _firstNameCtrl,
               label: AuthStrings.firstNameLabel,
               hintText: AuthStrings.firstNameHint,
               validator: AuthValidator.validateName,
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
             AuthTextField(
               controller: _lastNameCtrl,
               label: AuthStrings.lastNameLabel,
               hintText: AuthStrings.lastNameHint,
               validator: AuthValidator.validateName,
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
             SignupBirthDateField(
               formFieldKey: _birthDateFieldKey,
               selectedDay: _selectedDay,
@@ -155,25 +211,52 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
                 _clampDayToValidRange();
               }),
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
             PhoneField(
               controller: _phoneCtrl,
               onCountryChanged: (code) => setState(() => _countryCode = code),
               validator: AuthValidator.validatePhone,
             ),
-            const SizedBox(height: 48),
-            PrimaryButton(
-              text: AuthStrings.submitBtn,
-              onPressed: _submit,
-            ),
-            const SizedBox(height: 8),
-            AuthSigninLink(
-              onTap: () => Navigator.pushReplacementNamed(
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
                 context,
-                AppRoutes.signin,
+                compact: 28,
+                small: 36,
+                medium: 42,
+                large: 48,
               ),
             ),
-            const SizedBox(height: 16),
+            PrimaryButton(text: AuthStrings.submitBtn, onPressed: _submit),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 6,
+                small: 7,
+                medium: 8,
+                large: 8,
+              ),
+            ),
+            AuthSigninLink(
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.signin),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 14,
+                medium: 16,
+                large: 16,
+              ),
+            ),
           ],
         ),
       ),

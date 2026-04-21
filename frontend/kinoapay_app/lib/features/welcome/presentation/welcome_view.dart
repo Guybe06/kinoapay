@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_entrance_animation.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_page_widgets.dart";
 import "package:kinoapay_app/core/navigation/route_observer.dart";
@@ -89,6 +90,9 @@ class _WelcomeViewState extends State<WelcomeView>
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isSmallOrLess(context);
+    final category = ScreenSizeHelper.of(context);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -102,26 +106,53 @@ class _WelcomeViewState extends State<WelcomeView>
                 children: [
                   WelcomeBrandHeader(
                     heroTag: widget.fromSplash ? "app_brand" : null,
+                    compact: compact,
                   ),
-                  const SizedBox(height: 44),
-                  _animated(_anim.title, const WelcomeHeroTitle()),
-                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 12,
+                      small: 20,
+                      medium: 32,
+                      large: 44,
+                    ),
+                  ),
+                  _animated(_anim.title, WelcomeHeroTitle(compact: compact)),
+                  SizedBox(
+                    height: ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 6,
+                      small: 10,
+                      medium: 14,
+                      large: 16,
+                    ),
+                  ),
                   _animated(_anim.subtitle, const WelcomeHeroSubtitle()),
                   const Spacer(),
                   WelcomeIllustrationAnimated(
                     opacity: _anim.images,
                     scale: _anim.imagesScale,
                     listenable: _ctrl,
+                    compact: compact,
                   ),
                   const Spacer(),
                   _animated(
                     _anim.button,
                     WelcomeSignupCta(
                       onTap: () => _navigateTo(AppRoutes.signup),
+                      compact: compact,
                     ),
                     slide: 40,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 6,
+                      small: 10,
+                      medium: 14,
+                      large: 16,
+                    ),
+                  ),
                   _animated(
                     _anim.link,
                     WelcomeSigninLink(
@@ -129,9 +160,28 @@ class _WelcomeViewState extends State<WelcomeView>
                     ),
                     slide: 20,
                   ),
-                  const SizedBox(height: 12),
-                  _animated(_anim.link, const WelcomeTrustLabel(), slide: 10),
-                  const SizedBox(height: 28),
+                  if (category == ScreenSizeCategory.medium ||
+                      category == ScreenSizeCategory.large) ...[
+                    SizedBox(
+                      height: ScreenSizeHelper.adaptiveValue(
+                        context,
+                        compact: 0,
+                        small: 0,
+                        medium: 10,
+                        large: 12,
+                      ),
+                    ),
+                    _animated(_anim.link, const WelcomeTrustLabel(), slide: 10),
+                  ],
+                  SizedBox(
+                    height: ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 8,
+                      small: 10,
+                      medium: 20,
+                      large: 28,
+                    ),
+                  ),
                 ],
               ),
             ),

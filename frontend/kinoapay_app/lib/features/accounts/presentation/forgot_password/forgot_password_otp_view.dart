@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/widgets/otp_input.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -70,10 +71,15 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
 
   void _startCountdown() {
     _timer?.cancel();
-    final delay = _attempt < _resendDelays.length ? _resendDelays[_attempt] : _resendDelays.last;
+    final delay = _attempt < _resendDelays.length
+        ? _resendDelays[_attempt]
+        : _resendDelays.last;
     setState(() => _countdown = delay);
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
       if (_countdown <= 1) {
         t.cancel();
         setState(() => _countdown = 0);
@@ -88,7 +94,10 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
     _attempt++;
     if (_attempt >= _maxAttempts) {
       _timer?.cancel();
-      setState(() { _lockedUntil = DateTime.now().add(_lockoutDuration); _countdown = 0; });
+      setState(() {
+        _lockedUntil = DateTime.now().add(_lockoutDuration);
+        _countdown = 0;
+      });
       AuthSnackBar.showError(context, "${AuthStrings.resetRateLimited} 2h.");
       return;
     }
@@ -96,7 +105,10 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
     setState(() => _hasError = false);
     _startCountdown();
     context.read<AuthBloc>().add(
-      RequestPasswordResetRequested(contact: _args.contact, isEmail: _args.isEmail),
+      RequestPasswordResetRequested(
+        contact: _args.contact,
+        isEmail: _args.isEmail,
+      ),
     );
   }
 
@@ -113,12 +125,21 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
       if (_navigating) return;
       _navigating = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) { _navigating = false; return; }
-        Navigator.pushNamed(context, AppRoutes.forgotPasswordReset, arguments: state.resetToken)
-            .then((_) => _navigating = false);
+        if (!mounted) {
+          _navigating = false;
+          return;
+        }
+        Navigator.pushNamed(
+          context,
+          AppRoutes.forgotPasswordReset,
+          arguments: state.resetToken,
+        ).then((_) => _navigating = false);
       });
     } else if (state is AuthError) {
-      setState(() { _isVerifying = false; _hasError = true; });
+      setState(() {
+        _isVerifying = false;
+        _hasError = true;
+      });
       AuthSnackBar.showError(ctx, state.exception.message);
       Future.delayed(const Duration(milliseconds: 600), () {
         if (mounted) {
@@ -156,24 +177,83 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 32),
-          const Text(
-            AuthStrings.resetOtpTitle,
-            style: TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, height: 1.05, letterSpacing: -1.2),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 20,
+              small: 24,
+              medium: 28,
+              large: 32,
+            ),
           ),
-          const SizedBox(height: 8),
+          Text(
+            AuthStrings.resetOtpTitle,
+            style: TextStyle(
+              color: AppColors.quinoaDark,
+              fontSize: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 30,
+                medium: 32,
+                large: 32,
+              ),
+              fontWeight: FontWeight.w900,
+              height: 1.05,
+              letterSpacing: -1.2,
+            ),
+          ),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 6,
+              small: 7,
+              medium: 8,
+              large: 8,
+            ),
+          ),
           RichText(
             text: TextSpan(
               text: "${AuthStrings.resetOtpBody} ",
-              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 14, height: 1.4),
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 14,
+                height: 1.4,
+              ),
               children: [
-                TextSpan(text: _maskedContact, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700)),
+                TextSpan(
+                  text: _maskedContact,
+                  style: const TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 32),
-          OtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
-          const SizedBox(height: 40),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 24,
+              small: 28,
+              medium: 32,
+              large: 32,
+            ),
+          ),
+          OtpInput(
+            key: _otpKey,
+            length: _otpLength,
+            hasError: _hasError,
+            onCompleted: _onOtpCompleted,
+          ),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 28,
+              small: 36,
+              medium: 40,
+              large: 40,
+            ),
+          ),
           PrimaryButton(
             text: AuthStrings.otpVerifyBtn,
             isLoading: _isVerifying,
@@ -182,7 +262,15 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
               if (code.length == _otpLength) _onOtpCompleted(code);
             },
           ),
-          const SizedBox(height: 28),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 20,
+              small: 24,
+              medium: 28,
+              large: 28,
+            ),
+          ),
           Center(
             child: OtpResendRow(
               countdown: _countdown,
@@ -192,7 +280,15 @@ class _ForgotPasswordOtpViewState extends State<ForgotPasswordOtpView> {
               onResend: _resend,
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 20,
+              small: 26,
+              medium: 32,
+              large: 32,
+            ),
+          ),
         ],
       ),
     );

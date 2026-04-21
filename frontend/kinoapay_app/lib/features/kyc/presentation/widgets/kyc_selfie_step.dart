@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/kyc/domain/kyc_strings.dart";
 
 /// Étape 3 : capture du selfie pour la vérification de vivacité.
@@ -37,18 +38,43 @@ class _KycSelfieStepState extends State<KycSelfieStep> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(),
-        const SizedBox(height: 32),
-        _buildSelfieZone(),
-        const SizedBox(height: 16),
+        _buildHeader(context),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 20,
+            small: 24,
+            medium: 28,
+            large: 32,
+          ),
+        ),
+        _buildSelfieZone(context),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 12,
+            small: 14,
+            medium: 15,
+            large: 16,
+          ),
+        ),
         _buildHint(),
-        const SizedBox(height: 40),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 28,
+            small: 32,
+            medium: 36,
+            large: 40,
+          ),
+        ),
         SizedBox(
           width: double.infinity,
-          height: 56,
+          height: compact ? 48 : 56,
           child: ElevatedButton.icon(
             onPressed: _takeSelfie,
             icon: const Icon(SolarIconsOutline.userRounded, size: 18),
@@ -69,10 +95,10 @@ class _KycSelfieStepState extends State<KycSelfieStep> {
           ),
         ),
         if (_imagePath != null) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: compact ? 10 : 12),
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: compact ? 48 : 56,
             child: ElevatedButton(
               onPressed: widget.onConfirm,
               style: ElevatedButton.styleFrom(
@@ -94,21 +120,30 @@ class _KycSelfieStepState extends State<KycSelfieStep> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           KycStrings.stepSelfieTitle,
           style: TextStyle(
             color: AppColors.quinoaDark,
-            fontSize: 26,
+            fontSize: compact ? 22 : 26,
             fontWeight: FontWeight.w900,
             letterSpacing: -0.6,
             height: 1.15,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 6,
+            small: 7,
+            medium: 8,
+            large: 8,
+          ),
+        ),
         Text(
           KycStrings.stepSelfieSubtitle,
           style: TextStyle(
@@ -122,14 +157,16 @@ class _KycSelfieStepState extends State<KycSelfieStep> {
     );
   }
 
-  Widget _buildSelfieZone() {
+  Widget _buildSelfieZone(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
+    final zoneSize = compact ? 160.0 : 200.0;
     return Center(
       child: GestureDetector(
         onTap: _takeSelfie,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: 200,
-          height: 200,
+          width: zoneSize,
+          height: zoneSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _imagePath != null
@@ -147,7 +184,7 @@ class _KycSelfieStepState extends State<KycSelfieStep> {
               ? Image.file(File(_imagePath!), fit: BoxFit.cover)
               : Icon(
                   SolarIconsOutline.userRounded,
-                  size: 60,
+                  size: compact ? 48 : 60,
                   color: AppColors.quinoaDark.withValues(alpha: 0.18),
                 ),
         ),

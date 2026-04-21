@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/kyc/domain/entities/kyc_document_type.dart";
 import "package:kinoapay_app/features/kyc/domain/kyc_strings.dart";
 
@@ -22,8 +23,16 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(),
-        const SizedBox(height: 32),
+        _buildHeader(context),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 20,
+            small: 24,
+            medium: 28,
+            large: 32,
+          ),
+        ),
         ...KycDocumentType.values.map(
           (type) => _DocTypeCard(
             type: type,
@@ -31,10 +40,24 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
             onTap: () => setState(() => _selected = type),
           ),
         ),
-        const SizedBox(height: 40),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 24,
+            small: 30,
+            medium: 36,
+            large: 40,
+          ),
+        ),
         SizedBox(
           width: double.infinity,
-          height: 56,
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 48,
+            small: 52,
+            medium: 54,
+            large: 56,
+          ),
           child: ElevatedButton(
             onPressed: _selected != null
                 ? () => widget.onSelected(_selected!)
@@ -42,7 +65,9 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.quinoaDark,
               foregroundColor: AppColors.quinoaCream,
-              disabledBackgroundColor: AppColors.quinoaDark.withValues(alpha: 0.15),
+              disabledBackgroundColor: AppColors.quinoaDark.withValues(
+                alpha: 0.15,
+              ),
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
@@ -58,21 +83,30 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           KycStrings.stepDocTitle,
           style: TextStyle(
             color: AppColors.quinoaDark,
-            fontSize: 26,
+            fontSize: compact ? 22 : 26,
             fontWeight: FontWeight.w900,
             letterSpacing: -0.6,
             height: 1.15,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(
+          height: ScreenSizeHelper.adaptiveValue(
+            context,
+            compact: 6,
+            small: 7,
+            medium: 8,
+            large: 8,
+          ),
+        ),
         Text(
           KycStrings.stepDocSubtitle,
           style: TextStyle(
@@ -99,10 +133,10 @@ class _DocTypeCard extends StatelessWidget {
   });
 
   IconData get _icon => switch (type) {
-        KycDocumentType.cni => SolarIconsOutline.card,
-        KycDocumentType.passport => SolarIconsOutline.passport,
-        KycDocumentType.license => SolarIconsOutline.card2,
-      };
+    KycDocumentType.cni => SolarIconsOutline.card,
+    KycDocumentType.passport => SolarIconsOutline.passport,
+    KycDocumentType.license => SolarIconsOutline.card2,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -151,8 +185,9 @@ class _DocTypeCard extends StatelessWidget {
                     style: TextStyle(
                       color: AppColors.quinoaDark,
                       fontSize: 14,
-                      fontWeight:
-                          isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight: isSelected
+                          ? FontWeight.w800
+                          : FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),

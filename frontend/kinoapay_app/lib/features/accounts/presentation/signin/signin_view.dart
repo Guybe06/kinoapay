@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_event.dart";
@@ -49,7 +50,11 @@ class _SignInViewState extends State<SignInView> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signinSuccess);
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.shell, (_) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.shell,
+          (_) => false,
+        );
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -58,7 +63,9 @@ class _SignInViewState extends State<SignInView> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()));
+      context.read<AuthBloc>().add(
+        SignInRequested(_emailCtrl.text.trim(), _passwordCtrl.text.trim()),
+      );
     }
   }
 
@@ -91,25 +98,145 @@ class _SignInViewState extends State<SignInView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            const Text(AuthStrings.signinTitle, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
-            const SizedBox(height: 12),
-            Text(AuthStrings.signinSubtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
-            const SizedBox(height: 40),
-            AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.signinEmailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
-            const SizedBox(height: 20),
-            AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.signinPasswordHint, obscureText: true, validator: AuthValidator.validatePassword),
-            const SizedBox(height: 16),
-            AuthForgotPasswordLink(onTap: () => _navigateTo(AppRoutes.forgotPassword)),
-            const SizedBox(height: 40),
-            PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: _submit),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
+            Text(
+              AuthStrings.signinTitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 40,
+                  large: 42,
+                ),
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: -2,
+              ),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 8,
+                small: 10,
+                medium: 11,
+                large: 12,
+              ),
+            ),
+            Text(
+              AuthStrings.signinSubtitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 15,
+                height: 1.4,
+              ),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 24,
+                small: 30,
+                medium: 36,
+                large: 40,
+              ),
+            ),
+            AuthTextField(
+              controller: _emailCtrl,
+              label: AuthStrings.emailLabel,
+              hintText: AuthStrings.signinEmailHint,
+              keyboardType: TextInputType.emailAddress,
+              validator: AuthValidator.validateEmailOrPhone,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
+            AuthTextField(
+              controller: _passwordCtrl,
+              label: AuthStrings.passwordLabel,
+              hintText: AuthStrings.signinPasswordHint,
+              obscureText: true,
+              validator: AuthValidator.validatePassword,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 10,
+                small: 12,
+                medium: 14,
+                large: 16,
+              ),
+            ),
+            AuthForgotPasswordLink(
+              onTap: () => _navigateTo(AppRoutes.forgotPassword),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 36,
+                medium: 40,
+                large: 40,
+              ),
+            ),
+            PrimaryButton(
+              text: AuthStrings.submitBtn,
+              isLoading: state is AuthLoading,
+              onPressed: _submit,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 26,
+                medium: 32,
+                large: 32,
+              ),
+            ),
             const AuthSocialDivider(),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 20,
+                large: 20,
+              ),
+            ),
             const AuthSocialRow(),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 32,
+                medium: 40,
+                large: 40,
+              ),
+            ),
             AuthSignupLink(onTap: () => _navigateTo(AppRoutes.signup)),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 16,
+                small: 20,
+                medium: 32,
+                large: 32,
+              ),
+            ),
           ],
         ),
       ),

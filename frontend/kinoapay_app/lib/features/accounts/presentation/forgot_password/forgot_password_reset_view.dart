@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_screen_header.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
@@ -96,18 +97,40 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            const Text(
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
+            Text(
               AuthStrings.resetNewPassTitle,
               style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 42,
+                fontSize: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 40,
+                  large: 42,
+                ),
                 fontWeight: FontWeight.w900,
                 height: 1.0,
                 letterSpacing: -2,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 8,
+                small: 10,
+                medium: 11,
+                large: 12,
+              ),
+            ),
             Text(
               AuthStrings.resetNewPassSubtitle,
               style: TextStyle(
@@ -116,7 +139,15 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 24,
+                small: 30,
+                medium: 36,
+                large: 40,
+              ),
+            ),
             AuthTextField(
               controller: _passCtrl,
               label: AuthStrings.resetNewPassLabel,
@@ -124,7 +155,15 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
               obscureText: true,
               validator: AuthValidator.validatePassword,
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
             AuthTextField(
               controller: _confirmCtrl,
               label: AuthStrings.resetConfirmPassLabel,
@@ -132,13 +171,29 @@ class _ForgotPasswordResetViewState extends State<ForgotPasswordResetView> {
               obscureText: true,
               validator: AuthValidator.validatePassword,
             ),
-            const SizedBox(height: 48),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 36,
+                medium: 42,
+                large: 48,
+              ),
+            ),
             PrimaryButton(
               text: AuthStrings.submitBtn,
               isLoading: state is AuthLoading,
               onPressed: _submit,
             ),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 26,
+                medium: 32,
+                large: 32,
+              ),
+            ),
           ],
         ),
       ),

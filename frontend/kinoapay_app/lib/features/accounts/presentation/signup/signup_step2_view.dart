@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/widgets/primary_button.dart";
 import "package:kinoapay_app/features/accounts/application/auth_validator.dart";
 import "package:kinoapay_app/features/accounts/application/bloc/auth_bloc.dart";
@@ -52,7 +53,12 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
       AuthSnackBar.showSuccess(listenerCtx, AuthStrings.signupSuccess);
       Future.delayed(const Duration(milliseconds: 800), () {
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.celebration, (_) => false, arguments: state.user.firstName ?? "");
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.celebration,
+          (_) => false,
+          arguments: state.user.firstName ?? "",
+        );
       });
     } else if (state is AuthError) {
       AuthSnackBar.showError(listenerCtx, state.exception.message);
@@ -98,7 +104,11 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
     );
   }
 
-  Widget _buildBody(BuildContext context, AuthState state, SignupStep1Args step1) {
+  Widget _buildBody(
+    BuildContext context,
+    AuthState state,
+    SignupStep1Args step1,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Form(
@@ -106,23 +116,137 @@ class _SignUpStep2ViewState extends State<SignUpStep2View> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 32),
-            SignupStepIndicator(currentStep: 2, totalSteps: 2, label: AuthStrings.stepIndicator2),
-            const SizedBox(height: 24),
-            const Text(AuthStrings.signupStep2Title, style: TextStyle(color: AppColors.quinoaDark, fontSize: 42, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -2)),
-            const SizedBox(height: 12),
-            Text(AuthStrings.signupStep2Subtitle, style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4)),
-            const SizedBox(height: 40),
-            AuthTextField(controller: _emailCtrl, label: AuthStrings.emailLabel, hintText: AuthStrings.emailHint, keyboardType: TextInputType.emailAddress, validator: AuthValidator.validateEmailOrPhone),
-            const SizedBox(height: 20),
-            AuthTextField(controller: _passwordCtrl, label: AuthStrings.passwordLabel, hintText: AuthStrings.passwordHint, obscureText: true, validator: AuthValidator.validatePassword),
-            const SizedBox(height: 40),
-            PrimaryButton(text: AuthStrings.submitBtn, isLoading: state is AuthLoading, onPressed: () => _submit(step1)),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 24,
+                medium: 28,
+                large: 32,
+              ),
+            ),
+            SignupStepIndicator(
+              currentStep: 2,
+              totalSteps: 2,
+              label: AuthStrings.stepIndicator2,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 16,
+                small: 20,
+                medium: 22,
+                large: 24,
+              ),
+            ),
+            Text(
+              AuthStrings.signupStep2Title,
+              style: TextStyle(
+                color: AppColors.quinoaDark,
+                fontSize: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 40,
+                  large: 42,
+                ),
+                fontWeight: FontWeight.w900,
+                height: 1.0,
+                letterSpacing: -2,
+              ),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 8,
+                small: 10,
+                medium: 11,
+                large: 12,
+              ),
+            ),
+            Text(
+              AuthStrings.signupStep2Subtitle,
+              style: TextStyle(
+                color: AppColors.quinoaDark.withValues(alpha: 0.55),
+                fontSize: 15,
+                height: 1.4,
+              ),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 24,
+                small: 30,
+                medium: 36,
+                large: 40,
+              ),
+            ),
+            AuthTextField(
+              controller: _emailCtrl,
+              label: AuthStrings.emailLabel,
+              hintText: AuthStrings.emailHint,
+              keyboardType: TextInputType.emailAddress,
+              validator: AuthValidator.validateEmailOrPhone,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 12,
+                small: 16,
+                medium: 18,
+                large: 20,
+              ),
+            ),
+            AuthTextField(
+              controller: _passwordCtrl,
+              label: AuthStrings.passwordLabel,
+              hintText: AuthStrings.passwordHint,
+              obscureText: true,
+              validator: AuthValidator.validatePassword,
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 28,
+                small: 36,
+                medium: 40,
+                large: 40,
+              ),
+            ),
+            PrimaryButton(
+              text: AuthStrings.submitBtn,
+              isLoading: state is AuthLoading,
+              onPressed: () => _submit(step1),
+            ),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 20,
+                small: 26,
+                medium: 32,
+                large: 32,
+              ),
+            ),
             AuthSigninLink(onTap: () => _navigateTo(AppRoutes.signin)),
-            const SizedBox(height: 16),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 10,
+                small: 12,
+                medium: 16,
+                large: 16,
+              ),
+            ),
             const AuthLegalTerms(),
-            const SizedBox(height: 32),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 16,
+                small: 20,
+                medium: 32,
+                large: 32,
+              ),
+            ),
           ],
         ),
       ),
