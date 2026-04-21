@@ -149,19 +149,19 @@ class _SignupOtpViewState extends State<SignupOtpView> {
           const SizedBox(height: 24),
           const Text(
             AuthStrings.otpTitle,
-            style: TextStyle(color: AppColors.quinoaDark, fontSize: 38, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5),
+            style: TextStyle(color: AppColors.quinoaDark, fontSize: 32, fontWeight: FontWeight.w900, height: 1.05, letterSpacing: -1.2),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           RichText(
             text: TextSpan(
               text: "${AuthStrings.otpBody} ",
-              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 15, height: 1.4),
+              style: TextStyle(color: AppColors.quinoaDark.withValues(alpha: 0.55), fontSize: 14, height: 1.4),
               children: [
                 TextSpan(text: _maskedPhone, style: const TextStyle(color: AppColors.quinoaDark, fontWeight: FontWeight.w700)),
               ],
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 32),
           OtpInput(key: _otpKey, length: _otpLength, hasError: _hasError, onCompleted: _onOtpCompleted),
           const SizedBox(height: 40),
           PrimaryButton(

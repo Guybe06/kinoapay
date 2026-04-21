@@ -80,7 +80,7 @@ class _KycContent extends StatelessWidget {
                   onBack: _onBack(context, state),
                   backLabel: KycStrings.backLabel,
                   title: KycStrings.title,
-                  subtitle: _subtitle(state),
+                  subtitle: KycStrings.headerSubtitle,
                 ),
               ),
             ],
@@ -128,9 +128,4 @@ class _KycContent extends StatelessWidget {
     return () => bloc.add(const KycReset());
   }
 
-  String _subtitle(KycState state) {
-    if (state is KycInitial) return KycStrings.stepDocSubtitle;
-    if (state is KycDocumentSelected) return KycStrings.stepPhotoSubtitle;
-    return KycStrings.stepSelfieSubtitle;
-  }
 }

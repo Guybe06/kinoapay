@@ -39,8 +39,8 @@ abstract final class AuthStrings {
   static const String signupTerms =
       "En continuant, vous acceptez nos conditions d'utilisation.";
 
-  static const String otpTitle = "Vérifiez votre numéro";
-  static const String otpBody = "Entrez le code à 6 chiffres envoyé au";
+  static const String otpTitle = "Vérifiez votre\nnuméro";
+  static const String otpBody = "Code envoyé au";
   static const String otpResend = "Renvoyer le code";
   static const String otpResendIn = "Renvoyer dans";
   static const String otpInvalid = "Code incorrect. Vérifiez et réessayez.";
@@ -55,7 +55,7 @@ abstract final class AuthStrings {
   static const String resetPhoneHint = "Votre numéro de téléphone";
   static const String resetSendCode = "Envoyer le code";
   static const String resetOtpTitle = "Vérification";
-  static const String resetOtpBody = "Entrez le code à 6 chiffres envoyé à";
+  static const String resetOtpBody = "Code envoyé à";
   static const String resetNewPassTitle = "Nouveau mot de passe";
   static const String resetNewPassSubtitle =
       "Créez un mot de passe sécurisé pour votre compte";
