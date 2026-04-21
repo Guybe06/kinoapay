@@ -91,7 +91,6 @@ class _WelcomeViewState extends State<WelcomeView>
   @override
   Widget build(BuildContext context) {
     final compact = ScreenSizeHelper.isSmallOrLess(context);
-    final category = ScreenSizeHelper.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -111,8 +110,8 @@ class _WelcomeViewState extends State<WelcomeView>
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 8,
-                      small: 16,
+                      compact: 4,
+                      small: 12,
                       medium: 32,
                       large: 44,
                     ),
@@ -121,13 +120,16 @@ class _WelcomeViewState extends State<WelcomeView>
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 4,
-                      small: 8,
+                      compact: 2,
+                      small: 6,
                       medium: 14,
                       large: 16,
                     ),
                   ),
-                  _animated(_anim.subtitle, const WelcomeHeroSubtitle()),
+                  _animated(
+                    _anim.subtitle,
+                    WelcomeHeroSubtitle(compact: compact),
+                  ),
                   const Spacer(),
                   WelcomeIllustrationAnimated(
                     opacity: _anim.images,
@@ -147,8 +149,8 @@ class _WelcomeViewState extends State<WelcomeView>
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 6,
-                      small: 10,
+                      compact: 4,
+                      small: 8,
                       medium: 14,
                       large: 16,
                     ),
@@ -157,26 +159,24 @@ class _WelcomeViewState extends State<WelcomeView>
                     _anim.link,
                     WelcomeSigninLink(
                       onPressed: () => _navigateTo(AppRoutes.signin),
+                      compact: compact,
                     ),
                     slide: 20,
                   ),
-                  if (category == ScreenSizeCategory.medium ||
-                      category == ScreenSizeCategory.large) ...[
-                    SizedBox(
-                      height: ScreenSizeHelper.adaptiveValue(
-                        context,
-                        compact: 0,
-                        small: 0,
-                        medium: 10,
-                        large: 12,
-                      ),
-                    ),
-                    _animated(_anim.link, const WelcomeTrustLabel(), slide: 10),
-                  ],
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 8,
+                      compact: 4,
+                      small: 6,
+                      medium: 6,
+                      large: 8,
+                    ),
+                  ),
+                  _animated(_anim.link, const WelcomeTrustLabel(), slide: 10),
+                  SizedBox(
+                    height: ScreenSizeHelper.adaptiveValue(
+                      context,
+                      compact: 6,
                       small: 10,
                       medium: 20,
                       large: 28,

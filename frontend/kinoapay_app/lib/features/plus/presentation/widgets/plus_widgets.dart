@@ -9,6 +9,7 @@ class PlusActionCard extends StatelessWidget {
   final String description;
   final Color color;
   final VoidCallback onTap;
+  final bool compact;
 
   const PlusActionCard({
     super.key,
@@ -17,6 +18,7 @@ class PlusActionCard extends StatelessWidget {
     required this.description,
     required this.color,
     required this.onTap,
+    this.compact = false,
   });
 
   @override
@@ -24,7 +26,7 @@ class PlusActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(compact ? 16 : 24),
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(32),
@@ -46,32 +48,32 @@ class PlusActionCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, color: color, size: 36),
+                Icon(icon, color: color, size: compact ? 28 : 36),
                 Icon(
                   SolarIconsOutline.arrowRightUp,
                   color: AppColors.quinoaDark.withValues(alpha: 0.10),
-                  size: 24,
+                  size: compact ? 18 : 24,
                 ),
               ],
             ),
-            const Spacer(),
+            compact ? const SizedBox(height: 8) : const Spacer(),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 20,
+                fontSize: compact ? 16 : 20,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.8,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: compact ? 4 : 8),
             Text(
               description,
-              maxLines: 2,
+              maxLines: compact ? 1 : 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textMuted,
-                fontSize: 13,
+                fontSize: compact ? 11 : 13,
                 fontWeight: FontWeight.w600,
                 height: 1.2,
               ),
@@ -114,8 +116,8 @@ class PlusListCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: compact ? 14 : 18,
-          vertical: compact ? 10 : 12,
+          horizontal: compact ? 12 : 18,
+          vertical: compact ? 8 : 12,
         ),
         decoration: BoxDecoration(
           color: isDestructive ? AppColors.quinoaRed : AppColors.white,
@@ -142,7 +144,7 @@ class PlusListCard extends StatelessWidget {
                     label,
                     style: TextStyle(
                       color: labelColor,
-                      fontSize: compact ? 14 : 15,
+                      fontSize: compact ? 13 : 15,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                     ),
@@ -154,7 +156,7 @@ class PlusListCard extends StatelessWidget {
                       color: isDestructive
                           ? AppColors.white.withValues(alpha: 0.75)
                           : labelColor.withValues(alpha: 0.45),
-                      fontSize: compact ? 11 : 12,
+                      fontSize: compact ? 10 : 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

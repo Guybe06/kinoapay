@@ -28,7 +28,7 @@ class PlusAccountSection extends StatelessWidget {
           color: AppColors.warning,
           onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
         ),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.shieldCheck,
           label: PlusStrings.actionKyc,
@@ -38,7 +38,7 @@ class PlusAccountSection extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, AppRoutes.kyc),
           compact: compact,
         ),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.lockPassword,
           label: PlusStrings.actionSecurity,
@@ -47,7 +47,7 @@ class PlusAccountSection extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, AppRoutes.security),
           compact: compact,
         ),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.settings,
           label: PlusStrings.actionPreferences,
@@ -78,7 +78,7 @@ class PlusSupportSection extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, AppRoutes.help),
           compact: compact,
         ),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.chatRound,
           label: PlusStrings.actionContact,
@@ -87,7 +87,7 @@ class PlusSupportSection extends StatelessWidget {
           onTap: () => Navigator.pushNamed(context, AppRoutes.contactSupport),
           compact: compact,
         ),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.bugMinimalistic,
           label: PlusStrings.actionReport,

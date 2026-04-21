@@ -363,6 +363,7 @@ class _ChannelSelector extends StatelessWidget {
   }
 
   void _showSheet(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
@@ -371,7 +372,7 @@ class _ChannelSelector extends StatelessWidget {
       ),
       builder: (_) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          padding: EdgeInsets.fromLTRB(24, compact ? 16 : 20, 24, 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +386,7 @@ class _ChannelSelector extends StatelessWidget {
                   letterSpacing: 0.8,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: compact ? 12 : 16),
               ...channels.map((ch) {
                 final isSelected = ch == selected;
                 return GestureDetector(
@@ -394,10 +395,10 @@ class _ChannelSelector extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(
+                    margin: EdgeInsets.only(bottom: compact ? 6 : 8),
+                    padding: EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 14,
+                      vertical: compact ? 10 : 14,
                     ),
                     decoration: BoxDecoration(
                       color: isSelected

@@ -42,7 +42,7 @@ class WelcomeBrandHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(28, compact ? 12 : 20, 28, 0),
+      padding: EdgeInsets.fromLTRB(28, compact ? 8 : 20, 28, 0),
       child: BrandLogoRow(
         size: compact ? BrandSize.md : BrandSize.lg,
         color: AppColors.white,
@@ -68,7 +68,7 @@ class WelcomeHeroTitle extends StatelessWidget {
         WelcomeStrings.heroTitle,
         style: TextStyle(
           color: AppColors.white,
-          fontSize: compact ? 36 : 48,
+          fontSize: compact ? 28 : 48,
           fontWeight: FontWeight.w900,
           height: 1.0,
           letterSpacing: -2.0,
@@ -80,7 +80,8 @@ class WelcomeHeroTitle extends StatelessWidget {
 
 /// Sous-titre du hero.
 class WelcomeHeroSubtitle extends StatelessWidget {
-  const WelcomeHeroSubtitle({super.key});
+  final bool compact;
+  const WelcomeHeroSubtitle({super.key, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +91,8 @@ class WelcomeHeroSubtitle extends StatelessWidget {
         WelcomeStrings.heroSubtitle,
         style: TextStyle(
           color: AppColors.white.withValues(alpha: 0.6),
-          fontSize: 15,
-          height: 1.5,
+          fontSize: compact ? 13 : 15,
+          height: 1.4,
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -124,7 +125,7 @@ class WelcomeIllustrationAnimated extends StatelessWidget {
         child: Transform.scale(scale: scale.value, child: child),
       ),
       child: SizedBox(
-        height: compact ? screenW * 0.55 : null,
+        height: compact ? screenW * 0.42 : null,
         child: const WelcomeIllustration(),
       ),
     );
@@ -150,7 +151,7 @@ class WelcomeSignupCta extends StatelessWidget {
         onTap: onTap,
         child: Container(
           width: double.infinity,
-          height: compact ? 56 : 68,
+          height: compact ? 48 : 68,
           decoration: BoxDecoration(
             color: AppColors.quinoaGold,
             borderRadius: BorderRadius.circular(24),
@@ -185,8 +186,13 @@ class WelcomeSignupCta extends StatelessWidget {
 /// Lien « Déjà un compte ? Connexion ».
 class WelcomeSigninLink extends StatelessWidget {
   final VoidCallback onPressed;
+  final bool compact;
 
-  const WelcomeSigninLink({super.key, required this.onPressed});
+  const WelcomeSigninLink({
+    super.key,
+    required this.onPressed,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -199,14 +205,15 @@ class WelcomeSigninLink extends StatelessWidget {
             style: TextStyle(
               color: AppColors.white.withValues(alpha: 0.5),
               fontWeight: FontWeight.w500,
-              fontSize: 15,
+              fontSize: compact ? 13 : 15,
             ),
-            children: const [
+            children: [
               TextSpan(
                 text: AuthStrings.signupSigninLink,
                 style: TextStyle(
                   color: AppColors.white,
                   fontWeight: FontWeight.w800,
+                  fontSize: compact ? 13 : 15,
                 ),
               ),
             ],

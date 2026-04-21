@@ -90,7 +90,7 @@ class PlusView extends StatelessWidget {
             0,
             ScreenSizeHelper.adaptiveValue(
               context,
-              compact: 24,
+              compact: 16,
               small: 32,
               medium: 36,
               large: 40,
@@ -103,22 +103,23 @@ class PlusView extends StatelessWidget {
                 title: PlusStrings.pageTitle,
                 subtitle: PlusStrings.pageSubtitle,
               ),
-              SizedBox(height: compact ? 20 : 32),
+              SizedBox(height: compact ? 12 : 32),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
                 child: GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 2,
-                  mainAxisSpacing: compact ? 12 : 16,
-                  crossAxisSpacing: compact ? 12 : 16,
-                  childAspectRatio: compact ? 1.25 : 1.1,
+                  mainAxisSpacing: compact ? 8 : 16,
+                  crossAxisSpacing: compact ? 8 : 16,
+                  childAspectRatio: compact ? 1.6 : 1.1,
                   children: [
                     PlusActionCard(
                       icon: SolarIconsOutline.scanner,
                       label: PlusStrings.actionScan,
                       description: PlusStrings.descScan,
                       color: AppColors.quinoaDark,
+                      compact: compact,
                       onTap: () async {
                         final result = await Navigator.pushNamed(
                           context,
@@ -138,6 +139,7 @@ class PlusView extends StatelessWidget {
                       label: PlusStrings.actionRequest,
                       description: PlusStrings.descRequest,
                       color: AppColors.pending,
+                      compact: compact,
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.request),
                     ),
@@ -146,6 +148,7 @@ class PlusView extends StatelessWidget {
                       label: PlusStrings.actionHistory,
                       description: PlusStrings.descHistory,
                       color: AppColors.quinoaGold,
+                      compact: compact,
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.history),
                     ),
@@ -154,6 +157,7 @@ class PlusView extends StatelessWidget {
                       label: PlusStrings.actionChannels,
                       description: PlusStrings.descChannels,
                       color: AppColors.success,
+                      compact: compact,
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.channels),
                     ),
@@ -162,13 +166,14 @@ class PlusView extends StatelessWidget {
                       label: PlusStrings.actionContacts,
                       description: PlusStrings.descContacts,
                       color: AppColors.quinoaDark,
+                      compact: compact,
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.contacts),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: compact ? 20 : 32),
+              SizedBox(height: compact ? 16 : 32),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
                 child: _SectionsBlock(
@@ -204,11 +209,11 @@ class _SectionsBlock extends StatelessWidget {
             _SectionDot(label: PlusStrings.sectionSession),
           ],
         ),
-        SizedBox(height: compact ? 10 : 14),
+        SizedBox(height: compact ? 8 : 14),
         PlusAccountSection(compact: compact),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusSupportSection(compact: compact),
-        SizedBox(height: compact ? 8 : 10),
+        SizedBox(height: compact ? 6 : 10),
         PlusListCard(
           icon: SolarIconsOutline.logout,
           label: PlusStrings.actionSignOut,
