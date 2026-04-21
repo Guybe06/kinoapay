@@ -25,6 +25,7 @@ abstract final class AppRoutes {
   static const String help = "/app/help";
   static const String contactSupport = "/app/contact-support";
   static const String reportIssue = "/app/report-issue";
+  static const String kyc = "/app/kyc";
 
   static const int tabDashboard = 0;
   static const int tabTransfer = 1;

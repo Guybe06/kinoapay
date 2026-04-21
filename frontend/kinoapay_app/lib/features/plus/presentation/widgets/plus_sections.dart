@@ -34,7 +34,7 @@ class PlusAccountSection extends StatelessWidget {
           description: PlusStrings.descKyc,
           color: kycVerified ? AppColors.success : AppColors.quinoaGold,
           trailing: _KycBadge(verified: kycVerified),
-          onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+          onTap: () => Navigator.pushNamed(context, AppRoutes.kyc),
         ),
         const SizedBox(height: 10),
         PlusListCard(

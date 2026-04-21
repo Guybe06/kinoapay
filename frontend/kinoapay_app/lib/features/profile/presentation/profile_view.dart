@@ -122,7 +122,7 @@ class ProfileView extends StatelessWidget {
               child: _KycSection(
                 verified: kycVerified,
                 onVerify: () =>
-                    Navigator.pushNamed(context, AppRoutes.profile),
+                    Navigator.pushNamed(context, AppRoutes.kyc),
               ),
             ),
             const SizedBox(height: 32),

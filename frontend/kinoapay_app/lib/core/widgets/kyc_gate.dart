@@ -83,7 +83,7 @@ class _KycBlockedScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, AppRoutes.profile),
+                  onPressed: () => Navigator.pushNamed(context, AppRoutes.kyc),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.quinoaDark,
                     foregroundColor: AppColors.quinoaCream,

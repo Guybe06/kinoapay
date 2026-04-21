@@ -51,7 +51,7 @@ class HistoryTxDetailSheet extends StatelessWidget {
       maxChildSize: 0.92,
       builder: (_, controller) => Container(
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: Column(
@@ -293,7 +293,7 @@ class _QrBlock extends StatelessWidget {
               Text(
                 HistoryStrings.sheetQrTitle,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                 ),
@@ -301,7 +301,7 @@ class _QrBlock extends StatelessWidget {
               Text(
                 HistoryStrings.sheetQrSub,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.35),
+                  color: AppColors.white.withValues(alpha: 0.35),
                   fontSize: 11,
                 ),
               ),
@@ -312,7 +312,7 @@ class _QrBlock extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: QrImageView(
@@ -327,7 +327,7 @@ class _QrBlock extends StatelessWidget {
                   dataModuleShape: QrDataModuleShape.square,
                   color: AppColors.quinoaDark,
                 ),
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.white,
               ),
             ),
           ),
@@ -335,7 +335,7 @@ class _QrBlock extends StatelessWidget {
           Text(
             ref,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.30),
+              color: AppColors.white.withValues(alpha: 0.30),
               fontSize: 10,
               fontFamily: "monospace",
               letterSpacing: 0.8,

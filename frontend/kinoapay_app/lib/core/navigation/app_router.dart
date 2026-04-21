@@ -34,6 +34,7 @@ import "package:kinoapay_app/features/support/presentation/contact_support_view.
 import "package:kinoapay_app/features/support/presentation/help_view.dart";
 import "package:kinoapay_app/features/support/presentation/report_issue_view.dart";
 import "package:kinoapay_app/features/scanner/presentation/scanner_view.dart";
+import "package:kinoapay_app/features/kyc/presentation/kyc_view.dart";
 import "package:kinoapay_app/features/splash/presentation/splash_view.dart";
 import "package:kinoapay_app/features/welcome/domain/welcome_args.dart";
 import "package:kinoapay_app/features/welcome/presentation/welcome_view.dart";
@@ -129,6 +130,8 @@ class AppRouter {
         return RouteTransitions.slide(const ReportIssueView(), settings);
       case AppRoutes.channels:
         return RouteTransitions.slide(const PaymentSetupView(), settings);
+      case AppRoutes.kyc:
+        return RouteTransitions.slide(const KycView(), settings);
       default:
         return RouteTransitions.slide(_unknownPage(settings.name), settings);
     }
