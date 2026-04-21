@@ -11,6 +11,7 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_c
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_channel_stats.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_channel_stats_skeleton.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_home_widgets.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_kyc_banner.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_last_tx_section.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_promo_detail_sheet.dart";
@@ -119,7 +120,9 @@ class _DashboardContentState extends State<DashboardContent> {
         DashboardGreetingSection(firstName: widget.firstName),
         if (!widget.kycVerified) ...[
           const SizedBox(height: 12),
-          const DashboardKycBanner(),
+          DashboardKycBanner(
+            onTap: () => Navigator.pushNamed(context, AppRoutes.kyc),
+          ),
         ],
         const SizedBox(height: 20),
         IndexedStack(
