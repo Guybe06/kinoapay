@@ -12,6 +12,7 @@ import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_birth_date_field.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_date_utils.dart";
 import "package:kinoapay_app/features/accounts/presentation/signup/signup_step1_step_indicator.dart";
+import "package:kinoapay_app/features/accounts/presentation/widgets/auth_signin_link.dart";
 import "package:kinoapay_app/features/accounts/presentation/widgets/auth_text_field.dart";
 
 /// Étape 1 de l’inscription : identité, date de naissance, téléphone.
@@ -165,7 +166,14 @@ class _SignUpStep1ViewState extends State<SignUpStep1View> {
               text: AuthStrings.submitBtn,
               onPressed: _submit,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 8),
+            AuthSigninLink(
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.signin,
+              ),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
