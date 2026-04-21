@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/scanner/domain/entities/scan_result.dart";
 import "package:kinoapay_app/features/send/domain/send_args.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
@@ -79,89 +80,106 @@ class PlusView extends StatelessWidget {
         subtitle: PlusStrings.headerSubtitle,
         unreadNotifications: unreadNotifications,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(0, 72, 0, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AppPageTitle(
-              title: PlusStrings.pageTitle,
-              subtitle: PlusStrings.pageSubtitle,
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            0,
+            72,
+            0,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 24,
+              small: 32,
+              medium: 36,
+              large: 40,
             ),
-            const SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.1,
-                children: [
-                  PlusActionCard(
-                    icon: SolarIconsOutline.scanner,
-                    label: PlusStrings.actionScan,
-                    description: PlusStrings.descScan,
-                    color: AppColors.quinoaDark,
-                    onTap: () async {
-                      final result = await Navigator.pushNamed(
-                        context,
-                        AppRoutes.scanner,
-                      );
-                      if (result is ScanResult && context.mounted) {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.send,
-                          arguments: SendArgs(context: result.context),
-                        );
-                      }
-                    },
-                  ),
-                  PlusActionCard(
-                    icon: SolarIconsOutline.cardReceive,
-                    label: PlusStrings.actionRequest,
-                    description: PlusStrings.descRequest,
-                    color: AppColors.pending,
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.request),
-                  ),
-                  PlusActionCard(
-                    icon: SolarIconsOutline.history,
-                    label: PlusStrings.actionHistory,
-                    description: PlusStrings.descHistory,
-                    color: AppColors.quinoaGold,
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.history),
-                  ),
-                  PlusActionCard(
-                    icon: SolarIconsOutline.card2,
-                    label: PlusStrings.actionChannels,
-                    description: PlusStrings.descChannels,
-                    color: AppColors.success,
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.channels),
-                  ),
-                  PlusActionCard(
-                    icon: SolarIconsOutline.usersGroupTwoRounded,
-                    label: PlusStrings.actionContacts,
-                    description: PlusStrings.descContacts,
-                    color: AppColors.quinoaDark,
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.contacts),
-                  ),
-                ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const AppPageTitle(
+                title: PlusStrings.pageTitle,
+                subtitle: PlusStrings.pageSubtitle,
               ),
-            ),
-            const SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _SectionsBlock(onSignOut: () => _confirmSignOut(context)),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(height: compact ? 20 : 32),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: compact ? 12 : 16,
+                  crossAxisSpacing: compact ? 12 : 16,
+                  childAspectRatio: compact ? 1.25 : 1.1,
+                  children: [
+                    PlusActionCard(
+                      icon: SolarIconsOutline.scanner,
+                      label: PlusStrings.actionScan,
+                      description: PlusStrings.descScan,
+                      color: AppColors.quinoaDark,
+                      onTap: () async {
+                        final result = await Navigator.pushNamed(
+                          context,
+                          AppRoutes.scanner,
+                        );
+                        if (result is ScanResult && context.mounted) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.send,
+                            arguments: SendArgs(context: result.context),
+                          );
+                        }
+                      },
+                    ),
+                    PlusActionCard(
+                      icon: SolarIconsOutline.cardReceive,
+                      label: PlusStrings.actionRequest,
+                      description: PlusStrings.descRequest,
+                      color: AppColors.pending,
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.request),
+                    ),
+                    PlusActionCard(
+                      icon: SolarIconsOutline.history,
+                      label: PlusStrings.actionHistory,
+                      description: PlusStrings.descHistory,
+                      color: AppColors.quinoaGold,
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.history),
+                    ),
+                    PlusActionCard(
+                      icon: SolarIconsOutline.card2,
+                      label: PlusStrings.actionChannels,
+                      description: PlusStrings.descChannels,
+                      color: AppColors.success,
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.channels),
+                    ),
+                    PlusActionCard(
+                      icon: SolarIconsOutline.usersGroupTwoRounded,
+                      label: PlusStrings.actionContacts,
+                      description: PlusStrings.descContacts,
+                      color: AppColors.quinoaDark,
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.contacts),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: compact ? 20 : 32),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: compact ? 16 : 20),
+                child: _SectionsBlock(
+                  onSignOut: () => _confirmSignOut(context),
+                  compact: compact,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -169,7 +187,8 @@ class PlusView extends StatelessWidget {
 /// Bloc sections (Mon compte / Support / Session) avec labels inline-start.
 class _SectionsBlock extends StatelessWidget {
   final VoidCallback onSignOut;
-  const _SectionsBlock({required this.onSignOut});
+  final bool compact;
+  const _SectionsBlock({required this.onSignOut, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +204,11 @@ class _SectionsBlock extends StatelessWidget {
             _SectionDot(label: PlusStrings.sectionSession),
           ],
         ),
-        const SizedBox(height: 14),
-        const PlusAccountSection(),
-        const SizedBox(height: 10),
-        const PlusSupportSection(),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 10 : 14),
+        PlusAccountSection(compact: compact),
+        SizedBox(height: compact ? 8 : 10),
+        PlusSupportSection(compact: compact),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.logout,
           label: PlusStrings.actionSignOut,

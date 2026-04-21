@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/support/domain/support_strings.dart";
@@ -17,55 +18,77 @@ class HelpView extends StatelessWidget {
         title: SupportStrings.helpTitle,
         subtitle: SupportStrings.helpHeaderSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(20, 72, 20, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Text(
-              SupportStrings.helpPageTitle,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
-                height: 1.1,
-              ),
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            20,
+            72,
+            20,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 80,
+              small: 100,
+              medium: 115,
+              large: 120,
             ),
-            const SizedBox(height: 6),
-            Text(
-              SupportStrings.helpPageSubtitle,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 32),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.06),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: compact ? 4 : 8),
+              Text(
+                SupportStrings.helpPageTitle,
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: compact ? 24 : 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                  height: 1.1,
                 ),
               ),
-              child: Column(
-                children: [
-                  for (int i = 0; i < SupportStrings.faqItems.length; i++)
-                    _FaqTile(
-                      question: SupportStrings.faqItems[i][0],
-                      answer: SupportStrings.faqItems[i][1],
-                      showDivider: i < SupportStrings.faqItems.length - 1,
-                    ),
-                ],
+              SizedBox(height: compact ? 4 : 6),
+              Text(
+                SupportStrings.helpPageSubtitle,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 28,
+                  medium: 30,
+                  large: 32,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.06),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < SupportStrings.faqItems.length; i++)
+                      _FaqTile(
+                        question: SupportStrings.faqItems[i][0],
+                        answer: SupportStrings.faqItems[i][1],
+                        showDivider: i < SupportStrings.faqItems.length - 1,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -87,7 +110,10 @@ class _FaqTile extends StatelessWidget {
         Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 18,
+              vertical: 4,
+            ),
             childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
             iconColor: AppColors.quinoaGold,
             collapsedIconColor: AppColors.quinoaDark.withValues(alpha: 0.30),

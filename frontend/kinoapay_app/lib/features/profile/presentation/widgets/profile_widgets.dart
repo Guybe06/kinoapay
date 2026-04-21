@@ -82,15 +82,16 @@ class ProfileInfoRow extends StatelessWidget {
 /// Avatar circulaire avec les initiales de l'utilisateur.
 class ProfileAvatar extends StatelessWidget {
   final String? name;
+  final bool compact;
 
-  const ProfileAvatar({super.key, this.name});
+  const ProfileAvatar({super.key, this.name, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
     final initials = _initials(name ?? "");
     return Container(
-      width: 72,
-      height: 72,
+      width: compact ? 60 : 72,
+      height: compact ? 60 : 72,
       decoration: BoxDecoration(
         color: AppColors.quinoaGold.withValues(alpha: 0.15),
         shape: BoxShape.circle,
@@ -98,9 +99,9 @@ class ProfileAvatar extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.quinoaGold,
-          fontSize: 26,
+          fontSize: compact ? 22 : 26,
           fontWeight: FontWeight.w900,
         ),
       ),
@@ -123,7 +124,11 @@ class ProfileKycBadge extends StatelessWidget {
   final bool verified;
   final String label;
 
-  const ProfileKycBadge({super.key, required this.verified, required this.label});
+  const ProfileKycBadge({
+    super.key,
+    required this.verified,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {

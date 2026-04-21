@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:solar_icons/solar_icons.dart";
 import "package:intl/intl.dart";
+import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
@@ -71,6 +72,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
   Widget build(BuildContext context) {
     final net = widget.stats.netFlow;
     final isPositive = net >= 0;
+    final compact = ScreenSizeHelper.isCompact(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -110,13 +112,13 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: Text(
                   _fmt.format(net.abs()),
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.quinoaCream,
-                    fontSize: 52,
+                    fontSize: compact ? 40 : 52,
                     fontWeight: FontWeight.w300,
                     letterSpacing: -2,
                     height: 1.0,
-                    fontFeatures: [FontFeature.tabularFigures()],
+                    fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
               ),
@@ -136,12 +138,12 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               letterSpacing: 2,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: compact ? 16 : 20),
           Divider(
             color: AppColors.quinoaCream.withValues(alpha: 0.07),
             height: 1,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: compact ? 14 : 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -175,8 +177,7 @@ class _DashboardStatsCardState extends State<DashboardStatsCard> {
               Expanded(
                 child: DashboardStatsStatColumn(
                   label: DashboardStrings.statsNet,
-                  amount:
-                      "${isPositive ? "+" : "−"}${_fmt.format(net.abs())}",
+                  amount: "${isPositive ? "+" : "−"}${_fmt.format(net.abs())}",
                   icon: isPositive
                       ? SolarIconsOutline.graphUp
                       : SolarIconsOutline.graphDown,

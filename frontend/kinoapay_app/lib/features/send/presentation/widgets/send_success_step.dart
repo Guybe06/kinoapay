@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/send/domain/send_strings.dart";
 import "package:kinoapay_app/features/send/domain/transaction_context.dart";
 
@@ -69,19 +70,47 @@ class _SendSuccessStepState extends State<SendSuccessStep>
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Scaffold(
       backgroundColor: AppColors.quinoaCream,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
+          padding: EdgeInsets.fromLTRB(
+            32,
+            0,
+            32,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 24,
+              small: 28,
+              medium: 30,
+              large: 32,
+            ),
+          ),
           child: Column(
             children: [
               const Spacer(flex: 2),
-              _buildIcon(),
-              const SizedBox(height: 32),
-              _buildContent(),
-              const SizedBox(height: 24),
-              _buildCloseButton(),
+              _buildIcon(compact),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 28,
+                  medium: 30,
+                  large: 32,
+                ),
+              ),
+              _buildContent(compact),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 20,
+                  small: 22,
+                  medium: 24,
+                  large: 24,
+                ),
+              ),
+              _buildCloseButton(compact),
               const Spacer(flex: 3),
             ],
           ),
@@ -90,14 +119,14 @@ class _SendSuccessStepState extends State<SendSuccessStep>
     );
   }
 
-  Widget _buildIcon() {
+  Widget _buildIcon(bool compact) {
     return FadeTransition(
       opacity: _iconFade,
       child: ScaleTransition(
         scale: _iconScale,
         child: Container(
-          width: 88,
-          height: 88,
+          width: compact ? 72 : 88,
+          height: compact ? 72 : 88,
           decoration: BoxDecoration(
             color: AppColors.quinoaDark,
             shape: BoxShape.circle,
@@ -105,14 +134,14 @@ class _SendSuccessStepState extends State<SendSuccessStep>
           child: Icon(
             SolarIconsOutline.checkCircle,
             color: AppColors.white,
-            size: 40,
+            size: compact ? 32 : 40,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(bool compact) {
     return FadeTransition(
       opacity: _textFade,
       child: SlideTransition(
@@ -123,14 +152,22 @@ class _SendSuccessStepState extends State<SendSuccessStep>
               widget.context.isPay
                   ? SendStrings.paySuccessTitle
                   : SendStrings.successTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 24,
+                fontSize: compact ? 22 : 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(
+              height: ScreenSizeHelper.adaptiveValue(
+                context,
+                compact: 10,
+                small: 11,
+                medium: 12,
+                large: 12,
+              ),
+            ),
             Text(
               widget.context.isPay
                   ? SendStrings.paySuccessMessage
@@ -149,10 +186,10 @@ class _SendSuccessStepState extends State<SendSuccessStep>
     );
   }
 
-  Widget _buildCloseButton() {
+  Widget _buildCloseButton(bool compact) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: compact ? 48 : 56,
       child: ElevatedButton(
         onPressed: widget.onClose,
         style: ElevatedButton.styleFrom(

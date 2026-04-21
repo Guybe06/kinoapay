@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/features/dashboard/domain/dashboard_strings.dart";
 
 /// Bottom sheet « En savoir plus » : texte marketing structuré.
@@ -9,6 +10,7 @@ class DashboardPromoDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.5,
@@ -40,7 +42,7 @@ class DashboardPromoDetailSheet extends StatelessWidget {
               ),
               Column(
                 children: [
-                  const SizedBox(height: 12),
+                  SizedBox(height: compact ? 10 : 12),
                   Container(
                     width: 40,
                     height: 4,
@@ -49,47 +51,98 @@ class DashboardPromoDetailSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: compact ? 20 : 24),
                   Expanded(
                     child: ListView(
                       controller: scrollController,
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+                      padding: EdgeInsets.fromLTRB(
+                        24,
+                        0,
+                        24,
+                        ScreenSizeHelper.adaptiveValue(
+                          context,
+                          compact: 32,
+                          small: 36,
+                          medium: 38,
+                          large: 40,
+                        ),
+                      ),
                       children: [
-                        const Text(
+                        Text(
                           DashboardStrings.promoTitle,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 32,
+                            fontSize: compact ? 28 : 32,
                             fontWeight: FontWeight.w900,
                             letterSpacing: -1.0,
                             height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 20,
+                            small: 22,
+                            medium: 24,
+                            large: 24,
+                          ),
+                        ),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.link,
                           title: DashboardStrings.promoLink,
                           description: DashboardStrings.promoLinkDesc,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 24,
+                            small: 28,
+                            medium: 30,
+                            large: 32,
+                          ),
+                        ),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.userId,
                           title: DashboardStrings.promoIdentity,
                           description: DashboardStrings.promoIdentityDesc,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 24,
+                            small: 28,
+                            medium: 30,
+                            large: 32,
+                          ),
+                        ),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.safeCircle,
                           title: DashboardStrings.promoProof,
                           description: DashboardStrings.promoProofDesc,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 24,
+                            small: 28,
+                            medium: 30,
+                            large: 32,
+                          ),
+                        ),
                         const DashboardPromoInfoSection(
                           icon: SolarIconsOutline.bolt,
                           title: DashboardStrings.promoIntel,
                           description: DashboardStrings.promoIntelDesc,
                         ),
-                        const SizedBox(height: 48),
+                        SizedBox(
+                          height: ScreenSizeHelper.adaptiveValue(
+                            context,
+                            compact: 36,
+                            small: 42,
+                            medium: 45,
+                            large: 48,
+                          ),
+                        ),
                         Text(
                           DashboardStrings.promoFooter,
                           textAlign: TextAlign.center,

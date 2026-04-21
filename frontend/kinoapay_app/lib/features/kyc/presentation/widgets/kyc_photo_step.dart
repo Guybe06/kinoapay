@@ -40,8 +40,8 @@ class _KycPhotoStepState extends State<KycPhotoStep> {
         SizedBox(
           height: ScreenSizeHelper.adaptiveValue(
             context,
-            compact: 20,
-            small: 24,
+            compact: 12,
+            small: 20,
             medium: 28,
             large: 32,
           ),

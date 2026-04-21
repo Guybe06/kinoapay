@@ -75,8 +75,8 @@ class _KycContent extends StatelessWidget {
                     24,
                     ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 24,
-                      small: 32,
+                      compact: 16,
+                      small: 28,
                       medium: 36,
                       large: 40,
                     ),

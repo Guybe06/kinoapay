@@ -111,8 +111,8 @@ class _WelcomeViewState extends State<WelcomeView>
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 12,
-                      small: 20,
+                      compact: 8,
+                      small: 16,
                       medium: 32,
                       large: 44,
                     ),
@@ -121,8 +121,8 @@ class _WelcomeViewState extends State<WelcomeView>
                   SizedBox(
                     height: ScreenSizeHelper.adaptiveValue(
                       context,
-                      compact: 6,
-                      small: 10,
+                      compact: 4,
+                      small: 8,
                       medium: 14,
                       large: 16,
                     ),

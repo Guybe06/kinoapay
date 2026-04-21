@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/support/domain/support_strings.dart";
@@ -52,150 +53,199 @@ class _ReportIssueViewState extends State<ReportIssueView> {
         title: SupportStrings.reportTitle,
         subtitle: SupportStrings.reportHeaderSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(20, 72, 20, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Text(
-              SupportStrings.reportPageTitle,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
-                height: 1.1,
-              ),
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            20,
+            72,
+            20,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 80,
+              small: 100,
+              medium: 115,
+              large: 120,
             ),
-            const SizedBox(height: 6),
-            Text(
-              SupportStrings.reportPageSubtitle,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 32),
-            _label(SupportStrings.reportSectionCategory),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.08),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _selectedCategory,
-                  isExpanded: true,
-                  hint: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Text(
-                      SupportStrings.reportCategories.first,
-                      style: TextStyle(
-                        color: AppColors.quinoaDark.withValues(alpha: 0.35),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  items: SupportStrings.reportCategories
-                      .map(
-                        (c) => DropdownMenuItem(
-                          value: c,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            child: Text(
-                              c,
-                              style: const TextStyle(
-                                color: AppColors.quinoaDark,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) => setState(() => _selectedCategory = v),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _label(SupportStrings.reportSectionMessage),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.08),
-                ),
-              ),
-              child: TextField(
-                controller: _messageCtrl,
-                maxLines: 6,
-                style: const TextStyle(
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: compact ? 4 : 8),
+              Text(
+                SupportStrings.reportPageTitle,
+                style: TextStyle(
                   color: AppColors.quinoaDark,
+                  fontSize: compact ? 24 : 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                  height: 1.1,
+                ),
+              ),
+              SizedBox(height: compact ? 4 : 6),
+              Text(
+                SupportStrings.reportPageSubtitle,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.40),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
-                decoration: InputDecoration(
-                  hintText: SupportStrings.reportMessageHint,
-                  hintStyle: TextStyle(
-                    color: AppColors.quinoaDark.withValues(alpha: 0.30),
+              ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 28,
+                  medium: 30,
+                  large: 32,
+                ),
+              ),
+              _label(SupportStrings.reportSectionCategory),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedCategory,
+                    isExpanded: true,
+                    hint: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        SupportStrings.reportCategories.first,
+                        style: TextStyle(
+                          color: AppColors.quinoaDark.withValues(alpha: 0.35),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    items: SupportStrings.reportCategories
+                        .map(
+                          (c) => DropdownMenuItem(
+                            value: c,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                              ),
+                              child: Text(
+                                c,
+                                style: const TextStyle(
+                                  color: AppColors.quinoaDark,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (v) => setState(() => _selectedCategory = v),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 16,
+                  small: 18,
+                  medium: 19,
+                  large: 20,
+                ),
+              ),
+              _label(SupportStrings.reportSectionMessage),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 8,
+                  small: 9,
+                  medium: 10,
+                  large: 10,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: TextField(
+                  controller: _messageCtrl,
+                  maxLines: 6,
+                  style: const TextStyle(
+                    color: AppColors.quinoaDark,
                     fontSize: 14,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500,
                   ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(18),
-                ),
-              ),
-            ),
-            const SizedBox(height: 28),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _submitted ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.quinoaDark,
-                  foregroundColor: AppColors.quinoaCream,
-                  disabledBackgroundColor:
-                      AppColors.quinoaDark.withValues(alpha: 0.15),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-                child: const Text(
-                  SupportStrings.reportSubmit,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 15,
-                    letterSpacing: -0.2,
+                  decoration: InputDecoration(
+                    hintText: SupportStrings.reportMessageHint,
+                    hintStyle: TextStyle(
+                      color: AppColors.quinoaDark.withValues(alpha: 0.30),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.all(18),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 26,
+                  medium: 28,
+                  large: 28,
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: compact ? 48 : 56,
+                child: ElevatedButton(
+                  onPressed: _submitted ? null : _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.quinoaDark,
+                    foregroundColor: AppColors.quinoaCream,
+                    disabledBackgroundColor: AppColors.quinoaDark.withValues(
+                      alpha: 0.15,
+                    ),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  child: const Text(
+                    SupportStrings.reportSubmit,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _label(String text) => Text(
-        text,
-        style: TextStyle(
-          color: AppColors.quinoaDark.withValues(alpha: 0.35),
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1.2,
-        ),
-      );
+    text,
+    style: TextStyle(
+      color: AppColors.quinoaDark.withValues(alpha: 0.35),
+      fontSize: 11,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.2,
+    ),
+  );
 }

@@ -10,7 +10,8 @@ import "package:kinoapay_app/features/plus/presentation/widgets/plus_widgets.dar
 
 /// Section « Mon compte » : KYC, sécurité, préférences.
 class PlusAccountSection extends StatelessWidget {
-  const PlusAccountSection({super.key});
+  final bool compact;
+  const PlusAccountSection({super.key, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +28,33 @@ class PlusAccountSection extends StatelessWidget {
           color: AppColors.warning,
           onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.shieldCheck,
           label: PlusStrings.actionKyc,
           description: PlusStrings.descKyc,
           color: kycVerified ? AppColors.success : AppColors.quinoaGold,
-          trailing: _KycBadge(verified: kycVerified),
+          trailing: _KycBadge(verified: kycVerified, compact: compact),
           onTap: () => Navigator.pushNamed(context, AppRoutes.kyc),
+          compact: compact,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.lockPassword,
           label: PlusStrings.actionSecurity,
           description: PlusStrings.descSecurity,
           color: AppColors.quinoaDark,
           onTap: () => Navigator.pushNamed(context, AppRoutes.security),
+          compact: compact,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.settings,
           label: PlusStrings.actionPreferences,
           description: PlusStrings.descPreferences,
           color: AppColors.textMuted,
           onTap: () => Navigator.pushNamed(context, AppRoutes.preferences),
+          compact: compact,
         ),
       ],
     );
@@ -59,7 +63,8 @@ class PlusAccountSection extends StatelessWidget {
 
 /// Section « Support » : aide, contact, signalement.
 class PlusSupportSection extends StatelessWidget {
-  const PlusSupportSection({super.key});
+  final bool compact;
+  const PlusSupportSection({super.key, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -71,22 +76,25 @@ class PlusSupportSection extends StatelessWidget {
           description: PlusStrings.descHelp,
           color: AppColors.quinoaGold,
           onTap: () => Navigator.pushNamed(context, AppRoutes.help),
+          compact: compact,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.chatRound,
           label: PlusStrings.actionContact,
           description: PlusStrings.descContact,
           color: AppColors.pending,
           onTap: () => Navigator.pushNamed(context, AppRoutes.contactSupport),
+          compact: compact,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: compact ? 8 : 10),
         PlusListCard(
           icon: SolarIconsOutline.bugMinimalistic,
           label: PlusStrings.actionReport,
           description: PlusStrings.descReport,
           color: AppColors.quinoaRed,
           onTap: () => Navigator.pushNamed(context, AppRoutes.reportIssue),
+          compact: compact,
         ),
       ],
     );
@@ -96,8 +104,9 @@ class PlusSupportSection extends StatelessWidget {
 /// Badge pill indiquant le statut KYC de l'utilisateur.
 class _KycBadge extends StatelessWidget {
   final bool verified;
+  final bool compact;
 
-  const _KycBadge({required this.verified});
+  const _KycBadge({required this.verified, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +115,10 @@ class _KycBadge extends StatelessWidget {
         ? PlusStrings.kycStatusVerified
         : PlusStrings.kycStatusPending;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 6 : 8,
+        vertical: compact ? 2 : 3,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(100),
@@ -115,7 +127,7 @@ class _KycBadge extends StatelessWidget {
         label,
         style: TextStyle(
           color: color,
-          fontSize: 10,
+          fontSize: compact ? 9 : 10,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.3,
         ),

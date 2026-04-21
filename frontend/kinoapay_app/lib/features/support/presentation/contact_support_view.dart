@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:url_launcher/url_launcher.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/support/domain/support_strings.dart";
@@ -20,93 +21,131 @@ class ContactSupportView extends StatelessWidget {
         title: SupportStrings.contactTitle,
         subtitle: SupportStrings.contactHeaderSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(20, 72, 20, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            Text(
-              SupportStrings.contactPageTitle,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
-                height: 1.1,
-              ),
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            20,
+            72,
+            20,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 80,
+              small: 100,
+              medium: 115,
+              large: 120,
             ),
-            const SizedBox(height: 6),
-            Text(
-              SupportStrings.contactPageSubtitle,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 32),
-            _ContactCard(
-              sectionLabel: SupportStrings.contactSectionEmail,
-              icon: SolarIconsOutline.letter,
-              label: SupportStrings.contactEmail,
-              trailing: GestureDetector(
-                onTap: () async {
-                  await Clipboard.setData(
-                    const ClipboardData(text: SupportStrings.contactEmail),
-                  );
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        SupportStrings.contactEmailCopied,
-                        style: TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: AppColors.quinoaDark,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  );
-                },
-                child: Icon(
-                  SolarIconsOutline.copy,
-                  size: 18,
-                  color: AppColors.quinoaDark.withValues(alpha: 0.30),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: compact ? 4 : 8),
+              Text(
+                SupportStrings.contactPageTitle,
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: compact ? 24 : 28,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                  height: 1.1,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            _ContactCard(
-              sectionLabel: SupportStrings.contactSectionWhatsapp,
-              icon: SolarIconsOutline.chatRound,
-              label: SupportStrings.contactWhatsapp,
-              description: SupportStrings.contactWhatsappDesc,
-              onTap: () async {
-                final uri = Uri.parse(SupportStrings.contactWhatsappUrl);
-                if (await canLaunchUrl(uri)) await launchUrl(uri);
-              },
-              trailing: Icon(
-                SolarIconsOutline.altArrowRight,
-                size: 16,
-                color: AppColors.quinoaDark.withValues(alpha: 0.25),
+              SizedBox(height: compact ? 4 : 6),
+              Text(
+                SupportStrings.contactPageSubtitle,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            _ContactCard(
-              sectionLabel: SupportStrings.contactSectionHours,
-              icon: SolarIconsOutline.clockCircle,
-              label: SupportStrings.contactHours,
-            ),
-          ],
-        ),
-      ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 28,
+                  medium: 30,
+                  large: 32,
+                ),
+              ),
+              _ContactCard(
+                sectionLabel: SupportStrings.contactSectionEmail,
+                icon: SolarIconsOutline.letter,
+                label: SupportStrings.contactEmail,
+                trailing: GestureDetector(
+                  onTap: () async {
+                    await Clipboard.setData(
+                      const ClipboardData(text: SupportStrings.contactEmail),
+                    );
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          SupportStrings.contactEmailCopied,
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: AppColors.quinoaDark,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    SolarIconsOutline.copy,
+                    size: 18,
+                    color: AppColors.quinoaDark.withValues(alpha: 0.30),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 12,
+                  small: 14,
+                  medium: 15,
+                  large: 16,
+                ),
+              ),
+              _ContactCard(
+                sectionLabel: SupportStrings.contactSectionWhatsapp,
+                icon: SolarIconsOutline.chatRound,
+                label: SupportStrings.contactWhatsapp,
+                description: SupportStrings.contactWhatsappDesc,
+                onTap: () async {
+                  final uri = Uri.parse(SupportStrings.contactWhatsappUrl);
+                  if (await canLaunchUrl(uri)) await launchUrl(uri);
+                },
+                trailing: Icon(
+                  SolarIconsOutline.altArrowRight,
+                  size: 16,
+                  color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                ),
+              ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 12,
+                  small: 14,
+                  medium: 15,
+                  large: 16,
+                ),
+              ),
+              _ContactCard(
+                sectionLabel: SupportStrings.contactSectionHours,
+                icon: SolarIconsOutline.clockCircle,
+                label: SupportStrings.contactHours,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

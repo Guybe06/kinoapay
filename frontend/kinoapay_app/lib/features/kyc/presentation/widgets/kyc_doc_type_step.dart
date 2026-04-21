@@ -27,8 +27,8 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
         SizedBox(
           height: ScreenSizeHelper.adaptiveValue(
             context,
-            compact: 20,
-            small: 24,
+            compact: 12,
+            small: 20,
             medium: 28,
             large: 32,
           ),
@@ -53,7 +53,7 @@ class _KycDocTypeStepState extends State<KycDocTypeStep> {
           width: double.infinity,
           height: ScreenSizeHelper.adaptiveValue(
             context,
-            compact: 48,
+            compact: 44,
             small: 52,
             medium: 54,
             large: 56,

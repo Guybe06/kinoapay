@@ -3,6 +3,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/features/send/application/bloc/send_bloc.dart";
@@ -44,70 +45,116 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
             ? SendStrings.payConfirmSubtitle
             : SendStrings.confirmSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 32),
-            _buildAvatar(),
-            const SizedBox(height: 12),
-            Text(
-              widget.quote.recipientName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.3,
-              ),
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            24,
+            80,
+            24,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 24,
+              small: 28,
+              medium: 32,
+              large: 40,
             ),
-            const SizedBox(height: 4),
-            Text(
-              SendStrings.quoteWillReceive,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.5),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildHeader(compact),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 28,
+                  medium: 30,
+                  large: 32,
+                ),
               ),
-            ),
-            const SizedBox(height: 28),
-            Text(
-              _fmt.format(widget.quote.amount),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.quinoaDark,
-                fontSize: 56,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -2,
-                height: 1,
+              _buildAvatar(compact),
+              SizedBox(height: compact ? 10 : 12),
+              Text(
+                widget.quote.recipientName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: compact ? 18 : 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              SendStrings.amountUnit,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.quinoaDark.withValues(alpha: 0.3),
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 4,
+              SizedBox(height: compact ? 3 : 4),
+              Text(
+                SendStrings.quoteWillReceive,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.5),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            _buildSummaryCard(),
-            const SizedBox(height: 40),
-            _buildConfirmButton(context),
-          ],
-        ),
-      ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 24,
+                  small: 26,
+                  medium: 28,
+                  large: 28,
+                ),
+              ),
+              Text(
+                _fmt.format(widget.quote.amount),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark,
+                  fontSize: compact ? 48 : 56,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -2,
+                  height: 1,
+                ),
+              ),
+              SizedBox(height: compact ? 6 : 8),
+              Text(
+                SendStrings.amountUnit,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.quinoaDark.withValues(alpha: 0.3),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 4,
+                ),
+              ),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 38,
+                  large: 40,
+                ),
+              ),
+              _buildSummaryCard(),
+              SizedBox(
+                height: ScreenSizeHelper.adaptiveValue(
+                  context,
+                  compact: 32,
+                  small: 36,
+                  medium: 38,
+                  large: 40,
+                ),
+              ),
+              _buildConfirmButton(context, compact: compact),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool compact) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -116,15 +163,15 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
               ? SendStrings.payQuoteVerifyTitle
               : SendStrings.quoteVerifyTitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.quinoaDark,
-            fontSize: 28,
+            fontSize: compact ? 24 : 28,
             fontWeight: FontWeight.w900,
             letterSpacing: -0.8,
             height: 1.1,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: compact ? 6 : 8),
         Text(
           widget.context.isPay
               ? SendStrings.payQuoteVerifySubtitle
@@ -141,18 +188,18 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(bool compact) {
     return Container(
-      width: 80,
-      height: 80,
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      width: compact ? 64 : 80,
+      height: compact ? 64 : 80,
+      decoration: BoxDecoration(
+        color: AppColors.quinoaGold.withValues(alpha: 0.12),
         shape: BoxShape.circle,
       ),
-      child: const Icon(
+      child: Icon(
         SolarIconsOutline.user,
-        color: AppColors.quinoaDark,
-        size: 32,
+        color: AppColors.quinoaGold,
+        size: compact ? 28 : 32,
       ),
     );
   }
@@ -195,10 +242,10 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
     );
   }
 
-  Widget _buildConfirmButton(BuildContext context) {
+  Widget _buildConfirmButton(BuildContext context, {required bool compact}) {
     return SizedBox(
       width: double.infinity,
-      height: 60,
+      height: compact ? 48 : 56,
       child: ElevatedButton(
         onPressed: () => context.read<SendBloc>().add(
           SendConfirmRequested(widget.quote.quoteId),
@@ -212,7 +259,9 @@ class _QuoteConfirmationStepState extends State<QuoteConfirmationStep> {
           ),
         ),
         child: Text(
-          widget.context.isPay ? SendStrings.payConfirmBtn : SendStrings.confirmBtn,
+          widget.context.isPay
+              ? SendStrings.payConfirmBtn
+              : SendStrings.confirmBtn,
           style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
         ),
       ),

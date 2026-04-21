@@ -92,6 +92,7 @@ class PlusListCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isDestructive;
   final Widget? trailing;
+  final bool compact;
 
   const PlusListCard({
     super.key,
@@ -102,6 +103,7 @@ class PlusListCard extends StatelessWidget {
     required this.onTap,
     this.isDestructive = false,
     this.trailing,
+    this.compact = false,
   });
 
   @override
@@ -111,10 +113,13 @@ class PlusListCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 14 : 18,
+          vertical: compact ? 10 : 12,
+        ),
         decoration: BoxDecoration(
           color: isDestructive ? AppColors.quinoaRed : AppColors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(compact ? 16 : 20),
           border: Border.all(
             color: isDestructive
                 ? AppColors.quinoaRed
@@ -126,9 +131,9 @@ class PlusListCard extends StatelessWidget {
             Icon(
               icon,
               color: isDestructive ? AppColors.white : color,
-              size: 22,
+              size: compact ? 20 : 22,
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: compact ? 12 : 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,19 +142,19 @@ class PlusListCard extends StatelessWidget {
                     label,
                     style: TextStyle(
                       color: labelColor,
-                      fontSize: 15,
+                      fontSize: compact ? 14 : 15,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: compact ? 1 : 2),
                   Text(
                     description,
                     style: TextStyle(
                       color: isDestructive
                           ? AppColors.white.withValues(alpha: 0.75)
                           : labelColor.withValues(alpha: 0.45),
-                      fontSize: 12,
+                      fontSize: compact ? 11 : 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -159,7 +164,7 @@ class PlusListCard extends StatelessWidget {
             trailing ??
                 Icon(
                   SolarIconsOutline.altArrowRight,
-                  size: 16,
+                  size: compact ? 14 : 16,
                   color: isDestructive
                       ? AppColors.white.withValues(alpha: 0.65)
                       : labelColor.withValues(alpha: 0.25),

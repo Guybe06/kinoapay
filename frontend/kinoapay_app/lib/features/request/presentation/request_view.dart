@@ -5,6 +5,7 @@ import "package:qr_flutter/qr_flutter.dart";
 import "package:share_plus/share_plus.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
@@ -99,40 +100,56 @@ class _RequestViewState extends State<RequestView> {
         title: RequestStrings.title,
         subtitle: RequestStrings.headerSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(24, 72, 24, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 8),
-            const AppPageTitle(
-              title: RequestStrings.pageTitle,
-              subtitle: RequestStrings.pageSubtitle,
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            24,
+            72,
+            24,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 100,
+              small: 110,
+              medium: 115,
+              large: 120,
             ),
-            const SizedBox(height: 36),
-            _AmountField(controller: _amountCtrl),
-            const SizedBox(height: 16),
-            _ChannelSelector(
-              selected: _selectedChannel,
-              onChanged: (ch) => setState(() => _selectedChannel = ch),
-            ),
-            const SizedBox(height: 40),
-            if (handle != null) ...[
-              _QrCard(
-                handle: handle,
-                amount: _amount,
-                onCopyId: () => _copyId(handle),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: compact ? 4 : 8),
+              const AppPageTitle(
+                title: RequestStrings.pageTitle,
+                subtitle: RequestStrings.pageSubtitle,
               ),
-              const SizedBox(height: 28),
-              _ShareButton(onTap: () => _shareLink(handle)),
-              const SizedBox(height: 12),
-              _CopyLinkButton(onTap: () => _copyLink(handle)),
-            ] else
-              const _NoHandleState(),
-          ],
-        ),
-      ),
+              SizedBox(height: compact ? 28 : 36),
+              _AmountField(controller: _amountCtrl, compact: compact),
+              SizedBox(height: compact ? 12 : 16),
+              _ChannelSelector(
+                selected: _selectedChannel,
+                onChanged: (ch) => setState(() => _selectedChannel = ch),
+                compact: compact,
+              ),
+              SizedBox(height: compact ? 32 : 40),
+              if (handle != null) ...[
+                _QrCard(
+                  handle: handle,
+                  amount: _amount,
+                  onCopyId: () => _copyId(handle),
+                  compact: compact,
+                ),
+                SizedBox(height: compact ? 24 : 28),
+                _ShareButton(onTap: () => _shareLink(handle), compact: compact),
+                SizedBox(height: compact ? 10 : 12),
+                _CopyLinkButton(onTap: () => _copyLink(handle)),
+              ] else
+                const _NoHandleState(),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -141,10 +158,12 @@ class _RequestViewState extends State<RequestView> {
 class _ChannelSelector extends StatelessWidget {
   final PaymentChannel? selected;
   final ValueChanged<PaymentChannel?> onChanged;
+  final bool compact;
 
   const _ChannelSelector({
     required this.selected,
     required this.onChanged,
+    this.compact = false,
   });
 
   @override
@@ -177,8 +196,9 @@ class _ChannelSelector extends StatelessWidget {
                       ? AppColors.quinoaDark
                       : AppColors.quinoaDark.withValues(alpha: 0.35),
                   fontSize: 15,
-                  fontWeight:
-                      selected != null ? FontWeight.w700 : FontWeight.w400,
+                  fontWeight: selected != null
+                      ? FontWeight.w700
+                      : FontWeight.w400,
                 ),
               ),
             ),
@@ -216,7 +236,7 @@ class _ChannelSelector extends StatelessWidget {
                   letterSpacing: 0.8,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: compact ? 12 : 16),
               ...SourceAccountsMock.list.map((ch) {
                 final isSelected = ch == selected;
                 return GestureDetector(
@@ -255,8 +275,9 @@ class _ChannelSelector extends StatelessWidget {
                               Text(
                                 ch.value,
                                 style: TextStyle(
-                                  color:
-                                      AppColors.quinoaDark.withValues(alpha: 0.4),
+                                  color: AppColors.quinoaDark.withValues(
+                                    alpha: 0.4,
+                                  ),
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -286,8 +307,9 @@ class _ChannelSelector extends StatelessWidget {
 /// Champ de saisie du montant demandé (optionnel).
 class _AmountField extends StatelessWidget {
   final TextEditingController controller;
+  final bool compact;
 
-  const _AmountField({required this.controller});
+  const _AmountField({required this.controller, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -295,9 +317,7 @@ class _AmountField extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: AppColors.quinoaDark.withValues(alpha: 0.08),
-        ),
+        border: Border.all(color: AppColors.quinoaDark.withValues(alpha: 0.08)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Row(
@@ -307,9 +327,9 @@ class _AmountField extends StatelessWidget {
               controller: controller,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.quinoaDark,
-                fontSize: 20,
+                fontSize: compact ? 18 : 20,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.3,
               ),
@@ -318,7 +338,7 @@ class _AmountField extends StatelessWidget {
                 hintText: RequestStrings.amountHint,
                 hintStyle: TextStyle(
                   color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                  fontSize: 16,
+                  fontSize: compact ? 14 : 16,
                   fontWeight: FontWeight.w500,
                 ),
                 border: InputBorder.none,
@@ -329,7 +349,7 @@ class _AmountField extends StatelessWidget {
             RequestStrings.amountUnit,
             style: TextStyle(
               color: AppColors.quinoaDark.withValues(alpha: 0.35),
-              fontSize: 14,
+              fontSize: compact ? 13 : 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 1,
             ),
@@ -345,11 +365,13 @@ class _QrCard extends StatelessWidget {
   final String handle;
   final double? amount;
   final VoidCallback onCopyId;
+  final bool compact;
 
   const _QrCard({
     required this.handle,
     required this.amount,
     required this.onCopyId,
+    this.compact = false,
   });
 
   @override
@@ -377,7 +399,7 @@ class _QrCard extends StatelessWidget {
           child: QrImageView(
             data: payload,
             version: QrVersions.auto,
-            size: 220,
+            size: compact ? 180 : 220,
             backgroundColor: AppColors.white,
             eyeStyle: const QrEyeStyle(
               eyeShape: QrEyeShape.square,
@@ -389,7 +411,7 @@ class _QrCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: compact ? 16 : 20),
         GestureDetector(
           onTap: onCopyId,
           child: Row(
@@ -398,9 +420,9 @@ class _QrCard extends StatelessWidget {
             children: [
               Text(
                 handle,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.quinoaDark,
-                  fontSize: 22,
+                  fontSize: compact ? 18 : 20,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.5,
                 ),
@@ -419,7 +441,7 @@ class _QrCard extends StatelessWidget {
           RequestStrings.qrIdLabel,
           style: TextStyle(
             color: AppColors.quinoaDark.withValues(alpha: 0.35),
-            fontSize: 12,
+            fontSize: compact ? 11 : 12,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -431,8 +453,9 @@ class _QrCard extends StatelessWidget {
 /// Bouton principal : ouvre le share sheet natif (WhatsApp, Messages, Mail…).
 class _ShareButton extends StatelessWidget {
   final VoidCallback onTap;
+  final bool compact;
 
-  const _ShareButton({required this.onTap});
+  const _ShareButton({required this.onTap, this.compact = false});
 
   @override
   Widget build(BuildContext context) {

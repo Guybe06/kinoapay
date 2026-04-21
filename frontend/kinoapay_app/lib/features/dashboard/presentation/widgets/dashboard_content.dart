@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
+import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_header.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_bloc.dart";
 import "package:kinoapay_app/features/dashboard/application/bloc/dashboard_event.dart";
@@ -11,7 +13,6 @@ import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_c
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_channel_stats.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_channel_stats_skeleton.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_home_widgets.dart";
-import "package:kinoapay_app/core/constants/app_routes.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_kyc_banner.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_last_tx_section.dart";
 import "package:kinoapay_app/features/dashboard/presentation/widgets/dashboard_promo_detail_sheet.dart";
@@ -113,18 +114,19 @@ class _DashboardContentState extends State<DashboardContent> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final compact = ScreenSizeHelper.isCompact(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 68),
         DashboardGreetingSection(firstName: widget.firstName),
         if (!widget.kycVerified) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: compact ? 8 : 12),
           DashboardKycBanner(
             onTap: () => Navigator.pushNamed(context, AppRoutes.kyc),
           ),
         ],
-        const SizedBox(height: 20),
+        SizedBox(height: compact ? 16 : 20),
         IndexedStack(
           index: widget.isStatsRefreshing ? 0 : 1,
           children: [
@@ -132,17 +134,18 @@ class _DashboardContentState extends State<DashboardContent> {
             DashboardStatsCard(stats: widget.stats),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: compact ? 16 : 20),
         DashboardActionButtons(
           onSend: widget.onNavigateToSend ?? () {},
           onRequest: widget.onNavigateToRequest ?? () {},
         ),
-        const SizedBox(height: 16),
-        if (widget.isStatsRefreshing || widget.stats.channelStats.isNotEmpty) ...[
+        SizedBox(height: compact ? 12 : 16),
+        if (widget.isStatsRefreshing ||
+            widget.stats.channelStats.isNotEmpty) ...[
           widget.isStatsRefreshing
               ? const DashboardChannelStatsSkeleton()
               : DashboardChannelStats(stats: widget.stats.channelStats),
-          const SizedBox(height: 20),
+          SizedBox(height: compact ? 16 : 20),
         ],
         DashboardPromoCard(
           onTap: () => showModalBottomSheet(
@@ -152,14 +155,17 @@ class _DashboardContentState extends State<DashboardContent> {
             builder: (_) => const DashboardPromoDetailSheet(),
           ),
         ),
-        const SizedBox(height: 20),
-        DashboardRecentContacts(transactions: widget.transactions, onAdd: () {}),
-        const SizedBox(height: 24),
+        SizedBox(height: compact ? 16 : 20),
+        DashboardRecentContacts(
+          transactions: widget.transactions,
+          onAdd: () {},
+        ),
+        SizedBox(height: compact ? 20 : 24),
         DashboardLastTxSection(
           transactions: widget.transactions,
           onSeeAll: widget.onNavigateToHistory ?? () {},
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: compact ? 24 : 32),
       ],
     );
   }

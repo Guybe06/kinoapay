@@ -93,8 +93,8 @@ class _SendAmountStepState extends State<SendAmountStep> {
         SizedBox(
           height: ScreenSizeHelper.adaptiveValue(
             context,
-            compact: 20,
-            small: 28,
+            compact: 12,
+            small: 20,
             medium: 32,
             large: 36,
           ),

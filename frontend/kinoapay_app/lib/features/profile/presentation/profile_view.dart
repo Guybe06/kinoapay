@@ -4,6 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:solar_icons/solar_icons.dart";
 import "package:kinoapay_app/core/constants/app_colors.dart";
 import "package:kinoapay_app/core/constants/app_routes.dart";
+import "package:kinoapay_app/core/helpers/screen_size_helper.dart";
 import "package:kinoapay_app/core/navigation/presentation/widgets/app_back_header.dart";
 import "package:kinoapay_app/core/widgets/app_scroll_scaffold.dart";
 import "package:kinoapay_app/core/widgets/app_snack_bar.dart";
@@ -33,113 +34,123 @@ class ProfileView extends StatelessWidget {
         title: ProfileStrings.title,
         subtitle: ProfileStrings.headerSubtitle,
       ),
-      builder: (_, ctrl) => SingleChildScrollView(
-        controller: ctrl,
-        padding: const EdgeInsets.fromLTRB(20, 72, 20, 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 8),
-            StaggeredEntrance(
-              index: 0,
-              child: Text(
-                ProfileStrings.pageTitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.8,
-                  height: 1.1,
+      builder: (_, ctrl) {
+        final compact = ScreenSizeHelper.isCompact(context);
+        return SingleChildScrollView(
+          controller: ctrl,
+          padding: EdgeInsets.fromLTRB(
+            20,
+            72,
+            20,
+            ScreenSizeHelper.adaptiveValue(
+              context,
+              compact: 80,
+              small: 100,
+              medium: 115,
+              large: 120,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: compact ? 4 : 8),
+              StaggeredEntrance(
+                index: 0,
+                child: Text(
+                  ProfileStrings.pageTitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: compact ? 24 : 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.8,
+                    height: 1.1,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 6),
-            StaggeredEntrance(
-              index: 1,
-              child: Text(
-                ProfileStrings.pageSubtitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.40),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  height: 1.4,
+              SizedBox(height: compact ? 4 : 6),
+              StaggeredEntrance(
+                index: 1,
+                child: Text(
+                  ProfileStrings.pageSubtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.40),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 2,
-              child: ProfileAvatar(name: user?.fullName),
-            ),
-            const SizedBox(height: 14),
-            StaggeredEntrance(
-              index: 3,
-              child: Text(
-                user?.fullName ?? "",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.quinoaDark,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
+              SizedBox(height: compact ? 24 : 32),
+              StaggeredEntrance(
+                index: 2,
+                child: ProfileAvatar(name: user?.fullName, compact: compact),
+              ),
+              SizedBox(height: compact ? 10 : 14),
+              StaggeredEntrance(
+                index: 3,
+                child: Text(
+                  user?.fullName ?? "",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark,
+                    fontSize: compact ? 20 : 22,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 4),
-            StaggeredEntrance(
-              index: 4,
-              child: Text(
-                user?.email ?? "",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.45),
-                  fontSize: 14,
+              SizedBox(height: compact ? 2 : 4),
+              StaggeredEntrance(
+                index: 4,
+                child: Text(
+                  user?.email ?? "",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.45),
+                    fontSize: 14,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 4),
-            // KinoaID : affiché comme le email, copiable au tap.
-            StaggeredEntrance(
-              index: 5,
-              child: _KinoaIdInline(
-                handle: user?.publicHandle,
-                onCopied: () => AppSnackBar.showInfo(
-                  context,
-                  ProfileStrings.kinoaIdCopied,
+              SizedBox(height: compact ? 2 : 4),
+              // KinoaID : affiché comme le email, copiable au tap.
+              StaggeredEntrance(
+                index: 5,
+                child: _KinoaIdInline(
+                  handle: user?.publicHandle,
+                  onCopied: () => AppSnackBar.showInfo(
+                    context,
+                    ProfileStrings.kinoaIdCopied,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 6,
-              child: _buildInfoSection(user),
-            ),
-            const SizedBox(height: 20),
-            StaggeredEntrance(
-              index: 7,
-              child: _KycSection(
-                verified: kycVerified,
-                onVerify: () =>
-                    Navigator.pushNamed(context, AppRoutes.kyc),
-              ),
-            ),
-            const SizedBox(height: 32),
-            StaggeredEntrance(
-              index: 8,
-              child: Text(
-                "${ProfileStrings.version} ${ProfileStrings.appVersion}",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.quinoaDark.withValues(alpha: 0.25),
-                  fontSize: 12,
+              SizedBox(height: compact ? 24 : 32),
+              StaggeredEntrance(index: 6, child: _buildInfoSection(user)),
+              SizedBox(height: compact ? 16 : 20),
+              StaggeredEntrance(
+                index: 7,
+                child: _KycSection(
+                  verified: kycVerified,
+                  onVerify: () => Navigator.pushNamed(context, AppRoutes.kyc),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(height: compact ? 24 : 32),
+              StaggeredEntrance(
+                index: 8,
+                child: Text(
+                  "${ProfileStrings.version} ${ProfileStrings.appVersion}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.quinoaDark.withValues(alpha: 0.25),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
