@@ -178,7 +178,11 @@ class MockAuthRepository implements AuthRepository {
     }
   }
 
-  static const String _mockResetToken = "mock_reset_token_valid";
+  /// Préfixe des tokens de réinitialisation. Le suffixe encode l'identifiant
+  /// du compte (clé du `_store`) afin que [resetPassword] sache quel compte
+  /// mettre à jour. Sans cela, tout reset s'appliquait au premier compte du
+  /// store, ce qui corrompait silencieusement les autres comptes.
+  static const String _mockResetTokenPrefix = "mock_reset_token_";
 
   @override
   Future<void> requestPasswordReset(
@@ -186,8 +190,7 @@ class MockAuthRepository implements AuthRepository {
     required bool isEmail,
   }) async {
     await Future.delayed(const Duration(milliseconds: 1200));
-    final key = contact.trim().toLowerCase();
-    if (isEmail && !_store.containsKey(key)) {
+    if (_resolveAccountKey(contact, isEmail: isEmail) == null) {
       throw AppException(
         message: AuthStrings.noAccountLinked,
         code: AuthErrorCodes.invalidCredentials,
@@ -206,23 +209,51 @@ class MockAuthRepository implements AuthRepository {
         statusCode: 422,
       );
     }
-    return _mockResetToken;
+    final key = _resolveAccountKey(contact, isEmail: contact.contains("@"));
+    if (key == null) {
+      throw AppException(
+        message: AuthStrings.noAccountLinked,
+        code: AuthErrorCodes.invalidCredentials,
+        statusCode: 404,
+      );
+    }
+    return "$_mockResetTokenPrefix$key";
   }
 
   @override
   Future<void> resetPassword(String resetToken, String newPassword) async {
     await Future.delayed(const Duration(milliseconds: 1200));
-    if (resetToken != _mockResetToken) {
+    if (!resetToken.startsWith(_mockResetTokenPrefix)) {
       throw AppException.unauthorized();
     }
-    final firstKey = _store.keys.firstOrNull;
-    if (firstKey != null) {
-      final old = _store[firstKey]!;
-      _store[firstKey] = _MockCredentials(
-        password: newPassword,
-        account: old.account,
-      );
+    final key = resetToken.substring(_mockResetTokenPrefix.length);
+    final old = _store[key];
+    if (old == null) {
+      throw AppException.unauthorized();
     }
+    _store[key] = _MockCredentials(
+      password: newPassword,
+      account: old.account,
+    );
+  }
+
+  /// Retourne la clé `_store` correspondant au contact (email ou téléphone),
+  /// ou `null` si aucun compte n'est lié.
+  String? _resolveAccountKey(String contact, {required bool isEmail}) {
+    if (isEmail) {
+      final key = contact.trim().toLowerCase();
+      return _store.containsKey(key) ? key : null;
+    }
+    final normalized = contact.replaceAll(RegExp(r"\s"), "");
+    for (final entry in _store.entries) {
+      final acc = entry.value.account;
+      final phone = acc.phone;
+      if (phone == null || phone.isEmpty) continue;
+      final acctPhone =
+          "${acc.countryCode ?? ''}$phone".replaceAll(RegExp(r"\s"), "");
+      if (acctPhone == normalized) return entry.key;
+    }
+    return null;
   }
 }
 
