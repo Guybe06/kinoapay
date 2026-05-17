@@ -55,13 +55,12 @@ class _RequestViewState extends State<RequestView> {
   }
 
   /// Ouvre le share sheet natif (WhatsApp, Messages, Mail, etc.).
+  /// Note : share_plus ^12 interdit de passer [text] et [uri] simultanément
+  /// (`ArgumentError: uri and text cannot be provided at the same time`).
+  /// Le message contient déjà le lien — les apps réceptrices (iMessage,
+  /// WhatsApp…) détectent l'URL et génèrent un aperçu automatiquement.
   Future<void> _shareLink(String handle) async {
     final message = RequestStrings.shareMessage(
-      handle,
-      _amount,
-      _selectedChannel?.type,
-    );
-    final link = RequestStrings.payLink(
       handle,
       _amount,
       _selectedChannel?.type,
@@ -69,7 +68,6 @@ class _RequestViewState extends State<RequestView> {
     await SharePlus.instance.share(
       ShareParams(
         text: message,
-        uri: Uri.parse(link),
         subject: RequestStrings.shareSubject,
       ),
     );
